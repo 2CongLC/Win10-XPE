@@ -1,0 +1,210 @@
+[Main]
+Title=Vss - Volume Snapshot Service
+Type=Plugin
+Author=Galapo, Fxscript, Lancelot
+Description=EXPERIMENTAL
+Credits=http://www.TheOven.org
+Version=003
+Download_Level=0
+Level=6
+Selected=False
+Mandatory=False
+NoWarning=False
+Contact=http://TheOven.org/index.php?board=3.0
+Date=2017.02.16
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Drivers/4%20Storage/Vss.script
+CertifiedBy=
+Certification=
+HistoryNotes01=vssadmin.exe list providers
+History001=Lancelot Started plugin Experimental - Codes taken from Galapo and FXScript plugins - Date:2015.01.26
+History003=Lancelot - Add DUC Buttons - Date:2017.02.16
+
+[InterFace]
+Test_CheckBox=Test,1,3,226,116,200,18,True
+WebLabel_Homepg=HomePage,1,10,343,20,55,18,http://en.wikipedia.org/wiki/Shadow_Copy
+WebLabel_Plugin="Plugin Page",1,10,338,4,55,18,http://TheOven.org/index.php?board=3.0
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[Variables]
+
+[Process]
+If,Not,%OSFamily%,Equal,NT5,Exit,"NT5 only"
+IniRead,%ProjectDir%\script.project,IniVariables,OS,%OS%
+IniRead,%ProjectDir%\script.project,IniVariables,NoWarnRegOverWrite,%NoWarnROW%
+//-
+Run,%ScriptFile%,InstallVSS
+Run,%ScriptFile%,VSSReg_From_HDM8595
+If,%Test_CheckBox%,Equal,True,Run,%ScriptFile%,Test
+//-
+If,Not,ExistFile,%target_sys%\atl.dll,CopyOrExpand,%source_win%\atl.dll,%target_sys%\atl.dll
+
+[InstallVSS]
+//From RF
+CopyOrExpand,%source_win%\vss_ps.dll,%target_sys%
+CopyOrExpand,%source_win%\vssapi.dll,%target_sys%
+CopyOrExpand,%source_win%\vssvc.exe,%target_sys%
+CopyOrExpand,%source_win%\vssadmin.exe,%target_sys%
+CopyOrExpand,%source_win%\eventcls.dll,%target_sys%
+//-- From HDM85-95 plugin
+//Require_FileQ,vssvc.exe
+//Require_FileQ,vssapi.dll
+//Require_FileQ,swprv.dll
+//Require_FileQ,vss_ps.dll
+//Require_FileQ,vssadmin.exe
+If,%OS%,Equal,W2003,Begin
+CopyOrExpand,%source_win%\vss_ddu.dll,%target_sys%
+CopyOrExpand,%source_win%\vssddups.dll,%target_sys%
+CopyOrExpand,%source_win%\vssui.dll,%target_sys%
+CopyOrExpand,%source_win%\vsswmi.dll,%target_sys%
+CopyOrExpand,%source_win%\swprv.dll,%target_sys%
+Set,%dir%,%target_sys%\wbem
+DirMake,%dir%
+CopyOrExpand,%source_win%\vss.mof,%dir%
+CopyOrExpand,%source_win%\vss.mfl,%dir%
+//--
+CopyOrExpand,%source_win%\vsstask.dll,%target_sys%
+CopyOrExpand,%source_win%\vsstskex.dll,%target_sys%
+End
+
+[VSSReg_From_HDM8595]
+RegHiveLoad,Tmp_Software,%RegSoftware%
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{65EE1DBA-8FF4-4a58-AC1C-3470EE2F376A},,"VSSoftwareProvider Class"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{65EE1DBA-8FF4-4a58-AC1C-3470EE2F376A}\InprocServer32,,system32\SWPRV.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{65EE1DBA-8FF4-4a58-AC1C-3470EE2F376A}\InprocServer32,ThreadingModel,Both
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{65EE1DBA-8FF4-4a58-AC1C-3470EE2F376A}\ProgID,,VSSW.VSSoftwareProvider.1
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{65EE1DBA-8FF4-4a58-AC1C-3470EE2F376A}\TypeLib,,{93BB06B6-B6DA-43c8-BC9B-E32DB49AA6F7}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{65EE1DBA-8FF4-4a58-AC1C-3470EE2F376A}\VersionIndependentProgID,,VSSW.VSSoftwareProvider
+RegWrite,HKLM,0x1,Tmp_Software\Classes\TypeLib\{93BB06B6-B6DA-43C8-BC9B-E32DB49AA6F7}\1.0,,"Software Shadow Copy provider 1.0 Type Library"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\TypeLib\{93BB06B6-B6DA-43C8-BC9B-E32DB49AA6F7}\1.0\0\win32,,swprv.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\TypeLib\{93BB06B6-B6DA-43C8-BC9B-E32DB49AA6F7}\1.0\FLAGS,,0
+RegWrite,HKLM,0x2,Tmp_Software\Classes\TypeLib\{93BB06B6-B6DA-43C8-BC9B-E32DB49AA6F7}\1.0\HELPDIR,,#$pSystemRoot#$p\Help
+RegWrite,HKLM,0x1,Tmp_Software\Classes\VSSW.VSSoftwareProvider,,"VSSoftwareProvider Class"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\VSSW.VSSoftwareProvider.1,,"VSSoftwareProvider Class"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\VSSW.VSSoftwareProvider.1\CLSID,,{65EE1DBA-8FF4-4a58-AC1C-3470EE2F376A}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\VSSW.VSSoftwareProvider\CLSID,,{65EE1DBA-8FF4-4a58-AC1C-3470EE2F376A}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\VSSW.VSSoftwareProvider\CurVer,,VSSW.VSSoftwareProvider.1
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{72970BEB-81F8-46D4-B220-D743F4E49C95},,"Volume Shadow Copy WMI Provider"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\CLSID\{72970BEB-81F8-46D4-B220-D743F4E49C95}\InprocServer32,,vsswmi.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{72970BEB-81F8-46D4-B220-D743F4E49C95}\InprocServer32,ThreadingModel,Both
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\900,vss,"hiderun.exe /w net start vss"
+RegHiveUnLoad,Tmp_Software
+RegHiveLoad,Tmp_System,%RegSystem%
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_VSS,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_VSS\0000,Service,VSS
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_VSS\0000,Legacy,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_VSS\0000,ConfigFlags,0
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_VSS\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_VSS\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_VSS\0000,DeviceDesc,"Volume Shadow Copy"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_VSS\0000\Control,ActiveService,VSS
+RegWrite,HKLM,0x7,Tmp_System\ControlSet001\Services\VSS,DependOnService,RPCSS
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Services\VSS,Description,"Manages and implements Volume Shadow Copies used for backup and other purposes. If this service is stopped, shadow copies will be unavailable for backup and the backup may fail. If this service is disabled, any services that explicitly depend on it will fail to start."
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Services\VSS,DisplayName,"Volume Shadow Copy"
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\VSS,ErrorControl,1
+//%SystemRoot%\System32\vssvc.exe" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x2,Tmp_System\ControlSet001\Services\VSS,ImagePath,system32\vssvc.exe
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Services\VSS,ObjectName,LocalSystem
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\VSS,Start,3
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\VSS,Type,16
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Services\VSS\Providers\{b5946137-7b9f-4925-af80-51abd60b20d5},,"MS Software Shadow Copy provider 1.0"
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\VSS\Providers\{b5946137-7b9f-4925-af80-51abd60b20d5},Type,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Services\VSS\Providers\{b5946137-7b9f-4925-af80-51abd60b20d5},Version,1.0.0.7
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Services\VSS\Providers\{b5946137-7b9f-4925-af80-51abd60b20d5},VersionId,{00000001-0000-0000-0007-000000000001}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Services\VSS\Providers\{b5946137-7b9f-4925-af80-51abd60b20d5}\CLSID,,{65EE1DBA-8FF4-4a58-AC1C-3470EE2F376A}
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\VSS\Settings,MSDEVersionChecking,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Services\VSS\Enum,0,Root\LEGACY_VSS\0000
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\VSS\Enum,Count,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\VSS\Enum,NextInstance,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\Eventlog\Application\VSS,TypesSupported,7
+RegWrite,HKLM,0x2,Tmp_System\ControlSet001\Services\Eventlog\Application\VSS,EventMessageFile,#$pSystemRoot#$p\System32\vssvc.exe
+RegHiveUnLoad,Tmp_System
+
+[Test]
+Require,File,Regsvr32.exe
+Require,File,Net.exe
+//-
+Set,%w%,%target_win%\TestVSS.cmd
+If,ExistFile,%w%,Call,FileDelete,%w%
+FileCreateBlank,%w%
+//-
+TxtAddline,%w%,"net stop vss",Append
+TxtAddline,%w%,"regsvr32.exe vss_ps.dll",Append
+TxtAddline,%w%,"regsvr32.exe /n /i eventcls.dll",Append
+TxtAddline,%w%,"vssvc.exe /Register",Append
+//-
+If,%OS%,Equal,W2003,Begin
+TxtAddline,%w%,"regsvr32.exe vss_ddu.dll",Append
+TxtAddline,%w%,"regsvr32.exe vssddups.dll",Append
+TxtAddline,%w%,"regsvr32.exe vssui.dll",Append
+TxtAddline,%w%,"regsvr32.exe vsswmi.dll",Append
+//\Cluster
+//TxtAddline,%w%,"regsvr32.exe Cluster\vsstask.dll",Append
+//TxtAddline,%w%,"regsvr32.exe Cluster\vsstskex.dll",Append
+TxtAddline,%w%,"regsvr32.exe vsstask.dll",Append
+TxtAddline,%w%,"regsvr32.exe vsstskex.dll",Append
+//\Cluster
+TxtAddline,%w%,"regsvr32.exe /n /i swprv.dll",Append
+End
+TxtAddline,%w%,"net start vss",Append
+//--
+TxtAddline,%w%,"vssadmin.exe",Append
+TxtAddline,%w%,"vssadmin.exe list shadows",Append
+TxtAddline,%w%,"vssadmin.exe list writers",Append
+TxtAddline,%w%,"vssadmin.exe list providers",Append
+TxtAddline,%w%,"Echo TestVSS.cmd",Append
+TxtAddline,%w%,"cmd",Append
+//-
+Set,%ProgramTitle%,Test_VSS
+Set,%ProgramEXE%,TestVSS.cmd
+Set,%Target_Prog%,%target_win%
+Set,%ProgramFolder%,""
+Set,%PE_Programs%,%systemroot%
+//-
+Add_Shortcut,AutoRun
+Add_Shortcut,Desktop
+
+[AuthorEncoded]
+Harddrive4848.ico=4826,6435
+Logo=Harddrive4848.ico
+
+[EncodedFile-AuthorEncoded-Harddrive4848.ico]
+lines=1
+0=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
+1=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
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[EncodedFolders]
+Folder
+
+[Folder]
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+Call,UploadXQ
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+

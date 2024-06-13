@@ -1,0 +1,778 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=Generator content="Microsoft Word 11 (filtered)">
+<title>MultiRes Online Documentation</title>
+
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+h1
+	{margin:0in;
+	margin-bottom:.0001pt;
+	page-break-after:avoid;
+	text-autospace:none;
+	font-size:11.0pt;
+	font-family:Arial;
+	color:black;}
+p.MsoBodyText, li.MsoBodyText, div.MsoBodyText
+	{margin:0in;
+	margin-bottom:.0001pt;
+	text-autospace:none;
+	font-size:11.0pt;
+	font-family:Arial;
+	color:black;}
+p.MsoBodyText2, li.MsoBodyText2, div.MsoBodyText2
+	{margin:0in;
+	margin-bottom:.0001pt;
+	text-autospace:none;
+	font-size:11.0pt;
+	font-family:Arial;
+	color:navy;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+
+</head>
+
+<body lang=EN-US style='text-justify-trim:punctuation'>
+
+<div class=Section1>
+
+<p class=MsoNormal style='text-autospace:none'><b><u><span style='font-size:
+24.0pt;font-family:Arial;color:blue'>MultiRes</span></u></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:6.0pt;
+font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+font-family:Arial'>2005.12.20</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+font-family:Arial'>Program and documentation Copyright (c) 1995-2005, EnTech Taiwan. All Rights Reserved.</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:16.0pt;
+font-family:Arial;color:blue'>Using MultiRes to change display settings </span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:6.0pt;
+font-family:Arial;color:blue'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>MultiRes works very much like a 32-bit version of
+the venerable Microsoft QuickRes 16-bit applet for Windows 95, with extended
+capabilities to handle refresh rates and multiple monitors. Supported
+resolution and refresh rates are accessible from a simple menu that pops up
+from the system tray. An optional timed confirmation prompt – enabled by
+default in the program <b>About</b> box – ensures that any changes you make can
+be reversed safely, without fuss. While MultiRes - unlike EnTech’s PowerStrip -
+does not allow you to define new display settings, it does give you quick and
+easy access to the ones the driver makes available – in a simple, compact and
+conservative package. </span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:16.0pt;
+font-family:Arial;color:blue'>Using MultiRes to lock refresh rates under
+Windows NT/2000/XP</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:6.0pt;
+font-family:Arial;color:blue'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>Applications and games that switch display
+settings without specifying a specific refresh rate often end up running at the
+lowest refresh rate supported by the display adapter in the interests of
+protecting your monitor against too-high frequencies. With primary display
+adapters the refresh rate can under many – but certainly not all –
+circumstances be controlled by MultiRes if it is running. If MultiRes is
+running and the “Lock refresh rate” option has been enabled in the program <b>About</b>
+box (it is disabled by default), MultiRes will try to enforce the refresh rates
+you have previously selected, on a resolution by color depth basis.</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:navy'>Example 1:</span></b></p>
+
+<p class=MsoBodyText>You frequently run Direct3D or OpenGL games at
+800x600x32bpp, but they default to 60Hz whereas you wish to run them at 100Hz.
+To resolve this problem with MultiRes, do the following:</p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;</span></p>
+
+<ol style='margin-top:0in' start=1 type=1>
+ <li class=MsoNormal style='color:black;text-autospace:none'><span
+     style='font-size:11.0pt;font-family:Arial'>enable “Lock refresh rates” in
+     the MultiRes <b>About</b> box</span></li>
+ <li class=MsoNormal style='color:black;text-autospace:none'><span
+     style='font-size:11.0pt;font-family:Arial'>switch your desktop to
+     “TrueColor (32 bit) - 800x600” in the MultiRes menu</span></li>
+ <li class=MsoNormal style='color:black;text-autospace:none'><span
+     style='font-size:11.0pt;font-family:Arial'>switch your desktop to a
+     refresh rate of 100Hz in the MultiRes &gt; Refresh Rate menu (this records
+     100Hz as your preferred refresh rate whenever the display switches to
+     800x600x32bpp)</span></li>
+ <li class=MsoNormal style='color:black;text-autospace:none'><span
+     style='font-size:11.0pt;font-family:Arial'>switch back to your normal
+     desktop resolution</span></li>
+</ol>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>In future, whenever you run a program that
+switches to 800x600x32bpp, MultiRes will attempt to impose a refresh rate of
+100Hz on it, as well as on all resolutions <i>below</i> it for which a refresh
+rate has not been explicitly selected. For higher resolutions, steps 2 and 3
+must be repeated as needed.</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:navy'>Example 2</span></b></p>
+
+<p class=MsoBodyText>Your monitor and graphics card support up to 1600x1200 at 85Hz,
+and you want all resolutions locked at 85Hz.&nbsp; Do the following:</p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;</span></p>
+
+<ol style='margin-top:0in' start=1 type=1>
+ <li class=MsoNormal style='color:black;text-autospace:none'><span
+     style='font-size:11.0pt;font-family:Arial'>enable “Lock refresh rates” in
+     the MultiRes <b>About</b> box</span></li>
+ <li class=MsoNormal style='color:black;text-autospace:none'><span
+     style='font-size:11.0pt;font-family:Arial'>witch your desktop to
+     “TrueColor (32 bit) - 1600x1200” (or any other color depth) in the
+     MultiRes menu</span></li>
+ <li class=MsoNormal style='color:black;text-autospace:none'><span
+     style='font-size:11.0pt;font-family:Arial'>switch your desktop to a refresh
+     rate of 85Hz in the MultiRes &gt; Refresh Rate menu (this records 85Hz as
+     your preferred refresh rate whenever the display switches to 1600x1200 and
+     all lower resolutions)</span></li>
+ <li class=MsoNormal style='color:black;text-autospace:none'><span
+     style='font-size:11.0pt;font-family:Arial'>switch back to your normal
+     desktop resolution</span></li>
+</ol>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;</span></p>
+
+<p class=MsoBodyText><b><span style='color:navy'>Important!:&nbsp; </span></b>If
+you cannot select a specific refresh rate for the desktop in Windows Display
+properties, MultiRes will not be able to provide it, much less lock it down.</p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:16.0pt;
+font-family:Arial;color:blue'>Using a single copy of MultiRes to support
+multiple users</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:6.0pt;
+font-family:Arial;color:blue'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>MultiRes stores its configuration information in
+a discrete multires.ini file in the <i>current</i> directory, rather than the
+directory where the MultiRes program itself resides. This allows a single copy
+of the program to support multiple users, since each user can have their own
+configuration file. If MultiRes is launched from a standard Windows shortcut,
+the location of the configuration file can be specified in the “Start in”
+field. However, when calling MultiRes from batch files and scripts, care must
+be taken to switch the active directory to the user’s directory before calling
+MultiRes. Note the difference between the two examples below. </span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:navy'>Example 1 – correct use:</span></b></p>
+
+<p class=MsoBodyText2><span style='color:windowtext'>In the example below, the
+MultiRes.exe program is in N:\shared and the MultiRes.ini configuration file is
+in C:\user:</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>c:\</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>cd\user</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>n:\shared\multires.exe</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:navy'>Example 2 – </span></b><b><span style='font-size:
+11.0pt;font-family:Arial;color:#FF6600'>incorrect </span></b><b><span
+style='font-size:11.0pt;font-family:Arial;color:#003366'>use:</span></b></p>
+
+<p class=MsoBodyText2><span style='color:windowtext'>In the example below, the
+MultiRes.exe program is in N:\shared and the MultiRes.ini configuration file is
+stored <i>wherever the current directory happens to be</i>:</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>n:\shared\multires.exe</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:navy'>Example 3 – correct use specifying a configuration
+file: </span></b></p>
+
+<p class=MsoBodyText2><span style='color:windowtext'>In the example below, the
+MultiRes.exe program is in N:\shared and MultiRes uses h:\users\ john_doe.ini
+as its configuration file:</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>n:\shared\multires.exe
+/ini=h:\users\john_doe.ini</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:16.0pt;
+font-family:Arial;color:blue'>Using MultiRes command-line parameters</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:6.0pt;
+font-family:Arial;color:blue'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>In addition to selecting MultiRes commands from
+the menu, the program supports command-line parameters that allow you to call
+MultiRes functions on start-up and from elsewhere in Windows at any time.</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>In the absence of special command-line parameters,
+when the MultiRes is started it normally checks your current display settings
+and then simply resides in the Windows system tray awaiting user interaction.
+However, the program will also process certain command-line parameters you may
+choose to pass it, either when MultiRes is first started or while the program
+is already running. This feature allows parents and administrators to enable
+custom display settings for specific users on startup, and allows you to create
+shortcuts anywhere (on the Windows desktop or in the <b>Start</b> menu, for
+example) that call specific MultiRes functions.</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>MultiRes is normally started with the command <i>multires.exe</i>.
+To pass command-line parameters to the program, you might add, for example,
+&quot;<b>/640,480,8</b>&quot; to the command-line, where &quot;640,480,8&quot;
+are the display settings you want MultiRes to activate, e.g., <i>multires.exe
+/640,480,8</i>. Display setting parameters consist of 3 mandatory and 2
+additional optional numbers:</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:navy'>Simple form: </span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>multires.exe /800,600,32</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>where 800 is the horizontal resolution, 600 is
+the vertical resolution, and 32 is the color depth in bits per pixel.</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:navy'>Using the deepest color depth: </span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>multires.exe /800,600,-1</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>where 800 is the horizontal resolution, 600 is
+the vertical resolution. The third parameter (–1) tells MultiRes to use the
+deepest color depth available – usually either 24bpp or 32bpp, depending on the
+graphics controller and display driver. </span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:navy'>Specifying a refresh rate: </span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>multires.exe /800,600,32,75</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>where 800 is the horizontal resolution, 600 is
+the vertical resolution, and 32 is the color depth in bits per pixel. 75, the
+optional fourth number, is the refresh rate. If a refresh rate is <i>not</i>
+specified, Windows will use the current default for the selected resolution and
+color depth. </span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:navy'>Manipulating a specific monitor (multi-monitor): </span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>multires.exe /2:800,600,32,75</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>where 800 is the horizontal resolution, 600 is
+the vertical resolution, and 32 is the color depth in bits per pixel. 75, the
+optional fourth number, is the refresh rate. 2, the very first number followed
+by a colon, tells MultiRes to apply these settings to the <i>second</i> monitor
+in a multi-monitor environment. If a monitor is <i>not</i> specified, the
+display settings are applied to the primary monitor. </span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:navy'>Applying display settings to multiple monitors
+(multi-monitor): </span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>multires.exe /1:800,600,32,75 /2:1024,768,16,60
+/3:640,480,8,85</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>where the first set of display settings
+(800,600,32,75) is applied to monitor number 1, the second set (1024,768,16,60)
+is applied to monitor number 2, and the third set of display settings
+(640,480,8,85) is applied to monitor number 3. </span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:navy'>Restoring previous display settings:</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>multires.exe /restore</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>MultiRes always stores current display settings
+prior to making any changes, so that they can be easily restored on demand.
+This facilitates batch file processing, where it is desirable to run a specific
+application at a specific color depth and/or resolution, and then restore
+normal display settings when the application is closed. In the example below,
+assume the system is normally run at 1024,768,16 but it is desirable to run
+Internet Explorer at 800,600,32. </span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:navy'>Changing ClearType/font smoothing settings
+(requires XP):</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>multires.exe /cleartype=n</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>where <i>n</i> is one of the following values: </span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+0 = disable font scaling</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+1 = enable standard font scaling</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+2 = enable ClearType font scaling</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+3 = enable ClearType font scaling using RGB (requires XP SP1)</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+4 = enable ClearType font scaling using BGR (requires XP SP1)</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+1000-2200 = enable ClearType font scaling with a specific contrast setting</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>: batch file</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>multires.exe /800,600,32</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>start /w iexplore.exe</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>multires.exe /restore</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>The first command in the sample batch file above
+switches display settings to 800,600,32. The current display settings -
+1024,768,16 - are automatically stored. The second command - start - is an
+MS-DOS command to launch Internet Explorer and wait (/w) for it to terminate
+before continuing to the next command in the batch file. The third command in
+the batch file gets executed when Internet Explorer is closed, and tells
+MultiRes to restore the last set of display settings on record - in this case,
+1024,768,16.</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:navy'>Non-resident changes: </span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>multires.exe /800,600,32 /exit</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>Normally when MultiRes is run, it resides in the
+Windows system tray. However, it can also be passed display settings and
+instructed to exit immediately after applying changes. Note that since the last
+display settings of record are written to disk, the /restore parameter can
+still be called subsequently.</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:navy'>Non-resident changes using a batch file: </span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>: batch file</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>multires.exe /800,600,32 /exit</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>start /w iexplore.exe</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>multires.exe /restore /exit</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>If you never want MultiRes to appear and stay
+resident on the system tray, append an /exit parameter to each and every
+MultiRes command, as in the example above. Note that if MultiRes is not
+running, it cannot ensure your preferred refresh rates are locked.</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:16.0pt;
+font-family:Arial;color:blue'>MultiRes.ini switches</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:6.0pt;
+font-family:Arial;color:blue'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>Aside from installation data, MultiRes stores
+all its settings in a private ini file. Confirmation and refresh rate
+preferences are stored under adapter section names, e.g.,</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>[Refresh1]</span></b><span style='font-size:
+11.0pt;font-family:Arial;color:black'> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+; for the primary adapter</span></p>
+
+<h1>Confirmation=0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span
+style='font-weight:normal'>; no confirmation prompts</span> </h1>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>16-1024x768=85&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></b><span style='font-size:11.0pt;font-family:Arial;color:black'>; 85Hz
+is preferred at 1024x768x16bpp</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>32-1024x768=75&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></b><span style='font-size:11.0pt;font-family:Arial;color:black'>; 75Hz
+is preferred at 1024x768x32bpp</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>User1=1024,768,16&nbsp;&nbsp;&nbsp; </span></b><span
+style='font-size:11.0pt;font-family:Arial;color:black'>; always switch to 1024x768x16bpp
+when “User1” logins in or connects</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>User2=800,600,32&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></b><span
+style='font-size:11.0pt;font-family:Arial;color:black'>; always switch to
+800x600x32bpp when “User2” logins in or connects</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:navy'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>[Refresh3]</span></b><span style='font-size:
+11.0pt;font-family:Arial;color:black'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+; for the tertiary adapter</span></p>
+
+<h1>Confirmation=1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span
+style='font-weight:normal'>; use confirmation prompts</span> </h1>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>16-800x600=72&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></b><span style='font-size:11.0pt;font-family:Arial;color:black'>; 72Hz
+is preferred at 800x600x16bpp</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>24-800x600=60&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></b><span style='font-size:11.0pt;font-family:Arial;color:black'>; 60Hz
+is preferred at 800x600x24bpp</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:navy'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial'>Global options are stored under the [Options] section name:</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:navy'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>[Options]</span></b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+; global options</span></p>
+
+<h1>Lock=1
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style='font-weight:normal'>; lock refresh rates – off (0) by default</span></h1>
+
+<h1>XP=1&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style='font-weight:normal'>; use WinXP style options: no low-resolution
+low-color depth options – on (1) by default</span></h1>
+
+<h1>Language=0
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span
+style='font-weight:normal'>; always use English strings – default is the
+Windows Language ID</span></h1>
+
+<h1>Scroll=0
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style='font-weight:normal'>; use scrolling instead of cascading menus –
+off (0) by default</span></h1>
+
+<h1>DisableOptions=0&nbsp;&nbsp;&nbsp;&nbsp; <span style='font-weight:normal'>;
+disable options to prevent changes by users – off (0) by default</span></h1>
+
+<h1>Quiet=0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style='font-weight:normal'>; disable warning and status message boxes –
+off (0) by default</span></h1>
+
+<h1>LimitModes=0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span
+style='font-weight:normal'>; include only resolutions explicitly listed in the
+[Inclusions] section – off (0) by default</span></h1>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial'>Administrators and parents who wish to exclude resolutions
+and refresh rates from the MultiRes menu can do so by listing them under
+[Exclusions]:</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>[Exclusions]</span></b><span style='font-size:
+11.0pt;font-family:Arial;color:black'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;
+excluded resolutions and refresh rates</span></p>
+
+<h1>1600x1200=1
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span
+style='font-weight:normal'>; 1600x1200 will not be listed</span></h1>
+
+<h1>120=1
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style='font-weight:normal'>; 120Hz will not be listed</span></h1>
+
+<h1>24bpp=1
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style='font-weight:normal'>; TrueColor (24 bpp) color depths will not be
+listed</span></h1>
+
+<h1>32-1024x768=1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span
+style='font-weight:normal'>; 1024x768 in TrueColor (32bpp) will not be listed</span></h1>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:navy'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial'>Enterprise and home administrators who find it easier to <i>include</i>
+only specific resolutions in the MultiRes menu can do so by setting “LimitModes=1”
+in the [Options] section, and then listing the resolutions to be included under
+[Inclusions]:</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>[Options]</span></b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+; global options</span></p>
+
+<h1>LimitModes=1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span
+style='font-weight:normal'>; include only resolutions explicitly listed in the
+[Inclusions] section</span></h1>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>[Inclusions]</span></b><span style='font-size:
+11.0pt;font-family:Arial;color:black'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+; explicitly included resolutions</span></p>
+
+<h1>640x480=1
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style='font-weight:normal'>; 640x480 will be listed</span></h1>
+
+<h1>800x600=1
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style='font-weight:normal'>; 800x600 will be listed</span></h1>
+
+<h1>1024x768=1
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style='font-weight:normal'>; 1024x768 will be listed</span></h1>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial'>In the example above, only 640x480, 800x600 and 1024x768
+will be listed. Note that this applies only to the MultiRes menu; other
+resolutions may still be available to other programs that change display
+settings. </span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial'>In the example below, a combination of explicit inclusions
+and exclusions limits the MultiRes menu to just 800x600, 1024x768 and 1280x1024
+in 16bpp and 32bpp.</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>[Options]</span></b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+; global options</span></p>
+
+<h1>LimitModes=1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span
+style='font-weight:normal'>; include only resolutions explicitly listed in the
+[Inclusions] section</span></h1>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>[Inclusions]</span></b><span style='font-size:
+11.0pt;font-family:Arial;color:black'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+; explicitly included resolutions</span></p>
+
+<h1>800x600=1
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style='font-weight:normal'>; 800x600 will be listed</span></h1>
+
+<h1>1024x768=1
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style='font-weight:normal'>; 1024x768 will be listed</span></h1>
+
+<h1>1280x1024=1
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span
+style='font-weight:normal'>; 1280x1024 will be listed</span></h1>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:black'>[Exclusions]</span></b><span style='font-size:
+11.0pt;font-family:Arial;color:black'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;
+excluded resolutions and refresh rates</span></p>
+
+<h1>8bpp=1
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style='font-weight:normal'>; 256 color depths (8 bpp) will not be listed</span></h1>
+
+<h1>15bpp=1
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style='font-weight:normal'>; 15 bpp color depths will not be listed</span></h1>
+
+<h1>24bpp=1
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style='font-weight:normal'>; 24 bpp color depths will not be listed</span></h1>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt;
+font-family:Arial;color:navy'>&nbsp;</span></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:11.0pt;
+font-family:Arial;color:navy'>&nbsp;</span></b></p>
+
+</div>
+
+</body>
+
+</html>

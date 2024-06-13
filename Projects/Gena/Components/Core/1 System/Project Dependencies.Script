@@ -1,0 +1,376 @@
+[Main]
+Title=Project Dependencies
+Type=Plugin
+Author=Lancelot
+Description=Provide Core files for SE and Gena to build at SE or Gena.
+Credits=http://TheOven.org
+Version=005
+Download_Level=2
+Level=3
+Selected=True
+Mandatory=False
+NoWarning=False
+Contact=http://TheOven.org
+Date=2016.11.09
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Components/Core/1%20System/Project%20Dependencies.Script
+Web2=http://yomi.cwcodes.net/Yomi/ComponentsY/Core/1%20System/Project%20Dependencies.Script
+CertifiedBy=
+Certification=
+HistoryNotes01=Gena - Builder not working on Gena x64 !
+HistoryNotes02=SE - "Extract Wim Folders" plugin not work properly. (hard links not created etc.)
+HistoryNotes03=Gena - Builder not working on Gena x64 !
+HistoryNotes51='Plugin Creator' http://TheOven.org/index.php?topic=178
+History001=Lancelot 2015.11.18 Plugin created
+History002=Lancelot Added DU buttons - Tidy up codes
+History003=Galapo Plugin Manager requires "xScripting Support MS" plugin - Date:2015.11.28
+History004=Lancelot Efsadu.dll fix for Gena - not exists at XP Home (Efsadu.dll = File Encryption Utility) Exists at Win2000/XPPro/2003 - "Encrypting File System (EFS)" feature not exists on XP home so Efsadu.dll not provided on XP-Home-CD. - Date:2016.10.19
+History005=Lancelot Added Components_PluginCache_Extract - Date:2016.11.09
+
+[InterFace]
+pTextLabel1="SE Users:#$xTo mount:#$xYou need to get get imagex operational#$xor#$xExtract source previously (Utils\'Extract Wim Folders')",1,1,124,28,271,74,8,Normal
+pWebLabel2="Plugin Page",1,10,338,4,55,18,http://TheOven.org/index.php?board=9
+pTextLabel2="Gena Users:#$xPlugin Manager#$x Requires#$x'Scripting Support MS' plugin#$x   (Utils\'Plugin Manager')#$x   (Components\Core\1 System\'Scripting Support MS')",1,1,124,115,269,87,8,Normal
+WebLabel_Plugin="Plugin Page",1,10,338,4,55,18,http://TheOven.org/index.php?board=9
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[Variables]
+
+[Process]
+If,ExistFile,%ProjectTemp%\Components_PluginCache_Extract.ini,Echo,"Components PluginCache"
+If,Not,ExistFile,%ProjectTemp%\Components_PluginCache_Extract.ini,Run,%ScriptFile%,Process_Normal
+
+[Process_Normal]
+Run,%ScriptFile%,builder
+Run,%ScriptFile%,qEmu
+Run,%ScriptFile%,autoit
+Run,%ScriptFile%,console
+Run,%ScriptFile%,guibasic
+If,Not,%OsFamily%,Equal,NT5,Run,%ScriptFile%,setacl
+
+[builder]
+//Dependencies for current builder Start
+Require,Font,cour.ttf
+Require,Font,courbd.ttf
+Require,Font,courbi.ttf
+//--
+If,%OsFamily%,Equal,NT5,Run,%ScriptFile%,builder_Gena
+Else,Run,%ScriptFile%,builder_SE
+
+[builder_SE]
+//Raughly prepared - Some files probably unnecessary
+Set,%PluginArch%,x86
+Require_FileQ,sxs.dll
+Require_FileQ,ADVAPI32.DLL
+Require_FileQ,RPCRT4.DLL
+Require_FileQ,SECUR32.DLL
+Require_FileQ,COMCTL32.DLL
+Require_FileQ,MSVCRT.DLL
+Require_FileQ,GDI32.DLL
+Require_FileQ,USER32.DLL
+Require_FileQ,SHLWAPI.DLL
+Require_FileQ,COMDLG32.DLL
+Require_FileQ,SHELL32.DLL
+Require_FileQ,IMM32.DLL
+Require_FileQ,OLE32.DLL
+Require_FileQ,OLEAUT32.DLL
+Require_FileQ,URLMON.DLL
+Require_FileQ,VERSION.DLL
+Require_FileQ,WININET.DLL
+Require_FileQ,CRYPT32.DLL
+Require_FileQ,MSASN1.DLL
+Require_FileQ,WINMM.DLL
+Require_FileQ,WINSPOOL.DRV
+//--
+Require_FileQ,LPK.DLL
+Require_FileQ,USP10.DLL
+//olepro32.dll Only 32bit (no 64bit)
+Require_FileQ,OLEPRO32.DLL
+Require_FileQ,SETUPAPI.DLL
+Require_FileQ,UXTHEME.DLL
+//-
+Require_FileQ,shdocvw.dll
+Require_FileQ,CRYPTUI.DLL
+Require_FileQ,NETAPI32.DLL
+Require_FileQ,WINTRUST.DLL
+Require_FileQ,IMAGEHLP.DLL
+Require_FileQ,WLDAP32.DLL
+//-
+Require_FileQ,RICHED20.DLL
+Require_FileQ,riched32.dll
+//-
+Require_FileQ,WS2_32.DLL
+Require_FileQ,WS2HELP.DLL
+//-
+//Require_FileQ,SHDOCLC.DLL
+Require,File,xpsp2res.dll
+//-
+Require_FileQ,wsock32.dll
+//----------------------
+//----------------------
+//----------------------
+Require_FileQ,profapi.dll
+Require_FileQ,iertutil.dll
+Require_FileQ,winmmbase.dll
+Require_FileQ,bcrypt.dll
+Require_FileQ,devobj.dll
+//-
+Require_FileQ,dwmapi.dll
+//NO Require_FileQ,rpcss.dll
+Require_FileQ,shcore.dll
+Require_FileQ,clbcatq.dll
+Require_FileQ,propsys.dll
+Require_FileQ,ieframe.dll
+//NO Require_FileQ,werFault.dll
+//Require_FileQ,dataexchange.dll
+//-
+Require_FileQ,winnsi.dll
+//--
+Require_FileQ,WindowsCodecs.dll
+Require_FileQ,d2d1.dll
+Require_FileQ,d3d11.dll
+Require_FileQ,dcomp.dll
+Require_FileQ,dxgi.dll
+Require_FileQ,winnsi.dll
+Require_FileQ,vaultcli.dll
+Require_FileQ,wintypes.dll
+//--
+Require_FileQ,dhcpcsvc6.dll
+
+[builder_Gena]
+//Raughly prepared - Some files probably unnecessary
+Set,%PluginArch%,x86
+Require_FileQ,sxs.dll
+Require_FileQ,ADVAPI32.DLL
+Require_FileQ,RPCRT4.DLL
+Require_FileQ,SECUR32.DLL
+Require_FileQ,COMCTL32.DLL
+Require_FileQ,MSVCRT.DLL
+Require_FileQ,GDI32.DLL
+Require_FileQ,USER32.DLL
+Require_FileQ,SHLWAPI.DLL
+Require_FileQ,COMDLG32.DLL
+Require_FileQ,SHELL32.DLL
+Require_FileQ,IMM32.DLL
+Require_FileQ,OLE32.DLL
+Require_FileQ,OLEAUT32.DLL
+Require_FileQ,URLMON.DLL
+Require_FileQ,VERSION.DLL
+Require_FileQ,WININET.DLL
+Require_FileQ,CRYPT32.DLL
+Require_FileQ,MSASN1.DLL
+Require_FileQ,WINMM.DLL
+Require_FileQ,WINSPOOL.DRV
+//--
+Require_FileQ,LPK.DLL
+Require_FileQ,USP10.DLL
+//olepro32.dll Only 32bit (no 64bit)
+Require_FileQ,OLEPRO32.DLL
+Require_FileQ,SETUPAPI.DLL
+Require_FileQ,UXTHEME.DLL
+//-
+Require_FileQ,shdocvw.dll
+Require_FileQ,CRYPTUI.DLL
+Require_FileQ,NETAPI32.DLL
+Require_FileQ,WINTRUST.DLL
+Require_FileQ,IMAGEHLP.DLL
+Require_FileQ,WLDAP32.DLL
+//-
+Require_FileQ,RICHED20.DLL
+Require_FileQ,riched32.dll
+//-
+Require_FileQ,WS2_32.DLL
+Require_FileQ,WS2HELP.DLL
+//-
+Require_FileQ,SHDOCLC.DLL
+Require,File,xpsp2res.dll
+//-
+Require_FileQ,wsock32.dll
+//----------------------
+//--
+//--
+//--
+//--
+//For Tests -------------
+//--
+//Not working on Gena x64 !
+//Exagarate dependencies....
+Set,%t%,0
+//Set,%t%,1
+If,%t%,Equal,1,Begin
+Set,%PluginArch%,
+Require_FileQ,devmgr.dll
+Set,%PluginArch%,x86
+//-
+Require_FileQ,clbcatq.dll
+Require_FileQ,dhcpcsvc.dll
+Require_FileQ,faultrep.dll
+//-
+Require_FileQ,advpack.dll
+If,%OSFamily%,Equal,NT5,Require_FileQ,cdfview.dll
+//Require_FileQ,devmgr.dll
+//-
+If,%OSFamily%,Equal,NT6,Require_FileQ,efsadu.dll
+If,%OSFamily%,Equal,NT5,Begin
+If,Not,ExistFile,%Target_Sys%\efsadu.dll,Begin
+If,ExistFile,%Source_Sys%\efsadu.dl?,CopyOrExpand,%Source_Win%\efsadu.dll,%Target_Sys%
+End
+End
+//-
+Require_FileQ,hlink.dll
+Require_FileQ,hnetcfg.dll
+Require_FileQ,inetcomm.dll
+Require_FileQ,mlang.dll
+//Require_FileQ,msjava.dll
+Require_FileQ,msrating.dll
+Require_FileQ,netplwiz.dll
+Require_FileQ,printui.dll
+If,%OSFamily%,Equal,NT5,Require_FileQ,wzcdlg.dll
+//--
+Require_FileQ,msoert2.dll
+//--
+Require_FileQ,ntdll.dll
+//--
+Require_FileQ,uxtheme.dll
+//--
+End
+//--
+//For Tests -------------
+//--
+//--
+//--
+//--
+
+[qEmu]
+//Dependency qEmu
+Set,%PluginArch%,x86
+Require_FileQ,msacm32.dll
+
+[autoit]
+Set,%PluginArch%,
+Run,%ScriptFile%,autoit_P
+If,Not,%SourceArch%,Equal,x86,Begin
+If,%TargetWOW64%,Equal,x86,Begin
+Set,%PluginArch%,x86
+Run,%ScriptFile%,autoit_P
+End
+End
+
+[autoit_P]
+//Dependency AutoIT
+//Tested with Autoit v3.3.6.1 with following line
+//AU3361.exe /AutoIt3ExecuteLine "MsgBox(4096, ""Title"", ""Test"")"
+//-
+//Set,%w%,%Target_Sys%\au.cmd
+//Set,%w%,%Target_Sys%\CmdShell.cmd
+//If,Not,ExistFile,%target_sys%\AU3361.exe,FileCopy,%Tools%\%SourceArch%\AU3361.exe,%target_sys%
+//If,Not,ExistFile,%w%,FileCreateBlank,%w%
+//TxtAddLine,%w%,"AU3361.exe /AutoIt3ExecuteLine #$qMsgBox(4096, #$q#$qTitle#$q#$q, #$q#$qTest#$q#$q)#$q",Append
+//-
+Require_FileQ,sxs.dll
+Require_FileQ,comdlg32.dll
+Require_FileQ,wsock32.dll
+Require_FileQ,version.dll
+Require_FileQ,shlwapi.dll
+Require_FileQ,crypt32.dll
+Require_FileQ,psapi.dll
+Require_FileQ,shell32.dll
+Require_FileQ,ole32.dll
+Require_FileQ,oleaut32.dll
+Require_FileQ,wininet.dll
+Require_FileQ,mpr.dll
+Require_FileQ,winmm.dll
+Require,File,Comctl32.dll
+
+[console]
+//Console utilities Projects use:
+Set,%PluginArch%,
+Run,%ScriptFile%,console_P
+If,Not,%SourceArch%,Equal,x86,Begin
+If,%TargetWOW64%,Equal,x86,Begin
+Set,%PluginArch%,x86
+Run,%ScriptFile%,console_P
+End
+End
+//--
+
+[console_P]
+Require,File,cmd.exe
+Require,File,attrib.exe
+Require,File,expand.exe
+Require,File,reg.exe
+Require,File,xcopy.exe
+If,%OSFamily%,Equal,NT5,Begin
+Require,File,makecab.exe
+End
+
+[guibasic]
+Set,%PluginArch%,
+Run,%ScriptFile%,guibasic_P
+If,Not,%SourceArch%,Equal,x86,Begin
+If,%TargetWOW64%,Equal,x86,Begin
+Set,%PluginArch%,x86
+Run,%ScriptFile%,guibasic_P
+End
+End
+
+[guibasic_P]
+Require,File,notepad.exe
+Require,File,regedit.exe
+
+[setacl]
+Set,%PluginArch%,
+Require_FileQ,dfscli.dll
+
+[AuthorEncoded]
+WinBuilder_BugWorkaround_0_048048.ico=5098,6798
+Logo=WinBuilder_BugWorkaround_0_048048.ico
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[EncodedFolders]
+Folder
+
+[Folder]
+
+[EncodedFile-AuthorEncoded-WinBuilder_BugWorkaround_0_048048.ico]
+lines=1
+0=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
+1=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
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+Call,UploadXMultiQ
+
+[Settings_Default]
+IniWrite,%ScriptFile%,Main,Selected,True
+
+[Settings_Default_Gena]
+IniWrite,%ScriptFile%,Main,Selected,True
+
+[Settings_Default_Yomi]
+IniWrite,%ScriptFile%,Main,Selected,False
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+

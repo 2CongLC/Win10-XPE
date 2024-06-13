@@ -1,0 +1,168 @@
+[Main]
+Title=Disk.sys Update + GPTSupport XP 32bit
+Type=Plugin
+Author=Yurkesha & Nikzzzz
+Description=Update disk.sys AND GPT support for WinXP x86 using 2k3 disk.sys
+Credits=RusLive
+Version=006
+Download_Level=0
+Level=6
+Selected=True
+Mandatory=False
+NoWarning=False
+Contact=http://TheOven.org/index.php?board=3.0
+Date=2016.10.13
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Drivers/4%20Storage/Update_DiskSys.script
+CertifiedBy=
+Certification=
+HistoryNotes01=Icon http://www.aha-soft.com
+History003=Lancelot Organised plugin with provide file
+History004=Lancelot following anshad advice added interface Tip
+History005=Lancelot added KB929161 16-Jan-2007 info - renamed plugin GPTSupport to Update_DiskSys and update codes
+History006=Lancelot fixed interface - Date:2016.10.13
+
+[InterFace]
+OpendirButton="Put Disk.sys Here",1,8,9,49,135,36,Opendir_Var,opendir.bmp,False,False,"__Open Folder"
+pTextLabel1="Provide Disk.sys of Win2003 x86",1,1,5,27,162,18,8,Normal
+pWebLabel1="GUID Partition Table (GPT) - Wiki-En",1,10,4,151,172,18,http://en.wikipedia.org/wiki/GUID_Partition_Table
+pWebLabel2="GUID Partition Table (GPT) - MS Documents",1,10,3,173,207,18,http://www.microsoft.com/resources/documentation/windows/xp/all/proddocs/en-us/guid_partition_table.mspx?mfr=true
+pWebLabel3="Plugin Page",1,10,343,3,55,18,http://TheOven.org/index.php?board=3.0
+pWebLabel4="2k3-SP2 Package",1,10,351,182,82,18,"http://www.google.com/webhp?hl=en#hl=en&tbo=d&output=search&sclient=psy-ab&q=WindowsServer2003-KB914961-SP2-x86-ENU&oq=WindowsServer2003-KB914961-SP2-x86-ENU&gs_l=hp.3...837.837.1.2774.1.1.0.0.0.0.174.174.0j1.1.0.les%3B..0.0...1c.1.B7bNtyaRr6g&psj=1&bav=on.2,or.r_gc.r_pw.r_qf.&bvm=bv.41248874,d.d2k&fp=923336b608451a36&biw=1065&bih=767"
+pWebLabel5="2k3-SP1 Package",1,10,352,200,82,18,"http://www.google.com/webhp?hl=en#hl=en&tbo=d&output=search&sclient=psy-ab&q=WindowsServer2003-KB889101-SP1-x86-ENU.exe&oq=WindowsServer2003-KB889101-SP1-x86-ENU.exe&gs_l=hp.3...549.549.1.1478.1.1.0.0.0.0.168.168.0j1.1.0.les%3B..0.0...1c.1.kwkJaFuYtuE&psj=1&bav=on.2,or.r_gc.r_pw.r_qf.&bvm=bv.41248874,d.d2k&fp=923336b608451a36&biw=1065&bih=767"
+pTextLabel2=Tip:,1,1,185,56,25,18,8,Bold
+pTextLabel3="You can also obtain Disk.sys of Win2003#$x from Win2003 ServicePacks. Example:",1,1,232,148,211,31,8,Normal
+pWebLabel6=WindowsServer2003-KB929161-x86-ENU,1,10,182,81,197,18,https://www.google.com.tr/search?q=WindowsServer2003-KB929161-x86-ENU&ie=utf-8&oe=utf-8&gws_rd=cr&ei=Po-mVM_LHcmPaM2OgOAF
+pWebLabel7=WindowsServer2003.WindowsXP-KB929161-x64-ENU,1,10,182,97,256,18,https://www.google.com.tr/search?q=WindowsServer2003-KB929161-x86-ENU&ie=utf-8&oe=utf-8&gws_rd=cr&ei=n5CmVJ7UAc7Vao7TgJAG#q=WindowsServer2003.WindowsXP-KB929161-x64-ENU
+pTextLabel4="Get disk.sys v5.2.3790.4006 from here",1,1,211,56,200,18,8,Normal
+OverWrite_CheckBox="Force OverWrite",0,3,337,224,106,18,False,"__Overwrite disk.sys even when version smaller"
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[Variables]
+%ProvideFiles%=%GlobalTemplates%\W2003_DiskSYS
+%DiskSys%=%ProvideFiles%\%SourceArch%\Disk.sys
+%DiskSys2k3sp1Version%=5.2.3790.1830
+%DiskSys2k3sp1MD5%=5B538C58BB4645B86C256B66620A2DE1
+%DiskSys2k3sp2Version%=5.2.3790.3959
+%DiskSys2k3sp2MD5%=98433302C02F1168EFB7364F8111A179
+%DiskSysXPsp2Version%=5.1.2600.2180
+%DiskSysXPsp2MD5%=00CA44E4534865F8A3B64F7C0984BFF0
+%DiskSysXPsp3Version%=5.1.2600.5512
+%DiskSysXPsp3MD5%=044452051F3E02E7963599FC8F4F3E25
+%DiskSysx64XPsp0Version%=%DiskSys2k3sp1Version%
+%DiskSysx64XPsp0MD5%=5A1159E433B76C64180A7B0262A1048C
+%DiskSysx64XPsp2Version%=%DiskSys2k3sp2Version%
+%DiskSysx64XPsp2MD5%=417D7B9C6F36685A417E54690F8BD7B2
+%DiskSysx642k3sp2Version%=%DiskSys2k3sp2Version%
+%DiskSysx642k3sp2MD5%=E90A53C3CE1C963A428FB22A6807560E
+%DiskSysIA642k3sp2Version%=%DiskSys2k3sp2Version%
+%DiskSysIA642k3sp2MD5%=0017FD218FC7F53617ADFF2C4E5C6E05
+
+[Process]
+//If,%OS%%SourceArch%,Equal,XPx86,Run,%ScriptFile%,Process_Main
+If,Not,ExistFile,%DiskSys%,Echo,"%ScriptTitle% - You must provide %DiskSys%"
+If,ExistFile,%DiskSys%,Run,%ScriptFile%,Process_Main
+
+[Process_Main]
+If,Not,%OSFamily%,Equal,NT5,Exit,"NT5 only"
+IniRead,%projectdir%\script.project,IniVariables,OS,%OS%
+//If,Not,ExistFile,%DiskSys%,Exit,"%ScriptTitle% - You must provide %DiskSys%"
+IniRead,%ProjectDir%\script.project,IniVariables,NoWarnFileOverWrite,%NoWarnFOW%
+Retrieve,FileVersion,%DiskSys%,%DiskSysVersion%
+Retrieve,MD5,%DiskSys%,%DiskSysMD5%
+Echo,"Provided - Disk.sys v%DiskSysVersion% MD5: %DiskSysMD5%"
+//--
+If,%OS%%SourceArch%,Equal,XPx86,Run,%ScriptFile%,Check
+//--
+If,ExistFile,%target_sys%\drivers\DISK.SYS,Begin
+Retrieve,FileVersion,%target_sys%\drivers\DISK.SYS,%TDiskSysVersion%
+Retrieve,MD5,%target_sys%\drivers\DISK.SYS,%TDiskSysMD5%
+Echo,"Target - Disk.sys v%TDiskSysVersion% MD5: %TDiskSysMD5%"
+End
+//--
+ShellExecute,Hide,attrib.exe,"-R #$q%target_sys%\drivers\Disk.sys#$q"
+//-
+Call,FileCopyBiggerVersion,%DiskSys%,%target_sys%\drivers
+//-
+If,%OverWrite_CheckBox%,Equal,True,Begin
+If,%NoWarnFOW%,Equal,True,System,ERROROFF
+CopyOrExpand,%DiskSys%,%target_sys%\drivers\DISK.SYS
+End
+
+[Check]
+//Known disk.sys notes:
+If,%DiskSysVersion%%DiskSysMD5%,Equal,%DiskSys2k3sp1Version%%DiskSys2k3sp1MD5%,Echo,"DiskSys 2k3sp1"
+If,%DiskSysVersion%%DiskSysMD5%,Equal,%DiskSys2k3sp2Version%%DiskSys2k3sp2MD5%,Echo,"DiskSys 2k3sp2"
+If,%DiskSysVersion%%DiskSysMD5%,Equal,%DiskSysXPsp2Version%%DiskSysXPsp2MD5%,Run,%ScriptFile%,ExitEcho,"DiskSys XPsp2"
+If,%DiskSysVersion%%DiskSysMD5%,Equal,%DiskSysXPsp3Version%%DiskSysXPsp3MD5%,Run,%ScriptFile%,ExitEcho,"DiskSys XPsp3"
+If,%DiskSysMD5%,Equal,%DiskSysx64XPsp0MD5%,Run,%ScriptFile%,ExitEcho,"DiskSys XPsp0 x64"
+If,%DiskSysMD5%,Equal,%DiskSysx64XPsp2MD5%,Run,%ScriptFile%,ExitEcho,"DiskSys XPsp2 x64"
+If,%DiskSysMD5%,Equal,%DiskSysx642k3sp2MD5%,Run,%ScriptFile%,ExitEcho,"DiskSys 2k3sp2 x64"
+If,%DiskSysMD5%,Equal,%DiskSysIA642k3sp2MD5%,Run,%ScriptFile%,ExitEcho,"DiskSys 2k3sp2 IA64"
+//--
+StrFormat,Left,%DiskSysVersion%,3,%t%
+If,%t%,Equal,5.1,Exit,"You must provide %DiskSys% from Win2003-x86 ( NOT XP )"
+
+[ExitEcho]
+If,Not,-#1,Equal,-,Echo,#1,Warn
+Exit,"You must provide %DiskSys% from Win2003-x86"
+
+[Opendir_Var]
+If,Not,ExistDir,%ProvideFiles%\x86,DirMake,%ProvideFiles%\x86
+If,Not,ExistDir,%ProvideFiles%\x64,DirMake,%ProvideFiles%\x64
+If,Not,ExistFile,"%ProvideFiles%\WindowsServer2003-KB929161-x86-ENU - Extract.cmd",ExtractFile,%ScriptFile%,Folder,"WindowsServer2003-KB929161-x86-ENU - Extract.cmd",%ProvideFiles%
+Call,OpenDir,%ProvideFiles%
+
+[AuthorEncoded]
+Harddrive4848.ico=4826,6435
+Logo=Harddrive4848.ico
+
+[EncodedFile-AuthorEncoded-Harddrive4848.ico]
+lines=1
+0=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
+1=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
+
+[InterfaceEncoded]
+opendir.bmp=571,762
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[EncodedFile-InterfaceEncoded-opendir.bmp]
+lines=0
+0=eJyVkt1LU3EYx382esMuBFEKE8GLLL0IbyYhpEUI4aKytilTFN1xOrvxohpI9/0FlYESXUR2EXmxi4S9hYF4IZhOSdZMzJdtx+HwvO1sh2/P8cyxYFh9+TzPxXm+v+9z+J1z847ZxA5lprpMVZarEnbeGNC8vNSoI+E/5Z6YZs++Mk+QPTnkaaiAo4ee0LVPEcN/4tViTRjuNB7Jeh/cAxfPcEnNtY8hAW4ZwwqGVbCxL3k/D5zxC71x9AjoTsGRgG0jbY2K1siBfV2ybyjd2xkHr7HHIcO/CZh8ApdEfwIDKXASnAr6BDh4dG5mbVHJui727ar0VuQ/924tCtyNoTwgGFQGdZyxrHMfLgUuFYMShg4wIOrhVTNb3zVYdtCbQD+vQ4sqQwKhH/cLFQGx1C+W+EQWlC/Nyw0LqRUVt7fQtZPDvgtrDB2JHD1JnJrl8/dpjqjLipb3P9zG/Ti+qQirWJY1Yi0L06pW6F+QtJZf+grCEkOYrus5q/iJ06tgiwoLZ+0v3vyRnwEdoailtG6ufllVN1FXO36x6Pcd8wYogXJOrqDsB66+rTdPtV7/aGmcar0weeX4f6N2srrpQ/ON6Xvt3i7q9e+bz74uvqVQt7wPOn0c9b86DbV9tjlnR6n/o39kzmNQdPoblHVTL3ic484vSM1LySzSS8otYBgFIw6YMUPoD4zY5WddWriPgQkAk7cIYWOapDwBAAAAAgAAACcAAADwAQAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFolders]
+Folder
+
+[EncodedFile-Folder-WindowsServer2003-KB929161-x86-ENU - Extract.cmd]
+lines=0
+0=eJxLTlHQT1FQUq1LKTBQ4uUKz8xLyS8vDk4tKkstMjIwMNb1drI0sjQ0M9StsDDTdfUL1UutSFXQj7AC6klOUY0hrEFJQb8gsbg4syyVl6sgsbQ4FQCK7yHIeJwzCM/MS8kvLw5OLSpLLTIyMDDW9XayNLI0NDPUrbAw03X1C1XQVXCtKClKTC7RS85NYRgFwwkUQ+koHPLhfN6nGJgAPasRaYP4Uy4BAAAAAgAAAEkAAABaAAAAAAAAAAEAAAAAAAAAAAAAAA
+
+[Folder]
+WindowsServer2003-KB929161-x86-ENU - Extract.cmd=199,266
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+Call,UploadXQ
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+

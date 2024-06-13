@@ -1,0 +1,117 @@
+[Main]
+Title=FIPS Service
+Type=Plugin
+Author=Lancelot, Galapo
+Description=FIPS service will be added to the project. It is a part of crypt services, and needed by some applications. Ex: VMWare
+Credits=JFX, Bart Lagerweij, Sherpya, Hilander999, Galapo, Lancelot
+Version=004
+Download_Level=0
+Level=3
+Selected=False
+Mandatory=False
+NoWarning=False
+Contact=http://TheOven.org
+Date=2016.11.08
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Components/Core/1%20System/FIPS_Service.Script
+CertifiedBy=
+Certification=
+HistoryNotes01=
+History002=Lancelot - Date:2011.01.26
+History003=Lancelot - Added DU Buttons - Date:2016.02.04
+History004=Lancelot Added Components_PluginCache_Extract - Date:2016.11.08
+
+[Interface]
+WebLabel_Homepg=HomePage,1,10,343,20,55,18,http://www.itl.nist.gov/fipspubs/
+WebLabel_Plugin="Plugin Page",1,10,338,4,55,18,http://TheOven.org/index.php?board=9
+pWebLabel1="Fips technet info",1,10,316,55,80,18,http://technet.microsoft.com/en-us/library/cc750357.aspx
+pWebLabel2="Fips Wikipedia",1,10,327,37,67,18,http://en.wikipedia.org/wiki/Federal_Information_Processing_Standard
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[Process]
+If,ExistFile,%ProjectTemp%\Components_PluginCache_Extract.ini,Echo,"Components PluginCache"
+If,Not,ExistFile,%ProjectTemp%\Components_PluginCache_Extract.ini,Run,%ScriptFile%,Process_Normal
+
+[Process_Normal]
+If,Not,%OSFamily%,Equal,NT5,Exit,"%ScriptTitle% Plugin only for NT5x"
+//--
+If,Not,ExistFile,%Target_Sys%\drivers\fips.sys,CopyOrExpand,%Source_Win%\fips.sys,%Target_Sys%\drivers
+If,Not,ExistFile,%Target_Sys%\duser.dll,CopyOrExpand,%Source_Win%\duser.dll,%Target_Sys%
+//--
+RegHiveLoad,Tmp_Software,%RegSoftware%
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\SeCEdit\Reg Values\MACHINE/System/ControlSet001/Control/Lsa/FIPSAlgorithmPolicy",DisplayName,"System cryptography: Use FIPS compliant algorithms for encryption#$c hashing#$c and signing"
+RegWrite,HKLM,0x4,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\SeCEdit\Reg Values\MACHINE/System/ControlSet001/Control/Lsa/FIPSAlgorithmPolicy",DisplayType,0
+RegWrite,HKLM,0x4,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\SeCEdit\Reg Values\MACHINE/System/ControlSet001/Control/Lsa/FIPSAlgorithmPolicy",ValueType,4
+RegHiveUnLoad,Tmp_Software
+//--
+RegHiveLoad,Tmp_System,%RegSystem%
+//--
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Control\Lsa,fipsalgorithmpolicy,0
+//--
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Class\{8ECC055D-047F-11D1-A537-0000F8753ED1},Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Class\{8ECC055D-047F-11D1-A537-0000F8753ED1},EnumPropPages32,"SysSetup.Dll,LegacyDriverPropPageProvider"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Class\{8ECC055D-047F-11D1-A537-0000F8753ED1},Icon,-19
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Class\{8ECC055D-047F-11D1-A537-0000F8753ED1},NoDisplayClass,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Class\{8ECC055D-047F-11D1-A537-0000F8753ED1},NoInstallClass,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Class\{8ECC055D-047F-11D1-A537-0000F8753ED1},SilentInstall,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Class\{8ECC055D-047F-11D1-A537-0000F8753ED1},,"Non-Plug and Play Drivers"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Class\{8ECC055D-047F-11D1-A537-0000F8753ED1}\0010
+//--
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_FIPS,NextInstance,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_FIPS\0000,Capabilities,0
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_FIPS\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_FIPS\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_FIPS\0000,ConfigFlags,32
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_FIPS\0000,DeviceDesc,Fips
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_FIPS\0000,Driver,{8ECC055D-047F-11D1-A537-0000F8753ED1}\0010
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_FIPS\0000,Legacy,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_FIPS\0000,Service,Fips
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_FIPS\0000\Control,ActiveService,Fips
+//--
+RegWrite,HKLM,0x2,Tmp_System\ControlSet001\Services\Eventlog\System\Fips,EventMessageFile,#$pSystemRoot#$p\System32\Drivers\fips.sys
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\Eventlog\System\Fips,TypesSupported,7
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\Fips,ErrorControl,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\Fips,Start,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\Fips,Type,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Services\Fips\Enum,0,Root\LEGACY_FIPS\0000
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\Fips\Enum,Count,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\Fips\Enum,NextInstance,1
+RegHiveUnLoad,Tmp_System
+
+[AuthorEncoded]
+Barcode4848.ico=2175,2900
+Logo=Barcode4848.ico
+
+[EncodedFile-AuthorEncoded-Barcode4848.ico]
+lines=0
+0=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
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+Call,UploadXQ
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+

@@ -1,0 +1,133 @@
+[Main]
+Title=Explorer View
+Type=Plugin
+Author=Lancelot
+Description=(NT5x) Change View Settings of Explorer (Explorer\Streams)
+Credits=http://TheOven.org
+Version=003
+Download_Level=1
+Level=3
+Selected=False
+Mandatory=False
+NoWarning=False
+Contact=http://TheOven.org/index.php?topic=413
+Date=2019.03.05_15:18.53 (GMT0: -3 Hours)
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Components/Tweaks%20Explorer/Exp%20View.script
+CertifiedBy=
+Certification=
+HistoryNotes01=
+History001=Lancelot 2012.11.29 Plugin created
+History002=Lancelot syntax updated - Date:2016.02.03
+History003=Lancelot Added Components_PluginCache_Extract - Date:2016.11.10 // Cosmetics - Date:2019.03.05
+
+[InterFace]
+pTextLabel4="View type:",1,1,32,53,57,18,8,Normal
+pScrollBox2=Details,1,4,92,53,96,21,Thumsbview,Tiles,Icons,List,Details
+pRadioGroup1=,1,14,34,109,460,67," 'Name' column width 200 pixels - View=Tiles   - Sort by Name=YES - Show Attrib=NO"," 'Name' column width 200 pixels - View=Details - Sort by Name=NONE - Show Attrib=YES"," 'Name' column width 200 pixels - View=Details - Sort by Name=YES - Show Attrib=YES",2
+MoreDetails_CheckBox="More 'Details' GUI Settings (Select View type Detail):",1,3,36,93,292,18,True
+pBevel1=pBevel1,1,12,28,84,473,101
+WebLabel_Plugin="Plugin Page",1,10,338,4,55,18,http://TheOven.org/index.php?topic=413
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[Variables]
+
+[Process]
+If,ExistFile,%ProjectTemp%\Components_PluginCache_Extract.ini,Echo,"Components PluginCache"
+If,Not,ExistFile,%ProjectTemp%\Components_PluginCache_Extract.ini,Run,%ScriptFile%,Process_Normal
+
+[Process_Normal]
+If,Not,%OSFamily%,Equal,NT5,Exit,"%ScriptTitle% Plugin only for NT5x"
+IniRead,%ProjectDir%\script.project,IniVariables,NoWarnRegOverWrite,%NoWarnROW%
+RegHiveLoad,Tmp_Default,%RegDefault%
+//RegHiveLoad,Tmp_Software,%RegSoftware%
+//RegHiveLoad,Tmp_System,%RegSystem%
+//--
+Echo,"Explorer's view option.."
+Run,%ScriptFile%,EXPLORERICONS
+If,%pScrollBox2%%MoreDetails_CheckBox%,Equal,DetailsTrue,Run,%ScriptFile%,Explorer_Main_Gui
+//--
+RegHiveUnLoad,Tmp_Default
+//RegHiveUnLoad,Tmp_Software
+//RegHiveUnLoad,Tmp_System
+
+[EXPLORERICONS]
+If,%NoWarnROW%,Equal,True,System,ErrorOff,5
+If,%pScrollBox2%,Equal,Thumbnails,RegWrite,HKLM,0x3,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Explorer\Streams,Settings,08,00,00,00,05,00,00,00,01,00,00,00,90,b2,eb,8b,d0,52,d0,11,b7,f4,00,c0,4f,d7,06,ec,04,00,00,00,07,00,00,00,43,00,00,00
+If,%pScrollBox2%,Equal,Tiles,RegWrite,HKLM,0x3,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Explorer\Streams,Settings,08,00,00,00,06,00,00,00,01,00,00,00,e5,25,f1,65,e1,7b,10,48,ba,9d,d2,71,c8,43,2c,e3,04,00,00,00,05,00,00,00,43,00,00,00
+If,%pScrollBox2%,Equal,Icons,RegWrite,HKLM,0x3,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Explorer\Streams,Settings,08,00,00,00,01,00,00,00,01,00,00,00,E0,D0,57,00,73,35,CF,11,AE,69,08,00,2B,2E,12,62,04,00,00,00,01,00,00,00,43,00,00,00
+If,%pScrollBox2%,Equal,List,RegWrite,HKLM,0x3,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Explorer\Streams,Settings,09,00,00,00,03,00,00,00,00,00,00,00,e0,a5,1f,0e,73,35,cf,11,ae,69,08,00,2b,2e,12,62,04,00,00,00,01,00,00,00,43,00,00,00
+If,%pScrollBox2%,Equal,Details,RegWrite,HKLM,0x3,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Explorer\Streams,Settings,08,00,00,00,04,00,00,00,01,00,00,00,00,77,7e,13,73,35,cf,11,ae,69,08,00,2b,2e,12,62,04,00,00,00,01,00,00,00,43,00,00,00
+
+[Explorer_Main_Gui]
+// Lancelot - try to find out some of the meaning (crossing my fingers :)) fix if required ;)
+// \Streams\Defaults,{20D....                               My Computer - WIDTH
+// \Streams,Setting..........                               Explorer - VIEW Type
+// \Streams\Defaults,{F33....                               Explorer - WIDTH + COLUMN
+// \Streams\Defaults,{F33.... + \Streams,Setting..........  Explorer: SORT
+//--
+//Default setting: (width 180 pixels - View=Tiles - Sort by Name=YES - Show Attrib=NO
+//--
+If,%pRadioGroup1%,Equal,0,Begin
+//// 'Name' column width 200 pixels - View=Tiles   - Sort by Name=YES - Show Attrib=NO
+If,%NoWarnROW%,Equal,True,System,ErrorOff,2
+RegWrite,HKLM,0x3,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Explorer\Streams\Defaults,{20D04FE0-3AEA-1069-A2D8-08002B30309D},1C,00,00,00,04,00,00,00,00,00,00,00,00,00,9A,00,00,00,00,00,01,00,00,00,FF,FF,FF,FF,F0,F0,F0,F0,14,00,03,00,9A,00,00,00,00,00,00,00,30,00,00,00,FD,DF,DF,FD,0F,00,05,00,24,00,10,00,2E,00,46,00,00,00,00,00,01,00,00,00,02,00,00,00,03,00,00,00,04,00,00,00,C8,00,96,00,60,00,60,00,78,00,00,00,00,00,01,00,00,00,02,00,00,00,03,00,00,00,05,00,00,00,FF,FF,FF,FF,CF,F3,A8,B0,33,43,AB,4B,88,73,1C,CB,1C,AD,A4,8B,30,F1,25,B7,EF,47,1A,10,A5,F1,02,60,8C,9E,EB,AC,04,00,00,00
+RegWrite,HKLM,0x3,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Explorer\Streams\Defaults,{F3364BA0-65B9-11CE-A9BA-00AA004AE837},1C,00,00,00,04,00,00,00,00,00,00,00,00,00,90,00,00,00,00,00,01,00,00,00,FF,FF,FF,FF,F0,F0,F0,F0,14,00,03,00,90,00,00,00,00,00,00,00,30,00,00,00,FD,DF,DF,FD,0F,00,04,00,20,00,10,00,28,00,3C,00,00,00,00,00,01,00,00,00,02,00,00,00,03,00,00,00,C8,00,60,00,78,00,78,00,00,00,00,00,01,00,00,00,02,00,00,00,03,00,00,00,FF,FF,FF,FF,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+End
+If,%pRadioGroup1%,Equal,1,Begin
+//// 'Name' column width 200 pixels - View=Details - Sort by Name=NONE - Show Attrib=YES - Arvy Settings :>
+If,%NoWarnROW%,Equal,True,System,ErrorOff,3
+RegWrite,HKLM,0x3,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Explorer\Streams\Defaults,{20D04FE0-3AEA-1069-A2D8-08002B30309D},1C,00,00,00,04,00,00,00,00,00,00,00,00,00,9A,00,00,00,00,00,01,00,00,00,FF,FF,FF,FF,F0,F0,F0,F0,14,00,03,00,9A,00,00,00,00,00,00,00,30,00,00,00,FD,DF,DF,FD,0F,00,05,00,24,00,10,00,2E,00,46,00,00,00,00,00,01,00,00,00,02,00,00,00,03,00,00,00,04,00,00,00,C8,00,96,00,60,00,60,00,78,00,00,00,00,00,01,00,00,00,02,00,00,00,03,00,00,00,05,00,00,00,FF,FF,FF,FF,CF,F3,A8,B0,33,43,AB,4B,88,73,1C,CB,1C,AD,A4,8B,30,F1,25,B7,EF,47,1A,10,A5,F1,02,60,8C,9E,EB,AC,04,00,00,00
+RegWrite,HKLM,0x3,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Explorer\Streams,Settings,08,00,00,00,04,00,00,00,01,00,00,00,00,77,7e,13,73,35,cf,11,ae,69,08,00,2b,2e,12,62,04,00,00,00,09,00,00,00,43,00,00,00
+RegWrite,HKLM,0x3,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Explorer\Streams\Defaults,{F3364BA0-65B9-11CE-A9BA-00AA004AE837},1c,00,00,00,04,00,00,00,00,00,00,00,00,00,9a,00,03,00,00,00,ff,ff,ff,ff,03,00,00,00,f0,f0,f0,f0,14,00,03,00,9a,00,00,00,00,00,00,00,30,00,00,00,fd,df,df,fd,0f,00,05,00,24,00,10,00,2e,00,46,00,00,00,00,00,01,00,00,00,02,00,00,00,03,00,00,00,04,00,00,00,c8,00,60,00,78,00,78,00,3c,00,00,00,00,00,01,00,00,00,02,00,00,00,03,00,00,00,06,00,00,00,ff,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+End
+If,%pRadioGroup1%,Equal,2,Begin
+////'Name' column width 200 pixels - View=Details - Sort by Name=YES - Show Attrib=YES
+If,%NoWarnROW%,Equal,True,System,ErrorOff,3
+RegWrite,HKLM,0x3,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Explorer\Streams\Defaults,{20D04FE0-3AEA-1069-A2D8-08002B30309D},1C,00,00,00,04,00,00,00,00,00,00,00,00,00,9A,00,00,00,00,00,01,00,00,00,FF,FF,FF,FF,F0,F0,F0,F0,14,00,03,00,9A,00,00,00,00,00,00,00,30,00,00,00,FD,DF,DF,FD,0F,00,05,00,24,00,10,00,2E,00,46,00,00,00,00,00,01,00,00,00,02,00,00,00,03,00,00,00,04,00,00,00,C8,00,96,00,60,00,60,00,78,00,00,00,00,00,01,00,00,00,02,00,00,00,03,00,00,00,05,00,00,00,FF,FF,FF,FF,CF,F3,A8,B0,33,43,AB,4B,88,73,1C,CB,1C,AD,A4,8B,30,F1,25,B7,EF,47,1A,10,A5,F1,02,60,8C,9E,EB,AC,04,00,00,00
+RegWrite,HKLM,0x3,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Explorer\Streams,Settings,08,00,00,00,04,00,00,00,01,00,00,00,00,77,7e,13,73,35,cf,11,ae,69,08,00,2b,2e,12,62,04,00,00,00,0f,00,00,00,43,00,00,00
+RegWrite,HKLM,0x3,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Explorer\Streams\Defaults,{F3364BA0-65B9-11CE-A9BA-00AA004AE837},1c,00,00,00,04,00,00,00,00,00,00,00,00,00,9a,00,00,00,00,00,01,00,00,00,00,00,00,00,f0,f0,f0,f0,14,00,03,00,9a,00,00,00,00,00,00,00,30,00,00,00,fd,df,df,fd,0f,00,05,00,24,00,10,00,2e,00,46,00,00,00,00,00,01,00,00,00,02,00,00,00,03,00,00,00,04,00,00,00,c8,00,60,00,78,00,78,00,3c,00,00,00,00,00,01,00,00,00,02,00,00,00,03,00,00,00,06,00,00,00,ff,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+End
+
+[AuthorEncoded]
+Logo=Papirus-Team-Papirus-Places-Folder-yellow-development_0_048048.ico
+Papirus-Team-Papirus-Places-Folder-yellow-development_0_048048.ico=1004,1339
+
+[EncodedFile-AuthorEncoded-Papirus-Team-Papirus-Places-Folder-yellow-development_0_048048.ico]
+lines=0
+0=eJztVl1IFFEUnvIhcjct3WJ3XGe3QFh8MN986cfEfAjMNpM0qKSwJC0w6Cm2DROCSl3zJwmEyl8oTFc3dBEnCnrIyoICg8pcfO+1h7i3cyZnHGeTnXHUmWiOfN4zZ8+3883Zc88dhtkAf7m5DPz3MgNZDLODYRgfAEJMJfMnjnY9i7HMMsssM7ttTnJ5izZl51UBzhmMKtSCmtSKTymrqfYOz/7aORKj3uHvBFcR4rU8rsdXk4daUsovVavV73k8E0WumeB58jmqVj/k84lqtZ71X/B5S796/dsqr9KtJy4TgOCvt35d/fr0G7Ht95PkPcUC0MeYzj2wpvV33uilXPc09fR/JI6Lt6lt72EqaIcVkV57i3gGPlGuZ5o663tNVf+M1ijqhDofIfbC41LdlbAXlgs5mIscM9TfOzRLU/znpTpLNd9XQlNLLxCA4Mt/C/SBI3CN3r9syxgVai/TtuXQKerueiXloA+xuGdErhn6h20cIbYDpVKfsM2R+ByISfsZctnGsCn6R/TtB8ul2sKsia/f4Bep/pBrrvkPs9FeVCHp53o/xHG5nveL+osqiNj7RvdP5sMpklpWu2TO4KxU5jkgJs9BDnKN7p/MB68pnk/KvZl2JkBxX7BNozTtbIAmK/Y4cASuGfrHUdccPz8T+I66kCn6BwHv2zAzT5P0mptk+5V2Yss/Gnd22fL98FmbkIO5yDHT/PEOLc4crvsd1LlkyVnGPXor2+9fzTV/lM8SnqP2gmOSfntB2b/1/glw3+NJRtuEAPT1ft961l+Lb8b+MVo/nJW6+2e1AWe6av3O+j7eff8FzRuaof7JOeLnY1SCeC2P6/ET5KEG1OJs6FOt39UY5p0N/TQQfkljsRiZn5+nIsRreVyPnygPNaAW152wBv2jPLzv0sD4G+P1gwbUgpq06HfBu0tx93MyB98RMwh4b9SAWrTqx2dGIB9rcE3E2BRZsur1l/kM74n3FnW4m1amH59d9OXX8vhyPqvGV5HnDkWor328S2v/rBSZLZEfOZ1RfnUwwe/ujHb5WgfT1epn9dZfw2+9FsaFIpN69CPfSP3ZHWPBXXefEU8oohnIQ76R+plgcGNOR/Qk9F8QkStDjmJVxpCHfEP1W2aZZZZZltCoYOrXn0jy/I9r0sLz/33VWkdx/Q0U2uO3eJxzCkgsyCwqLdYNSU3M1YVxAnISk1OLdd3yc1JSi3QrU3Ny8st1U1LLUnPyC3JT80riDeINTCyASC8zOZ9hFAxdsE8VQhcxY5ef23e8n4EJAA+3G/1uwI6pAQAAAAIAAABWAAAAcgMAAAAAAAABAAAAAAAAAAAAAAA
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+Call,UploadXQ
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+
+[EncodedFolders]
+Folder
+
+[Folder]
+

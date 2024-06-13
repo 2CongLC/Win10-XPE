@@ -1,0 +1,642 @@
+[Main]
+Title=Downloader BETA
+Type=Plugin
+Author=Lancelot
+Description=Macro Plugin - Download Plugins easly
+Credits=http://TheOven.org
+Version=015
+Download_Level=0
+Level=10
+Selected=None
+Mandatory=False
+NoWarning=False
+Contact=http://TheOven.org
+Date=2020.03.25
+Depend=
+Disable=
+Web1=http://yomi.cwcodes.net/Yomi/UtilsY/Downloader.Script
+Web2=http://gena.cwcodes.net/Projects/Gena/Utils/Downloader.Script
+CertifiedBy=
+Certification=
+HistoryNotes01=Call,DownloadX,"%BaseDir%\Projects\Yomi\UtilsY\Downloader.Script"
+HistoryNotes02=IMPORTANT - MACRO PLUGIN - PLUGIN USED BY OTHER PLUGINS AT \Downloads\
+HistoryNotes03=40 MB Log file (940 Plugins) with full Yomi list -> Very Bad UI Takes 10 minutes
+HistoryNotes04=6 MB Log file (162 Plugins) with Gena Sweets -> Ok UI 52 seconds ----> It seems ~170 is optimum
+HistoryNotes05=OLD - DO NOT USE ---- Admins: 1) Only Update [Update_Interface] when Required 2) Click Update Interface button 3) Upload to servers
+HistoryNotes51='Plugin Creator' http://TheOven.org/index.php?topic=178
+History002=Added to server - Date:2018.10.22
+History003=Lancelot updated v003 - Date:2018.11.28
+History004=Lancelot 2019.02.03 Plugin recreated - Date:2019.02.03
+History005=Lancelot Gena_Sweets_Collection Default True or not added to list (only comments) - Date:2019.02.04
+History006=Lancelot All app plugins moved to \AppY\ ( Gena Sweets Apps - 162 Plugins ) - Date:2019.02.07
+History009=Lancelot Add Total_Plugin_Number_TextLabel // End_OF_UI_TextLabel - Date:2019.03.11 // Minor fix - Date:2019.03.11
+History010=Lancelot Checkbox width 470 -> 512 --- \TweaksY\Theme\Theme_Win_081_Abisso 2014 (dark theme Windows 8.1 Update1) Upd11 by ezio --- - Date:2019.03.11
+History011=Lancelot Add ShellG to Gena_Sweets_Collection - Date:2019.03.11
+History012=Lancelot Add Support to 'Folder Description' and  'Main Plugin' - Date:2019.03.12
+History014=Lancelot Add Info - Date:2019.03.13
+History015=Lancelot updated v015 - Date:2020.03.25
+
+[Info_UPDATE_ALL_Downloads_Plugins]
+// We can UI-update all Download Plugin - List using following inside codebox:
+//43.1 MB Log - 7 Minutes 58 Seconds
+Exec,"%ProjectDir%\Downloads\Download_Y_Plugins_51_App.Script",Update_P_B
+Exec,"%ProjectDir%\Downloads\Download_Y_Plugins_52_App.Script",Update_P_B
+Exec,"%ProjectDir%\Downloads\Download_Y_Plugins_53_App.Script",Update_P_B
+Exec,"%ProjectDir%\Downloads\Download_Y_Plugins_54_App.Script",Update_P_B
+Exec,"%ProjectDir%\Downloads\Download_Y_Plugins_55_App.Script",Update_P_B
+Exec,"%ProjectDir%\Downloads\Download_Y_Plugins_70.Script",Update_P_B
+Exec,"%ProjectDir%\Downloads\Download_Y_Plugins_71.Script",Update_P_B
+//--
+// We can UPLOAD all Download Plugin using following inside codebox:
+//27 MB Log - 30 Minutes 9 seconds
+Call,UploadXMultiQ,"%ProjectDir%\Downloads\Download_Y_Plugins_51_App.Script",%ProjectDir%\Utils\WebRoots_SE_Gena.Script||WebRoot,||Web2
+Call,UploadXMulti,"%ProjectDir%\Downloads\Download_Y_Plugins_52_App.Script",%ProjectDir%\Utils\WebRoots_SE_Gena.Script||WebRoot,||Web2
+Call,UploadXMulti,"%ProjectDir%\Downloads\Download_Y_Plugins_53_App.Script",%ProjectDir%\Utils\WebRoots_SE_Gena.Script||WebRoot,||Web2
+Call,UploadXMulti,"%ProjectDir%\Downloads\Download_Y_Plugins_54_App.Script",%ProjectDir%\Utils\WebRoots_SE_Gena.Script||WebRoot,||Web2
+Call,UploadXMulti,"%ProjectDir%\Downloads\Download_Y_Plugins_55_App.Script",%ProjectDir%\Utils\WebRoots_SE_Gena.Script||WebRoot,||Web2
+Call,UploadXMulti,"%ProjectDir%\Downloads\Download_Y_Plugins_70.Script",%ProjectDir%\Utils\WebRoots_SE_Gena.Script||WebRoot,||Web2
+Call,UploadXMulti,"%ProjectDir%\Downloads\Download_Y_Plugins_71.Script",%ProjectDir%\Utils\WebRoots_SE_Gena.Script||WebRoot,||Web2
+
+[InterFace]
+Update_Button="Update Interface",1,8,625,11,108,25,Update_P_B,0,False,False,_Update_P_B_,False
+Clean_Plugin_Button="Clear ALL",1,8,477,3,80,25,Clean_Plugin_P_B,0,False,False,_Clean_Plugin_P_B_,False
+List_Yomi_DownloadX_Button="Local List Yomi DownloadX",1,8,447,35,161,25,List_Plugins_P_B,0,False,False,_List_Plugins_P_B_,False
+WebLabel_Homepg=HomePage,1,10,343,20,55,18,
+WebLabel_Plugin="Plugin Page",1,10,338,4,55,18,http://TheOven.org/index.php?board=9
+CHECKBOX_DOWNLOAD_Button="Download or Update Selected Plugins",1,8,78,43,255,25,DUMMY_TEMP_CHECKBOX_DOWNLOAD_B_P,Mazenl77-NX11-Internet-Real_016_016.bmp,False,False,_DUMMY_TEMP_CHECKBOX_DOWNLOAD_B_P_,False
+ReStart_Button=,1,8,298,6,27,27,ReStart_P_B,Double-J-Design-Ravenna-3d-Reload024024.bmp,False,_ReStart_P_B_,False,"__ReScan (RefResh) Plugins"
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+RadioButton_Update_Interface_WithList_Yomi_AppY_Accessibility="Update_Interface_WithList - Yomi\AppY\Accessibility",1,11,645,101,313,20,False
+RadioButton_Update_Interface_WithList_Yomi_Gena_Sweets="Update_Interface_WithList - 'Gena Sweets'",1,11,647,124,253,20,True
+RadioButton_Server=Update_Interface_From_Server,1,11,643,40,298,20,False
+RadioButton_Update_Interface_Local_Yomi_ALL="Update_Interface_Local -  Yomi",1,11,642,65,313,20,False
+RadioButton_Update_Interface_Local_Yomi_AppY_Accessibility="Update_Interface_Local -  Yomi\AppY\Accessibility",1,11,643,164,345,20,False
+=,DUMMY_SECTION_DELETER_EVERYTHIMG_AFTER_THIS_POINT_INSIDE_SECTION_WILL_BE_DELETED_201902031714
+
+[Variables]
+
+[Process]
+Echo,"There is no spoon"
+
+[Update_P_B]
+Run,%ScriptFile%,Update_P
+System,RefreshInterface
+
+[Clean_Plugin_P_B]
+Run,%ScriptFile%,Clean_Plugin_P
+System,RefreshInterface
+
+[Clean_Plugin_P]
+TxtReplace,%ScriptFile%,"#$x=,DUMMY_SECTION_DELETER_EVERYTHIMG_AFTER_THIS_POINT_INSIDE_SECTION_WILL_BE_DELETED_201902031714","#$x=,DUMMY_SECTION_DELETER_EVERYTHIMG_AFTER_THIS_POINT_INSIDE_SECTION_WILL_BE_DELETED_201902031714#$x[DUMMY_END_OF_SECTION_DELETE_201902031714]"
+IniDeleteSection,%ScriptFile%,DUMMY_END_OF_SECTION_DELETE_201902031714
+TxtReplace,%ScriptFile%,"#$x[DUMMY_TEMP_CHECKBOX","#$x_____DELETE_____[DUMMY_TEMP_CHECKBOX"
+TxtReplace,%ScriptFile%,"#$x[DUMMY_TEMP_BUTTOM","#$x_____DELETE_____[DUMMY_TEMP_BUTTOM"
+TxtReplace,%ScriptFile%,"#$x[DUMMY_END_OF_FILE_DELETER_EVERYTHIMG_AFTER_THIS_POINT_INSIDE_FILE_WILL_BE_DELETED_201902031718]","#$x[DUMMY_END_OF_FILE_DELETER_EVERYTHIMG_AFTER_THIS_POINT_INSIDE_FILE_WILL_BE_DELETED_201902031718]#$x[DUMMY_END_OF_File_DELETE_201902031718]"
+IniWrite,%ScriptFile%,DUMMY_END_OF_File_DELETE_201902031718,DummyKey,DummyValue
+IniDeleteSection,%ScriptFile%,DUMMY_END_OF_File_DELETE_201902031718
+//System,RefreshInterface
+//Halt,-
+
+[Update_P]
+//button   Start Value: 68 Y increase: 16
+//checkbox Start Value: 69 Y increase: 16
+Run,%ScriptFile%,Clean_Plugin_P
+//System,RefreshInterface
+//Halt,-
+//--
+Set,%PluginCounter%,0
+Set,%StartValue%,52
+//Set,%StartValue%,68
+//Set,%StartValue%,84
+Set,%StartValueVar%,%StartValue%
+Run,%ScriptFile%,Update_Interface,%StartValue%
+
+[WInterface]
+//2 writtten as ValueName
+//3 written to Checkbox Label
+Set,#2,#1
+StrFormat,Right,#2,7,#9
+If,#9,Equal,.Script,StrFormat,RTrim,#2,7,#2
+StrFormat,Left,#2,5,#9
+If,#9,Equal,\Yomi,StrFormat,LTrim,#2,5,#2
+Set,#3,#2
+StrFormat,Left,#2,1,#9
+If,#9,Equal,\,StrFormat,LTrim,#2,1,#2
+//-
+Echo,#3
+StrFormat,Replace,#3," ","_",#9
+If,Not,#3,Equal,#9,Set,#3,#$q#3#$q
+//-
+StrFormat,Replace,#2,"\","_",#2
+StrFormat,Replace,#2," ","_",#2
+StrFormat,Replace,#2,".","_",#2
+StrFormat,Replace,#2,"-","_",#2
+StrFormat,Replace,#2,"+","_",#2
+StrFormat,Replace,#2,"(","_",#2
+StrFormat,Replace,#2,")","_",#2
+StrFormat,Replace,#2,"]","_",#2
+StrFormat,Replace,#2,"(","_",#2
+StrFormat,Replace,#2,")","_",#2
+StrFormat,Replace,#2,"&","_",#2
+StrFormat,Replace,#2,"%","_",#2
+StrFormat,Replace,#2,"½","_",#2
+StrFormat,Replace,#2,"$","_",#2
+StrFormat,Replace,#2,"#","_",#2
+StrFormat,Replace,#2,"$","_",#2
+StrFormat,Replace,#2,"£","_",#2
+StrFormat,Replace,#2,"!","_",#2
+StrFormat,Replace,#2,"'","_",#2
+StrFormat,Replace,#2,"!","_",#2
+StrFormat,Replace,#2,"é","_",#2
+StrFormat,Replace,#2,"^","_",#2
+StrFormat,Replace,#2,"@","_",#2
+StrFormat,Replace,#2,";","_",#2
+StrFormat,Replace,#2,"`","_",#2
+StrFormat,Replace,#2,"´","_",#2
+StrFormat,Replace,#2,"ß","_",#2
+StrFormat,Replace,#2,"æ","_",#2
+StrFormat,Replace,#2,"¨","_",#2
+StrFormat,Replace,#2,"~","_",#2
+StrFormat,Left,#2,1,#9
+If,#9,Equal,0,Begin
+StrFormat,LTrim,#2,1,#2
+Set,#2,N_0#2
+End
+If,#9,Equal,1,Begin
+StrFormat,LTrim,#2,1,#2
+Set,#2,N_1#2
+End
+If,#9,Equal,2,Begin
+StrFormat,LTrim,#2,1,#2
+Set,#2,N_2#2
+End
+If,#9,Equal,3,Begin
+StrFormat,LTrim,#2,1,#2
+Set,#2,N_3#2
+End
+If,#9,Equal,4,Begin
+StrFormat,LTrim,#2,1,#2
+Set,#2,N_4#2
+End
+If,#9,Equal,5,Begin
+StrFormat,LTrim,#2,1,#2
+Set,#2,N_5#2
+End
+If,#9,Equal,6,Begin
+StrFormat,LTrim,#2,1,#2
+Set,#2,N_6#2
+End
+If,#9,Equal,7,Begin
+StrFormat,LTrim,#2,1,#2
+Set,#2,N_7#2
+End
+If,#9,Equal,8,Begin
+StrFormat,LTrim,#2,1,#2
+Set,#2,N_8#2
+End
+If,#9,Equal,9,Begin
+StrFormat,LTrim,#2,1,#2
+Set,#2,N_9#2
+End
+//......
+StrFormat,Inc,%PluginCounter%,1
+IniWrite,%ScriptFile%,Interface,Total_Plugin_Number_TextLabel,"#$q%PluginCounter% Plugins#$q,1,1,3,47,78,18,8,Bold"
+Set,#9,%StartValueVar%
+StrFormat,Inc,#9,32
+IniWrite,%ScriptFile%,Interface,End_OF_UI_TextLabel,"_____________________________________________________________________,1,1,5,#9,434,18,8,Normal"
+StrFormat,Inc,%StartValueVar%,16
+IniWrite,%ScriptFile%,Interface,#2_Button,"DL:,1,8,3,%StartValueVar%,63,17,DUMMY_TEMP_BUTTOM_#2_P_B,Mazenl77-NX11-Internet-Real_016_016.bmp,False,False,_#2_P_B_,False,#$q__Download or Update#$q"
+StrFormat,Inc,%StartValueVar%,1
+Set,#8,#3
+StrFormat,FileName,#3,#7
+StrFormat,Path,#3,#6
+If,#7,Equal,Folder.Project,Set,#8,"#6'Folder_Description'"
+If,#7,Equal,script.project,Set,#8,"#6'Main_Plugin'"
+IniWrite,%ScriptFile%,Interface,#2_CheckBox,"#8,1,3,77,%StartValueVar%,512,16,False"
+//-
+IniWriteTextLine,%ScriptFile%,DUMMY_TEMP_CHECKBOX_DOWNLOAD_B_P,"If,#$p#2_CheckBox#$p,Equal,True,Call,DownloadX,#$q#$pBaseDir#$p\Projects#1#$q"
+IniWriteTextLine,%ScriptFile%,DUMMY_TEMP_BUTTOM_#2_P_B,"Run,#$pScriptFile#$p,DUMMY_TEMP_BUTTOM_#2_P"
+IniWriteTextLine,%ScriptFile%,DUMMY_TEMP_BUTTOM_#2_P,"Call,DownloadX,#$q#$pBaseDir#$p\Projects#1#$q"
+
+[Update_Interface]
+//Update_Interface_WithList is also good for "Plugin Collections" eg. Gena Sweets Plugin Collection.
+If,%RadioButton_Update_Interface_WithList_Yomi_AppY_Accessibility%,Equal,True,Run,%ScriptFile%,Update_Interface_Manual_List_Yomi_AppY_Accessibility
+//Run,%ScriptFile%,Update_Interface_Manual_List
+//Run,%ScriptFile%,Update_Interface_Manual_List_Gena_Sweets_Collection
+//-
+If,%RadioButton_Server%,Equal,True,Run,%ScriptFile%,Update_Interface_From_Server
+//-
+//Update_Interface_Local requires one have all Yomi Downloaded - Admins only
+If,%RadioButton_Update_Interface_Local_Yomi_ALL%,Equal,True,Run,%ScriptFile%,Update_Interface_Local_Yomi
+If,%RadioButton_Update_Interface_Local_Yomi_AppY_Accessibility%,Equal,True,Run,%ScriptFile%,Update_Interface_Local_Yomi_AppY_Accessibility
+//Run,%ScriptFile%,Update_Interface_WithList
+//-
+//Update_Interface_From_Server not ready for now - when ready button can be visible to regular user
+//Run,%ScriptFile%,Update_Interface_From_Server
+//-
+//Run,%ScriptFile%,Update_Interface_Manual_List
+If,%RadioButton_Update_Interface_WithList_Yomi_Gena_Sweets%,Equal,True,Run,%ScriptFile%,Update_Interface_Manual_List_Gena_Sweets_Collection
+
+[Update_Interface_Manual_List]
+
+[Update_Interface_Manual_List_Gena_Sweets_Collection]
+//Gena Sweets Apps - 162 Plugins ( ShellG +8 )
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\CDVD\CDImageGUI.script"
+//ImgBurn - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\CDVD\ImgBurn.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\CDVD\InfraRecorder.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\CDVD\UltraISO.script"
+//a43 - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\File Tasks\a43_JGL.script"
+//ant_renamer - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\File Tasks\ant_renamer.script"
+//HxD - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\File Tasks\HxD.script"
+//TinyHexer - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\File Tasks\TinyHexer.script"
+//TreeSizeFreeware - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\File Tasks\TreeSizeFreeware.Script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\File Tasks\TreeSizeFreeware_File.Script"
+//WinMerge2_12_4 - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\File Tasks\WinMerge2_12_4.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\File Tasks\Compression\IZArc.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\File Tasks\Compression\UniExtract.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\File Tasks\Compression\WinRAR.script"
+//FastCopy Shirouzu H - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\File Tasks\File Copy\FastCopy Shirouzu H.script"
+//ycopy - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\File Tasks\File Copy\ycopy.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\File Tasks\File Find\AgentRansack.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\File Tasks\File Find\AgentRansack_File.script"
+//FindOnClick - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\File Tasks\File Find\FindOnClick.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\File Tasks\File Find\superfinder.script"
+//Unlocker - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\File Tasks\File Unlock\Unlocker.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Acronis Disk Director_WinPE.Script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Acronis Disk Director_WinPE_Prz42.Script"
+// Active Disk Editor- Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Active Disk Editor.Script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Active Disk Editor_File.Script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Active Partition Manager_v1.Script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Active Partition Manager_vX.Script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Active Partition Manager_vX_File.Script"
+//HDHacker - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\HDHacker.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\HDM85-95.script"
+//Partition Wizard Free - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Partition Wizard Free.Script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Partition Wizard Free_File.Script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Defrag\Defragger.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Defrag\OODefragPro.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Defrag\OODefragPro10.0-File.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Defrag\OODefragPro11.5-File.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Defrag\OODefragPro12.0-File.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Defrag\OODefragPro12.5-File.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Defrag\OODefragPro14.0-File.script"
+//Piriform_Defraggler_Amalux - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Defrag\Piriform_Defraggler_Amalux.script"
+//ATTO Disk Benchmark_L - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Diagnostic\ATTO Disk Benchmark_L.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Diagnostic\Chkdsk-GUI.script"
+//HDTune - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Diagnostic\HDTune.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Diagnostic\Mitec_msi.script"
+//Mitec_wfa - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Diagnostic\Mitec_wfa.script"
+//OverDisk - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Diagnostic\OverDisk.Script"
+//VictoriaG - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Diagnostic\VictoriaG.script"
+//WD_Data_Lifeguard_Diagnostic - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Diagnostic\WD_Data_Lifeguard_Diagnostic.script"
+//pc_inspector_file_recovery - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\File Undelete\pc_inspector_file_recovery.script"
+//Recuva - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\File Undelete\Recuva.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\File Undelete\Restoration.script"
+//UndeleteOnClick - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\File Undelete\UndeleteOnClick.script"
+//DriveImageXML - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Imaging\DriveImageXML.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Imaging\GImageX.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Imaging\SelfImage.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Imaging\Snapshot.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\MBR\MBRFix.Script"
+//MBRWizard - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\MBR\MBRWizard.script"
+//DiskInternals_Linux_Reader - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Recover\DiskInternals_Linux_Reader.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Recover\DiskInternals_Linux_Reader_File.Script"
+//DiskInternals_Linux_Recovery - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Recover\DiskInternals_Linux_Recovery.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Recover\DiskInternals_Linux_Recovery_File.Script"
+//DiskInternals_MapDrive - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Recover\DiskInternals_MapDrive.Script"
+//DiskInternals_NTFS_Reader - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Recover\DiskInternals_NTFS_Reader.script"
+//DiskInternals_Raid2Raid - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Recover\DiskInternals_Raid2Raid.Script"
+//DiskInternals_WAB_Recovery - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Recover\DiskInternals_WAB_Recovery.Script"
+//DiskInternals_Zip_Repair - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Recover\DiskInternals_Zip_Repair.script"
+//Partition Find and Mount - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Recover\Partition Find and Mount.script"
+//TestDisk_PhotoRec - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\HD Tasks\Recover\TestDisk_PhotoRec.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Network\DnsJumper.script"
+//FileZilla3 - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Network\FileZilla3.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Network\FileZilla3_Files.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Network\Flash_Package_101853.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Network\Getright.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Network\mitec_network_meter.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Network\OffByOne.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Network\Opera_v08_54.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Network\Opera_v08_54_File.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Network\WakeOnLanGui.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Network\WifiInfoView_NirSoft.Script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Network\WirelessNetView_NirSoft.Script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Network\WirelessNetworkWatcher_NirSoft.Script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Network\Firewall\zonealarm.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Network\Remote Connect\Ammyy Admin v3.Script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Network\Remote Connect\TightVNC1.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Network\Remote Connect\TightVNC2.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Network\Remote Connect\UltraVNC.script"
+//UltraVNCViewer - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Network\Remote Connect\UltraVNCViewer.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Network\Remote Connect\VNC_Real.script"
+//VNC_Viewer - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Network\Remote Connect\VNC_Viewer.script"
+//DiskCryptor - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Security\DiskCryptor.script"
+//KeePass1 - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Security\KeePass1.script"
+//TrueCrypt - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Security\TrueCrypt.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Security\AntiSpyware\HijackThis!.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Security\AntiVirus\Sophos.script"
+//JoshuaKeyFinder - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Security\KeyFinders\JoshuaKeyFinder.script"
+//MagicJellyBeanKeyfinder - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Security\KeyFinders\MagicJellyBeanKeyfinder.script"
+//NDQ_KeyFinder - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Security\KeyFinders\NDQ_KeyFinder.script"
+//ProduKey_NirSoft - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Security\KeyFinders\ProduKey_NirSoft.script"
+//Reset Windows Password_Trick-UtilMan_Document - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Security\Passwords\Reset Windows Password_Trick-UtilMan_Document.Script"
+//dc-pass - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Security\Unlockers\dc-pass.script"
+//DreamPackPL - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Security\Unlockers\DreamPackPL.script"
+//NTPWEdit - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Security\Unlockers\NTPWEdit.script"
+//password_renew - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Security\Unlockers\password_renew.script"
+//WindowsGate - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Security\Unlockers\WindowsGate.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Supplementary\AutoIt.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Supplementary\AutoIt_Files_3249.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Supplementary\PowerOff.script"
+//LBreakout2_paf - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Supplementary\Games\LBreakout2_paf.script"
+//Mines czeppi_de - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Supplementary\Games\Mines czeppi_de.Script"
+//Desktop Clock Plus-7 - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Supplementary\Graphics\Desktop Clock Plus-7.Script"
+//FastStoneCaptureFree53 - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Supplementary\Graphics\FastStoneCaptureFree53.script"
+//XnView - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Supplementary\Graphics\XnView.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Supplementary\Graphics\XnView_Files_ShellEx64.Script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Supplementary\Graphics\XnView_Files_x86_win-Full.Script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Supplementary\MultiMedia\mpc-hc.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Supplementary\MultiMedia\mpc-hc_file.script"
+//Mark Text Editor - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Supplementary\Office\Mark Text Editor.Script"
+//Mitec_MailViewer - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Supplementary\Office\Mitec_MailViewer.script"
+//Spread32 - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Supplementary\Office\Spread32.script"
+//SumatraPDF - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Supplementary\Office\SumatraPDF.Script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Supplementary\Office\xCHM.script"
+//BlueScreenView_M - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\BlueScreenView_M.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\DevManView_NirSoft.Script"
+//Double Driver - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\Double Driver.Script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\DriverView_NirSoft.Script"
+//Flush - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\Flush.Script"
+//jv16PowerTools - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\jv16PowerTools.script"
+//NirSoft NirCmd - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\NirSoft NirCmd.Script"
+//NTFSLink - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\NTFSLink.script"
+//Pserv2 - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\Pserv2.script"
+//RegistryLoaderPE - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\RegistryLoaderPE.Script"
+//RoadkilUt - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\RoadkilUt.Script"
+//ServicesPE - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\ServicesPE.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\Serviwin.script"
+//SmartDriverBackup - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\SmartDriverBackup.script"
+//SwapAdd Olof - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\SwapAdd Olof.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\Switch Keyboard.script"
+//UpdateDevices - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\UpdateDevices.Script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\USBDeview_NirSoft.Script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\Debug\Dependency_Walker.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\Debug\ProcessActivityView_NirSoft.Script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\Debug\RegFromApp_NirSoft.Script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\Debug\Sysinternals Suite.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\Explorer Addons\Attribute Changer_Petges.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\Explorer Addons\FindTarget_Lance.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\Explorer Addons\HashTab_olegpov_v3.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\Explorer Addons\HashTab_olegpov_v5.script"
+//Properties_Plus_Kish - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\Explorer Addons\Properties_Plus_Kish.script"
+//CoolMon1_Amalux - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\HW Info\CoolMon1_Amalux.script"
+//CrystalCPUID - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\HW Info\CrystalCPUID.script"
+//Mitec_Registry_Recovery - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\Registry\Mitec_Registry_Recovery.script"
+//RegScanner - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\Registry\RegScanner.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\Registry\RegShot1_P.script"
+//RegWizXP - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\Registry\RegWizXP.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\Windows Setup\NT 6.x fast installer.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\Windows Setup\OfflineSysPrep.script"
+//WinNTSetup1_JFX - Default True
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\Windows Setup\WinNTSetup1_JFX.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\System Tools\Windows Setup\WinNTSetup3_JFX.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Virtualization\VM-95.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Virtualization\VMWareConverter.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Virtualization\VMXBuilder.script"
+//--
+//-Gena - ShellG +8
+Run,%ScriptFile%,WInterface,"\Yomi\ShellG\30_Gena_Shells_Info.script"
+Run,%ScriptFile%,WInterface,"\Yomi\ShellG\55_PE Shell Swapper.script"
+Run,%ScriptFile%,WInterface,"\Yomi\ShellG\bbLean.script"
+Run,%ScriptFile%,WInterface,"\Yomi\ShellG\folder.project"
+Run,%ScriptFile%,WInterface,"\Yomi\ShellG\GeoShell.script"
+Run,%ScriptFile%,WInterface,"\Yomi\ShellG\LiteStep.script"
+Run,%ScriptFile%,WInterface,"\Yomi\ShellG\ReactOS Explorer X.script"
+Run,%ScriptFile%,WInterface,"\Yomi\ShellG\z_ERD 2007.script"
+
+[Update_Interface_Manual_List_Yomi_AppY_Accessibility]
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Accessibility\Accessibility_Info.Script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Accessibility\applemou_RH_Designs.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Accessibility\Click-N-Type.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Accessibility\Click-N-Type_Turkish.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Accessibility\EasyScroller_RH_Designs.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Accessibility\FreeVK.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Accessibility\mousemu_RH_Designs.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Accessibility\OneLoupe.Script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Accessibility\OneLoupe_v3.Script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Accessibility\Onscreen Keyboard_Paf_Mini_US.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Accessibility\Virtual_Magnifying_Glass_Portable_paf.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Accessibility\Virtual_Magnifying_Glass_Portable_paf_v3.3.1.script"
+Run,%ScriptFile%,WInterface,"\Yomi\AppY\Accessibility\Zzoom_omiod.script"
+
+[Update_Interface_From_Server]
+//Set,%f%,%ProjectTemp%\Updater_20190203
+//Call,DirDeleteMake,%f%
+//Call,Download,%f%\updates.ini,http://yomi.cwcodes.net/updates.ini
+//ExtractFile,%ScriptFile%,Folder,Updater.au3,%f%
+//ShellExecute,Open,%Tools%\x86\AU3381.exe,"#$q/AutoIt3ExecuteScript#$q #$q%f%\Updater.au3#$q #$qUpdates\Yomi\AppY\Accessibility#$q #$q%f%\WInterface.ini#$q"
+//Run,%ScriptFile%,%f%\WInterface.ini,WriteInterface
+System,RefreshInterface
+Call,Echo,"Halt: Update_Interface_From_Server not yet implemented",Warn,,MessageError,,Halt
+
+[Update_Interface_Local_CANCEL]
+StrFormat,Split,%ProjectDir%,\,0,%t%
+StrFormat,Split,%ProjectDir%,\,%t%,%ProjectFolderName%
+//Run,%ScriptFile%,Update_Interface_Local_M,%BaseDir%\Workbench\Common\Download_%ProjectFolderName%\Projects
+Run,%ScriptFile%,Update_Interface_Local_M,%BaseDir%\Workbench\Common\Download_Yomi\Projects
+//Run,%ScriptFile%,Update_Interface_Local_M,%BaseDir%\Workbench\Common\Download_Yomi\Projects\Yomi\AppY\Accessibility
+
+[Update_Interface_Local_Yomi]
+Run,%ScriptFile%,Update_Interface_Local_M,%BaseDir%\Workbench\Common\Download_Yomi\Projects
+
+[Update_Interface_Local_Yomi_AppY_Accessibility]
+Run,%ScriptFile%,Update_Interface_Local_M,%BaseDir%\Workbench\Common\Download_Yomi\Projects,Yomi\AppY\Accessibility\
+
+[Update_Interface_Local_M]
+Set,#9,%ProjectTemp%\Updater_201902031907
+Call,DirDeleteMake,#9
+//-
+//Call,StartDocNotepad,#9\List.txt
+If,ExistDir,#1,Begin
+System,FileRedirect,OFF
+//ShellExecute,Hide,cmd.exe,"/C dir *.Script /b /s>#$q#9\List.txt#$q",#1
+ShellExecute,Hide,cmd.exe,"/C dir #2*.Script /b /s>#$q#9\List.txt#$q",#1
+System,FileRedirect,ON
+End
+TxtReplace,#9\List.txt,#1\,"Run,#$pScriptFile#$p,WInterface,#$q\"
+TxtReplace,#9\List.txt,"#$x","#$q#$x"
+TxtAddLine,#9\List.txt,"[WriteInterface_LocalList]",Prepend
+//Call,StartDocNotepad,#9\List.txt
+Run,#9\List.txt,WriteInterface_LocalList
+
+[Test_INFO]
+//Not used by current plugin only to provide info.
+Call,DownloadX,"%BaseDir%\Projects\Yomi\AppY\Accessibility\Accessibility_Info.Script"
+Call,DownloadX,"%BaseDir%\Projects\Yomi\AppY\Accessibility\applemou_RH_Designs.script"
+Call,DownloadX,"%BaseDir%\Projects\Yomi\AppY\Accessibility\Click-N-Type.script"
+Call,DownloadX,"%BaseDir%\Projects\Yomi\AppY\Accessibility\Click-N-Type_Turkish.script"
+Call,DownloadX,"%BaseDir%\Projects\Yomi\AppY\Accessibility\EasyScroller_RH_Designs.script"
+Call,DownloadX,"%BaseDir%\Projects\Yomi\AppY\Accessibility\FreeVK.script"
+Call,DownloadX,"%BaseDir%\Projects\Yomi\AppY\Accessibility\mousemu_RH_Designs.script"
+Call,DownloadX,"%BaseDir%\Projects\Yomi\AppY\Accessibility\OneLoupe.Script"
+Call,DownloadX,"%BaseDir%\Projects\Yomi\AppY\Accessibility\OneLoupe_v3.Script"
+Call,DownloadX,"%BaseDir%\Projects\Yomi\AppY\Accessibility\Onscreen Keyboard_Paf_Mini_US.script"
+Call,DownloadX,"%BaseDir%\Projects\Yomi\AppY\Accessibility\Virtual_Magnifying_Glass_Portable_paf.script"
+Call,DownloadX,"%BaseDir%\Projects\Yomi\AppY\Accessibility\Virtual_Magnifying_Glass_Portable_paf_v3.3.1.script"
+Call,DownloadX,"%BaseDir%\Projects\Yomi\AppY\Accessibility\Zzoom_omiod.script"
+
+[List_Plugins_P_B]
+StrFormat,Split,%ProjectDir%,\,0,%t%
+StrFormat,Split,%ProjectDir%,\,%t%,%ProjectFolderName%
+//Run,%ScriptFile%,List_Plugins_M,%BaseDir%\Workbench\Common\Download_%ProjectFolderName%\Projects
+Run,%ScriptFile%,List_Plugins_M,%BaseDir%\Workbench\Common\Download_Yomi\Projects
+
+[List_Plugins_M]
+If,Not,ExistDir,%ProjectTemp%,DirMake,%ProjectTemp%
+//-
+If,ExistDir,#1,Begin
+//ShellExecute,Hide,cmd.exe,"/C dir *.Script /b /s>List.txt",#1
+ShellExecute,Hide,cmd.exe,"/C dir *.Script /b /s>#$q%ProjectTemp%\List.txt#$q",#1
+End
+TxtReplace,%ProjectTemp%\List.txt,#1\,"Call,DownloadX,#$q#$pBaseDir%\Projects\"
+TxtReplace,%ProjectTemp%\List.txt,"#$x","#$q#$x"
+Call,StartDocNotepad,%ProjectTemp%\List.txt
+
+[ReStart_P_B]
+Call,ReStart
+
+[AuthorEncoded]
+Downloads_0_048048.ico=4547,6063
+Logo=Downloads_0_048048.ico
+
+[EncodedFile-AuthorEncoded-Downloads_0_048048.ico]
+lines=1
+0=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
+1=TgIAPsl1k0smCwAbnfSO5Xxi1scL+lrSyW+It9DGW+FWMw3/4Dspj9Cn6mRc/IGNTV1f9bmf731qz5Ysu2rfDNTk3Q2L0HDEzMwITGNrE6BKbWdhwYN7Gye+6TtZc512b97J/75X1NFPrK+tgt31Poby3jP4y1nHM51pjmYWBs+v3bb7/9z8r0v/uH93du++Yr2LFrN+7W1gYjMwswtqQ1oPWwsHUAi0OOaH7QAQ1oH/kmFkA+1mZ5yR5GNiaz5uRn47H7y/fAkNbO0NwKzagPy8kzMuX81A/lMUyfmY097ZM1mtnYcfGsrWtgQn475kMjM/NHpP/vlelf8+HHet9o7ABNLS3U0dMDU0tr+HrnbtQzNscdu/fSmhzC3bp6qMPfjzxDE9DWM0RLOyfY9OVXNL/DuEtnH+ga7GfzQK19BmBOvs+++JLTIs+zb78ZaGjpUC0fwO27tID5DMws0dLeCakPsNza+oZcvI6+EVc/tF5cvMVBezQwMWG/XX6lTP/7H35svnP3LmBrz+PzwdLWDjT36oKtkytYH3aG3Tp6oLFHh2sfdDoKO7V02LpwfYzMLen+Pti7jw9sjfVI504tXWDzNrexB56BMdgecYWd1NfGwYWLZxpZ/Fc7NLkcLIbWBCztHLkxNCmexZhZH2L6wYr8+gaGl0nqL5Xp/2jd+sO792qBlq4uGhgbg81hR9hD6334qCeynGxdWNvexYN8HkwfWyvS44y7tHmob2zO9CO3TzQXQ7MDqMXjc+tvQOttf9SD6nIfsHwMbD1snY5y600cDx1xoznx0e6IG+vL1gdZHO0p0D085OSCPD3+oBr7r2wl19oNGzz36uqAjt4+NLGwALsjLvC1xi7SZUY69IHp5hnSNwDTRevM9lNTmwdO7j64bYcm2rm4054b0vNixeYDju7eyM3HypZqzxZZ2/ygPTuX6fkxZ7mojw+dicZMI1IeTj+7R3no2aCziMYyNLWgPbRDe2dX1ObtkyrTzq4Nn38eTtphH18fLKytwNHVHVy8/eCot/8KOLh6grOnL93zfw7md/Fa2c9FhT3i4QOObl5w1Gc53ovG8AlYzuH3vC/jruRn47EYJzcP0ObxqlXp/9On62P0DPmgb2iAB+3twdnDCzwCgtEjIATd/YLA3T8Y3XyDkFl5+7ld5qvuq+jj5h+00s/lDlwZH6AYH4Qunl64V1dX5f+70L00WydnOOjohA7OzuDq7QuegaHoGRSKXoGh4BUchhyCwtAzMASY9QoK5Szrw3zewexe6PL9UK6v1w990TNAxlkflpPLzcWG/pCTctC6PefMz9bRxdMTTQ8cOKZK/8m4OKewmGQ4kZILviHh4ObjA96cPhl8yEf6wIfA/PJ7HA8O5fycVjaPIAJZz4Agagdz4DjB058hUIYABe4fAB5+MrC2V0Dgcv9AyhUEx07FPkhISFBXpX9kZOSfRJLOyuyq5u+SC6oh/GQczSMM/UPD0S8kDPzDIjAgPAoDIqIwMOIYBEUdx+CoExB6PAbDTsRi+Kl4iIhJwKi4JAKtQ2La9ycT05/FpWU9iUnNWjqdmXs/KTt/NiEz93JiTuF4am7xUFpecVd6Xok0s6hcnFNaVZNRWF6aU1KdX1AhzMyrqEksqKw9VSSoj6qoFx8tr6v7L1Xa5df09PRv5ubm1M+PT26rFkv4OYImh5yKBofc6ibbwlqxea6gUb+oXqJbUi/dVVwr2VosbNlY2SDdUNko+bCoQvheWm7J/6TmVbx1Ojf3XyIiUn8bHR39Gz8/P6Xn9c95PXkb6VJTe6D2OmevqDHCWbVfL1u115ftr38+2/JT7Ot/Pev/c9i3X9Fu5sbl1vv/ABqh2Sh4nBNzyS/Py8lPTCmON4g3MLEAIr3M5HyGUTAywD5VCJ0viF3+zf1JngxMAKkvC1zstizBAQAAAAIAAAAwAAAAbxEAAAAAAAABAAAAAAAAAAAAAAA
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+Mazenl77-NX11-Internet-Real_016_016.bmp=909,1212
+Double-J-Design-Ravenna-3d-Reload024024.bmp=1230,1640
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+//Call,UploadXQ
+Call,UploadXMultiQ
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-Mazenl77-NX11-Internet-Real_016_016.bmp]
+lines=0
+0=eJytk/1Pk2cUhl3iH7Ali8skRtQlzrGZGRFmCML8ZBFkW8h0GKhTXIyTmWkQdUZQiHzW1YG1CIgfWFChlOAQEAoqUWDC2/SDdg0SxmpFSwcFim1JuPb6xpBtsuwXn+RKnpwn950755xnbcyhuXOkEyLyvsibIm+JvDEnUKpHvnz/+wFeKz6fj5GREQYHB7FYLPT29jIwMIDL5cLr9TI9Pc1suhd1t9uNyWRC9VMahSkbuXoklKO5X7LyYgb7zuUhCILk/V8eZqEL9YEIapMC0XyzEO2uRews20NAVzHzu0tJrDmFodcwq3bI+isVCUtQbZmH4osAFFve5XDqehbdzGFhQz4LGuUEiPf9l7/HOdz/D4/J8VHKZR+hiHqbxB+jCbp2guXVmQTVZrGsNpul2lO8p8kksCKNGGUSfeo4pvzeGY/uinwKNr/D8eTVrPxFTojuLJ/cVREqskpXyMe3ThMkZl+qPs7i4hQKj4XhMl6f0V//bg2l8YGoTqwlvOsinxorWWepkog0VBDWWUZwSwHLRY/P82QkH/0MQRUv6f3ivC5sXYD24Ie0/xzBfv15oh23iXW2Efusjc32RjbYagjvvsz2KymsEDPE5Muo27tM0nvG3VTuWsyd7BD6bmzC1rWX1FEdu/16jozfpcOagcp4mszWk0TcKyK4LpcNim/JlgUx5HJKs6z7YQU9qnCeNMfh/u0wJyf0CM4mLMO1NPWXoDIoyWvPIqKnnNX1csJKDrAmfTs+v1/K0KHcjbE0kqftMib+yMU+aUMz6aBy7BE5HhPpI80UPpSzSSgntFUpzWdb1ZmZ/ln1OprPRfGkLYHxQTlWp4n77mfUPB8iy9/PjkmBr36vZ535BqE6JR+o07hp65nR+6em2FdfhFkTx7AxlbGn1ThGDZx39FBqv0X8xEOi7U1ECmqCGxQkNZW9soNOzxjHGgtIuZ1LyYMz/GlNo8p+jT2OFr62N7DRqiHsXjGJrZdwP/fMusMen5ci0x1i9dXktGTQqU2gszqeZG06UR1XKLI9wCdm/b8//MLH/vgRA2JfzOb7dD7uw/uy1//mLx+nGpl4nFP3TaxKzcsxN9f1izA01PXMK0ktykst0Q1KTcyJNzA0A2G9pNwChlEwLEEZC4TWZMYuX3LvUQMDEwB1nRAO9/276QEAAAACAAAAQAAAACkDAAAAAAAAAQAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-Double-J-Design-Ravenna-3d-Reload024024.bmp]
+lines=0
+0=eJzdlHtQVGUYxu0vWCKDWGBZKG5K4BKXkL1fWfbsroQikMCCtUqZ3FFQtCxXxxTUBbkoEEERhJITE4XaUNroP9VA1pgWmBqkaJcBJ3S5LfD0nQPDyGAThn95Zp45O3u+87zP+d7v/UVEH2EtYi4+kT8Rh8iN6LFFXsz/xunn914AHml193Wh7mwddrbuxvaWHdjbVojmr5vR138DC/Ht/bMHOcfzoDmaCOojA7knQNPwIiLfj4W6NgaqwyuQ35SPq7euPHCd0x3tWL4lDNqWtaCOJ4M6lgjNh2sQWR8Hdd1qRNSsRERlFFQVeqiLKTSda5x3jdpPq+Gqs4eTxhYhJj6o5iRomhIQ2RAP9XvT3tUvMPmVZVooSiIh269EaVvxvGq0nmsBm2LhqUgbsLUsCMwqiA6p4ZftDQ+jIzxedoBvmjtCd4Qy3oqDasiLlJDukaLpbMO8ahxo3Mvkp7XE4AbqDQlUBXx4G53AMdiBk0SUyILXOheI90gg3yeHjNwVJgku93X/Z43JyUlkHdyAyo/LYBmxzKy/fWcAlW2lWGrkwDWeBZdYFjySHCHeJYJ0lxiStwTIqHx1QeeKVtdvPyEo1RfOq1hwjraF7zp3SE1CSHaEQ7TteXRf/3nBNb6/3AluzGKwo2zhHMVC+NZgiF9fDtHWUJS0FC3Yn1Z+RRbYetInnQ38X/GEmGQXbQlGcmHsQ/H/4ZfzYOuIv9YG3gYXJrswLwjyzaGwjlvn1Lh49QJqvqjGqfMncan3RwwM9oPu9b/5j46NwjPGifH3TGBDlB8M4aZACLMCMWgZnPUefSbdViyGpJxi5pSeI2W5FrrSKKRUrUXjV/Vz6tC1eUlejP+SFA6Em4MgyOFBmLkMd4fuzKy3Wq14Jprk0NhAWqFl5lT97qrpOdUjpz4bw6NDc/yHRobgsdKB2aOgjb4Q5gZCkBUA1aYwTExM4N7v5OifYOZJRvsTfkW8Ew0VYYzcrMbF3gv33aPTne2M99PxjiT7cxBk8yDI8McGc8qs9ZZhC5wpO8ZfTvIyjKmayk4zhjJr8VlH66xMY9Yx6HIVcI9zQHgubyY7P80Px858MMt/4O9+hjlOFO2vg/KIHgriqywnvw9pGMbIChWIN6+G+ZP9TC/SSteD95oPhHRPp7PzSXZNHh+W4buz/G/9dXOKN8RfUqKGp9EV3qlcyIsJv4jkB1TTjJESDoggeVMwNUsFoRDlBU9lzwyAIO1ZtHeenLOXPX3XGF5yo56EoTCO4YprnB28jORM0/wqUkD2tgzS3WJId05xQLwtjMxSCDmPdPZlEKT7o+5U1X37dO3GFeQWp6Pn5q8YHx/HvqMmcBPswVnDAjfJHrzspRATvkhNdHb+DAdEZJaEOYHQb5fiy+8+f6CZ7ej+BjEmDdwMjzNM5ibbwyfVFQFpnghM90FIph82lr6EE9+2YmRs5H/zoOv6JVSfKENeTToyDq9HQW02Gs/U4Y/bvz8UxixU/wDOLxv7eJzTdskvTcpJ1fXSdUktzkzP0w1KLEvNy0vUNU7RDUrNyU9MMTAyASK9pNwChlEw7MA0TgidyoJd/rnmIwEGJgDhFxFq3jfyRwEAAAACAAAARQAAAGUEAAAAAAAAAQAAAAAAAAAAAAAA
+
+[EncodedFolders]
+Folder
+
+[Folder]
+
+[DUMMY_END_OF_FILE_DELETER_EVERYTHIMG_AFTER_THIS_POINT_INSIDE_FILE_WILL_BE_DELETED_201902031718]
+

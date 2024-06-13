@@ -1,0 +1,652 @@
+[Main]
+Title=Internet Explorer
+Type=Plugin
+Author=fxscrpt
+Description=Add Internet Explorer v6 to build
+Credits=dera, Lancelot and Galapo - http://TheOven.org
+Version=018
+Download_Level=0
+Level=0
+Selected=True
+Mandatory=False
+NoWarning=False
+Contact=http://TheOven.org/index.php?board=3
+Date=2018.01.06
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Basic/Shells/Core/1%20System/80CoreIE.script
+CertifiedBy=
+Certification=
+HistoryNotes01=If you get fixmapi.exe error - warning at boot it means emulator step (Finish\0 RegFactory\RegFactory.script) not made (either Plugin missing or something went wrong)
+HistoryNotes02=SysDrive %sysdrive%=X: used in IE.inf (by current IE Plugin...)
+History005=Lancelot - Default selected False - Gena do not offer IE8 as default instead Opera/FireFox etc. used ALSO better for faster regfactory builds
+History006=fxscrpt - removed %PEDrive%
+History007=Lancelot - Default selected True :) - Reason: better RF builds with more added dependencies, fxscrpt was right at first :>
+History008=fxscrpt - moved msls31.dll to core_main / removed plugin.ocx
+History011=Lancelot - IniVariables RegFactory - Date:2012.01.17
+History014=Lancelot - Added DU Buttons - Date:2016.10.20
+History016=Lancelot Added Basic_PluginCache_Extract - Date:2016.10.30
+History017=Lancelot PEBakery Less Warning - If,Not,ExistFile,  iexplore.chm ratings.chm ratings.hlp ratings.cnt iexplore.exe advpack.dll iepeers.dll iesetup.dll sendmail.dll shlwapi.dll tdc.ocx ie4uinit.exe iernonce.dll dciman32.dll wininet.dll mshtmled.dll mshtmler.dll url.dll homepage.inf - Date:2018.01.06
+History018=Lancelot More If,Not,ExistFile, - Date:2018.01.06
+
+[HistoryNotesSysDrive]
+//--IE.inf (by current IE Plugin...)
+HKEY_LOCAL_MACHINE\Tmp_Software\Clients\StartMenuInternet\IEXPLORE.EXE
+"LocalizedString"="@X:\\Program Files\\Internet Explorer\\iexplore.exe,-702"
+HKEY_LOCAL_MACHINE\Tmp_Software\Clients\StartMenuInternet\IEXPLORE.EXE\DefaultIcon
+@="X:\\Program Files\\Internet Explorer\\iexplore.exe,0"
+HKEY_LOCAL_MACHINE\Tmp_Software\Clients\StartMenuInternet\IEXPLORE.EXE\shell\open\command
+@="\"X:\\Program Files\\Internet Explorer\\iexplore.exe\""
+HKEY_LOCAL_MACHINE\Tmp_Software\Microsoft\Shared Tools\HTML\Clients
+"X:\\Program Files\\Internet Explorer\\iexplore.exe"=""
+HKEY_LOCAL_MACHINE\Tmp_Software\Microsoft\Shared Tools\MSWinWrite.wpc\Clients
+"X:\\Program Files\\Windows NT\\Donatýlar\\wordpad.exe"=""
+HKEY_LOCAL_MACHINE\Tmp_Software\Microsoft\Shared Tools\MSWord6.wpc\Clients
+"X:\\Program Files\\Windows NT\\Donatýlar\\wordpad.exe"=""
+HKEY_LOCAL_MACHINE\Tmp_Software\Microsoft\Shared Tools\MSWord8\Clients
+"X:\\Program Files\\Windows NT\\Donatýlar\\wordpad.exe"=""
+HKEY_LOCAL_MACHINE\Tmp_Software\Microsoft\Shared Tools\Text Converters\Export\HTML
+"Path"="X:\\Program Files\\Common Files\\Microsoft Shared\\TextConv\\html32.cnv"
+HKEY_LOCAL_MACHINE\Tmp_Software\Microsoft\Shared Tools\Text Converters\Import\HTML
+"Path"="X:\\Program Files\\Common Files\\Microsoft Shared\\TextConv\\html32.cnv"
+HKEY_LOCAL_MACHINE\Tmp_Software\Microsoft\Shared Tools\Text Converters\Import\MSWinWrite.wpc
+"Path"="X:\\Program Files\\Common Files\\Microsoft Shared\\TextConv\\write32.wpc"
+HKEY_LOCAL_MACHINE\Tmp_Software\Microsoft\Shared Tools\Text Converters\Import\MSWord6.wpc
+"Path"="X:\\Program Files\\Common Files\\Microsoft Shared\\TextConv\\mswrd632.wpc"
+HKEY_LOCAL_MACHINE\Tmp_Software\Microsoft\Shared Tools\Text Converters\Import\MSWord8
+"Path"="X:\\Program Files\\Common Files\\Microsoft Shared\\TextConv\\mswrd832.cnv"
+HKEY_LOCAL_MACHINE\Tmp_Software\Microsoft\Shared Tools Location
+"TEXTCONV"="X:\\Program Files\\Common Files\\Microsoft Shared\\TextConv"
+HKEY_LOCAL_MACHINE\Tmp_Software\Microsoft\Windows\CurrentVersion\App Paths\IEXPLORE.EXE
+@="X:\\Program Files\\Internet Explorer\\iexplore.exe"
+"Path"="X:\\Program Files\\Internet Explorer;"
+HKEY_LOCAL_MACHINE\Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnce
+"IE - 02"="X:\\I386\\System32\\mshta.exe /register"
+
+[Interface]
+pTextBox1="Start Page:",1,0,6,25,450,21,about:blank
+pTextBox2="Default Page:",1,0,7,65,448,21,about:blank
+pCheckBox1="Warn on post",1,3,24,90,179,18,False
+pCheckBox2="Download complete notification",1,3,24,109,180,18,False
+pCheckBox3="Harden IE configuartion (W2003)",1,3,258,89,190,18,False
+pCheckBox5=nonpersistent,1,3,369,197,97,18,True
+pCheckBox6="Hide desktop icon",1,3,258,107,191,18,False
+pCheckBox10="Autocomplete url",1,3,9,136,137,18,False
+pCheckBox11="Show url drop down list",1,3,9,159,137,18,False
+pCheckBox12="Suggest typed inputs",1,3,148,136,146,18,False
+pCheckBox13="Suggest typed passwords",1,3,148,159,146,18,False
+pCheckBox14="Enable User/Password in url",1,3,300,136,156,18,True
+pBevel1=pBevel1,1,12,4,130,457,53
+pNumberBox1=pNumberBox1,1,2,109,193,40,18,16,10,64,
+pTextLabel1="Max. connections:",1,1,12,195,95,19,8,Normal
+pNumberBox2=pNumberBox2,1,2,262,193,106,22,8192,4096,65536,1024
+pTextLabel2="Content cache limit:",1,1,162,194,99,20,8,Normal
+pWebLabel2="Plugin Page",1,10,317,4,55,18,http://TheOven.org/index.php?board=3
+Button_Download=,1,8,380,-1,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[Variables]
+%regmethod%=build
+%sysdrive%=X:
+%inf2hivedebug%=0
+
+[RegisterDep]
+If,Not,ExistSection,%ProjectTemp%\depends.script,CoreIEInstallCore,Begin
+IniAddSection,%ProjectTemp%\depends.script,CoreIEInstallCore
+IniWriteTextLine,%ProjectTemp%\depends.script,CoreIEInstallCore,"Exec,%ScriptFile%,InstallCore"
+End
+
+[Process]
+If,ExistFile,%ProjectTemp%\Basic_PluginCache_Extract.ini,Echo,"Basic PluginCache"
+If,Not,ExistFile,%ProjectTemp%\Basic_PluginCache_Extract.ini,Run,%ScriptFile%,Process_Normal
+
+[Process_Normal]
+Run,%ScriptFile%,SetVariables
+Run,%ScriptFile%,InstallCore
+
+[SetVariables]
+Set,%PInfo%,%ProjectInfo%
+IniRead,%PInfo%,Settings,Target,%tmp%
+If,%tmp%,Equal,"",Set,%PInfo%,%ProjectTemp%\ProjectInfo.ini
+IniRead,%PInfo%,OS,Type,%OS%
+IniRead,%PInfo%,OS,ServicePack,%SP%
+IniRead,%PInfo%,Cabs,SP_CAB,%SPCAB%
+IniRead,%PInfo%,Cabs,DR_CAB,%DRCAB%
+
+[InstallCore]
+IniRead,%ProjectDir%\script.project,IniVariables,ApiRegScript,%ApiRegScript%
+If,ExistSection,%ProjectTemp%\depends.script,CoreIEInstallCore,Begin
+IniDeleteSection,%ProjectTemp%\depends.script,CoreIEInstallCore
+//Exec,%ProjectTemp%\depends.script,ExecDep,CoreMainInstallCore
+//Exec,%ProjectTemp%\depends.script,ExecDep,CoreMainCopyNLSFiles
+//Exec,%ProjectTemp%\depends.script,ExecDep,CoreCryptoInstallCore
+//Exec,%ProjectTemp%\depends.script,ExecDep,CoreScriptingInstallCore
+Run,%ProjectTemp%\depends.script,ExecDep,CoreMainInstallCore
+Run,%ProjectTemp%\depends.script,ExecDep,CoreMainCopyNLSFiles
+Run,%ProjectTemp%\depends.script,ExecDep,CoreCryptoInstallCore
+Run,%ProjectTemp%\depends.script,ExecDep,CoreScriptingInstallCore
+//Exec,%ProjectTemp%\depends.script,ExecDep,CoreNetInstallCore
+//Exec,%ProjectTemp%\depends.script,ExecDep,CoreHelpInstallCore
+//--
+Run,%ScriptFile%,SetVariables
+IniRead,%PInfo%,String,ProfileBase,%settingsfolder%
+IniRead,%PInfo%,String,StartMenu,%startmenufolder%
+IniRead,%PInfo%,String,Programs,%programsfolderp%
+Set,%programsfolder%,%startmenufolder%\%programsfolderp%
+IniRead,%PInfo%,String,AdministrativeTools,%admintoolsfolder%
+IniRead,%PInfo%,String,CommonFiles,%commonfilesfolder%
+IniRead,%PInfo%,String,AllUsers,%allusers%
+IniRead,%PInfo%,String,DefaultUser,%user%
+Run,%ApiRegScript%,setlevel,580,True
+DirMake,%Target_Sys%\wbem
+DirMake,%Target_Win%\Web
+DirMake,%Target_Win%\Help
+DirMake,"%Target_Prog%\Internet Explorer"
+DirMake,"%Target_Prog%\Internet Explorer\Connection Wizard"
+DirMake,"%Target_Prog%\Internet Explorer\SIGNUP"
+IniRead,%PInfo%,String,ProgramFiles,%progdir%
+IniRead,%PInfo%,String,CommonFiles,%commonfilesfolder%
+If,Not,ExistFile,%Target_Win%\Help\iexplore.chm,CopyOrExpand,%Source_Win%\iexplore.chm,%Target_Win%\Help
+If,Not,ExistFile,%Target_Win%\Help\ratings.chm,CopyOrExpand,%Source_Win%\ratings.chm,%Target_Win%\Help
+If,Not,ExistFile,%Target_Win%\Help\ratings.hlp,CopyOrExpand,%Source_Win%\ratings.hlp,%Target_Win%\Help
+If,Not,ExistFile,%Target_Win%\Help\ratings.cnt,CopyOrExpand,%Source_Win%\ratings.cnt,%Target_Win%\Help
+If,Not,ExistFile,"%Target_Prog%\Internet Explorer\iexplore.exe",CopyOrExpand,%Source_Win%\iexplore.exe,"%Target_Prog%\Internet Explorer"
+CopyOrExpand,%Source_Win%\hmmapi.dll,"%Target_Prog%\Internet Explorer"
+CopyOrExpand,%Source_Win%\iedw.exe,"%Target_Prog%\Internet Explorer"
+CopyOrExpand,%Source_Win%\icwconn1.exe,"%Target_Prog%\Internet Explorer\Connection Wizard"
+CopyOrExpand,%Source_Win%\icwconn2.exe,"%Target_Prog%\Internet Explorer\Connection Wizard"
+CopyOrExpand,%Source_Win%\icwconn.dll,"%Target_Prog%\Internet Explorer\Connection Wizard"
+CopyOrExpand,%Source_Win%\icwdl.dll,"%Target_Prog%\Internet Explorer\Connection Wizard"
+CopyOrExpand,%Source_Win%\icwhelp.dll,"%Target_Prog%\Internet Explorer\Connection Wizard"
+CopyOrExpand,%Source_Win%\icwres.dll,"%Target_Prog%\Internet Explorer\Connection Wizard"
+CopyOrExpand,%Source_Win%\icwutil.dll,"%Target_Prog%\Internet Explorer\Connection Wizard"
+CopyOrExpand,%Source_Win%\trialoc.dll,"%Target_Prog%\Internet Explorer\Connection Wizard"
+CopyOrExpand,%Source_Win%\icwrmind.exe,"%Target_Prog%\Internet Explorer\Connection Wizard"
+CopyOrExpand,%Source_Win%\icwtutor.exe,"%Target_Prog%\Internet Explorer\Connection Wizard"
+CopyOrExpand,%Source_Win%\inetwiz.exe,"%Target_Prog%\Internet Explorer\Connection Wizard"
+CopyOrExpand,%Source_Win%\isignup.exe,"%Target_Prog%\Internet Explorer\Connection Wizard"
+CopyOrExpand,%Source_Win%\icwip.dun,"%Target_Prog%\Internet Explorer\Connection Wizard"
+CopyOrExpand,%Source_Win%\icwx25a.dun,"%Target_Prog%\Internet Explorer\Connection Wizard"
+CopyOrExpand,%Source_Win%\icwx25b.dun,"%Target_Prog%\Internet Explorer\Connection Wizard"
+CopyOrExpand,%Source_Win%\icwx25c.dun,"%Target_Prog%\Internet Explorer\Connection Wizard"
+CopyOrExpand,%Source_Win%\msicw.isp,"%Target_Prog%\Internet Explorer\Connection Wizard"
+CopyOrExpand,%Source_Win%\msn.isp,"%Target_Prog%\Internet Explorer\Connection Wizard"
+CopyOrExpand,%Source_Win%\phone.icw,"%Target_Prog%\Internet Explorer\Connection Wizard"
+CopyOrExpand,%Source_Win%\state.icw,"%Target_Prog%\Internet Explorer\Connection Wizard"
+CopyOrExpand,%Source_Win%\support.icw,"%Target_Prog%\Internet Explorer\Connection Wizard"
+CopyOrExpand,%Source_Win%\phone.ver,"%Target_Prog%\Internet Explorer\Connection Wizard"
+CopyOrExpand,%Source_Win%\install.ins,"%Target_Prog%\Internet Explorer\SIGNUP"
+RegHiveLoad,Tmp_Software,%Target_Sys%\config\software
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\App Paths\IEXPLORE.EXE",,"%sysdrive%\%progdir%\Internet Explorer\IEXPLORE.EXE"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\App Paths\IEXPLORE.EXE",Path,"%sysdrive%\%progdir%\Internet Explorer;"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\App Paths\IEXPLORE.EXE",,"%sysdrive%\%progdir%\Internet Explorer\IEXPLORE.EXE"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\App Paths\ICWCONN1.EXE",,"%sysdrive%\%progdir%\Internet Explorer\Connection Wizard\ICWCONN1.EXE"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\App Paths\ICWCONN1.EXE",Path,"%sysdrive%\%progdir%\Internet Explorer\Connection Wizard;"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\App Paths\ICWCONN2.EXE",,"%sysdrive%\%progdir%\Internet Explorer\Connection Wizard\ICWCONN2.EXE"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\App Paths\ICWCONN2.EXE",Path,"%sysdrive%\%progdir%\Internet Explorer\Connection Wizard;"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\App Paths\INETWIZ.EXE",,"%sysdrive%\%progdir%\Internet Explorer\Connection Wizard\INETWIZ.EXE"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\App Paths\INETWIZ.EXE",Path,"%sysdrive%\%progdir%\Internet Explorer\Connection Wizard;"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\App Paths\ISIGNUP.EXE",,"%sysdrive%\%progdir%\Internet Explorer\Connection Wizard\ISIGNUP.EXE"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\App Paths\ISIGNUP.EXE",Path,"%sysdrive%\%progdir%\Internet Explorer\Connection Wizard;"
+RegHiveUnLoad,Tmp_Software
+//--
+If,Not,ExistFile,%Target_Sys%\advpack.dll,CopyOrExpand,%Source_Win%\advpack.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\cdfview.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\dxtrans.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\dxtmsft.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\danim.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\iedkcs32.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\iepeers.dll,CopyOrExpand,%Source_Win%\iepeers.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\iesetup.dll,CopyOrExpand,%Source_Win%\iesetup.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\imgutil.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\pngfilt.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\inseng.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\msencode.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\msident.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\msidle.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\msidntld.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\msieftp.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\msrating.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\mstime.dll,%Target_Sys%
+//--
+CopyOrExpand,%Source_Win%\msratelc.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\occache.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\sendmail.dll,CopyOrExpand,%Source_Win%\sendmail.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\shlwapi.dll,CopyOrExpand,%Source_Win%\shlwapi.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\webcheck.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\ie4uinit.exe,%Target_Sys%
+CopyOrExpand,%Source_Win%\asctrls.ocx,%Target_Sys%
+CopyOrExpand,%Source_Win%\proctexe.ocx,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\tdc.ocx,CopyOrExpand,%Source_Win%\tdc.ocx,%Target_Sys%
+CopyOrExpand,%Source_Win%\inetcpl.cpl,%Target_Sys%
+CopyOrExpand,%Source_Win%\inetcplc.dll,%Target_Sys%
+//--
+CopyOrExpand,%Source_Win%\shmgrate.exe,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\ie4uinit.exe,CopyOrExpand,%Source_Win%\ie4uinit.exe,%Target_Sys%
+CopyOrExpand,%Source_Win%\iedw.exe,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\ieakeng.dll,CopyOrExpand,%Source_Win%\ieakeng.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\ieakui.dll,CopyOrExpand,%Source_Win%\ieakui.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\ieaksie.dll,CopyOrExpand,%Source_Win%\ieaksie.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\iernonce.dll,CopyOrExpand,%Source_Win%\iernonce.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\dciman32.dll,CopyOrExpand,%Source_Win%\dciman32.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\icfgnt5.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\inetcomm.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\inetres.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\w32topl.dll,CopyOrExpand,%Source_Win%\w32topl.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\isign32.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\avifil32.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\msvfw32.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\inetcfg.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\vgx.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\pstorsvc.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\psbase.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\pstorec.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\RSACi.rat,%Target_Sys%
+CopyOrExpand,%Source_Win%\blank.htm,%Target_Sys%
+CopyOrExpand,%Source_Win%\extmgr.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\appmgmts.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\appwiz.cpl,%Target_Sys%
+CopyOrExpand,%Source_Win%\msnsspc.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\msapsspc.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\rasadhlp.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\browsewm.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\mscms.dll,CopyOrExpand,%Source_Win%\mscms.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\nlhtml.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\hlink.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\licmgr10.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\shimgvw.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\msr2c.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\msr2cenu.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\davclnt.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\cscdll.dll,CopyOrExpand,%Source_Win%\cscdll.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\cscui.dll,CopyOrExpand,%Source_Win%\cscui.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\ckcnv.exe,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\wininet.dll,CopyOrExpand,%Source_Win%\wininet.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\mshtmled.dll,CopyOrExpand,%Source_Win%\mshtmled.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\mshtmler.dll,CopyOrExpand,%Source_Win%\mshtmler.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\url.dll,CopyOrExpand,%Source_Win%\url.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\t2embed.dll,%Target_Sys%
+If,ExistDir,%Source_Win%\DRW,DirCopy,%Source_Win%\DRW\*,%Target_Sys%
+//--
+//CopyOrExpand,%Source_Win%\fixmapi.exe,%Target_Sys%
+//--
+Set,%dirtarget%,"%Target_Prog%\%commonfilesfolder%\Microsoft Shared\TextConv"
+DirMake,%dirtarget%
+CopyOrExpand,%Source_Win%\html32.cnv,%dirtarget%
+CopyOrExpand,%Source_Win%\msconv97.dll,%dirtarget%
+CopyOrExpand,%Source_Win%\mswrd632.wpc,%dirtarget%
+CopyOrExpand,%Source_Win%\mswrd832.cnv,%dirtarget%
+CopyOrExpand,%Source_Win%\write32.wpc,%dirtarget%
+//--
+Set,%dirtarget%,"%Target_Prog%\%commonfilesfolder%\Microsoft Shared\MSInfo"
+DirMake,%dirtarget%
+CopyOrExpand,%Source_Win%\ieinfo5.ocx,%dirtarget%
+CopyOrExpand,%Source_Win%\ieinfo5.mof,%Target_Sys%\Wbem
+Set,%dirtarget%,"%Target_Prog%\%commonfilesfolder%\Microsoft Shared\Triedit"
+DirMake,%dirtarget%
+CopyOrExpand,%Source_Win%\dhtmled.ocx,%dirtarget%
+CopyOrExpand,%Source_Win%\triedit.dll,%dirtarget%
+//--
+CopyOrExpand,%Source_Win%\ieuinit.inf,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\homepage.inf,CopyOrExpand,%Source_Win%\homepage.inf,%Target_Sys%
+CopyOrExpand,%Source_Win%\ie.inf,%Target_Win%\inf
+CopyOrExpand,%Source_Win%\vgx.inf,%Target_Win%\inf
+//--
+CopyOrExpand,%Source_Win%\tip.htm,%Target_Win%\Web
+CopyOrExpand,%Source_Win%\tips.gif,%Target_Win%\Web
+//--
+If,Not,ExistDir,%ProjectTemp%\inf2hive,DirMake,%ProjectTemp%\inf2hive
+If,ExistFile,%ProjectTemp%\inf2hive\inf2hive.ini,Shellexecute,Hide,cmd.exe,"/C del /q /f /A:R /A:H /A:S /A:A #$q%ProjectTemp%\inf2hive\inf2hive.ini#$q"
+If,ExistFile,%ProjectTemp%\inf2hive\inf2hive.ini,FileDelete,%ProjectTemp%\inf2hive\inf2hive.ini
+FileCreateBlank,%ProjectTemp%\inf2hive\inf2hive.ini
+TxtAddline,%ProjectTemp%\inf2hive\inf2hive.ini,[INF.KEYS],Append
+TXTAddLine,%ProjectTemp%\inf2hive\inf2hive.ini,HKLM#$c#$qSOFTWARE#$q,Append
+TXTAddLine,%ProjectTemp%\inf2hive\inf2hive.ini,HKCR#$c#$q#$q,Append
+Run,%ApiRegScript%,ImportInfTHive,IE.inf,IEAccess.DesktopIcon.AddReg#$cBase.IE.AddReg#$cBase.Sweeper.AddReg#$cTextConverter.AddReg,80CoreIE_IE,%inf2hivedebug%
+//InstallCore_Cancel
+Run,%ScriptFile%,changesettings
+Echo,"Processing registrations ..."
+Run,%ApiRegScript%,register,%regmethod%,cdfview.dll,dxtrans.dll,dxtmsft.dll,iedkcs32.dll,iepeers.dll,msident.dll,msrating.dll
+Run,%ApiRegScript%,register,%regmethod%,vgx.dll,pstorec.dll
+Run,%ApiRegScript%,register,%regmethod%,imgutil.dll,pngfilt.dll,mstime.dll,sendmail.dll,inetcomm.dll,inetcfg.dll,"/n /i inetcpl.cpl"
+Run,%ApiRegScript%,register,%regmethod%,asctrls.ocx,proctexe.ocx,tdc.ocx
+Run,%ApiRegScript%,register,%regmethod%,nlhtml.dll,hlink.dll,licmgr10.dll,msr2c.dll,cscui.dll,browsewm.dll,mshtmled.dll
+Run,%ApiRegScript%,register,%regmethod%,"%sysdrive%\%progdir%\Internet Explorer\hmmapi.dll"
+Run,%ApiRegScript%,register,%regmethod%,"%sysdrive%\%progdir%\%commonfilesfolder%\Microsoft Shared\Triedit\triedit.dll"
+Run,%ApiRegScript%,register,%regmethod%,"%sysdrive%\%progdir%\%commonfilesfolder%\Microsoft Shared\Triedit\dhtmled.ocx"
+Run,%ApiRegScript%,register,%regmethod%,"%sysdrive%\%progdir%\%commonfilesfolder%\Microsoft Shared\MSInfo\ieinfo5.ocx"
+Run,%ApiRegScript%,install,%regmethod%,iesetup.dll,inseng.dll,msieftp.dll,occache.dll,webcheck.dll,shimgvw.dll
+Run,%ApiRegScript%,runcmd,%regmethod%,"mshta.exe /register"
+Run,%ApiRegScript%,runcmd,%regmethod%,"shmgrate.exe OCInstallShowIE"
+Run,%ApiRegScript%,runcmd,%regmethod%,"shmgrate.exe OCInstallUserConfigIE"
+Run,%ApiRegScript%,runcmd,%regmethod%,"shmgrate.exe OCInstallUserConfigOE"
+Run,%ApiRegScript%,runcmd,%regmethod%,"rundll32.exe IEDKCS32.DLL,BrandCleanInstallStubs MICROS"
+Run,%ApiRegScript%,runcmd,%regmethod%,"rundll32.exe msnsspc.dll,SspcCreateSspiReg"
+Run,%ApiRegScript%,runcmd,%regmethod%,"rundll32.exe msapsspc.dll,SspcCreateSspiReg"
+//Run,%ApiRegScript%,runcmd,%regmethod%,fixmapi.exe
+Run,%ApiRegScript%,runcmd,%regmethod%,ie4uinit.exe
+Run,%ApiRegScript%,register,%regmethod%,"/n /i:U shell32.dll"
+Run,%ApiRegScript%,register,%regmethod%,"/n /i wininet.dll"
+Run,%ApiRegScript%,runcmd,%regmethod%,"rundll32.exe IEDKCS32.DLL,BrandIE4 SIGNUP"
+If,%pCheckBox3%,Equal,True,Run,%ScriptFile%,IEHarden
+If,%pCheckBox3%,Equal,False,Run,%ScriptFile%,IESoften
+IniRead,%ProjectDir%\script.project,IniVariables,PostApiRegScript,%PostApiRegScript%
+IniWriteTextLine,%PostApiRegScript%,Process,"Exec,%ScriptFile%,postproc"
+Run,%ScriptFile%,%OS%%SP%
+End
+
+[InstallCore_Cancel]
+//--
+//If,ExistFile,%ProjectTemp%\tmp.ctl,FileDelete,%ProjectTemp%\tmp.ctl
+//If,ExistFile,%ProjectTemp%\tmpctl.txt,FileDelete,%ProjectTemp%\tmpctl.txt
+//FileCreateBlank,%ProjectTemp%\tmp.ctl
+//TXTAddLine,%ProjectTemp%\tmp.ctl,[tmp.inf]IEAccess.DesktopIcon.AddReg,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,HKLM#$c#$qSOFTWARE\#$q@-2,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,HKCR#$c#$q#$q@-2,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,[tmp.inf]Base.IE.AddReg,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,HKLM#$c#$qSOFTWARE\#$q@-2,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,HKCR#$c#$q#$q@-2,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,[tmp.inf]Base.Sweeper.AddReg,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,HKLM#$c#$qSOFTWARE\#$q@-2,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,HKCR#$c#$q#$q@-2,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,[tmp.inf]TextConverter.AddReg,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,HKLM#$c#$qSOFTWARE\#$q@-2,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,HKCR#$c#$q#$q@-2,Append
+//Run,%ApiRegScript%,ImportInf,IE.inf,W
+//Exec,%ProjectTemp%\tmpctl.txt,Process-Hive
+//--
+
+[IEHarden]
+Run,%ApiRegScript%,runcmd,%regmethod%,"rundll32.exe iesetup.dll,IEHardenAdmin"
+Run,%ApiRegScript%,runcmd,%regmethod%,"rundll32.exe iesetup.dll,IEHardenUser"
+Run,%ApiRegScript%,register,%regmethod%,"/n /i:HKLMHard urlmon.dll"
+Run,%ApiRegScript%,register,%regmethod%,"/n /i:HKLMHard inetcpl.cpl"
+Run,%ApiRegScript%,register,%regmethod%,"/n /i:HKCU urlmon.dll"
+Run,%ApiRegScript%,register,%regmethod%,"/n /i:HKCUHard urlmon.dll"
+Run,%ApiRegScript%,register,%regmethod%,"/n /i:HKCUHard inetcpl.cpl"
+Run,%ApiRegScript%,register,%regmethod%,"/n /i:HKCUHard wininet.dll"
+RegHiveLoad,Tmp_Default,%Target_Sys%\config\default
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings\ZoneMap",IEHarden,1
+RegHiveUnLoad,Tmp_Default
+
+[IESoften]
+Run,%ApiRegScript%,register,%regmethod%,"/n /i:HKLMSoft urlmon.dll"
+Run,%ApiRegScript%,register,%regmethod%,"/n /i:HKLMSoft inetcpl.cpl"
+Run,%ApiRegScript%,register,%regmethod%,"/n /i:HKCU urlmon.dll"
+Run,%ApiRegScript%,register,%regmethod%,"/n /i:HKCUSoft urlmon.dll"
+Run,%ApiRegScript%,register,%regmethod%,"/n /i:HKCUSoft inetcpl.cpl"
+Run,%ApiRegScript%,register,%regmethod%,"/n /i:HKCUSoft wininet.dll"
+RegHiveLoad,Tmp_Default,%Target_Sys%\config\default
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings\ZoneMap",IEHarden,0
+RegHiveUnLoad,Tmp_Default
+
+[XPSP1]
+Run,%ScriptFile%,XP
+
+[XPSP2]
+Run,%ScriptFile%,XP
+
+[XPSP3]
+Run,%ScriptFile%,XP
+
+[W2003SP1]
+Run,%ScriptFile%,W2003
+
+[W2003SP2]
+Run,%ScriptFile%,W2003
+
+[XP]
+//CopyOrExpand,%Source_Win%\plugin.ocx,%Target_Sys%
+//Run,%ApiRegScript%,register,%regmethod%,plugin.ocx
+Run,%ApiRegScript%,runcmd,%regmethod%,"rundll32 iesetup.dll,IEAccessSysInst 0"
+
+[W2003]
+
+[postproc]
+Echo,"Postprocessing: Internet Explorer ..."
+Run,%ScriptFile%,changesettings
+RegHiveLoad,Tmp_Software,%Target_Sys%\config\software
+//RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\{871C5380-42A0-1069-A2EA-08002B30309D},,"Internet Explorer"
+If,ExistRegKey,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnce,BrandClearStubs,RegDelete,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnce,BrandClearStubs
+If,ExistRegKey,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnce,"IE - 00",RegDelete,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnce,"IE - 00"
+If,ExistRegKey,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnce,"IE - 01",RegDelete,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnce,"IE - 01"
+If,ExistRegKey,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnce,"IE - 02",RegDelete,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnce,"IE - 02"
+If,ExistRegKey,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnce,"IE - 03",RegDelete,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnce,"IE - 03"
+//shell32 UserInstall already done
+If,ExistRegKey,HKLM,"Tmp_Software\Microsoft\Active Setup\Installed Components\{89820200-ECBD-11cf-8B85-00AA005B4340}",StubPath,RegDelete,HKLM,"Tmp_Software\Microsoft\Active Setup\Installed Components\{89820200-ECBD-11cf-8B85-00AA005B4340}",StubPath
+//ie4uinit.exe already done
+If,ExistRegKey,HKLM,"Tmp_Software\Microsoft\Active Setup\Installed Components\{89820200-ECBD-11cf-8B85-00AA005B4383}",StubPath,RegDelete,HKLM,"Tmp_Software\Microsoft\Active Setup\Installed Components\{89820200-ECBD-11cf-8B85-00AA005B4383}",StubPath
+//IEHardenAdmin already done
+If,ExistRegKey,HKLM,"Tmp_Software\Microsoft\Active Setup\Installed Components\{A509B1A7-37EF-4b3f-8CFC-4F3A74704073}",StubPath,RegDelete,HKLM,"Tmp_Software\Microsoft\Active Setup\Installed Components\{A509B1A7-37EF-4b3f-8CFC-4F3A74704073}",StubPath
+//IEHardenAdmin already done
+If,ExistRegKey,HKLM,"Tmp_Software\Microsoft\Active Setup\Installed Components\{A509B1A8-37EF-4b3f-8CFC-4F3A74704073}",StubPath,RegDelete,HKLM,"Tmp_Software\Microsoft\Active Setup\Installed Components\{A509B1A8-37EF-4b3f-8CFC-4F3A74704073}",StubPath
+//Branding already done
+If,ExistRegKey,HKLM,"Tmp_Software\Microsoft\Active Setup\Installed Components\>{60B49E34-C7CC-11D0-8953-00A0C90347FF}MICROS",StubPath,RegDelete,HKLM,"Tmp_Software\Microsoft\Active Setup\Installed Components\>{60B49E34-C7CC-11D0-8953-00A0C90347FF}MICROS",StubPath
+//IEACCESS already done
+If,ExistRegKey,HKLM,"Tmp_Software\Microsoft\Active Setup\Installed Components\>{26923b43-4d38-484f-9b9e-de460746276c}",StubPath,RegDelete,HKLM,"Tmp_Software\Microsoft\Active Setup\Installed Components\>{26923b43-4d38-484f-9b9e-de460746276c}",StubPath
+//OEACCESS already done
+If,ExistRegKey,HKLM,"Tmp_Software\Microsoft\Active Setup\Installed Components\>{881dd1c5-3dcf-431b-b061-f3f88e8be88a}",StubPath,RegDelete,HKLM,"Tmp_Software\Microsoft\Active Setup\Installed Components\>{881dd1c5-3dcf-431b-b061-f3f88e8be88a}",StubPath
+RegHiveUnLoad,Tmp_Software
+
+[changesettings]
+Run,%ScriptFile%,SetVariables
+IniRead,%ProjectDir%\script.project,IniVariables,NoWarnRegOverWrite,%NoWarnROW%
+RegHiveLoad,Tmp_Software,%Target_Sys%\config\software
+RegHiveLoad,Tmp_Default,%Target_Sys%\config\default
+Set,%PInfo%,%ProjectInfo%
+IniRead,%PInfo%,Settings,Target,%tmp%
+If,%tmp%,Equal,"",Set,%PInfo%,%ProjectTemp%\ProjectInfo.ini
+//--
+Set,%mram%,%TargetProfilesBaseDir%
+//--changesettings_Cancel_1
+IniRead,%ProjectInfo%,RamDrive,Settings,%TmpDrive%
+IniRead,%ProjectInfo%,RamDrive,DriveLetter,%RamDisk%
+If,Not,%TmpDrive%,Equal,%RamDisk%,Set,%TmpDrive%,%sysdrive%
+IniRead,%ProjectInfo%,String,ProfileBase,%tmp%
+DirMake,"%TargetProfilesBaseDir%\%tmp%\Offline Web Pages"
+DirMake,"%TargetProfilesBaseDir%\%tmp%\Downloaded Program Files"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Subscription Folder",Directory,"%TmpDrive%\%tmp%\Offline Web Pages"
+//RegWrite ! Overwrote existing key "X:\I386\Downloaded Program Files" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings",ActiveXCache,"%TmpDrive%\%tmp%\Downloaded Program Files"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\ActiveX Cache",0,"%TmpDrive%\%tmp%\Downloaded Program Files"
+If,ExistRegKey,HKLM,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\ActiveX Cache",1,RegDelete,HKLM,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\ActiveX Cache",1
+IniRead,%ProjectInfo%,BasePath,AUAppData,%tmp%
+DirMake,"%TargetProfilesBaseDir%\%tmp%\Temporary Internet Files\Content.IE5"
+//DirMake,%TargetProfilesBaseDir%\%tmp%\History\History.IE5
+//RegWrite ! Overwrote existing key "%SystemRoot%\Temporary Internet Files" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths",Directory,"%TmpDrive%\%tmp%\Temporary Internet Files\Content.IE5"
+RegWrite,HKLM,0x3,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths",Size,24,01,00,00
+//RegWrite ! Overwrote existing key "04,00,00,00" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x4,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths",Paths,4
+//RegWrite ! Overwrote existing key "00,20,00,00" with different data
+//RegWrite ! Overwrote existing key "512" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x4,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths\path1",CacheLimit,4070
+//RegWrite ! Overwrote existing key "00,20,00,00" with different data
+//RegWrite ! Overwrote existing key "512" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x4,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths\path2",CacheLimit,4070
+//RegWrite ! Overwrote existing key "00,20,00,00" with different data
+//RegWrite ! Overwrote existing key "512" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x4,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths\path3",CacheLimit,4070
+//RegWrite ! Overwrote existing key "00,20,00,00" with different data
+//RegWrite ! Overwrote existing key "512" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x4,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths\path4",CacheLimit,4070
+//RegWrite ! Overwrote existing key "%SystemRoot%\Temporary Internet Files\cache1" with different data
+//RegWrite ! Overwrote existing key "B:\GenaP\GenaU\Local Settings\Temporary Internet Files\Content.IE5\Cache1" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths\path1",CachePath,"%TmpDrive%\%tmp%\Temporary Internet Files\Content.IE5\Cache1"
+//RegWrite ! Overwrote existing key "%SystemRoot%\Temporary Internet Files\cache2" with different data
+//RegWrite ! Overwrote existing key "B:\GenaP\GenaU\Local Settings\Temporary Internet Files\Content.IE5\Cache2" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths\path2",CachePath,"%TmpDrive%\%tmp%\Temporary Internet Files\Content.IE5\Cache2"
+//RegWrite ! Overwrote existing key "%SystemRoot%\Temporary Internet Files\cache3" with different data
+//RegWrite ! Overwrote existing key "B:\GenaP\GenaU\Local Settings\Temporary Internet Files\Content.IE5\Cache3" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths\path3",CachePath,"%TmpDrive%\%tmp%\Temporary Internet Files\Content.IE5\Cache3"
+//RegWrite ! Overwrote existing key "%SystemRoot%\Temporary Internet Files\cache4" with different data
+//RegWrite ! Overwrote existing key "B:\GenaP\GenaU\Local Settings\Temporary Internet Files\Content.IE5\Cache4" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths\path4",CachePath,"%TmpDrive%\%tmp%\Temporary Internet Files\Content.IE5\Cache4"
+//--changesettings_Cancel_2
+//RegWrite ! Overwrote existing key "14,00,00,00" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x4,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Url History",DaysToKeep,1
+RegWrite,HKLM,0x3,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Url History",CacheLimit,00,02,00,00
+//RegWrite ! Overwrote existing key "%SystemRoot%\History" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x2,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Url History",Directory,#$ptemp#$p\History
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Url History",CachePrefix,"Visited: "
+//RegWrite ! Overwrote existing key "1" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings\5.0\Cache\History",PerUserItem,0
+RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings\5.0\Cache\History",CachePrefix,Visited:
+//RegWrite ! Overwrote existing key "1" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings\5.0\Cache\Content",PerUserItem,0
+RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings\5.0\Cache\Content",CachePrefix,""
+//RegWrite ! Overwrote existing key "1" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings\5.0\Cache\Cookies",PerUserItem,0
+RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings\5.0\Cache\Cookies",CachePrefix,Cookie:
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings",MaxConnectionsPerServer,%pNumberBox1%
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings",MaxConnectionsPer1_0Server,%pNumberBox1%
+If,%NoWarnROW%,Equal,True,System,ERROROFF,2
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings\5.0\Cache\Content",CacheLimit,%pNumberBox2%
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Content",CacheLimit,%pNumberBox2%
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+If,%pCheckBox5%,Equal,True,RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache",Persistent,0
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Internet Explorer\Main",NoUpdateCheck,1
+If,%NoWarnROW%,Equal,True,System,ERROROFF,4
+If,Not,%pTextBox1%,Equal,"",RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Internet Explorer\Main","Start Page",about:blank
+If,Not,%pTextBox2%,Equal,"",RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Internet Explorer\Main",Default_Page_URL,about:blank
+If,%pCheckBox1%,Equal,True,RegWrite,HKLM,0x3,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings",WarnOnPost,01,00,00,00
+If,%pCheckBox1%,Equal,False,RegWrite,HKLM,0x3,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings",WarnOnPost,00,00,00,00
+If,ExistRegKey,HKLM,"Tmp_Default\Software\Microsoft\Internet Explorer\Main","First Home Page",RegDelete,HKLM,"Tmp_Default\Software\Microsoft\Internet Explorer\Main","First Home Page"
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Internet Explorer\International",W2KLpk,0
+If,%NoWarnROW%,Equal,True,System,ERROROFF,18
+If,%pCheckBox10%,Equal,True,RegWrite,HKLM,0x1,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Explorer\AutoComplete,"Append Completion",yes
+If,%pCheckBox10%,Equal,False,RegWrite,HKLM,0x1,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Explorer\AutoComplete,"Append Completion",no
+If,%pCheckBox11%,Equal,True,RegWrite,HKLM,0x1,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Explorer\AutoComplete,AutoSuggest,yes
+If,%pCheckBox11%,Equal,False,RegWrite,HKLM,0x1,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Explorer\AutoComplete,AutoSuggest,no
+If,%pCheckBox12%,Equal,True,RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Internet Explorer\Main","Use FormSuggest",yes
+If,%pCheckBox12%,Equal,False,RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Internet Explorer\Main","Use FormSuggest",no
+If,%pCheckBox13%,Equal,True,RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Internet Explorer\Main","FormSuggest Passwords",yes
+If,%pCheckBox13%,Equal,False,RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Internet Explorer\Main","FormSuggest Passwords",no
+If,%pCheckBox14%,Equal,True,RegWrite,HKLM,0x4,"Tmp_Software\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_HTTP_USERNAME_PASSWORD_DISABLE",explorer.exe,0
+If,%pCheckBox14%,Equal,True,RegWrite,HKLM,0x4,"Tmp_Software\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_HTTP_USERNAME_PASSWORD_DISABLE",iexplore.exe,0
+RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Internet Explorer\Main","FormSuggest PW Ask",no
+RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Internet Explorer\IntelliForms",AskUser,no
+RegWrite,HKLM,0x4,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Webcheck,NoScheduledUpdates,1
+If,%pCheckBox2%,Equal,True,RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Internet Explorer\Main",NotifyDownloadComplete,yes
+If,%pCheckBox2%,Equal,False,RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Internet Explorer\Main",NotifyDownloadComplete,no
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Internet Explorer\International",AutoDetect,1
+RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Internet Explorer\New Windows",PopupMgr,no
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Internet Explorer\Security\P3Global",Enabled,0
+If,%pCheckBox2%,Equal,True,Begin
+If,%NoWarnROW%,Equal,True,System,ERROROFF,2
+RegWrite,HKLM,0x4,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel,{871C5380-42A0-1069-A2EA-08002B30309D},1
+RegWrite,HKLM,0x4,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\ClassicStartMenu,{871C5380-42A0-1069-A2EA-08002B30309D},1
+End
+Else,Begin
+If,%NoWarnROW%,Equal,True,System,ERROROFF,2
+RegWrite,HKLM,0x4,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel,{871C5380-42A0-1069-A2EA-08002B30309D},0
+RegWrite,HKLM,0x4,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\ClassicStartMenu,{871C5380-42A0-1069-A2EA-08002B30309D},0
+End
+RegHiveUnLoad,Tmp_Software
+RegHiveUnLoad,Tmp_Default
+
+[changesettings_Cancel]
+//--changesettings_Cancel_1
+//--
+//Set,%mram%,""
+//IniRead,%PInfo%,TargetPaths,Model,%mram%
+//If,Not,ExistDir,%mram%,Set,%mram%,%TargetDir%
+//--
+//--changesettings_Cancel_2
+//If,Not,%mram%,Equal,"",Be gin
+//IniRead,%PInfo%,RamDrive,Settings,%TmpDrive%
+//IniRead,%PInfo%,RamDrive,DriveLetter,%RamDisk%
+//If,Not,%TmpDrive%,Equal,%RamDisk%,Set,%TmpDrive%,%sysdrive%
+//IniRead,%PInfo%,TargetPaths,Documents_and_Settings,%tmp%
+//If,Not,%tmp%,Equal,"",Be gin
+//DirMake,"%mram%\%tmp%\Offline Web Pages"
+//DirMake,"%mram%\%tmp%\Downloaded Program Files"
+//StrFormat,REPLACE,%tmp%,$ModelRAM,%TmpDrive%,%tmp%
+//RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Subscription Folder",Directory,"%tmp%\Offline Web Pages"
+//RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings",ActiveXCache,"%tmp%\Downloaded Program Files"
+//RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\ActiveX Cache",0,"%tmp%\Downloaded Program Files"
+//If,ExistRegKey,HKLM,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\ActiveX Cache",1,RegDelete,HKLM,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\ActiveX Cache",1
+//End
+//IniRead,%PInfo%,TargetPaths,Local_Settings,%tmp%
+//If,Not,%tmp%,Equal,"",Be gin
+//DirMake,"%mram%\%tmp%\Temporary Internet Files\Content.IE5"
+////DirMake,%mram%\%tmp%\History\History.IE5
+//StrFormat,REPLACE,%tmp%,$ModelRAM,%TmpDrive%,%tmp%
+//RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths",Directory,"%tmp%\Temporary Internet Files\Content.IE5"
+//RegWrite,HKLM,0x3,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths",Size,24,01,00,00
+//RegWrite,HKLM,0x4,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths",Paths,4
+//RegWrite,HKLM,0x4,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths\path1",CacheLimit,4070
+//RegWrite,HKLM,0x4,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths\path2",CacheLimit,4070
+//RegWrite,HKLM,0x4,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths\path3",CacheLimit,4070
+//RegWrite,HKLM,0x4,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths\path4",CacheLimit,4070
+//RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths\path1",CachePath,"%tmp%\Temporary Internet Files\Content.IE5\Cache1"
+//RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths\path2",CachePath,"%tmp%\Temporary Internet Files\Content.IE5\Cache2"
+//RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths\path3",CachePath,"%tmp%\Temporary Internet Files\Content.IE5\Cache3"
+//RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths\path4",CachePath,"%tmp%\Temporary Internet Files\Content.IE5\Cache4"
+//
+//End
+//End
+
+[AuthorEncoded]
+logo.jpg=13034,17379
+Logo=logo.jpg
+
+[EncodedFile-AuthorEncoded-logo.jpg]
+lines=4
+0=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
+1=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
+2=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
+3=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
+4=l2is6mqLqzJ2UwuSmz/K12zcwZPcI/jOjX1ZRaVaBlcDhDOL73if3ocI4432aDTfKFIDc6LokinZ5AA5M7xRY3R3tlsupITHXhN0uW0KzBQUiS4VR20FFdAVMzesO7QVEi6DCxh7fVKmtvNApGMkMZloATqp9xafJ9SYUr/BGccTCBpngND5d6bpF1+9nU2zTdPlOEzHZhrzpe1omV4AUiHBmhQ+G9iZmSWfLJbtTesN9ZuU2mthATe3PWoPAhRIeEdDZIkaea5lbqg5o/hPH5a6ZesD/XpSefUOpBchnj10tRyTRygUE6wqP6YD5r7fvwAkDr/nHMgIsutBeSqJl+O5cW9sCdROdNgnOKeipoKIby8ersh8VCZS5iVk2l8AnlNF0/2unScNW0/MMBHTfMkAhT8vgJhC94q6J4GjBcvQI3N2f1SuBdPAcjqowtFc+1bQR/0ANzNPGmfHaEqPYJsln7eJG0pUwjFa1yC88DSUF8B72u+nPqTpPtPHxWIMHktmNcLTztxvl+kKivfrCMNl6WiZQo1WvHddkgoYH68QID1SjPUZ4yK8VrczCkyO2fKGciGbw3Okw1krxyXDdJnVex8a+srVpARsLpWmcxvFOyWZAZUNr394M36VTvxHtELRC2D9+IHggeBaysc0SyislEUD7OsLyfQwQXuHDsUR/2CQjw5Fs3S99PJKByTKSibJ9HtpVPZmKuD1AVRuaTpt1hYKZJeWUnZfAP7jD4DQu9w2NzBCX2oxlfpkHephnoEJoEY2PIhBUTBb617a29vPBNxgkRjpS87nFn4uxFBNfOtyTiB3dod8v68Kmjl4SG/2p51r5tx7FXPCCg5OskxSUdGmQyKNDDR6Qgfp3bx5AcS+APL/G7fYt+As+kfBxP8OX4iLU+P+T1W1L4v/D5/40UN4nOPIyU/P18sqSGcYBSMRSBhD6EVG2OUv7NI0ZmACAOnhBjDUuWCdAQAAAAIAAAAkAAAAojIAAAAAAAABAAAAAAAAAAAAAAA
+
+[DownloadXXX]
+IniRead,%ScriptFile%,Main,Level,%LevelBefore%
+Call,DownloadXQ
+IniWrite,%ScriptFile%,Main,Level,%LevelBefore%
+
+[UploadXXX]
+IniRead,%ScriptFile%,Main,Level,%LevelBefore%
+Call,UploadXQ
+IniWrite,%ScriptFile%,Main,Level,%LevelBefore%
+
+[Settings_Default]
+IniWrite,%ScriptFile%,Main,Level,0
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+

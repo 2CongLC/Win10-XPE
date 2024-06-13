@@ -1,0 +1,1005 @@
+[Main]
+Title=ActiveX Support
+Type=Plugin
+Author=Zerojinny(zerojinny@gmail.com)
+Description=(Gena) ActiveX Support for Gena Project
+Credits=http://TheOven.org
+Version=017
+Download_Level=1
+Level=3
+Selected=False
+Mandatory=False
+NoWarning=False
+Contact=http://TheOven.org
+Date=2017.02.11
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Components/Core/1%20System/IE_ActiveX.Script
+CertifiedBy=
+Certification=
+HistoryNotes01=Zerojinny says http://www.hangame.com/ always request installation of activex each time webpage opened, and to fix boot time registration (especially atl.dll) required, but my tests showed boot time registration does not fix hangame.com phenemon,maybe this is all aboue ie06 being too old or language thingy....
+HistoryNotes02=Lancelot as far as i can test, none of dll registrations are mandatory for activex, only not registering initpki.dll have effect on representation of installing new activex control which does not effect installing new activex control.:).
+HistoryNotes03=Lancelot RF already registers all activex controls ;). (and thanks to fxscrpt again :> for temp setting codes) No need this Plugin with RF.
+History011=Lancelot some modifications (and notes) on the Plugin to make ready for server
+History012=Lancelot build time registration removed (now useless)
+History014=Lancelot IniVariables RegFactory
+History015=Lancelot auto RF disable fixed
+History016=Lancelot NoWarnROW implemented - Date:2016.01.28
+History017=Lancelot - Add DUC Buttons // Added Components_PluginCache_Extract - Date:2017.02.11
+
+[Variables]
+%hash%=#
+
+[Interface]
+pButton_Show_Second_Gui=a,1,8,336,232,16,16,Show_Second_Gui,True,True,False,_Show_Second_Gui_,True
+pButton_Show_First_Gui="Go Back to Basic GUI",0,8,21,5,169,48,Show_First_Gui,True,True,False,_Show_First_Gui_,True
+pCheckBox_AutoExitWithRF="Auto Disable when RegFactory (RF) Enabled +",0,3,29,56,154,28,True
+pTextLabel_Info="Default settings:#$x+ Selected#$x- Not Selected",0,1,198,8,100,44,8,Bold
+pCheckBox2="Install or Register dll Files at Boot-Time -",1,3,20,134,214,18,False
+BootTime_CheckBox_atldll="atl.dll +",0,3,43,164,60,18,True
+BootTime_CheckBox_corpoldll="corpol.dll +",0,3,43,183,75,18,True
+Boottime_CheckBox_extmgrdll="extmgr.dll +",0,3,43,202,80,18,True
+BootTime_CheckBox_occachedll="occache.dll +",0,3,43,221,88,18,True
+BootTime_Button_Remove_atldll="Remove Boot atl.dll",0,8,136,163,106,18,Remove_atldll
+BootTime_Button_Remove_corpoldll="Remove Boot corpol.dll",0,8,136,182,123,18,Remove_corpoldll
+BootTime_Button_Remove_extmgrdll="Remove Boot extmgr.dll",0,8,136,201,123,18,Remove_extmgrdll
+BootTime_Button_Remove_occachedll="Remove Boot occache.dll",0,8,136,220,130,18,Remove_occachedll
+BootTime_Bevel=pBevel1,0,12,14,149,274,97
+pCheckBox3="Install initpki.dll at Boot-Time -",1,3,20,99,170,18,False
+BootTime_Button_Remove_initpkidll="Remove Boot initpki.dll",0,8,194,99,130,18,Remove_initpkidll
+WebLabel_Plugin="Plugin Page",1,10,338,4,55,18,http://TheOven.org/index.php?board=9
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[Process]
+If,ExistFile,%ProjectTemp%\Components_PluginCache_Extract.ini,Echo,"Components PluginCache"
+If,Not,ExistFile,%ProjectTemp%\Components_PluginCache_Extract.ini,Run,%ScriptFile%,Process_Normal
+
+[Process_Normal]
+Set,%Go_process_Main%,No
+IniRead,%ProjectDir%\script.project,IniVariables,RegFactoryState,%RegFactoryState%
+If,%pCheckBox_AutoExitWithRF%%RegFactoryState%,Equal,TrueDisabled,Set,%Go_process_Main%,Yes
+If,%pCheckBox_AutoExitWithRF%,Equal,False,Set,%Go_process_Main%,Yes
+If,%Go_process_Main%,Equal,Yes,Run,%scriptfile%,Process_Main
+
+[Process_Main]
+IniRead,%ProjectDir%\script.project,IniVariables,NoWarnRegOverWrite,%NoWarnROW%
+//--
+Require_FileQ,atl.dll
+Require_FileQ,corpol.dll
+Require_FileQ,extmgr.dll
+Require_FileQ,initpki.dll
+Require_FileQ,occache.dll
+Require_FileQ,DSOUND.dll
+Require_FileQ,mscms.dll
+Require_FileQ,inetmib1.dll
+//--
+If,Not,%pCheckBox2%%pCheckBox3%,Equal,FalseFalse,Require,File,Regsvr32.exe
+//--
+RegHiveLoad,Tmp_System,%Target_Sys%\setupreg.hiv
+RegHiveLoad,Tmp_Default,%Target_Sys%\config\default
+RegHiveLoad,Tmp_Software,%Target_Sys%\config\software
+//--
+//Lancelot without registering initpki.dll boottime&buildtime using this key make "Install" button operational hence no need initpki.dll at boottime&buildtime ;) but Name: Publisher: info not seen, only filename to be installed ;).
+RegWrite,HKLM,0x4,Tmp_Default\Software\Microsoft\Internet#$sExplorer\Download,RunInvalidSignatures,1
+//--
+// Fxscrpt you are always greatest :>.
+//--
+IniRead,%ProjectInfo%,BasePath,ProfileBase,%t%
+DirMake,"%TargetProfilesBaseDir%\%t%\Offline Web Pages"
+DirMake,"%TargetProfilesBaseDir%\%t%\Downloaded Program Files"
+IniRead,%ProjectInfo%,String,ProfileBase,%tmp%
+Set,%tmp%,%SettingsDrive%\%tmp%
+//RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Subscription Folder",Directory,"%tmp%\Offline Web Pages"
+//RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings",ActiveXCache,"%tmp%\Downloaded Program Files"
+//RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\ActiveX Cache",0,"%tmp%\Downloaded Program Files"
+RegWrite,HKLM,0x2,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Subscription Folder",Directory,"%tmp%\Offline Web Pages"
+If,%NoWarnROW%,Equal,True,System,ERROROFF,2
+RegWrite,HKLM,0x2,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings",ActiveXCache,"%tmp%\Downloaded Program Files"
+RegWrite,HKLM,0x2,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\ActiveX Cache",0,"%tmp%\Downloaded Program Files"
+If,ExistRegKey,HKLM,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\ActiveX Cache",1,RegDelete,HKLM,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\ActiveX Cache",1
+//--
+IniRead,%ProjectInfo%,BasePath,LocalSettings,%tmp%
+DirMake,"%TargetProfilesBaseDir%\%tmp%\Temporary Internet Files\Content.IE5"
+Set,%tmp%,%SettingsDrive%\%tmp%
+//RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths",Directory,"%tmp%\Temporary Internet Files\Content.IE5"
+RegWrite,HKLM,0x2,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths",Directory,"%tmp%\Temporary Internet Files\Content.IE5"
+RegWrite,HKLM,0x3,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths",Size,24,01,00,00
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x4,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths",Paths,4
+RegWrite,HKLM,0x4,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths\path1",CacheLimit,4070
+RegWrite,HKLM,0x4,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths\path2",CacheLimit,4070
+RegWrite,HKLM,0x4,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths\path3",CacheLimit,4070
+RegWrite,HKLM,0x4,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths\path4",CacheLimit,4070
+//RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths\path1",CachePath,"%tmp%\Temporary Internet Files\Content.IE5\Cache1"
+//RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths\path2",CachePath,"%tmp%\Temporary Internet Files\Content.IE5\Cache2"
+//RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths\path3",CachePath,"%tmp%\Temporary Internet Files\Content.IE5\Cache3"
+//RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths\path4",CachePath,"%tmp%\Temporary Internet Files\Content.IE5\Cache4"
+RegWrite,HKLM,0x2,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths\path1",CachePath,"%tmp%\Temporary Internet Files\Content.IE5\Cache1"
+RegWrite,HKLM,0x2,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths\path2",CachePath,"%tmp%\Temporary Internet Files\Content.IE5\Cache2"
+RegWrite,HKLM,0x2,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths\path3",CachePath,"%tmp%\Temporary Internet Files\Content.IE5\Cache3"
+RegWrite,HKLM,0x2,"Tmp_Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Paths\path4",CachePath,"%tmp%\Temporary Internet Files\Content.IE5\Cache4"
+//--
+//--
+If,%pCheckBox2%,Equal,True,Run,%ScriptFile%,Boot-Time
+//initpki.dll 03CoreCrypto
+If,%pCheckBox3%,Equal,True,RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\550,initpki,"hiderun /w regsvr32.exe /s initpki.dll"
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{364626c9-440b-4cc5-9e6e-f854a57fcdde},,IE#$sExtensions#$sManager#$sDialog
+RegWrite,HKLM,0x2,Tmp_Software\Classes\CLSID\{364626c9-440b-4cc5-9e6e-f854a57fcdde}\InProcServer32,,#$pSystemRoot#$p\system32\extmgr.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{364626c9-440b-4cc5-9e6e-f854a57fcdde}\InProcServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{692F0339-CBAA-47e6-B5B5-3B84DB604E87},,Extensions#$sManager#$sFolder
+RegWrite,HKLM,0x2,Tmp_Software\Classes\CLSID\{692F0339-CBAA-47e6-B5B5-3B84DB604E87}\DefaultIcon,,#$pSystemRoot#$p\system32\extmgr.dll
+RegWrite,HKLM,0x2,Tmp_Software\Classes\CLSID\{692F0339-CBAA-47e6-B5B5-3B84DB604E87}\InProcServer32,,#$pSystemRoot#$p\system32\extmgr.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{692F0339-CBAA-47e6-B5B5-3B84DB604E87}\InProcServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x3,Tmp_Software\Classes\CLSID\{692F0339-CBAA-47e6-B5B5-3B84DB604E87}\ShellFolder,Attributes,04,00,00,00
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{8369AB20-56C9-11D0-94E8-00AA0059CE02},,Cleaner#$sfor#$sDownloaded#$sProgram#$sFiles
+If,%NoWarnROW%,Equal,True,System,ERROROFF,2
+RegWrite,HKLM,0x2,Tmp_Software\Classes\CLSID\{8369AB20-56C9-11D0-94E8-00AA0059CE02}\DefaultIcon,,"#$pSystemRoot#$p\system32\occache.dll#$c0"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\CLSID\{8369AB20-56C9-11D0-94E8-00AA0059CE02}\InProcServer32,,#$pSystemRoot#$p\system32\occache.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{8369AB20-56C9-11D0-94E8-00AA0059CE02}\InProcServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{83EE8395-7DF5-43ee-A5C0-E1F1D1B0748D},,Extensions#$sManager
+RegWrite,HKLM,0x2,Tmp_Software\Classes\CLSID\{83EE8395-7DF5-43ee-A5C0-E1F1D1B0748D}\InProcServer32,,#$pSystemRoot#$p\system32\extmgr.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{83EE8395-7DF5-43ee-A5C0-E1F1D1B0748D}\InProcServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{88C6C381-2E85-11D0-94DE-444553540000},,ActiveX#$sCache#$sFolder
+If,%NoWarnROW%,Equal,True,System,ERROROFF,2
+RegWrite,HKLM,0x2,Tmp_Software\Classes\CLSID\{88C6C381-2E85-11D0-94DE-444553540000}\DefaultIcon,,#$pSystemRoot#$p\system32\occache.dll
+RegWrite,HKLM,0x2,Tmp_Software\Classes\CLSID\{88C6C381-2E85-11D0-94DE-444553540000}\InProcServer32,,#$pSystemRoot#$p\system32\occache.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{88C6C381-2E85-11D0-94DE-444553540000}\InProcServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x3,Tmp_Software\Classes\CLSID\{88C6C381-2E85-11D0-94DE-444553540000}\ShellFolder,Attributes,04,00,00,00
+If,%NoWarnROW%,Equal,True,System,ERROROFF,13
+RegWrite,HKLM,0x3,Tmp_Software\Microsoft\SystemCertificates\CA\Certificates\063DA67748F0ECCC690D319BCDCD0E72AC8D48D5,Blob,14,00,00,00,01,00,00,00,14,00,00,00,e5,a1,7b,f4,87,33,50,d8,1e,82,b7,96,39,9f,1e,51,60,fb,2e,1e,03,00,00,00,01,00,00,00,14,00,00,00,06,3d,a6,77,48,f0,ec,cc,69,0d,31,9b,cd,cd,0e,72,ac,8d,48,d5,19,00,00,00,01,00,00,00,10,00,00,00,12,fa,bd,58,ac,d5,fc,77,cd,76,08,b3,d3,37,8c,3d,20,00,00,00,01,00,00,00,e9,02,00,00,30,82,02,e5,30,82,01,cd,a0,03,02,01,02,02,10,8f,b2,ad,b5,3a,90,56,a5,11,d3,56,94,7c,ed,ee,c0,30,0d,06,09,2a,86,48,86,f7,0d,01,01,04,05,00,30,1d,31,1b,30,19,06,03,55,04,03,13,12,52,6f,6f,74,20,53,47,43,20,41,75,74,68,6f,72,69,74,79,30,1e,17,0d,39,39,30,38,32,30,30,30,31,36,32,38,5a,17,0d,30,36,30,32,32,33,30,37,30,30,30,30,5a,30,45,31,0b,30,09,06,03,55,04,06,13,02,55,53,31,18,30,16,06,03,55,04,0a,13,0f,47,54,45,20,43,6f,72,70,6f,72,61,74,69,6f,6e,31,1c,30,1a,06,03,55,04,03,13,13,47,54,45,20,43,79,62,65,72,54,72,75,73,74,20,52,6f,6f,74,30,81,9f,30,0d,06,09,2a,86,48,86,f7,0d,01,01,01,05,00,03,81,8d,00,30,81,89,02,81,81,00,b8,e6,4f,ba,db,98,7c,71,7c,af,44,b7,d3,0f,46,d9,64,e5,93,c1,42,8e,c7,ba,49,8d,35,2d,7a,e7,8b,bd,e5,05,31,59,c6,b1,2f,0a,0c,fb,9f,a7,3f,a2,09,66,84,56,1e,37,29,1b,87,e9,7e,0c,ca,9a,9f,a5,7f,f5,15,94,a3,d5,a2,46,82,d8,68,4c,d1,37,15,06,68,af,bd,f8,b0,b3,f0,29,f5,95,5a,09,16,61,77,0a,22,25,d4,4f,45,aa,c7,bd,e5,96,df,f9,d4,a8,8e,42,cc,24,c0,1e,91,27,4a,b5,6d,06,80,63,39,c4,a2,5e,38,03,02,03,01,00,01,a3,7d,30,7b,30,0d,06,03,55,1d,0a,04,06,30,04,03,02,07,80,30,20,06,03,55,1d,25,04,19,30,17,06,0a,2b,06,01,04,01,82,37,0a,03,03,06,09,60,86,48,01,86,f8,42,04,01,30,48,06,03,55,1d,01,04,41,30,3f,80,10,0d,27,29,e4,05,2a,97,b4,77,58,35,47,93,2d,06,b8,a1,1f,30,1d,31,1b,30,19,06,03,55,04,03,13,12,52,6f,6f,74,20,53,47,43,20,41,75,74,68,6f,72,69,74,79,82,0a,20,9d,11,d1,0e,7f,7b,85,74,80,30,0d,06,09,2a,86,48,86,f7,0d,01,01,04,05,00,03,82,01,01,00,79,88,c9,e3,3c,4f,e3,33,c7,1a,94,a8,d4,80,74,45,e2,19,92,4c,f4,68,78,09,48,e4,37,cc,ad,8e,ff,e0,a5,b3,9f,28,de,ea,78,4f,fc,b3,7d,00,bd,36,2f,eb,8a,b0,b0,9e,b0,83,d1,0e,cf,41,b9,69,7c,7b,0d,a2,ff,1f,31,33,37,06,07,91,1c,37,1f,93,21,b6,f3,0f,24,c6,06,68,60,51,6a,e5,ed,f9,40,39,87,b2,59,b4,41,26,6c,11,f9,9b,f2,61,29,b7,33,2c,2d,ae,31,7c,b4,2d,3c,78,22,1f,da,fd,10,8e,b2,ac,8b,0e,93,6b,bf,52,f4,51,a9,83,9b,8c,08,6d,d8,6d,c5,83,7d,48,55,60,d2,0c,4c,1b,8b,66,35,8d,54,1a,03,ff,08,81,b5,df,e0,b5,61,02,fc,80,5c,03,b6,e7,7c,d4,96,0e,d9,21,3c,07,1d,07,f6,7c,d2,98,3c,02,24,f9,a0,55,5c,85,5b,3d,53,e5,50,c9,42,d6,49,1f,3f,e5,db,88,77,fd,98,71,9a,ba,28,8a,af,98,92,d7,21,6e,f5,57,6a,27,b4,2b,17,89,54,8a,24,dc,f9,4d,47,11,24,f3,ee,99,98,18,2d,4f,d1,48,2c,8f,ea,23,a9,22,21,94
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\SystemCertificates\CA\Certificates\109F1CAED645BB78B3EA2B94C0697C740733031C
+RegWrite,HKLM,0x3,Tmp_Software\Microsoft\SystemCertificates\CA\Certificates\12519AE9CD777A560184F1FBD54215222E95E71F,Blob,14,00,00,00,01,00,00,00,14,00,00,00,58,63,7c,48,ea,9b,ea,f2,0b,64,73,25,12,f2,26,cc,a5,7b,9a,5a,03,00,00,00,01,00,00,00,14,00,00,00,12,51,9a,e9,cd,77,7a,56,01,84,f1,fb,d5,42,15,22,2e,95,e7,1f,19,00,00,00,01,00,00,00,10,00,00,00,a8,89,c4,49,64,03,d2,61,9e,04,0a,d2,82,ff,c1,59,20,00,00,00,01,00,00,00,6a,03,00,00,30,82,03,66,30,82,02,cf,a0,03,02,01,02,02,10,0d,8b,4f,ee,aa,d2,18,5b,f4,75,6a,9d,29,e1,7f,fb,30,0d,06,09,2a,86,48,86,f7,0d,01,01,02,05,00,30,5f,31,0b,30,09,06,03,55,04,06,13,02,55,53,31,17,30,15,06,03,55,04,0a,13,0e,56,65,72,69,53,69,67,6e,2c,20,49,6e,63,2e,31,37,30,35,06,03,55,04,0b,13,2e,43,6c,61,73,73,20,31,20,50,75,62,6c,69,63,20,50,72,69,6d,61,72,79,20,43,65,72,74,69,66,69,63,61,74,69,6f,6e,20,41,75,74,68,6f,72,69,74,79,30,1e,17,0d,39,38,30,35,31,32,30,30,30,30,30,30,5a,17,0d,30,38,30,35,31,32,32,33,35,39,35,39,5a,30,81,cc,31,17,30,15,06,03,55,04,0a,13,0e,56,65,72,69,53,69,67,6e,2c,20,49,6e,63,2e,31,1f,30,1d,06,03,55,04,0b,13,16,56,65,72,69,53,69,67,6e,20,54,72,75,73,74,20,4e,65,74,77,6f,72,6b,31,46,30,44,06,03,55,04,0b,13,3d,77,77,77,2e,76,65,72,69,73,69,67,6e,2e,63,6f,6d,2f,72,65,70,6f,73,69,74,6f,72,79,2f,52,50,41,20,49,6e,63,6f,72,70,2e,20,42,79,20,52,65,66,2e,2c,4c,49,41,42,2e,4c,54,44,28,63,29,39,38,31,48,30,46,06,03,55,04,03,13,3f,56,65,72,69,53,69,67,6e,20,43,6c,61,73,73,20,31,20,43,41,20,49,6e,64,69,76,69,64,75,61,6c,20,53,75,62,73,63,72,69,62,65,72,2d,50,65,72,73,6f,6e,61,20,4e,6f,74,20,56,61,6c,69,64,61,74,65,64,30,81,9f,30,0d,06,09,2a,86,48,86,f7,0d,01,01,01,05,00,03,81,8d,00,30,81,89,02,81,81,00,bb,5a,44,8a,04,16,bb,55,fd,03,7a,8a,2d,94,4f,15,78,36,b8,0d,4a,b2,6f,9c,54,bf,bc,e8,77,2a,9d,b9,f0,68,bb,95,d9,31,41,70,7a,81,4b,b9,48,13,56,2d,c7,08,e1,84,42,ab,c0,a2,92,ab,44,5c,aa,42,f0,82,0e,02,e9,2f,fb,c2,3b,bb,be,c9,27,0a,5d,b6,b0,36,42,33,b5,6e,54,88,4f,87,4a,bf,19,da,f9,15,e8,0f,87,b6,1c,e3,cc,c6,9a,8e,7f,6a,24,92,e3,fc,e0,65,ba,a7,b1,7e,ef,c9,db,37,6a,c8,4a,c8,09,06,e4,99,02,03,01,00,01,a3,81,b4,30,81,b1,30,11,06,09,60,86,48,01,86,f8,42,01,01,04,04,03,02,01,06,30,35,06,03,55,1d,1f,04,2e,30,2c,30,2a,a0,28,a0,26,86,24,68,74,74,70,3a,2f,2f,63,72,6c,2e,76,65,72,69,73,69,67,6e,2e,63,6f,6d,2f,70,63,61,31,2e,31,2e,31,2e,63,72,6c,30,47,06,03,55,1d,20,04,40,30,3e,30,3c,06,0b,60,86,48,01,86,f8,45,01,07,01,01,30,2d,30,2b,06,08,2b,06,01,05,05,07,02,01,16,1f,77,77,77,2e,76,65,72,69,73,69,67,6e,2e,63,6f,6d,2f,72,65,70,6f,73,69,74,6f,72,79,2f,52,50,41,30,0f,06,03,55,1d,13,04,08,30,06,01,01,ff,02,01,00,30,0b,06,03,55,1d,0f,04,04,03,02,01,06,30,0d,06,09,2a,86,48,86,f7,0d,01,01,02,05,00,03,81,81,00,42,7c,0e,df,8c,79,4c,ac,bf,08,ec,4d,55,2f,50,89,a0,c5,5e,4e,2e,5e,95,32,9b,79,ad,65,11,0b,1c,4a,52,c4,d5,a8,31,21,8e,de,10,9b,6c,08,c5,07,e6,03,b9,e7,c8,34,78,09,09,f2,bc,06,42,f8,5a,8c,83,d1,8a,de,aa,22,f5,d9,e3,21,d2,cf,65,8c,06,33,b0,cd,20,b2,33,cd,0a,bd,3e,e1,9d,c1,35,a9,64,b0,a7,a5,24,5b,e9,f1,68,eb,13,c4,7c,37,f4,94,64,0d,9a,c5,bd,33,17,ef,83,33,a0,3e,e5,aa,3e,ae,d8,73,1f,ad
+RegWrite,HKLM,0x3,Tmp_Software\Microsoft\SystemCertificates\CA\Certificates\189271E573FED295A8C130EAF357A20C4A9F115E,Blob,14,00,00,00,01,00,00,00,14,00,00,00,53,32,d1,b3,cf,7f,fa,e0,f1,a0,5d,85,4e,92,d2,9e,45,1d,b4,4f,03,00,00,00,01,00,00,00,14,00,00,00,18,92,71,e5,73,fe,d2,95,a8,c1,30,ea,f3,57,a2,0c,4a,9f,11,5e,19,00,00,00,01,00,00,00,10,00,00,00,99,c0,39,58,d4,13,8c,59,ae,87,67,2b,eb,67,43,2a,20,00,00,00,01,00,00,00,bc,03,00,00,30,82,03,b8,30,82,02,a0,a0,03,02,01,02,02,10,08,7c,8e,1f,ad,9b,56,a5,11,d3,56,9a,2c,4a,68,a0,30,0d,06,09,2a,86,48,86,f7,0d,01,01,04,05,00,30,1d,31,1b,30,19,06,03,55,04,03,13,12,52,6f,6f,74,20,53,47,43,20,41,75,74,68,6f,72,69,74,79,30,1e,17,0d,39,39,30,38,32,30,30,30,35,37,31,30,5a,17,0d,31,39,30,36,32,34,30,37,30,30,30,30,5a,30,81,93,31,0b,30,09,06,03,55,04,06,13,02,55,53,31,0b,30,09,06,03,55,04,08,13,02,55,54,31,17,30,15,06,03,55,04,07,13,0e,53,61,6c,74,20,4c,61,6b,65,20,43,69,74,79,31,1e,30,1c,06,03,55,04,0a,13,15,54,68,65,20,55,53,45,52,54,52,55,53,54,20,4e,65,74,77,6f,72,6b,31,21,30,1f,06,03,55,04,0b,13,18,68,74,74,70,3a,2f,2f,77,77,77,2e,75,73,65,72,74,72,75,73,74,2e,63,6f,6d,31,1b,30,19,06,03,55,04,03,13,12,55,54,4e,20,2d,20,44,41,54,41,43,6f,72,70,20,53,47,43,30,82,01,22,30,0d,06,09,2a,86,48,86,f7,0d,01,01,01,05,00,03,82,01,0f,00,30,82,01,0a,02,82,01,01,00,df,ee,58,10,a2,2b,6e,55,c4,8e,bf,2e,46,09,e7,e0,08,0f,2e,2b,7a,13,94,1b,bd,f6,b6,80,8e,65,05,93,00,1e,bc,af,e2,0f,8e,19,0d,12,47,ec,ac,ad,a3,fa,2e,70,f8,de,6e,fb,56,42,15,9e,2e,5c,ef,23,de,21,b9,05,76,27,19,0f,4f,d6,c3,9c,b4,be,94,19,63,f2,a6,11,0a,eb,53,48,9c,be,f2,29,3b,16,e8,1a,a0,4c,a6,c9,f4,18,59,68,c0,70,f2,53,00,c0,5e,50,82,a5,56,6f,36,f9,4a,e0,44,86,a0,4d,4e,d6,47,6e,49,4a,cb,67,d7,a6,c4,05,b9,8e,1e,f4,fc,ff,cd,e7,36,e0,9c,05,6c,b2,33,22,15,d0,b4,e0,cc,17,c0,b2,c0,f4,fe,32,3f,29,2a,95,7b,d8,f2,a7,4e,0f,54,7c,a1,0d,80,b3,09,03,c1,ff,5c,dd,5e,9a,3e,bc,ae,bc,47,8a,6a,ae,71,ca,1f,b1,2a,b8,5f,42,05,0b,ec,46,30,d1,72,0b,ca,e9,56,6d,f5,ef,df,78,be,61,ba,b2,a5,ae,04,4c,bc,a8,ac,69,15,97,bd,ef,eb,b4,8c,bf,35,f8,d4,c3,d1,28,0e,5c,3a,9f,70,18,33,20,77,c4,a2,af,02,03,01,00,01,a3,7d,30,7b,30,0d,06,03,55,1d,0a,04,06,30,04,03,02,07,80,30,20,06,03,55,1d,25,04,19,30,17,06,0a,2b,06,01,04,01,82,37,0a,03,03,06,09,60,86,48,01,86,f8,42,04,01,30,48,06,03,55,1d,01,04,41,30,3f,80,10,0d,27,29,e4,05,2a,97,b4,77,58,35,47,93,2d,06,b8,a1,1f,30,1d,31,1b,30,19,06,03,55,04,03,13,12,52,6f,6f,74,20,53,47,43,20,41,75,74,68,6f,72,69,74,79,82,0a,20,9d,11,d1,0e,7f,7b,85,74,80,30,0d,06,09,2a,86,48,86,f7,0d,01,01,04,05,00,03,82,01,01,00,e2,f8,e8,5d,ae,95,74,57,63,d5,d1,38,df,a1,82,c1,92,14,4c,88,4b,4a,86,c9,81,5c,37,3f,86,ad,7b,29,87,34,d9,e0,3f,64,42,e4,4d,1e,ef,25,de,8f,19,7e,d8,24,cb,d1,b9,cc,bb,7c,11,23,65,ad,99,18,fe,6e,30,7f,84,5b,ea,cc,5b,d6,c9,eb,7b,1f,6c,51,89,70,d2,e3,d8,4d,0a,5e,30,0e,79,f0,28,26,6f,df,16,3d,fc,6a,45,1a,45,7a,42,1d,d5,bf,50,d1,c3,9f,fb,98,86,bd,da,f9,fb,97,b1,eb,85,7c,46,10,f5,09,e9,47,d2,2c,5e,a0,52,eb,48,2a,3c,60,a5,fb,de,66,a6,90,e1,da,3a,23,02,0f,af,9d,7a,5d,03,33,3b,a6,a5,26,0d,46,54,df,53,4a,cc,b5,56,40,32,87,33,7d,b3,48,d8,e8,05,cb,bd,7f,49,5b,d8,3f,83,69,eb,95,1b,cc,53,94,b8,18,19,10,c1,02,c2,c3,c3,17,fa,5f,dc,9f,97,ce,22,08,e2,57,6f,d6,2d,94,e7,e3,f6,d2,1d,0f,43,ad,0e,17,c2,27,cc,40,17,f1,45,60,4b,df,c1,e8,89,9c,6e,0e,54,57,ac,07,db,53,b0,98,26,12,66,cb
+RegWrite,HKLM,0x3,Tmp_Software\Microsoft\SystemCertificates\CA\Certificates\2D69A20EC4F0CD19037FD6D6246B1EE0EC41BA22,Blob,14,00,00,00,01,00,00,00,14,00,00,00,07,15,28,6d,70,73,aa,b2,8a,7c,0f,86,ce,38,93,00,38,05,8a,b1,03,00,00,00,01,00,00,00,14,00,00,00,2d,69,a2,0e,c4,f0,cd,19,03,7f,d6,d6,24,6b,1e,e0,ec,41,ba,22,19,00,00,00,01,00,00,00,10,00,00,00,41,87,d1,f7,d5,69,d7,ca,b1,29,11,1d,f8,99,91,81,20,00,00,00,01,00,00,00,69,03,00,00,30,82,03,65,30,82,02,4d,a0,03,02,01,02,02,10,92,f3,bb,a6,49,ab,4f,a5,11,d3,3b,b9,29,e2,78,50,30,0d,06,09,2a,86,48,86,f7,0d,01,01,04,05,00,30,1d,31,1b,30,19,06,03,55,04,03,13,12,52,6f,6f,74,20,53,47,43,20,41,75,74,68,6f,72,69,74,79,30,1e,17,0d,39,39,30,37,31,36,32,30,30,30,35,39,5a,17,0d,30,34,30,37,31,36,32,30,30,30,35,38,5a,30,81,c4,31,0b,30,09,06,03,55,04,06,13,02,5a,41,31,15,30,13,06,03,55,04,08,13,0c,57,65,73,74,65,72,6e,20,43,61,70,65,31,12,30,10,06,03,55,04,07,13,09,43,61,70,65,20,54,6f,77,6e,31,1d,30,1b,06,03,55,04,0a,13,14,54,68,61,77,74,65,20,43,6f,6e,73,75,6c,74,69,6e,67,20,63,63,31,28,30,26,06,03,55,04,0b,13,1f,43,65,72,74,69,66,69,63,61,74,69,6f,6e,20,53,65,72,76,69,63,65,73,20,44,69,76,69,73,69,6f,6e,31,19,30,17,06,03,55,04,03,13,10,54,68,61,77,74,65,20,53,65,72,76,65,72,20,43,41,31,26,30,24,06,09,2a,86,48,86,f7,0d,01,09,01,16,17,73,65,72,76,65,72,2d,63,65,72,74,73,40,74,68,61,77,74,65,2e,63,6f,6d,30,81,9f,30,0d,06,09,2a,86,48,86,f7,0d,01,01,01,05,00,03,81,8d,00,30,81,89,02,81,81,00,d3,a4,50,6e,c8,ff,56,6b,e6,cf,5d,b6,ea,0c,68,75,47,a2,aa,c2,da,84,25,fc,a8,f4,47,51,da,85,b5,20,74,94,86,1e,0f,75,c9,e9,08,61,f5,06,6d,30,6e,15,19,02,e9,52,c0,62,db,4d,99,9e,e2,6a,0c,44,38,cd,fe,be,e3,64,09,70,c5,fe,b1,6b,29,b6,2f,49,c8,3b,d4,27,04,25,10,97,2f,e7,90,6d,c0,28,42,99,d7,4c,43,de,c3,f5,21,6d,54,9f,5d,c3,58,e1,c0,e4,d9,5b,b0,b8,dc,b4,7b,df,36,3a,c2,b5,66,22,12,d6,87,0d,02,03,01,00,01,a3,7d,30,7b,30,0d,06,03,55,1d,0a,04,06,30,04,03,02,07,80,30,20,06,03,55,1d,25,04,19,30,17,06,0a,2b,06,01,04,01,82,37,0a,03,03,06,09,60,86,48,01,86,f8,42,04,01,30,48,06,03,55,1d,01,04,41,30,3f,80,10,0d,27,29,e4,05,2a,97,b4,77,58,35,47,93,2d,06,b8,a1,1f,30,1d,31,1b,30,19,06,03,55,04,03,13,12,52,6f,6f,74,20,53,47,43,20,41,75,74,68,6f,72,69,74,79,82,0a,20,9d,11,d1,0e,7f,7b,85,74,80,30,0d,06,09,2a,86,48,86,f7,0d,01,01,04,05,00,03,82,01,01,00,83,de,09,29,dd,1b,bd,3f,4e,91,0a,bf,96,5c,8a,2e,24,5a,fd,75,3e,2f,2c,65,52,02,13,ab,40,32,76,3c,6a,f4,05,27,83,dc,b3,6a,78,3f,4f,92,3b,e3,f6,06,aa,64,d9,02,ec,61,3f,a5,55,a5,8a,75,ed,38,fc,b0,5f,95,e9,52,6d,3b,76,1c,c9,d9,d3,ab,8f,1c,0d,8e,29,52,d1,3f,ff,6d,9e,03,f3,ab,da,e1,84,22,fe,19,06,ac,af,40,d3,13,2e,bc,12,fd,7e,ba,0c,53,32,6c,02,f7,85,14,d8,47,c1,58,60,17,89,6f,29,c9,3f,33,cd,46,8d,f4,04,70,f2,c8,d4,65,5d,33,81,e2,c8,09,df,a2,49,a9,ff,51,bb,24,4b,ee,58,84,3d,23,23,5c,2d,33,bc,1c,80,40,2b,77,ff,1e,93,c2,b0,e5,ae,19,c5,c1,cc,70,89,34,e8,e7,04,77,bc,ee,1b,35,d1,17,7e,db,37,31,f0,88,8f,a3,55,56,bb,53,13,54,69,9e,0c,94,1b,56,7a,98,85,4a,2a,4e,6e,64,04,f6,9a,b0,47,11,87,82,62,c6,a4,65,66,d8,63,5b,fc,0c,fe,33,4a,06,94,b2,62,cd,ed,6b,ec,0f,5e,d2,c3,a2,00,b4
+RegWrite,HKLM,0x3,Tmp_Software\Microsoft\SystemCertificates\CA\Certificates\7B02312BACC59EC388FEAE12FD277F6A9FB4FAC1,Blob,14,00,00,00,01,00,00,00,14,00,00,00,9f,5c,30,60,e8,c8,10,ca,1f,bf,25,9e,10,49,11,2e,e1,c0,01,a4,03,00,00,00,01,00,00,00,14,00,00,00,7b,02,31,2b,ac,c5,9e,c3,88,fe,ae,12,fd,27,7f,6a,9f,b4,fa,c1,19,00,00,00,01,00,00,00,10,00,00,00,c4,f1,f9,0b,27,87,ec,e2,1c,32,34,0d,f7,6c,c6,7c,20,00,00,00,01,00,00,00,56,03,00,00,30,82,03,52,30,82,02,bb,a0,03,02,01,02,02,10,52,c8,20,13,7c,85,a7,ed,f2,17,ce,82,c8,45,16,73,30,0d,06,09,2a,86,48,86,f7,0d,01,01,04,05,00,30,5f,31,0b,30,09,06,03,55,04,06,13,02,55,53,31,17,30,15,06,03,55,04,0a,13,0e,56,65,72,69,53,69,67,6e,2c,20,49,6e,63,2e,31,37,30,35,06,03,55,04,0b,13,2e,43,6c,61,73,73,20,32,20,50,75,62,6c,69,63,20,50,72,69,6d,61,72,79,20,43,65,72,74,69,66,69,63,61,74,69,6f,6e,20,41,75,74,68,6f,72,69,74,79,30,1e,17,0d,39,38,30,35,31,32,30,30,30,30,30,30,5a,17,0d,30,34,30,31,30,36,32,33,35,39,35,39,5a,30,81,b8,31,17,30,15,06,03,55,04,0a,13,0e,56,65,72,69,53,69,67,6e,2c,20,49,6e,63,2e,31,1f,30,1d,06,03,55,04,0b,13,16,56,65,72,69,53,69,67,6e,20,54,72,75,73,74,20,4e,65,74,77,6f,72,6b,31,46,30,44,06,03,55,04,0b,13,3d,77,77,77,2e,76,65,72,69,73,69,67,6e,2e,63,6f,6d,2f,72,65,70,6f,73,69,74,6f,72,79,2f,52,50,41,20,49,6e,63,6f,72,70,2e,20,42,79,20,52,65,66,2e,2c,4c,49,41,42,2e,4c,54,44,28,63,29,39,38,31,34,30,32,06,03,55,04,03,13,2b,56,65,72,69,53,69,67,6e,20,43,6c,61,73,73,20,32,20,43,41,20,2d,20,49,6e,64,69,76,69,64,75,61,6c,20,53,75,62,73,63,72,69,62,65,72,30,81,9f,30,0d,06,09,2a,86,48,86,f7,0d,01,01,01,05,00,03,81,8d,00,30,81,89,02,81,81,00,b5,cb,1a,54,5e,25,b0,2c,59,5f,09,6b,d0,da,d6,4a,4b,11,9d,1a,0a,3e,7e,2f,b7,65,5f,17,63,15,e5,2c,d0,20,00,0c,f0,ba,6b,aa,5e,49,b1,68,93,83,25,ac,24,5f,a2,23,1c,69,4d,b8,3b,db,7d,da,8f,c1,09,cf,a5,58,3a,b6,4b,c4,d4,db,d8,ae,75,fa,86,22,99,22,01,28,60,a5,db,d5,30,df,21,70,5e,48,99,ad,21,54,91,d1,de,5f,fb,38,29,53,1b,e2,7a,53,58,c5,0d,5d,13,07,b3,50,c4,06,4b,39,f8,54,ab,b9,8b,69,12,13,02,03,01,00,01,a3,81,b4,30,81,b1,30,11,06,09,60,86,48,01,86,f8,42,01,01,04,04,03,02,01,06,30,35,06,03,55,1d,1f,04,2e,30,2c,30,2a,a0,28,a0,26,86,24,68,74,74,70,3a,2f,2f,63,72,6c,2e,76,65,72,69,73,69,67,6e,2e,63,6f,6d,2f,70,63,61,32,2e,31,2e,31,2e,63,72,6c,30,47,06,03,55,1d,20,04,40,30,3e,30,3c,06,0b,60,86,48,01,86,f8,45,01,07,01,01,30,2d,30,2b,06,08,2b,06,01,05,05,07,02,01,16,1f,77,77,77,2e,76,65,72,69,73,69,67,6e,2e,63,6f,6d,2f,72,65,70,6f,73,69,74,6f,72,79,2f,52,50,41,30,0f,06,03,55,1d,13,04,08,30,06,01,01,ff,02,01,00,30,0b,06,03,55,1d,0f,04,04,03,02,01,06,30,0d,06,09,2a,86,48,86,f7,0d,01,01,04,05,00,03,81,81,00,92,0b,63,51,22,ea,d8,e9,55,5f,fa,38,cd,d3,24,5e,e1,f4,3b,18,b4,49,a6,a8,8c,14,44,11,37,14,8f,9a,52,b8,b2,84,ce,dd,ec,17,89,d5,75,c4,8a,52,81,07,d4,58,05,d9,ae,9f,bb,08,d0,64,9b,99,82,56,01,2f,bf,de,34,a1,c1,89,48,d7,8f,8b,62,16,c6,85,90,65,08,d8,1d,f9,c0,b7,6c,cb,40,7e,68,ef,97,21,1b,34,fe,5a,f3,a0,c7,5f,70,03,20,ed,a2,82,ec,e6,b0,c1,bd,f3,4c,eb,dc,a0,08,a1,18,41,28,2f,92,7f,0c,b9
+RegWrite,HKLM,0x3,Tmp_Software\Microsoft\SystemCertificates\CA\Certificates\8B24CD8D8B58C6DA72ACE097C7B1E3CEA4DC3DC6,Blob,18,00,00,00,01,00,00,00,10,00,00,00,91,16,1b,89,4b,11,7e,cd,c2,57,62,8d,b4,60,cc,04,14,00,00,00,01,00,00,00,14,00,00,00,0a,cf,eb,4b,07,e7,03,a0,1f,4c,ef,28,ee,72,56,f7,51,75,91,55,03,00,00,00,01,00,00,00,14,00,00,00,8b,24,cd,8d,8b,58,c6,da,72,ac,e0,97,c7,b1,e3,ce,a4,dc,3d,c6,04,00,00,00,01,00,00,00,10,00,00,00,18,87,5c,cb,f8,20,5d,24,4a,bf,19,c7,13,0e,fd,b4,19,00,00,00,01,00,00,00,10,00,00,00,6e,d6,ed,7d,f5,2f,c1,9b,dc,9e,5f,e9,e2,be,21,fb,20,00,00,00,01,00,00,00,35,04,00,00,30,82,04,31,30,82,03,9a,a0,03,02,01,02,02,10,23,6c,97,1e,2b,c6,0d,0b,f9,74,60,de,f1,08,c3,c3,30,0d,06,09,2a,86,48,86,f7,0d,01,01,02,05,00,30,5f,31,0b,30,09,06,03,55,04,06,13,02,55,53,31,17,30,15,06,03,55,04,0a,13,0e,56,65,72,69,53,69,67,6e,2c,20,49,6e,63,2e,31,37,30,35,06,03,55,04,0b,13,2e,43,6c,61,73,73,20,33,20,50,75,62,6c,69,63,20,50,72,69,6d,61,72,79,20,43,65,72,74,69,66,69,63,61,74,69,6f,6e,20,41,75,74,68,6f,72,69,74,79,30,1e,17,0d,39,37,30,34,31,37,30,30,30,30,30,30,5a,17,0d,30,34,30,31,30,37,32,33,35,39,35,39,5a,30,81,ba,31,1f,30,1d,06,03,55,04,0a,13,16,56,65,72,69,53,69,67,6e,20,54,72,75,73,74,20,4e,65,74,77,6f,72,6b,31,17,30,15,06,03,55,04,0b,13,0e,56,65,72,69,53,69,67,6e,2c,20,49,6e,63,2e,31,33,30,31,06,03,55,04,0b,13,2a,56,65,72,69,53,69,67,6e,20,49,6e,74,65,72,6e,61,74,69,6f,6e,61,6c,20,53,65,72,76,65,72,20,43,41,20,2d,20,43,6c,61,73,73,20,33,31,49,30,47,06,03,55,04,0b,13,40,77,77,77,2e,76,65,72,69,73,69,67,6e,2e,63,6f,6d,2f,43,50,53,20,49,6e,63,6f,72,70,2e,62,79,20,52,65,66,2e,20,4c,49,41,42,49,4c,49,54,59,20,4c,54,44,2e,28,63,29,39,37,20,56,65,72,69,53,69,67,6e,30,81,9f,30,0d,06,09,2a,86,48,86,f7,0d,01,01,01,05,00,03,81,8d,00,30,81,89,02,81,81,00,d8,82,80,e8,d6,19,02,7d,1f,85,18,39,25,a2,65,2b,e1,bf,d4,05,d3,bc,e6,36,3b,aa,f0,4c,6c,5b,b6,e7,aa,3c,73,45,55,b2,f1,bd,ea,97,42,ed,9a,34,0a,15,d4,a9,5c,f5,40,25,dd,d9,07,c1,32,b2,75,6c,c4,ca,bb,a3,fe,56,27,71,43,aa,63,f5,30,3e,93,28,e5,fa,f1,09,3b,f3,b7,4d,4e,39,f7,5c,49,5a,b8,c1,1d,d3,b2,8a,fe,70,30,95,42,cb,fe,2b,51,8b,5a,3c,3a,f9,22,4f,90,b2,02,a7,53,9c,4f,34,e7,ab,04,b2,7b,6f,02,03,01,00,01,a3,82,01,90,30,82,01,8c,30,0f,06,03,55,1d,13,04,08,30,06,01,01,ff,02,01,00,30,0b,06,03,55,1d,0f,04,04,03,02,01,06,30,11,06,09,60,86,48,01,86,f8,42,01,01,04,04,03,02,01,06,30,20,06,03,55,1d,25,04,19,30,17,06,0a,60,86,48,01,86,f8,45,01,08,01,06,09,60,86,48,01,86,f8,42,04,01,30,82,01,35,06,03,55,1d,20,04,82,01,2c,30,82,01,28,30,82,01,24,06,0b,60,86,48,01,86,f8,45,01,07,01,01,30,82,01,13,30,28,06,08,2b,06,01,05,05,07,02,01,16,1c,68,74,74,70,73,3a,2f,2f,77,77,77,2e,76,65,72,69,73,69,67,6e,2e,63,6f,6d,2f,43,50,53,30,81,e6,06,08,2b,06,01,05,05,07,02,02,30,81,d9,30,15,16,0e,56,65,72,69,53,69,67,6e,2c,20,49,6e,63,2e,30,03,02,01,01,1a,81,bf,56,65,72,69,53,69,67,6e,27,73,20,43,65,72,74,69,66,69,63,61,74,69,6f,6e,20,50,72,61,63,74,69,63,65,20,53,74,61,74,65,6d,65,6e,74,2c,20,77,77,77,2e,76,65,72,69,73,69,67,6e,2e,63,6f,6d,2f,43,50,53,2c,20,67,6f,76,65,72,6e,73,20,74,68,69,73,20,63,65,72,74,69,66,69,63,61,74,65,20,26,20,69,73,20,69,6e,63,6f,72,70,6f,72,61,74,65,64,20,62,79,20,72,65,66,65,72,65,6e,63,65,20,68,65,72,65,69,6e,2e,20,53,4f,4d,45,20,57,41,52,52,41,4e,54,49,45,53,20,44,49,53,43,4c,41,49,4d,45,44,20,26,20,4c,49,41,42,49,4c,49,54,59,20,4c,54,44,2e,20,28,63,29,31,39,39,37,20,56,65,72,69,53,69,67,6e,30,0d,06,09,2a,86,48,86,f7,0d,01,01,02,05,00,03,81,81,00,b8,8c,98,c3,2b,48,f5,72,cd,68,0d,1a,b3,74,63,bb,b1,58,b6,98,45,22,ec,11,8d,c7,4e,33,8b,62,5a,21,24,6c,9a,c0,42,b4,45,a9,3a,fb,67,f0,91,be,18,1f,d5,48,19,93,6b,8d,cb,37,4b,86,e6,7d,9b,fd,8c,78,99,ff,83,c2,fc,d9,55,06,9e,31,66,46,7d,1b,78,60,f4,55,d4,6c,55,c8,69,62,70,7c,4d,b6,89,06,05,9b,c8,43,8e,cc,0c,28,d5,d1,8c,cd,46,50,e3,31,96,66,92,11,24,1e,4a,5b,4b,66,5e,65,55,1e,5f,37,9a,ae
+RegWrite,HKLM,0x3,Tmp_Software\Microsoft\SystemCertificates\CA\Certificates\9F025D9F58711A605EB0694B0E8BC0CA4F25FD6F,Blob,14,00,00,00,01,00,00,00,14,00,00,00,17,22,51,ac,74,1e,4d,ea,ae,ad,4c,cd,e1,cd,a1,4f,81,8e,d0,b7,03,00,00,00,01,00,00,00,14,00,00,00,9f,02,5d,9f,58,71,1a,60,5e,b0,69,4b,0e,8b,c0,ca,4f,25,fd,6f,19,00,00,00,01,00,00,00,10,00,00,00,fe,4d,94,5b,e7,ca,1f,62,95,3a,5c,89,cd,07,a9,96,20,00,00,00,01,00,00,00,55,03,00,00,30,82,03,51,30,82,02,39,a0,03,02,01,02,02,10,fd,b1,dd,e5,ef,8f,56,a5,11,d3,56,98,42,e6,7f,e0,30,0d,06,09,2a,86,48,86,f7,0d,01,01,04,05,00,30,1d,31,1b,30,19,06,03,55,04,03,13,12,52,6f,6f,74,20,53,47,43,20,41,75,74,68,6f,72,69,74,79,30,1e,17,0d,39,39,30,38,32,30,30,30,34,33,32,39,5a,17,0d,30,39,31,30,31,36,30,37,30,30,30,30,5a,30,2d,31,0b,30,09,06,03,55,04,06,13,02,61,75,31,1e,30,1c,06,03,55,04,0a,13,15,53,65,63,75,72,65,4e,65,74,20,43,41,20,53,47,43,20,52,6f,6f,74,30,82,01,22,30,0d,06,09,2a,86,48,86,f7,0d,01,01,01,05,00,03,82,01,0f,00,30,82,01,0a,02,82,01,01,00,a7,5b,b1,0d,8a,53,21,ba,52,88,38,90,42,65,44,fd,56,eb,73,c5,85,f3,06,31,e5,08,fc,8c,b1,d5,7a,c7,0b,23,0a,bc,5a,09,22,01,f8,a7,c0,de,57,74,31,8b,ad,36,cc,5e,73,f7,f6,44,f0,31,ca,f5,2c,a2,05,f3,0a,1c,30,7a,86,33,e2,46,53,f6,64,d6,47,ab,b1,53,94,63,77,c4,62,d3,2f,0b,ea,5f,b0,75,02,5e,f8,2b,cf,26,f3,de,d2,ad,eb,65,7f,bc,2e,41,84,fc,99,9a,e9,81,1b,a7,9c,66,c7,f8,f5,b2,84,1b,20,75,72,21,c7,84,ff,02,46,cc,0f,a6,69,85,7d,59,21,d5,0e,a7,5d,56,15,4f,cc,1f,41,2c,7f,66,1b,af,eb,dd,41,a3,ec,a9,e6,56,4a,fe,1e,a7,c4,5c,22,9f,2f,e0,0b,74,01,70,c8,73,83,0a,07,a4,68,9e,e4,51,0e,8d,74,31,2f,a2,c6,da,08,10,2b,ef,25,3e,6c,86,b5,46,e7,97,83,c0,ab,de,b0,ae,06,1a,e7,c8,fb,ef,7e,ad,8e,b0,9a,45,f1,9b,f5,b1,e8,31,bb,64,00,bf,7f,91,66,cd,a8,af,95,ea,13,3a,02,4c,5b,eb,c0,93,e4,41,fc,ad,02,03,01,00,01,a3,7d,30,7b,30,0d,06,03,55,1d,0a,04,06,30,04,03,02,07,80,30,20,06,03,55,1d,25,04,19,30,17,06,0a,2b,06,01,04,01,82,37,0a,03,03,06,09,60,86,48,01,86,f8,42,04,01,30,48,06,03,55,1d,01,04,41,30,3f,80,10,0d,27,29,e4,05,2a,97,b4,77,58,35,47,93,2d,06,b8,a1,1f,30,1d,31,1b,30,19,06,03,55,04,03,13,12,52,6f,6f,74,20,53,47,43,20,41,75,74,68,6f,72,69,74,79,82,0a,20,9d,11,d1,0e,7f,7b,85,74,80,30,0d,06,09,2a,86,48,86,f7,0d,01,01,04,05,00,03,82,01,01,00,70,59,56,22,70,d9,36,bf,5d,5b,19,5e,2b,d3,1f,e9,c4,d5,ce,17,e6,28,21,70,a3,8b,79,05,fb,bd,e7,46,b4,0e,4d,11,8d,9f,a8,12,f6,79,f5,de,be,76,23,61,77,d9,78,07,fa,70,39,28,9b,f5,8f,9a,ae,50,a3,95,49,20,8f,4f,d6,e5,07,91,49,e9,46,e5,15,a2,27,fa,b2,9a,0f,30,92,a9,bc,96,8c,2b,66,51,aa,0a,86,03,2b,71,a7,a3,74,ca,8f,4a,57,04,d2,c9,fa,48,e9,9a,92,fb,63,f4,15,9b,4d,28,be,95,18,9b,c1,c2,46,34,a2,1f,22,43,7a,6f,8a,ef,a1,81,66,a2,ff,ec,cf,f6,da,3d,c0,72,4f,f2,80,e2,5d,0c,cb,bd,5c,d8,b1,84,8d,c7,60,35,0b,44,7f,0c,dc,99,1c,95,ee,e0,21,cf,6d,31,b2,26,37,60,2c,9c,0e,d7,d1,62,d1,87,8a,6c,48,28,51,3c,4d,18,48,68,25,e2,4b,89,64,18,e0,1c,6c,68,8a,10,5c,36,7a,f9,f5,e5,27,79,02,b0,6d,0d,30,f2,dc,91,1f,c4,b0,b1,6c,5a,4f,45,cf,c4,52,b2,b5,6f,7a,8e,20,17,00,8f,5a,2d,c8,ca,64,b5,71,71
+RegWrite,HKLM,0x3,Tmp_Software\Microsoft\SystemCertificates\CA\Certificates\BA9E3C32562A67128CAABD4AB0C500BEE1D0C256,Blob,14,00,00,00,01,00,00,00,14,00,00,00,26,5d,05,07,d8,2f,a2,60,84,bd,83,7d,f5,21,80,a7,05,6f,5a,85,03,00,00,00,01,00,00,00,14,00,00,00,ba,9e,3c,32,56,2a,67,12,8c,aa,bd,4a,b0,c5,00,be,e1,d0,c2,56,19,00,00,00,01,00,00,00,10,00,00,00,83,b6,53,18,66,4e,6f,a2,45,e0,d7,60,9f,b9,58,20,20,00,00,00,01,00,00,00,f0,03,00,00,30,82,03,ec,30,82,02,d4,a0,03,02,01,02,02,0a,19,8b,11,d1,3f,9a,8f,fe,69,a0,30,0d,06,09,2a,86,48,86,f7,0d,01,01,04,05,00,30,70,31,2b,30,29,06,03,55,04,0b,13,22,43,6f,70,79,72,69,67,68,74,20,28,63,29,20,31,39,39,37,20,4d,69,63,72,6f,73,6f,66,74,20,43,6f,72,70,2e,31,1e,30,1c,06,03,55,04,0b,13,15,4d,69,63,72,6f,73,6f,66,74,20,43,6f,72,70,6f,72,61,74,69,6f,6e,31,21,30,1f,06,03,55,04,03,13,18,4d,69,63,72,6f,73,6f,66,74,20,52,6f,6f,74,20,41,75,74,68,6f,72,69,74,79,30,1e,17,0d,39,37,31,30,30,31,30,37,30,30,30,30,5a,17,0d,30,32,31,32,33,31,30,37,30,30,30,30,5a,30,81,c3,31,2b,30,29,06,03,55,04,0b,13,22,43,6f,70,79,72,69,67,68,74,20,28,63,29,20,31,39,39,37,20,4d,69,63,72,6f,73,6f,66,74,20,43,6f,72,70,2e,31,41,30,3f,06,03,55,04,0b,13,38,4d,69,63,72,6f,73,6f,66,74,20,57,69,6e,64,6f,77,73,20,48,61,72,64,77,61,72,65,20,43,6f,6d,70,61,74,69,62,69,6c,69,74,79,20,49,6e,74,65,72,6d,65,64,69,61,74,65,20,43,41,31,1e,30,1c,06,03,55,04,0b,13,15,4d,69,63,72,6f,73,6f,66,74,20,43,6f,72,70,6f,72,61,74,69,6f,6e,31,31,30,2f,06,03,55,04,03,13,28,4d,69,63,72,6f,73,6f,66,74,20,57,69,6e,64,6f,77,73,20,48,61,72,64,77,61,72,65,20,43,6f,6d,70,61,74,69,62,69,6c,69,74,79,30,81,9f,30,0d,06,09,2a,86,48,86,f7,0d,01,01,01,05,00,03,81,8d,00,30,81,89,02,81,81,00,e0,4e,10,0e,b8,a7,ef,21,ca,60,5a,dc,9f,1e,3e,83,77,5a,29,2e,f9,4e,e5,08,5d,de,e1,cf,09,c0,1f,44,b7,07,a8,4b,a4,22,30,3b,19,06,83,ee,f3,ac,27,78,ae,ca,d6,40,2b,ce,79,01,e1,9d,56,8b,36,72,b1,63,90,5f,a0,b2,c0,66,a6,49,c5,3c,fa,26,a2,62,c3,d3,b5,cc,61,15,4c,f2,3f,b4,e7,45,08,43,89,7f,6a,8d,d5,66,fb,d7,ff,64,00,c4,11,fd,2c,a3,0b,75,b0,fb,e5,ac,26,65,a3,81,e6,66,49,3d,1d,73,7a,9b,71,d7,02,03,01,00,01,a3,81,b7,30,81,b4,30,1f,06,03,55,1d,25,04,18,30,16,06,08,2b,06,01,05,05,07,03,03,06,0a,2b,06,01,04,01,82,37,0a,03,05,30,81,90,06,03,55,1d,01,04,81,88,30,81,85,a1,72,30,70,31,2b,30,29,06,03,55,04,0b,13,22,43,6f,70,79,72,69,67,68,74,20,28,63,29,20,31,39,39,37,20,4d,69,63,72,6f,73,6f,66,74,20,43,6f,72,70,2e,31,1e,30,1c,06,03,55,04,0b,13,15,4d,69,63,72,6f,73,6f,66,74,20,43,6f,72,70,6f,72,61,74,69,6f,6e,31,21,30,1f,06,03,55,04,03,13,18,4d,69,63,72,6f,73,6f,66,74,20,52,6f,6f,74,20,41,75,74,68,6f,72,69,74,79,82,0f,00,c1,00,8b,3c,3c,88,11,d1,3e,f6,63,ec,df,40,30,0d,06,09,2a,86,48,86,f7,0d,01,01,04,05,00,03,82,01,01,00,71,2f,80,54,a4,0d,2f,33,b3,aa,98,3a,4f,03,b4,12,d0,9b,83,af,2d,5f,e4,8b,15,13,ab,f3,01,8b,02,5a,39,7e,c7,62,0b,19,9b,d4,cb,87,b7,ab,4d,02,8a,5f,fc,0b,54,d8,07,32,d4,8b,c6,d6,7f,0e,9e,e3,91,9b,e9,5d,df,ac,2c,86,68,64,41,3c,ea,39,4f,e7,f5,f8,37,82,f4,04,c0,94,f0,79,b3,90,e1,7e,ac,76,0d,3c,6a,5a,98,94,16,81,8f,4d,50,fd,60,6a,d1,2b,5c,13,ea,bf,b2,82,5f,c3,73,da,56,52,5c,5d,74,cb,e0,9d,21,67,e9,12,30,5a,e6,b7,8f,73,07,ce,c5,fd,68,54,5e,85,01,d9,bc,a1,f7,eb,54,e3,3e,97,0d,b6,53,59,3c,0a,29,f6,c5,21,ac,91,be,52,a0,82,29,b8,bb,bf,02,da,4a,23,29,fe,c3,c7,0a,c4,91,4b,52,f0,67,6b,fd,93,72,bf,5d,ed,aa,99,72,d7,43,6c,c3,00,0d,a1,04,04,6f,6a,a7,4f,82,31,be,c6,d2,fc,71,d6,b0,61,71,d8,ba,cc,f0,2e,d4,53,a5,32,97,b8,b0,99,73,12,11,70,e0,2e,ce,a7,41,82,c5,74,98,a9,3a,da,20,a8
+RegWrite,HKLM,0x3,Tmp_Software\Microsoft\SystemCertificates\CA\Certificates\E5215D3460C2C20BBE2D9FE5FB665DAA2C0E225C,Blob,14,00,00,00,01,00,00,00,14,00,00,00,87,db,d4,5f,b0,92,8d,4e,1d,f8,15,67,e7,f2,ab,af,d6,2b,67,75,03,00,00,00,01,00,00,00,14,00,00,00,e5,21,5d,34,60,c2,c2,0b,be,2d,9f,e5,fb,66,5d,aa,2c,0e,22,5c,19,00,00,00,01,00,00,00,10,00,00,00,a8,23,b4,a2,01,80,be,b4,60,ca,b9,55,c2,4d,7e,21,20,00,00,00,01,00,00,00,7f,03,00,00,30,82,03,7b,30,82,02,63,a0,03,02,01,02,02,10,c4,bb,d8,c0,ca,ff,56,a5,11,d3,56,96,61,99,22,30,30,0d,06,09,2a,86,48,86,f7,0d,01,01,04,05,00,30,1d,31,1b,30,19,06,03,55,04,03,13,12,52,6f,6f,74,20,53,47,43,20,41,75,74,68,6f,72,69,74,79,30,1e,17,0d,39,39,30,38,32,30,30,30,33,30,30,31,5a,17,0d,31,34,30,31,32,38,30,37,30,30,30,30,5a,30,57,31,0b,30,09,06,03,55,04,06,13,02,42,45,31,19,30,17,06,03,55,04,0a,13,10,47,6c,6f,62,61,6c,53,69,67,6e,20,6e,76,2d,73,61,31,10,30,0e,06,03,55,04,0b,13,07,52,6f,6f,74,20,43,41,31,1b,30,19,06,03,55,04,03,13,12,47,6c,6f,62,61,6c,53,69,67,6e,20,52,6f,6f,74,20,43,41,30,82,01,22,30,0d,06,09,2a,86,48,86,f7,0d,01,01,01,05,00,03,82,01,0f,00,30,82,01,0a,02,82,01,01,00,da,0e,e6,99,8d,ce,a3,e3,4f,8a,7e,fb,f1,8b,83,25,6b,ea,48,1f,f1,2a,b0,b9,95,11,04,bd,f0,63,d1,e2,67,66,cf,1c,dd,cf,1b,48,2b,ee,8d,89,8e,9a,af,29,80,65,ab,e9,c7,2d,12,cb,ab,1c,4c,70,07,a1,3d,0a,30,cd,15,8d,4f,f8,dd,d4,8c,50,15,1c,ef,50,ee,c4,2e,f7,fc,e9,52,f2,91,7d,e0,6d,d5,35,30,8e,5e,43,73,f2,41,e9,d5,6a,e3,b2,89,3a,56,39,38,6f,06,3c,88,69,5b,2a,4d,c5,a7,54,b8,6c,89,cc,9b,f9,3c,ca,e5,fd,89,f5,12,3c,92,78,96,d6,dc,74,6e,93,44,61,d1,8d,c7,46,b2,75,0e,86,e8,19,8a,d5,6d,6c,d5,78,16,95,a2,e9,c8,0a,38,eb,f2,24,13,4f,73,54,93,13,85,3a,1b,bc,1e,34,b5,8b,05,8c,b9,77,8b,b1,db,1f,20,91,ab,09,53,6e,90,ce,7b,37,74,b9,70,47,91,22,51,63,16,79,ae,b1,ae,41,26,08,c8,19,2b,d1,46,aa,48,d6,64,2a,d7,83,34,ff,2c,2a,c1,6c,19,43,4a,07,85,e7,d3,7c,f6,21,68,ef,ea,f2,52,9f,7f,93,90,cf,02,03,01,00,01,a3,7d,30,7b,30,0d,06,03,55,1d,0a,04,06,30,04,03,02,07,80,30,20,06,03,55,1d,25,04,19,30,17,06,0a,2b,06,01,04,01,82,37,0a,03,03,06,09,60,86,48,01,86,f8,42,04,01,30,48,06,03,55,1d,01,04,41,30,3f,80,10,0d,27,29,e4,05,2a,97,b4,77,58,35,47,93,2d,06,b8,a1,1f,30,1d,31,1b,30,19,06,03,55,04,03,13,12,52,6f,6f,74,20,53,47,43,20,41,75,74,68,6f,72,69,74,79,82,0a,20,9d,11,d1,0e,7f,7b,85,74,80,30,0d,06,09,2a,86,48,86,f7,0d,01,01,04,05,00,03,82,01,01,00,d2,82,ee,55,36,25,57,42,b9,cb,a8,70,9c,42,8e,46,a7,d7,99,91,d2,cc,a2,db,f2,a0,c6,bf,c6,db,45,f1,7a,8e,dc,03,63,4a,9b,94,99,a6,0f,bd,4c,ca,6d,e4,31,61,6a,08,10,4d,1e,47,d4,11,59,33,02,65,69,ae,13,db,f1,65,79,72,25,79,21,c4,b4,25,c2,6c,ff,8c,7e,96,df,69,c0,45,24,a1,69,4b,a6,a6,04,e7,81,de,ca,db,88,a3,a6,7c,91,cf,86,47,76,97,e6,97,f7,1a,2e,d7,03,f0,37,3b,dd,76,95,6d,26,74,51,49,44,d6,3e,84,b7,03,74,6d,66,67,a2,36,8b,84,f3,ed,f9,a8,9d,e4,a8,1a,09,dc,d2,01,92,4f,1f,3d,58,41,bb,e9,ac,03,9b,e8,f0,96,c0,cd,7e,01,db,e2,a9,3e,66,e0,24,e6,ec,7f,6d,18,53,39,9d,c0,89,bf,60,78,be,cb,07,37,77,9d,7d,8e,8d,17,0a,d7,6f,17,da,e5,8a,e1,e7,08,c4,13,e5,7a,2b,5c,6d,f7,9e,20,c4,8d,4f,ed,06,29,07,af,79,92,f2,5f,f9,aa,21,15,cb,66,39,77,d3,2d,19,24,68,84,5f,a9,48,46,5a,db,1d,b4,41,1f
+RegWrite,HKLM,0x3,Tmp_Software\Microsoft\SystemCertificates\CA\Certificates\F6357239B7C39725BD8000646E4A0D18EBCE4CFA,Blob,14,00,00,00,01,00,00,00,14,00,00,00,d1,71,0e,20,df,03,71,25,dd,ca,b9,6d,8c,da,b0,17,da,ae,c7,99,03,00,00,00,01,00,00,00,14,00,00,00,f6,35,72,39,b7,c3,97,25,bd,80,00,64,6e,4a,0d,18,eb,ce,4c,fa,09,00,00,00,01,00,00,00,23,00,00,00,30,21,06,08,2b,06,01,05,05,07,03,01,06,0a,2b,06,01,04,01,82,37,0a,03,03,06,09,60,86,48,01,86,f8,42,04,01,19,00,00,00,01,00,00,00,10,00,00,00,8d,11,80,a8,ac,4f,2b,18,6c,7d,a5,ff,fd,8b,86,e1,20,00,00,00,01,00,00,00,88,02,00,00,30,82,02,84,30,82,01,6c,a0,03,02,01,02,02,0a,20,9d,11,d1,0e,81,94,0b,0d,c0,30,0d,06,09,2a,86,48,86,f7,0d,01,01,04,05,00,30,1d,31,1b,30,19,06,03,55,04,03,13,12,52,6f,6f,74,20,53,47,43,20,41,75,74,68,6f,72,69,74,79,30,1e,17,0d,39,37,30,38,30,36,31,37,32,39,34,37,5a,17,0d,31,30,30,31,30,31,30,37,30,30,30,30,5a,30,1b,31,19,30,17,06,03,55,04,03,13,10,4d,53,20,53,47,43,20,41,75,74,68,6f,72,69,74,79,30,81,9f,30,0d,06,09,2a,86,48,86,f7,0d,01,01,01,05,00,03,81,8d,00,30,81,89,02,81,81,00,9c,b8,a5,f9,3c,13,4d,40,c9,96,dc,ea,5b,9b,00,5b,c8,67,c0,34,0f,16,31,2d,19,e0,2d,76,b1,5c,4d,34,06,fc,23,63,5f,93,62,c9,22,06,bd,aa,fc,6e,4a,03,5b,79,66,4c,6c,75,41,ab,d8,c0,41,5a,2a,ec,ed,57,1d,be,b1,77,29,8a,92,50,89,67,af,7c,0b,a4,dc,6c,c0,a9,38,ed,af,92,cd,6b,6a,d2,42,30,c7,b3,3e,3c,13,c7,5d,98,50,d4,4b,98,b2,cb,74,be,fa,9b,9e,57,f7,e4,61,fd,d7,54,7f,f0,9e,eb,ab,19,64,af,e3,a3,02,03,01,00,01,a3,4c,30,4a,30,48,06,03,55,1d,01,04,41,30,3f,80,10,0d,27,29,e4,05,2a,97,b4,77,58,35,47,93,2d,06,b8,a1,1f,30,1d,31,1b,30,19,06,03,55,04,03,13,12,52,6f,6f,74,20,53,47,43,20,41,75,74,68,6f,72,69,74,79,82,0a,20,9d,11,d1,0e,7f,7b,85,74,80,30,0d,06,09,2a,86,48,86,f7,0d,01,01,04,05,00,03,82,01,01,00,4f,58,0a,06,16,b8,60,df,2b,61,21,47,6b,cf,3c,89,a4,d2,dd,e3,5c,8e,33,dd,b7,23,b1,53,de,8f,ec,f4,7d,08,a6,57,f8,3d,36,e6,52,87,56,f2,2a,46,bf,f2,32,7e,53,36,5c,0f,9e,c1,80,77,9b,c2,06,eb,58,8a,e6,fb,12,6e,ec,18,53,c4,77,a5,5d,53,6a,76,88,7a,88,1a,ab,fe,ba,ee,09,08,97,11,1e,46,1f,1b,db,08,99,b8,8d,fa,42,34,3e,4f,68,06,0e,72,71,d1,16,8a,e2,ef,c0,ce,6d,85,5c,9b,4c,7e,6a,e2,ef,0a,6e,40,24,18,5f,fe,b7,f5,3a,71,e7,0f,b0,6b,74,6d,e2,46,2e,ca,01,4d,8b,82,f9,2d,34,58,84,50,74,51,d6,57,70,50,d5,a7,45,c3,66,c2,19,0c,58,05,1b,c7,9b,24,68,03,78,d1,93,d6,ee,5a,a8,00,fc,b8,0a,05,1e,2b,11,ed,b3,4f,62,9f,c1,0c,cb,b1,40,aa,40,01,c7,d3,35,1b,1a,f7,cb,0f,08,d6,92,49,97,60,16,38,a4,8c,3d,84,53,e5,24,be,d4,a6,8c,ce,48,15,e8,5a,ed,5f,18,b2,db,1b,bd,a6,fd,50,bf,06,45,2d,c1,f5,39,fe
+RegWrite,HKLM,0x3,Tmp_Software\Microsoft\SystemCertificates\CA\Certificates\FE622EA7B33CA46519AB39736A66B8F6E41FF157,Blob,14,00,00,00,01,00,00,00,14,00,00,00,5f,f3,24,6c,8f,91,24,af,9b,5f,3e,b0,34,6a,f4,2d,5c,a8,5d,cc,19,00,00,00,01,00,00,00,10,00,00,00,5d,c4,5e,2c,d1,84,57,91,bd,de,76,00,05,0a,f5,10,03,00,00,00,01,00,00,00,14,00,00,00,fe,62,2e,a7,b3,3c,a4,65,19,ab,39,73,6a,66,b8,f6,e4,1f,f1,57,04,00,00,00,01,00,00,00,10,00,00,00,53,66,ea,0c,15,09,f1,c1,99,70,42,29,ae,0d,c4,66,20,00,00,00,01,00,00,00,73,03,00,00,30,82,03,6f,30,82,02,57,a0,03,02,01,02,02,10,d8,c8,76,76,22,e9,4f,a5,11,d3,3b,b7,38,f3,12,90,30,0d,06,09,2a,86,48,86,f7,0d,01,01,04,05,00,30,1d,31,1b,30,19,06,03,55,04,03,13,12,52,6f,6f,74,20,53,47,43,20,41,75,74,68,6f,72,69,74,79,30,1e,17,0d,39,39,30,37,31,36,31,39,34,37,30,35,5a,17,0d,30,34,30,37,31,36,31,39,34,37,30,34,5a,30,81,ce,31,0b,30,09,06,03,55,04,06,13,02,5a,41,31,15,30,13,06,03,55,04,08,13,0c,57,65,73,74,65,72,6e,20,43,61,70,65,31,12,30,10,06,03,55,04,07,13,09,43,61,70,65,20,54,6f,77,6e,31,1d,30,1b,06,03,55,04,0a,13,14,54,68,61,77,74,65,20,43,6f,6e,73,75,6c,74,69,6e,67,20,63,63,31,28,30,26,06,03,55,04,0b,13,1f,43,65,72,74,69,66,69,63,61,74,69,6f,6e,20,53,65,72,76,69,63,65,73,20,44,69,76,69,73,69,6f,6e,31,21,30,1f,06,03,55,04,03,13,18,54,68,61,77,74,65,20,50,72,65,6d,69,75,6d,20,53,65,72,76,65,72,20,43,41,31,28,30,26,06,09,2a,86,48,86,f7,0d,01,09,01,16,19,70,72,65,6d,69,75,6d,2d,73,65,72,76,65,72,40,74,68,61,77,74,65,2e,63,6f,6d,30,81,9f,30,0d,06,09,2a,86,48,86,f7,0d,01,01,01,05,00,03,81,8d,00,30,81,89,02,81,81,00,d2,36,36,6a,8b,d7,c2,5b,9e,da,81,41,62,8f,38,ee,49,04,55,d6,d0,ef,1c,1b,95,16,47,ef,18,48,35,3a,52,f4,2b,6a,06,8f,3b,2f,ea,56,e3,af,86,8d,9e,17,f7,9e,b4,65,75,02,4d,ef,cb,09,a2,21,51,d8,9b,d0,67,d0,ba,0d,92,06,14,73,d4,93,cb,97,2a,00,9c,5c,4e,0c,bc,fa,15,52,fc,f2,44,6e,da,11,4a,6e,08,9f,2f,2d,e3,f9,aa,3a,86,73,b6,46,53,58,c8,89,05,bd,83,11,b8,73,3f,aa,07,8d,f4,42,4d,e7,40,9d,1c,37,02,03,01,00,01,a3,7d,30,7b,30,0d,06,03,55,1d,0a,04,06,30,04,03,02,07,80,30,20,06,03,55,1d,25,04,19,30,17,06,0a,2b,06,01,04,01,82,37,0a,03,03,06,09,60,86,48,01,86,f8,42,04,01,30,48,06,03,55,1d,01,04,41,30,3f,80,10,0d,27,29,e4,05,2a,97,b4,77,58,35,47,93,2d,06,b8,a1,1f,30,1d,31,1b,30,19,06,03,55,04,03,13,12,52,6f,6f,74,20,53,47,43,20,41,75,74,68,6f,72,69,74,79,82,0a,20,9d,11,d1,0e,7f,7b,85,74,80,30,0d,06,09,2a,86,48,86,f7,0d,01,01,04,05,00,03,82,01,01,00,b6,98,c6,2c,50,97,b8,ff,20,d5,5c,35,68,6e,e5,ce,73,6e,de,5f,e4,e4,82,c4,67,fd,26,16,f1,7a,c5,6c,d5,e1,af,fb,1c,05,10,90,fe,99,48,ca,dd,2a,8f,d6,a0,eb,2c,02,4b,f1,5f,86,ce,5b,fa,9c,38,f1,27,9c,01,a6,e5,6d,13,c0,56,0b,f0,f1,3c,4a,d0,29,c3,9f,d7,91,3f,19,60,4e,51,54,19,35,a6,af,63,3d,d7,8a,45,2e,ec,31,6f,46,57,3d,ce,35,f1,7f,66,ae,08,7e,a3,37,4b,c6,a6,dd,20,39,c0,e1,7f,fa,32,7f,d8,ea,1e,a1,b5,77,f1,a1,7b,9f,ab,f1,12,6a,c8,b9,64,8a,d2,1a,4b,49,45,ed,39,3b,dd,c7,53,ce,a3,69,6d,e7,e1,e3,d5,d9,c5,b5,d4,d1,61,30,db,a2,0d,b0,3b,89,d5,0e,da,c3,f7,85,7a,74,e7,c0,29,71,6d,d0,d5,f0,a3,ff,5d,ef,29,5e,9d,5d,5c,56,0d,f8,25,23,06,34,c9,56,02,92,f0,a6,c4,4f,08,ce,b1,da,96,d8,c5,c8,94,92,d6,ae,93,07,61,ac,13,b6,f2,c4,9b,45,ab,42,c1,7c,c6,6c,64,9a,49,82,02,d1,3d,bc,bc,40,39,2e
+RegWrite,HKLM,0x3,Tmp_Software\Microsoft\SystemCertificates\CA\Certificates\FEE449EE0E3965A5246F000E87FDE2A065FD89D4,Blob,14,00,00,00,01,00,00,00,14,00,00,00,9a,a6,58,7f,94,dd,91,d9,1e,63,df,d3,f0,ce,5f,ae,18,93,aa,b7,03,00,00,00,01,00,00,00,14,00,00,00,fe,e4,49,ee,0e,39,65,a5,24,6f,00,0e,87,fd,e2,a0,65,fd,89,d4,19,00,00,00,01,00,00,00,10,00,00,00,ed,bc,cd,d5,10,6a,07,1c,5d,8b,46,90,91,8e,48,aa,20,00,00,00,01,00,00,00,ce,01,00,00,30,82,01,ca,30,82,01,74,a0,03,02,01,02,02,10,06,37,6c,00,aa,00,64,8a,11,cf,b8,d4,aa,5c,35,f4,30,0d,06,09,2a,86,48,86,f7,0d,01,01,04,05,00,30,16,31,14,30,12,06,03,55,04,03,13,0b,52,6f,6f,74,20,41,67,65,6e,63,79,30,1e,17,0d,39,36,30,35,32,38,32,32,30,32,35,39,5a,17,0d,33,39,31,32,33,31,32,33,35,39,35,39,5a,30,16,31,14,30,12,06,03,55,04,03,13,0b,52,6f,6f,74,20,41,67,65,6e,63,79,30,5b,30,0d,06,09,2a,86,48,86,f7,0d,01,01,01,05,00,03,4a,00,30,47,02,40,81,55,22,b9,8a,a4,6f,ed,d6,e7,d9,66,0f,55,bc,d7,cd,d5,bc,4e,40,02,21,a2,b1,f7,87,30,85,5e,d2,f2,44,b9,dc,9b,75,b6,fb,46,5f,42,b6,9d,23,36,0b,de,54,0f,cd,bd,1f,99,2a,10,58,11,cb,40,cb,b5,a7,41,02,03,01,00,01,a3,81,9e,30,81,9b,30,50,06,03,55,04,03,04,49,13,47,46,6f,72,20,54,65,73,74,69,6e,67,20,50,75,72,70,6f,73,65,73,20,4f,6e,6c,79,20,53,61,6d,70,6c,65,20,53,6f,66,74,77,61,72,65,20,50,75,62,6c,69,73,68,69,6e,67,20,43,72,65,64,65,6e,74,69,61,6c,73,20,41,67,65,6e,63,79,30,47,06,03,55,1d,01,04,40,30,3e,80,10,12,e4,09,2d,06,1d,1d,4f,00,8d,61,21,dc,16,64,63,a1,18,30,16,31,14,30,12,06,03,55,04,03,13,0b,52,6f,6f,74,20,41,67,65,6e,63,79,82,10,06,37,6c,00,aa,00,64,8a,11,cf,b8,d4,aa,5c,35,f4,30,0d,06,09,2a,86,48,86,f7,0d,01,01,04,05,00,03,41,00,2d,2e,3e,7b,89,42,89,3f,a8,21,17,fa,f0,f5,c3,95,db,62,69,5b,c9,dc,c1,b3,fa,f0,c4,6f,6f,64,9a,bd,e7,1b,25,68,72,83,67,bd,56,b0,8d,01,bd,2a,f7,cc,4b,bd,87,a5,ba,87,20,4c,42,11,41,ad,10,17,3b,8c
+RegWrite,HKLM,0x3,Tmp_Software\Microsoft\SystemCertificates\CA\CRLs\A377D1B1C0538833035211F4083D00FECC414DAB,Blob,03,00,00,00,01,00,00,00,14,00,00,00,a3,77,d1,b1,c0,53,88,33,03,52,11,f4,08,3d,00,fe,cc,41,4d,ab,21,00,00,00,01,00,00,00,b5,01,00,00,30,82,01,b1,30,82,01,1a,02,01,01,30,0d,06,09,2a,86,48,86,f7,0d,01,01,02,05,00,30,61,31,11,30,0f,06,03,55,04,07,13,08,49,6e,74,65,72,6e,65,74,31,17,30,15,06,03,55,04,0a,13,0e,56,65,72,69,53,69,67,6e,2c,20,49,6e,63,2e,31,33,30,31,06,03,55,04,0b,13,2a,56,65,72,69,53,69,67,6e,20,43,6f,6d,6d,65,72,63,69,61,6c,20,53,6f,66,74,77,61,72,65,20,50,75,62,6c,69,73,68,65,72,73,20,43,41,17,0d,30,31,30,33,32,34,30,30,30,30,30,30,5a,17,0d,30,34,30,31,30,37,32,33,35,39,35,39,5a,30,69,30,21,02,10,1b,51,90,f7,37,24,39,9c,92,54,cd,42,46,37,99,6a,17,0d,30,31,30,31,33,30,30,30,30,31,32,34,5a,30,21,02,10,75,0e,40,ff,97,f0,47,ed,f5,56,c7,08,4e,b1,ab,fd,17,0d,30,31,30,31,33,31,30,30,30,30,34,39,5a,30,21,02,10,77,e6,5a,43,59,93,5d,5f,7a,75,80,1a,cd,ad,c2,22,17,0d,30,30,30,38,33,31,30,30,30,30,35,36,5a,a0,1a,30,18,30,09,06,03,55,1d,13,04,02,30,00,30,0b,06,03,55,1d,0f,04,04,03,02,05,a0,30,0d,06,09,2a,86,48,86,f7,0d,01,01,02,05,00,03,81,81,00,18,2c,e8,fc,16,6d,91,4a,3d,88,54,48,5d,b8,11,bf,64,bb,f9,da,59,19,dd,0e,65,ab,c0,0c,fa,67,7e,21,1e,83,0e,cf,9b,89,8a,cf,0c,4b,c1,39,9d,e7,6a,ac,46,74,6a,91,62,22,0d,c4,08,bd,f5,0a,90,7f,06,21,3d,7e,a7,aa,5e,cd,22,15,e6,0c,75,8e,6e,ad,f1,84,e4,22,b4,30,6f,fb,64,8f,d7,80,43,f5,19,18,66,1d,72,a3,e3,94,82,28,52,a0,06,4e,b1,c8,92,0c,97,be,15,07,ab,7a,c9,ea,08,67,43,4d,51,63,3b,9c,9c,cd
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\SystemCertificates\CA\CTLs
+If,%NoWarnROW%,Equal,True,System,ERROROFF,7
+RegWrite,HKLM,0x3,Tmp_Software\Microsoft\SystemCertificates\Disallowed\Certificates\637162CC59A3A1E25956FA5FA8F60D2E1C52EAC6,Blob,0f,00,00,00,01,00,00,00,10,00,00,00,33,59,29,25,e5,47,60,4f,d9,8c,09,f1,fa,44,c2,79,0b,00,00,00,01,00,00,00,34,00,00,00,46,00,72,00,61,00,75,00,64,00,75,00,6c,00,65,00,6e,00,74,00,2c,00,20,00,4e,00,4f,00,54,00,20,00,4d,00,69,00,63,00,72,00,6f,00,73,00,6f,00,66,00,74,00,00,00,03,00,00,00,01,00,00,00,14,00,00,00,63,71,62,cc,59,a3,a1,e2,59,56,fa,5f,a8,f6,0d,2e,1c,52,ea,c6,20,00,00,00,01,00,00,00,b6,08,00,00,30,82,08,b2,30,82,08,1b,a0,03,02,01,02,02,10,1b,51,90,f7,37,24,39,9c,92,54,cd,42,46,37,99,6a,30,0d,06,09,2a,86,48,86,f7,0d,01,01,04,05,00,30,61,31,11,30,0f,06,03,55,04,07,13,08,49,6e,74,65,72,6e,65,74,31,17,30,15,06,03,55,04,0a,13,0e,56,65,72,69,53,69,67,6e,2c,20,49,6e,63,2e,31,33,30,31,06,03,55,04,0b,13,2a,56,65,72,69,53,69,67,6e,20,43,6f,6d,6d,65,72,63,69,61,6c,20,53,6f,66,74,77,61,72,65,20,50,75,62,6c,69,73,68,65,72,73,20,43,41,30,1e,17,0d,30,31,30,31,33,30,30,30,30,30,30,30,5a,17,0d,30,32,30,31,33,30,32,33,35,39,35,39,5a,30,82,01,4b,31,11,30,0f,06,03,55,04,07,13,08,49,6e,74,65,72,6e,65,74,31,17,30,15,06,03,55,04,0a,13,0e,56,65,72,69,53,69,67,6e,2c,20,49,6e,63,2e,31,33,30,31,06,03,55,04,0b,13,2a,56,65,72,69,53,69,67,6e,20,43,6f,6d,6d,65,72,63,69,61,6c,20,53,6f,66,74,77,61,72,65,20,50,75,62,6c,69,73,68,65,72,73,20,43,41,31,46,30,44,06,03,55,04,0b,13,3d,77,77,77,2e,76,65,72,69,73,69,67,6e,2e,63,6f,6d,2f,72,65,70,6f,73,69,74,6f,72,79,2f,43,50,53,20,49,6e,63,6f,72,70,2e,20,62,79,20,52,65,66,2e,2c,4c,49,41,42,2e,4c,54,44,28,63,29,39,36,31,3e,30,3c,06,03,55,04,0b,13,35,44,69,67,69,74,61,6c,20,49,44,20,43,6c,61,73,73,20,33,20,2d,20,4d,69,63,72,6f,73,6f,66,74,20,53,6f,66,74,77,61,72,65,20,56,61,6c,69,64,61,74,69,6f,6e,20,76,32,31,0b,30,09,06,03,55,04,06,13,02,55,53,31,0b,30,09,06,03,55,04,08,13,02,44,43,31,13,30,11,06,03,55,04,07,13,0a,57,61,73,68,69,6e,67,74,6f,6e,31,1e,30,1c,06,03,55,04,03,14,15,4d,69,63,72,6f,73,6f,66,74,20,43,6f,72,70,6f,72,61,74,69,6f,6e,31,11,30,0f,06,03,55,04,0b,14,08,53,6f,66,74,77,61,72,65,30,81,9f,30,0d,06,09,2a,86,48,86,f7,0d,01,01,01,05,00,03,81,8d,00,30,81,89,02,81,81,00,9e,30,e5,93,41,8e,11,07,67,ba,bd,c9,c6,11,0a,ab,5a,4c,d6,6d,0c,ad,fa,b3,0e,a0,19,1c,54,7f,c5,2e,29,ce,7e,da,de,eb,28,d5,ad,1a,b0,ca,d5,b2,f1,9b,83,e2,3e,44,8f,e9,97,26,93,b3,6d,39,0c,69,67,50,b9,14,98,7d,a4,c3,42,66,e3,8c,fc,da,db,89,ec,9c,6b,54,dd,48,1c,c4,dd,20,55,b7,ea,25,57,b6,ce,fc,eb,e0,87,62,a1,85,a9,1f,cf,f2,fb,20,94,9b,da,e5,3d,d6,b9,80,e9,06,af,31,a6,cd,7e,b3,cf,b4,90,55,02,03,01,00,01,a3,82,05,7d,30,82,05,79,30,09,06,03,55,1d,13,04,02,30,00,30,0b,06,03,55,1d,0f,04,04,03,02,05,a0,30,81,94,06,03,55,1d,01,04,81,8c,30,81,89,80,10,7b,96,e4,d1,43,fd,68,98,f3,38,cc,6e,3b,f2,0b,82,a1,63,30,61,31,11,30,0f,06,03,55,04,07,13,08,49,6e,74,65,72,6e,65,74,31,17,30,15,06,03,55,04,0a,13,0e,56,65,72,69,53,69,67,6e,2c,20,49,6e,63,2e,31,33,30,31,06,03,55,04,0b,13,2a,56,65,72,69,53,69,67,6e,20,43,6f,6d,6d,65,72,63,69,61,6c,20,53,6f,66,74,77,61,72,65,20,50,75,62,6c,69,73,68,65,72,73,20,43,41,82,10,03,c7,8f,37,db,92,28,df,3c,bb,1a,ad,82,fa,67,10,30,21,06,03,55,1d,04,01,01,ff,04,17,30,14,30,0e,30,0c,06,0a,2b,06,01,04,01,82,37,02,01,16,03,02,07,80,00,30,0d,06,03,55,1d,0a,04,06,30,04,03,02,06,40,30,82,04,36,06,0a,2b,06,01,04,01,82,37,02,01,0a,01,01,ff,04,82,04,23,30,82,04,1f,a0,29,80,27,68,74,74,70,73,3a,2f,2f,77,77,77,2e,76,65,72,69,73,69,67,6e,2e,63,6f,6d,2f,72,65,70,6f,73,69,74,6f,72,79,2f,43,50,53,a1,82,03,b8,81,82,03,b4,54,68,69,73,20,63,65,72,74,69,66,69,63,61,74,65,20,69,6e,63,6f,72,70,6f,72,61,74,65,73,20,62,79,20,72,65,66,65,72,65,6e,63,65,2c,20,61,6e,64,20,69,74,73,20,75,73,65,20,69,73,20,73,74,72,69,63,74,6c,79,0a,73,75,62,6a,65,63,74,20,74,6f,2c,20,74,68,65,20,56,65,72,69,53,69,67,6e,20,43,65,72,74,69,66,69,63,61,74,69,6f,6e,20,50,72,61,63,74,69,63,65,20,53,74,61,74,65,6d,65,6e,74,20,28,43,50,53,29,0a,76,65,72,73,69,6f,6e,20,31,2e,30,2c,20,61,76,61,69,6c,61,62,6c,65,20,69,6e,20,74,68,65,20,56,65,72,69,53,69,67,6e,20,72,65,70,6f,73,69,74,6f,72,79,20,61,74,3a,0a,68,74,74,70,73,3a,2f,2f,77,77,77,2e,76,65,72,69,73,69,67,6e,2e,63,6f,6d,3b,20,62,79,20,45,2d,6d,61,69,6c,20,61,74,20,43,50,53,2d,72,65,71,75,65,73,74,73,40,76,65,72,69,73,69,67,6e,2e,63,6f,6d,3b,20,6f,72,0a,62,79,20,6d,61,69,6c,20,61,74,20,56,65,72,69,53,69,67,6e,2c,20,49,6e,63,2e,2c,20,32,35,39,33,20,43,6f,61,73,74,20,41,76,65,2e,2c,20,4d,6f,75,6e,74,61,69,6e,20,56,69,65,77,2c,20,43,41,20,39,34,30,34,33,0a,55,53,41,20,43,6f,70,79,72,69,67,68,74,20,28,63,29,31,39,39,36,20,56,65,72,69,53,69,67,6e,2c,20,49,6e,63,2e,20,20,41,6c,6c,20,52,69,67,68,74,73,20,52,65,73,65,72,76,65,64,2e,20,43,45,52,54,41,49,4e,0a,57,41,52,52,41,4e,54,49,45,53,20,44,49,53,43,4c,41,49,4d,45,44,20,41,4e,44,20,4c,49,41,42,49,4c,49,54,59,20,4c,49,4d,49,54,45,44,2e,0a,0a,57,41,52,4e,49,4e,47,3a,20,54,48,45,20,55,53,45,20,4f,46,20,54,48,49,53,20,43,45,52,54,49,46,49,43,41,54,45,20,49,53,20,53,54,52,49,43,54,4c,59,20,53,55,42,4a,45,43,54,20,54,4f,20,54,48,45,0a,56,45,52,49,53,49,47,4e,20,43,45,52,54,49,46,49,43,41,54,49,4f,4e,20,50,52,41,43,54,49,43,45,20,53,54,41,54,45,4d,45,4e,54,2e,20,20,54,48,45,20,49,53,53,55,49,4e,47,20,41,55,54,48,4f,52,49,54,59,0a,44,49,53,43,4c,41,49,4d,53,20,43,45,52,54,41,49,4e,20,49,4d,50,4c,49,45,44,20,41,4e,44,20,45,58,50,52,45,53,53,20,57,41,52,52,41,4e,54,49,45,53,2c,20,49,4e,43,4c,55,44,49,4e,47,20,57,41,52,52,41,4e,54,49,45,53,0a,4f,46,20,4d,45,52,43,48,41,4e,54,41,42,49,4c,49,54,59,20,4f,52,20,46,49,54,4e,45,53,53,20,46,4f,52,20,41,20,50,41,52,54,49,43,55,4c,41,52,20,50,55,52,50,4f,53,45,2c,20,41,4e,44,20,57,49,4c,4c,20,4e,4f,54,0a,42,45,20,4c,49,41,42,4c,45,20,46,4f,52,20,43,4f,4e,53,45,51,55,45,4e,54,49,41,4c,2c,20,50,55,4e,49,54,49,56,45,2c,20,41,4e,44,20,43,45,52,54,41,49,4e,20,4f,54,48,45,52,20,44,41,4d,41,47,45,53,2e,20,53,45,45,0a,54,48,45,20,43,50,53,20,46,4f,52,20,44,45,54,41,49,4c,53,2e,0a,0a,43,6f,6e,74,65,6e,74,73,20,6f,66,20,74,68,65,20,56,65,72,69,53,69,67,6e,20,72,65,67,69,73,74,65,72,65,64,20,6e,6f,6e,76,65,72,69,66,69,65,64,53,75,62,6a,65,63,74,41,74,74,72,69,62,75,74,65,73,0a,65,78,74,65,6e,73,69,6f,6e,20,76,61,6c,75,65,20,73,68,61,6c,6c,20,6e,6f,74,20,62,65,20,63,6f,6e,73,69,64,65,72,65,64,20,61,73,20,61,63,63,75,72,61,74,65,20,69,6e,66,6f,72,6d,61,74,69,6f,6e,0a,76,61,6c,69,64,61,74,65,64,20,62,79,20,74,68,65,20,49,41,2e,0a,a3,36,80,34,68,74,74,70,73,3a,2f,2f,77,77,77,2e,76,65,72,69,73,69,67,6e,2e,63,6f,6d,2f,72,65,70,6f,73,69,74,6f,72,79,2f,76,65,72,69,73,69,67,6e,6c,6f,67,6f,2e,67,69,66,30,44,06,03,55,1d,20,04,3d,30,3b,30,39,06,0b,60,86,48,01,86,f8,45,01,07,01,08,30,2a,30,28,06,08,2b,06,01,05,05,07,02,01,16,1c,68,74,74,70,73,3a,2f,2f,77,77,77,2e,76,65,72,69,73,69,67,6e,2e,63,6f,6d,2f,72,70,61,30,16,06,0a,2b,06,01,04,01,82,37,02,01,1b,04,08,30,06,01,01,ff,01,01,ff,30,0d,06,09,2a,86,48,86,f7,0d,01,01,04,05,00,03,81,81,00,27,70,fa,14,3a,01,00,d0,c3,3c,79,ea,f6,c5,00,44,3c,9b,da,9b,b0,84,55,d5,51,57,28,cb,64,03,d2,91,67,d3,fc,90,7e,40,e2,51,ee,fa,a7,2b,e8,41,d6,63,a1,39,f9,db,3b,c7,0f,b0,55,f3,dc,f6,59,69,93,98,10,dd,fb,2a,63,02,08,da,52,df,36,ae,8b,40,dc,a6,98,b5,7a,8b,de,bd,ea,4a,99,f8,ae,8d,bb,71,50,e5,4f,ad,0b,4e,d4,6e,c2,5d,1e,b7,3a,be,64,e8,a4,6b,75,f3,66,f2,04,53,b6,80,19,ca,df,30,9d,ed,5d,3c
+RegWrite,HKLM,0x3,Tmp_Software\Microsoft\SystemCertificates\Disallowed\Certificates\7D7F4414CCEF168ADF6BF40753B5BECD78375931,Blob,0f,00,00,00,01,00,00,00,10,00,00,00,8c,db,18,e9,9a,26,6c,9b,e8,18,e9,42,29,cf,0f,ca,0b,00,00,00,01,00,00,00,34,00,00,00,46,00,72,00,61,00,75,00,64,00,75,00,6c,00,65,00,6e,00,74,00,2c,00,20,00,4e,00,4f,00,54,00,20,00,4d,00,69,00,63,00,72,00,6f,00,73,00,6f,00,66,00,74,00,00,00,03,00,00,00,01,00,00,00,14,00,00,00,7d,7f,44,14,cc,ef,16,8a,df,6b,f4,07,53,b5,be,cd,78,37,59,31,20,00,00,00,01,00,00,00,c8,08,00,00,30,82,08,c4,30,82,08,2d,a0,03,02,01,02,02,10,75,0e,40,ff,97,f0,47,ed,f5,56,c7,08,4e,b1,ab,fd,30,0d,06,09,2a,86,48,86,f7,0d,01,01,04,05,00,30,61,31,11,30,0f,06,03,55,04,07,13,08,49,6e,74,65,72,6e,65,74,31,17,30,15,06,03,55,04,0a,13,0e,56,65,72,69,53,69,67,6e,2c,20,49,6e,63,2e,31,33,30,31,06,03,55,04,0b,13,2a,56,65,72,69,53,69,67,6e,20,43,6f,6d,6d,65,72,63,69,61,6c,20,53,6f,66,74,77,61,72,65,20,50,75,62,6c,69,73,68,65,72,73,20,43,41,30,1e,17,0d,30,31,30,31,33,31,30,30,30,30,30,30,5a,17,0d,30,32,30,31,33,31,32,33,35,39,35,39,5a,30,82,01,5d,31,11,30,0f,06,03,55,04,07,13,08,49,6e,74,65,72,6e,65,74,31,17,30,15,06,03,55,04,0a,13,0e,56,65,72,69,53,69,67,6e,2c,20,49,6e,63,2e,31,33,30,31,06,03,55,04,0b,13,2a,56,65,72,69,53,69,67,6e,20,43,6f,6d,6d,65,72,63,69,61,6c,20,53,6f,66,74,77,61,72,65,20,50,75,62,6c,69,73,68,65,72,73,20,43,41,31,46,30,44,06,03,55,04,0b,13,3d,77,77,77,2e,76,65,72,69,73,69,67,6e,2e,63,6f,6d,2f,72,65,70,6f,73,69,74,6f,72,79,2f,43,50,53,20,49,6e,63,6f,72,70,2e,20,62,79,20,52,65,66,2e,2c,4c,49,41,42,2e,4c,54,44,28,63,29,39,36,31,3e,30,3c,06,03,55,04,0b,13,35,44,69,67,69,74,61,6c,20,49,44,20,43,6c,61,73,73,20,33,20,2d,20,4d,69,63,72,6f,73,6f,66,74,20,53,6f,66,74,77,61,72,65,20,56,61,6c,69,64,61,74,69,6f,6e,20,76,32,31,0b,30,09,06,03,55,04,06,13,02,55,53,31,13,30,11,06,03,55,04,08,13,0a,57,61,73,68,69,6e,67,74,6f,6e,31,10,30,0e,06,03,55,04,07,13,07,52,65,64,6d,6f,6e,64,31,1e,30,1c,06,03,55,04,03,14,15,4d,69,63,72,6f,73,6f,66,74,20,43,6f,72,70,6f,72,61,74,69,6f,6e,31,1e,30,1c,06,03,55,04,0b,14,15,4d,69,63,72,6f,73,6f,66,74,20,43,6f,72,70,6f,72,61,74,69,6f,6e,30,81,9f,30,0d,06,09,2a,86,48,86,f7,0d,01,01,01,05,00,03,81,8d,00,30,81,89,02,81,81,00,ee,fa,1f,c9,b0,43,df,7e,75,81,4e,31,71,91,0b,fc,15,9d,d9,4a,8a,51,f5,09,18,c6,7c,c5,f1,27,c4,01,62,fc,bf,fc,84,29,a6,2f,e6,1e,02,06,0b,96,89,d3,42,b1,73,9f,02,ae,75,62,09,3f,83,80,34,46,60,39,0a,e3,21,4e,e7,04,42,d5,7e,5e,98,45,27,5d,04,b9,27,32,c0,65,a4,94,85,13,25,db,16,f2,fb,51,c7,ff,28,62,d1,83,31,4f,a9,a4,f4,c5,4f,9d,00,2e,14,3f,95,16,9c,4e,25,07,1b,d5,7d,38,71,d8,40,f8,aa,71,02,03,01,00,01,a3,82,05,7d,30,82,05,79,30,09,06,03,55,1d,13,04,02,30,00,30,0b,06,03,55,1d,0f,04,04,03,02,05,a0,30,81,94,06,03,55,1d,01,04,81,8c,30,81,89,80,10,7b,96,e4,d1,43,fd,68,98,f3,38,cc,6e,3b,f2,0b,82,a1,63,30,61,31,11,30,0f,06,03,55,04,07,13,08,49,6e,74,65,72,6e,65,74,31,17,30,15,06,03,55,04,0a,13,0e,56,65,72,69,53,69,67,6e,2c,20,49,6e,63,2e,31,33,30,31,06,03,55,04,0b,13,2a,56,65,72,69,53,69,67,6e,20,43,6f,6d,6d,65,72,63,69,61,6c,20,53,6f,66,74,77,61,72,65,20,50,75,62,6c,69,73,68,65,72,73,20,43,41,82,10,03,c7,8f,37,db,92,28,df,3c,bb,1a,ad,82,fa,67,10,30,21,06,03,55,1d,04,01,01,ff,04,17,30,14,30,0e,30,0c,06,0a,2b,06,01,04,01,82,37,02,01,16,03,02,07,80,00,30,0d,06,03,55,1d,0a,04,06,30,04,03,02,06,40,30,82,04,36,06,0a,2b,06,01,04,01,82,37,02,01,0a,01,01,ff,04,82,04,23,30,82,04,1f,a0,29,80,27,68,74,74,70,73,3a,2f,2f,77,77,77,2e,76,65,72,69,73,69,67,6e,2e,63,6f,6d,2f,72,65,70,6f,73,69,74,6f,72,79,2f,43,50,53,a1,82,03,b8,81,82,03,b4,54,68,69,73,20,63,65,72,74,69,66,69,63,61,74,65,20,69,6e,63,6f,72,70,6f,72,61,74,65,73,20,62,79,20,72,65,66,65,72,65,6e,63,65,2c,20,61,6e,64,20,69,74,73,20,75,73,65,20,69,73,20,73,74,72,69,63,74,6c,79,0a,73,75,62,6a,65,63,74,20,74,6f,2c,20,74,68,65,20,56,65,72,69,53,69,67,6e,20,43,65,72,74,69,66,69,63,61,74,69,6f,6e,20,50,72,61,63,74,69,63,65,20,53,74,61,74,65,6d,65,6e,74,20,28,43,50,53,29,0a,76,65,72,73,69,6f,6e,20,31,2e,30,2c,20,61,76,61,69,6c,61,62,6c,65,20,69,6e,20,74,68,65,20,56,65,72,69,53,69,67,6e,20,72,65,70,6f,73,69,74,6f,72,79,20,61,74,3a,0a,68,74,74,70,73,3a,2f,2f,77,77,77,2e,76,65,72,69,73,69,67,6e,2e,63,6f,6d,3b,20,62,79,20,45,2d,6d,61,69,6c,20,61,74,20,43,50,53,2d,72,65,71,75,65,73,74,73,40,76,65,72,69,73,69,67,6e,2e,63,6f,6d,3b,20,6f,72,0a,62,79,20,6d,61,69,6c,20,61,74,20,56,65,72,69,53,69,67,6e,2c,20,49,6e,63,2e,2c,20,32,35,39,33,20,43,6f,61,73,74,20,41,76,65,2e,2c,20,4d,6f,75,6e,74,61,69,6e,20,56,69,65,77,2c,20,43,41,20,39,34,30,34,33,0a,55,53,41,20,43,6f,70,79,72,69,67,68,74,20,28,63,29,31,39,39,36,20,56,65,72,69,53,69,67,6e,2c,20,49,6e,63,2e,20,20,41,6c,6c,20,52,69,67,68,74,73,20,52,65,73,65,72,76,65,64,2e,20,43,45,52,54,41,49,4e,0a,57,41,52,52,41,4e,54,49,45,53,20,44,49,53,43,4c,41,49,4d,45,44,20,41,4e,44,20,4c,49,41,42,49,4c,49,54,59,20,4c,49,4d,49,54,45,44,2e,0a,0a,57,41,52,4e,49,4e,47,3a,20,54,48,45,20,55,53,45,20,4f,46,20,54,48,49,53,20,43,45,52,54,49,46,49,43,41,54,45,20,49,53,20,53,54,52,49,43,54,4c,59,20,53,55,42,4a,45,43,54,20,54,4f,20,54,48,45,0a,56,45,52,49,53,49,47,4e,20,43,45,52,54,49,46,49,43,41,54,49,4f,4e,20,50,52,41,43,54,49,43,45,20,53,54,41,54,45,4d,45,4e,54,2e,20,20,54,48,45,20,49,53,53,55,49,4e,47,20,41,55,54,48,4f,52,49,54,59,0a,44,49,53,43,4c,41,49,4d,53,20,43,45,52,54,41,49,4e,20,49,4d,50,4c,49,45,44,20,41,4e,44,20,45,58,50,52,45,53,53,20,57,41,52,52,41,4e,54,49,45,53,2c,20,49,4e,43,4c,55,44,49,4e,47,20,57,41,52,52,41,4e,54,49,45,53,0a,4f,46,20,4d,45,52,43,48,41,4e,54,41,42,49,4c,49,54,59,20,4f,52,20,46,49,54,4e,45,53,53,20,46,4f,52,20,41,20,50,41,52,54,49,43,55,4c,41,52,20,50,55,52,50,4f,53,45,2c,20,41,4e,44,20,57,49,4c,4c,20,4e,4f,54,0a,42,45,20,4c,49,41,42,4c,45,20,46,4f,52,20,43,4f,4e,53,45,51,55,45,4e,54,49,41,4c,2c,20,50,55,4e,49,54,49,56,45,2c,20,41,4e,44,20,43,45,52,54,41,49,4e,20,4f,54,48,45,52,20,44,41,4d,41,47,45,53,2e,20,53,45,45,0a,54,48,45,20,43,50,53,20,46,4f,52,20,44,45,54,41,49,4c,53,2e,0a,0a,43,6f,6e,74,65,6e,74,73,20,6f,66,20,74,68,65,20,56,65,72,69,53,69,67,6e,20,72,65,67,69,73,74,65,72,65,64,20,6e,6f,6e,76,65,72,69,66,69,65,64,53,75,62,6a,65,63,74,41,74,74,72,69,62,75,74,65,73,0a,65,78,74,65,6e,73,69,6f,6e,20,76,61,6c,75,65,20,73,68,61,6c,6c,20,6e,6f,74,20,62,65,20,63,6f,6e,73,69,64,65,72,65,64,20,61,73,20,61,63,63,75,72,61,74,65,20,69,6e,66,6f,72,6d,61,74,69,6f,6e,0a,76,61,6c,69,64,61,74,65,64,20,62,79,20,74,68,65,20,49,41,2e,0a,a3,36,80,34,68,74,74,70,73,3a,2f,2f,77,77,77,2e,76,65,72,69,73,69,67,6e,2e,63,6f,6d,2f,72,65,70,6f,73,69,74,6f,72,79,2f,76,65,72,69,73,69,67,6e,6c,6f,67,6f,2e,67,69,66,30,44,06,03,55,1d,20,04,3d,30,3b,30,39,06,0b,60,86,48,01,86,f8,45,01,07,01,08,30,2a,30,28,06,08,2b,06,01,05,05,07,02,01,16,1c,68,74,74,70,73,3a,2f,2f,77,77,77,2e,76,65,72,69,73,69,67,6e,2e,63,6f,6d,2f,72,70,61,30,16,06,0a,2b,06,01,04,01,82,37,02,01,1b,04,08,30,06,01,01,ff,01,01,ff,30,0d,06,09,2a,86,48,86,f7,0d,01,01,04,05,00,03,81,81,00,18,96,01,f5,b7,a4,c7,2d,a2,6c,fd,e8,1d,18,55,5d,84,08,46,ad,1c,62,e1,2c,3a,bd,b0,93,84,21,88,0d,12,b5,9b,f4,af,25,7f,b0,50,47,65,e6,a2,5d,64,f4,f2,50,d4,d6,9d,f7,12,75,1a,a3,66,24,5c,5f,f1,be,e2,4a,0d,62,cb,d0,0b,5a,22,fa,0e,2d,c9,00,95,0c,29,24,42,66,21,f4,81,30,0e,40,db,ac,2a,59,db,6d,55,d9,93,43,e2,ce,30,3a,af,87,34,26,33,bd,f2,3b,ed,ae,6a,0d,39,1c,89,08,40,06,1d,f3,ff,03,c7,7e
+RegWrite,HKLM,0x3,Tmp_Software\Microsoft\SystemCertificates\ROOT\Certificates\18F7C1FCC3090203FD5BAA2F861A754976C8DD25,Blob,14,00,00,00,01,00,00,00,14,00,00,00,3e,df,29,0c,c1,f5,cc,73,2c,eb,3d,24,e1,7e,52,da,bd,27,e2,f0,04,00,00,00,01,00,00,00,10,00,00,00,eb,b0,4f,1d,3a,2e,37,2f,1d,da,6e,27,d6,b6,80,fa,03,00,00,00,01,00,00,00,14,00,00,00,18,f7,c1,fc,c3,09,02,03,fd,5b,aa,2f,86,1a,75,49,76,c8,dd,25,09,00,00,00,01,00,00,00,0c,00,00,00,30,0a,06,08,2b,06,01,05,05,07,03,08,0b,00,00,00,01,00,00,00,34,00,00,00,56,00,65,00,72,00,69,00,53,00,69,00,67,00,6e,00,20,00,54,00,69,00,6d,00,65,00,20,00,53,00,74,00,61,00,6d,00,70,00,69,00,6e,00,67,00,20,00,43,00,41,00,00,00,19,00,00,00,01,00,00,00,10,00,00,00,e5,3d,34,ce,cb,05,c1,7e,e3,32,c7,49,d7,8c,02,56,20,00,00,00,01,00,00,00,c0,02,00,00,30,82,02,bc,30,82,02,25,02,10,4a,19,d2,38,8c,82,59,1c,a5,5d,73,5f,15,5d,dc,a3,30,0d,06,09,2a,86,48,86,f7,0d,01,01,04,05,00,30,81,9e,31,1f,30,1d,06,03,55,04,0a,13,16,56,65,72,69,53,69,67,6e,20,54,72,75,73,74,20,4e,65,74,77,6f,72,6b,31,17,30,15,06,03,55,04,0b,13,0e,56,65,72,69,53,69,67,6e,2c,20,49,6e,63,2e,31,2c,30,2a,06,03,55,04,0b,13,23,56,65,72,69,53,69,67,6e,20,54,69,6d,65,20,53,74,61,6d,70,69,6e,67,20,53,65,72,76,69,63,65,20,52,6f,6f,74,31,34,30,32,06,03,55,04,0b,13,2b,4e,4f,20,4c,49,41,42,49,4c,49,54,59,20,41,43,43,45,50,54,45,44,2c,20,28,63,29,39,37,20,56,65,72,69,53,69,67,6e,2c,20,49,6e,63,2e,30,1e,17,0d,39,37,30,35,31,32,30,30,30,30,30,30,5a,17,0d,30,34,30,31,30,37,32,33,35,39,35,39,5a,30,81,9e,31,1f,30,1d,06,03,55,04,0a,13,16,56,65,72,69,53,69,67,6e,20,54,72,75,73,74,20,4e,65,74,77,6f,72,6b,31,17,30,15,06,03,55,04,0b,13,0e,56,65,72,69,53,69,67,6e,2c,20,49,6e,63,2e,31,2c,30,2a,06,03,55,04,0b,13,23,56,65,72,69,53,69,67,6e,20,54,69,6d,65,20,53,74,61,6d,70,69,6e,67,20,53,65,72,76,69,63,65,20,52,6f,6f,74,31,34,30,32,06,03,55,04,0b,13,2b,4e,4f,20,4c,49,41,42,49,4c,49,54,59,20,41,43,43,45,50,54,45,44,2c,20,28,63,29,39,37,20,56,65,72,69,53,69,67,6e,2c,20,49,6e,63,2e,30,81,9f,30,0d,06,09,2a,86,48,86,f7,0d,01,01,01,05,00,03,81,8d,00,30,81,89,02,81,81,00,d3,2e,20,f0,68,7c,2c,2d,2e,81,1c,b1,06,b2,a7,0b,b7,11,0d,57,da,53,d8,75,e3,c9,33,2a,b2,d4,f6,09,5b,34,f3,e9,90,fe,09,0c,d0,db,1b,5a,b9,cd,e7,f6,88,b1,9d,c0,87,25,eb,7d,58,10,73,6a,78,cb,71,15,fd,c6,58,f6,29,ab,58,5e,96,04,fd,2d,62,11,58,81,1c,ca,71,94,d5,22,58,2f,d5,cc,14,05,84,36,ba,94,aa,b4,4d,4a,e9,ee,3b,22,ad,56,99,7e,21,9c,6c,86,c0,4a,47,97,6a,b4,a6,36,d5,fc,09,2d,d3,b4,39,9b,02,03,01,00,01,30,0d,06,09,2a,86,48,86,f7,0d,01,01,04,05,00,03,81,81,00,61,55,0e,3e,7b,c7,92,12,7e,11,10,8e,22,cc,d4,b3,13,2b,5b,e8,44,e4,0b,78,9e,a4,7e,f3,a7,07,72,1e,e2,59,ef,cc,84,e3,89,94,4c,db,4e,61,ef,b3,a4,fb,46,3d,50,34,0b,9f,70,56,f6,8e,2a,7f,17,ce,e5,63,bf,79,69,07,73,2e,b0,95,28,8a,f5,ed,aa,a9,d2,5d,cd,0a,ca,10,09,8f,ce,b3,af,28,96,c4,79,29,84,92,dc,ff,ba,67,42,48,a6,90,10,e4,bf,61,f8,9c,53,e5,93,d1,73,3f,f8,fd,9d,4f,84,ac,55,d1,fd,11,63,63
+RegWrite,HKLM,0x3,Tmp_Software\Microsoft\SystemCertificates\ROOT\Certificates\245C97DF7514E7CF2DF8BE72AE957B9E04741E85,Blob,14,00,00,00,01,00,00,00,14,00,00,00,34,4f,30,2d,25,69,31,91,ea,f7,73,5c,ab,f5,86,8d,37,82,40,ec,04,00,00,00,01,00,00,00,10,00,00,00,55,6e,be,f5,4c,1d,7c,03,60,c4,34,18,bc,96,49,c1,0b,00,00,00,01,00,00,00,32,00,00,00,4d,00,69,00,63,00,72,00,6f,00,73,00,6f,00,66,00,74,00,20,00,54,00,69,00,6d,00,65,00,73,00,74,00,61,00,6d,00,70,00,20,00,52,00,6f,00,6f,00,74,00,00,00,09,00,00,00,01,00,00,00,0c,00,00,00,30,0a,06,08,2b,06,01,05,05,07,03,08,03,00,00,00,01,00,00,00,14,00,00,00,24,5c,97,df,75,14,e7,cf,2d,f8,be,72,ae,95,7b,9e,04,74,1e,85,19,00,00,00,01,00,00,00,10,00,00,00,7f,df,f5,07,29,44,67,10,24,4a,44,7c,a2,a1,97,ea,20,00,00,00,01,00,00,00,b1,02,00,00,30,82,02,ad,30,82,02,16,02,01,01,30,0d,06,09,2a,86,48,86,f7,0d,01,01,04,05,00,30,81,9e,31,20,30,1e,06,03,55,04,0a,13,17,4d,69,63,72,6f,73,6f,66,74,20,54,72,75,73,74,20,4e,65,74,77,6f,72,6b,31,1e,30,1c,06,03,55,04,0b,13,15,4d,69,63,72,6f,73,6f,66,74,20,43,6f,72,70,6f,72,61,74,69,6f,6e,31,2d,30,2b,06,03,55,04,0b,13,24,4d,69,63,72,6f,73,6f,66,74,20,54,69,6d,65,20,53,74,61,6d,70,69,6e,67,20,53,65,72,76,69,63,65,20,52,6f,6f,74,31,2b,30,29,06,03,55,04,0b,13,22,43,6f,70,79,72,69,67,68,74,20,28,63,29,20,31,39,39,37,20,4d,69,63,72,6f,73,6f,66,74,20,43,6f,72,70,2e,30,1e,17,0d,39,37,30,35,31,33,31,36,31,32,35,39,5a,17,0d,39,39,31,32,33,30,32,33,35,39,35,39,5a,30,81,9e,31,20,30,1e,06,03,55,04,0a,13,17,4d,69,63,72,6f,73,6f,66,74,20,54,72,75,73,74,20,4e,65,74,77,6f,72,6b,31,1e,30,1c,06,03,55,04,0b,13,15,4d,69,63,72,6f,73,6f,66,74,20,43,6f,72,70,6f,72,61,74,69,6f,6e,31,2d,30,2b,06,03,55,04,0b,13,24,4d,69,63,72,6f,73,6f,66,74,20,54,69,6d,65,20,53,74,61,6d,70,69,6e,67,20,53,65,72,76,69,63,65,20,52,6f,6f,74,31,2b,30,29,06,03,55,04,0b,13,22,43,6f,70,79,72,69,67,68,74,20,28,63,29,20,31,39,39,37,20,4d,69,63,72,6f,73,6f,66,74,20,43,6f,72,70,2e,30,81,9f,30,0d,06,09,2a,86,48,86,f7,0d,01,01,01,05,00,03,81,8d,00,30,81,89,02,81,81,00,b7,5a,38,f5,1f,37,cc,a9,43,c4,dc,24,18,be,f2,85,52,b4,1d,5b,5f,18,b9,0b,8f,4b,6d,a8,ff,cd,40,50,6c,d3,a0,d3,5c,47,c2,b9,f7,86,e4,cd,7d,35,05,69,37,1f,af,3d,dd,1f,fd,8f,15,34,c2,c4,79,cc,59,74,8a,6f,8c,0e,c3,e8,11,eb,84,38,47,98,53,e1,f1,0c,0d,e4,01,0c,f0,1b,1e,20,da,2a,7a,3d,c2,15,52,8e,8a,ff,7b,32,bf,58,1e,25,98,83,26,cb,8a,c9,c4,07,14,24,bc,49,9e,d7,7a,b3,87,1a,25,33,bc,6d,08,47,02,03,01,00,01,30,0d,06,09,2a,86,48,86,f7,0d,01,01,04,05,00,03,81,81,00,50,5b,c5,6b,6f,8d,52,5b,0d,c9,bd,ac,34,73,98,ca,0a,87,ca,ae,4c,4a,ba,14,a4,eb,52,70,95,21,e0,b5,a1,60,4e,f7,43,02,51,01,af,1e,3a,70,ce,bf,18,b6,86,28,99,67,eb,08,e8,97,40,5c,16,82,fd,b8,25,fb,36,6f,6f,76,3e,c5,4c,8e,e2,a7,51,fa,ca,c1,63,ba,5e,83,24,47,0b,93,72,f6,44,9a,ce,a7,95,3a,8f,50,10,9e,1d,b1,59,16,ab,cf,3e,df,83,8b,c7,fa,c3,6b,dc,64,9f,40,2b,1f,45,24,04,ae,49,2f,f6,df,0c,91
+RegWrite,HKLM,0x3,Tmp_Software\Microsoft\SystemCertificates\ROOT\Certificates\7F88CD7223F3C813818C994614A89C99FA3B5247,Blob,14,00,00,00,01,00,00,00,14,00,00,00,01,f0,33,4c,1a,a1,d9,ee,5b,7b,a9,de,43,bc,02,7d,57,09,33,fb,04,00,00,00,01,00,00,00,10,00,00,00,dc,6d,6f,af,89,7c,dd,17,33,2f,b5,ba,90,35,e9,ce,03,00,00,00,01,00,00,00,14,00,00,00,7f,88,cd,72,23,f3,c8,13,81,8c,99,46,14,a8,9c,99,fa,3b,52,47,09,00,00,00,01,00,00,00,16,00,00,00,30,14,06,08,2b,06,01,05,05,07,03,04,06,08,2b,06,01,05,05,07,03,03,0b,00,00,00,01,00,00,00,40,00,00,00,4d,00,69,00,63,00,72,00,6f,00,73,00,6f,00,66,00,74,00,20,00,41,00,75,00,74,00,68,00,65,00,6e,00,74,00,69,00,63,00,6f,00,64,00,65,00,28,00,74,00,6d,00,29,00,20,00,52,00,6f,00,6f,00,74,00,00,00,19,00,00,00,01,00,00,00,10,00,00,00,07,d3,4d,ed,49,8d,45,77,f2,61,bd,38,b6,b8,73,6e,20,00,00,00,01,00,00,00,da,03,00,00,30,82,03,d6,30,82,02,be,a0,03,02,01,02,02,01,01,30,0d,06,09,2a,86,48,86,f7,0d,01,01,04,05,00,30,50,31,0b,30,09,06,03,55,04,06,13,02,55,53,31,0d,30,0b,06,03,55,04,0a,13,04,4d,53,46,54,31,32,30,30,06,03,55,04,03,13,29,4d,69,63,72,6f,73,6f,66,74,20,41,75,74,68,65,6e,74,69,63,6f,64,65,28,74,6d,29,20,52,6f,6f,74,20,41,75,74,68,6f,72,69,74,79,30,1e,17,0d,39,35,30,31,30,31,30,38,30,30,30,31,5a,17,0d,39,39,31,32,33,31,32,33,35,39,35,39,5a,30,50,31,0b,30,09,06,03,55,04,06,13,02,55,53,31,0d,30,0b,06,03,55,04,0a,13,04,4d,53,46,54,31,32,30,30,06,03,55,04,03,13,29,4d,69,63,72,6f,73,6f,66,74,20,41,75,74,68,65,6e,74,69,63,6f,64,65,28,74,6d,29,20,52,6f,6f,74,20,41,75,74,68,6f,72,69,74,79,30,82,01,22,30,0d,06,09,2a,86,48,86,f7,0d,01,01,01,05,00,03,82,01,0f,00,30,82,01,0a,02,82,01,01,00,df,08,ba,e3,3f,6e,64,9b,f5,89,af,28,96,4a,07,8f,1b,2e,8b,3e,1d,fc,b8,80,69,a3,a1,ce,db,df,b0,8e,6c,89,76,29,4f,ca,60,35,39,ad,72,32,e0,0b,ae,29,3d,4c,16,d9,4b,3c,9d,da,c5,d3,d1,09,c9,2c,6f,a6,c2,60,53,45,dd,4b,d1,55,cd,03,1c,d2,59,56,24,f3,e5,78,d8,07,cc,d8,b3,1f,90,3f,c0,1a,71,50,1d,2d,a7,12,08,6d,7c,b0,86,6c,c7,ba,85,32,07,e1,61,6f,af,03,c5,6d,e5,d6,a1,8f,36,f6,c1,0b,d1,3e,69,97,48,72,c9,7f,a4,c8,c2,4a,4c,7e,a1,d1,94,a6,d7,dc,eb,05,46,2e,b8,18,b4,57,1d,86,49,db,69,4a,2c,21,f5,5e,0f,54,2d,5a,43,a9,7a,7e,6a,8e,50,4d,25,57,a1,bf,1b,15,05,43,7b,2c,05,8d,bd,3d,03,8c,93,22,7d,63,ea,0a,57,05,06,0a,db,61,98,65,2d,47,49,a8,e7,e6,56,75,5c,b8,64,08,63,a9,30,40,66,b2,f9,b6,e3,34,e8,67,30,e1,43,0b,87,ff,c9,be,72,10,5e,23,f0,9b,a7,48,65,bf,09,88,7b,cd,72,bc,2e,79,9b,7b,02,03,01,00,01,a3,81,ba,30,81,b7,30,0d,06,03,55,1d,0a,04,06,30,04,03,02,07,80,30,32,06,03,55,04,03,04,2b,13,29,4d,69,63,72,6f,73,6f,66,74,20,41,75,74,68,65,6e,74,69,63,6f,64,65,28,74,6d,29,20,52,6f,6f,74,20,41,75,74,68,6f,72,69,74,79,30,72,06,03,55,1d,01,04,6b,30,69,80,10,1a,1b,e7,5b,9f,fd,8c,2a,c3,39,ae,0c,62,2e,53,32,a1,52,30,50,31,0b,30,09,06,03,55,04,06,13,02,55,53,31,0d,30,0b,06,03,55,04,0a,13,04,4d,53,46,54,31,32,30,30,06,03,55,04,03,13,29,4d,69,63,72,6f,73,6f,66,74,20,41,75,74,68,65,6e,74,69,63,6f,64,65,28,74,6d,29,20,52,6f,6f,74,20,41,75,74,68,6f,72,69,74,79,82,01,01,30,0d,06,09,2a,86,48,86,f7,0d,01,01,04,05,00,03,82,01,01,00,2d,c9,e2,f6,12,9e,5d,56,67,fa,fa,4b,9a,7e,dc,29,56,5c,80,14,02,28,85,6e,26,f3,cd,58,da,50,80,c5,f8,19,b3,a6,7c,e2,9d,6b,5f,3b,8f,22,74,e6,18,04,fc,47,40,d8,7a,3f,30,66,f0,12,a4,d1,eb,1d,e7,b6,f4,98,ab,53,22,86,51,58,ee,23,09,76,e4,1d,45,5c,4b,ff,4c,e3,02,50,01,13,cc,41,a4,52,97,d4,86,d5,c4,fe,83,83,65,7d,ea,be,a2,68,3b,c1,b1,29,98,bf,a2,a5,fc,9d,d3,84,ee,70,17,50,f3,0b,fa,3c,ef,a9,27,8b,91,b4,48,c8,45,a0,e1,01,42,4b,44,76,04,1c,c2,19,a2,8e,6b,20,98,c4,dd,02,ac,b4,d2,a2,0e,8d,5d,b9,36,8e,4a,1b,5d,6c,1a,e2,cb,00,7f,10,f4,b2,95,ef,e3,e8,ff,a1,73,58,a9,75,2c,a2,49,95,85,fe,cc,da,44,8a,c2,12,44,d2,44,c8,a5,a2,1f,a9,5a,8e,56,c2,c3,7b,cf,42,60,dc,82,1f,fb,ce,74,06,7e,d6,f1,ac,19,6a,4f,74,5c,c5,15,66,31,6c,c1,62,71,91,0f,59,5b,7d,2a,82,1a,df,b1,b4,d8,1d,37,de,0d,0f
+RegWrite,HKLM,0x3,Tmp_Software\Microsoft\SystemCertificates\ROOT\Certificates\A43489159A520F0D93D032CCAF37E7FE20A8B419,Blob,14,00,00,00,01,00,00,00,14,00,00,00,4a,5c,75,22,aa,46,bf,a4,08,9d,39,97,4e,bd,b4,a3,60,f7,a0,1d,04,00,00,00,01,00,00,00,10,00,00,00,2a,95,4e,ca,79,b2,87,45,73,d9,2d,90,ba,f9,9f,b6,03,00,00,00,01,00,00,00,14,00,00,00,a4,34,89,15,9a,52,0f,0d,93,d0,32,cc,af,37,e7,fe,20,a8,b4,19,0b,00,00,00,01,00,00,00,32,00,00,00,4d,00,69,00,63,00,72,00,6f,00,73,00,6f,00,66,00,74,00,20,00,52,00,6f,00,6f,00,74,00,20,00,41,00,75,00,74,00,68,00,6f,00,72,00,69,00,74,00,79,00,00,00,19,00,00,00,01,00,00,00,10,00,00,00,3f,c8,cb,0b,c0,52,41,e5,8d,65,e9,44,8b,2d,07,c2,20,00,00,00,01,00,00,00,16,04,00,00,30,82,04,12,30,82,02,fa,a0,03,02,01,02,02,0f,00,c1,00,8b,3c,3c,88,11,d1,3e,f6,63,ec,df,40,30,0d,06,09,2a,86,48,86,f7,0d,01,01,04,05,00,30,70,31,2b,30,29,06,03,55,04,0b,13,22,43,6f,70,79,72,69,67,68,74,20,28,63,29,20,31,39,39,37,20,4d,69,63,72,6f,73,6f,66,74,20,43,6f,72,70,2e,31,1e,30,1c,06,03,55,04,0b,13,15,4d,69,63,72,6f,73,6f,66,74,20,43,6f,72,70,6f,72,61,74,69,6f,6e,31,21,30,1f,06,03,55,04,03,13,18,4d,69,63,72,6f,73,6f,66,74,20,52,6f,6f,74,20,41,75,74,68,6f,72,69,74,79,30,1e,17,0d,39,37,30,31,31,30,30,37,30,30,30,30,5a,17,0d,32,30,31,32,33,31,30,37,30,30,30,30,5a,30,70,31,2b,30,29,06,03,55,04,0b,13,22,43,6f,70,79,72,69,67,68,74,20,28,63,29,20,31,39,39,37,20,4d,69,63,72,6f,73,6f,66,74,20,43,6f,72,70,2e,31,1e,30,1c,06,03,55,04,0b,13,15,4d,69,63,72,6f,73,6f,66,74,20,43,6f,72,70,6f,72,61,74,69,6f,6e,31,21,30,1f,06,03,55,04,03,13,18,4d,69,63,72,6f,73,6f,66,74,20,52,6f,6f,74,20,41,75,74,68,6f,72,69,74,79,30,82,01,22,30,0d,06,09,2a,86,48,86,f7,0d,01,01,01,05,00,03,82,01,0f,00,30,82,01,0a,02,82,01,01,00,a9,02,bd,c1,70,e6,3b,f2,4e,1b,28,9f,97,78,5e,30,ea,a2,a9,8d,25,5f,f8,fe,95,4c,a3,b7,fe,9d,a2,20,3e,7c,51,a2,9b,a2,8f,60,32,6b,d1,42,64,79,ee,ac,76,c9,54,da,f2,eb,9c,86,1c,8f,9f,84,66,b3,c5,6b,7a,62,23,d6,1d,3c,de,0f,01,92,e8,96,c4,bf,2d,66,9a,9a,68,26,99,d0,3a,2c,bf,0c,b5,58,26,c1,46,e7,0a,3e,38,96,2c,a9,28,39,a8,ec,49,83,42,e3,84,0f,bb,9a,6c,55,61,ac,82,7c,a1,60,2d,77,4c,e9,99,b4,64,3b,9a,50,1c,31,08,24,14,9f,a9,e7,91,2b,18,e6,3d,98,63,14,60,58,05,65,9f,1d,37,52,87,f7,a7,ef,94,02,c6,1b,d3,bf,55,45,b3,89,80,bf,3a,ec,54,94,4e,ae,fd,a7,7a,6d,74,4e,af,18,cc,96,09,28,21,00,57,90,60,69,37,bb,4b,12,07,3c,56,ff,5b,fb,a4,66,0a,08,a6,d2,81,56,57,ef,b6,3b,5e,16,81,77,04,da,f6,be,ae,80,95,fe,b0,cd,7f,d6,a7,1a,72,5c,3c,ca,bc,f0,08,a3,22,30,b3,06,85,c9,b3,20,77,13,85,df,02,03,01,00,01,a3,81,a8,30,81,a5,30,81,a2,06,03,55,1d,01,04,81,9a,30,81,97,80,10,5b,d0,70,ef,69,72,9e,23,51,7e,14,b2,4d,8e,ff,cb,a1,72,30,70,31,2b,30,29,06,03,55,04,0b,13,22,43,6f,70,79,72,69,67,68,74,20,28,63,29,20,31,39,39,37,20,4d,69,63,72,6f,73,6f,66,74,20,43,6f,72,70,2e,31,1e,30,1c,06,03,55,04,0b,13,15,4d,69,63,72,6f,73,6f,66,74,20,43,6f,72,70,6f,72,61,74,69,6f,6e,31,21,30,1f,06,03,55,04,03,13,18,4d,69,63,72,6f,73,6f,66,74,20,52,6f,6f,74,20,41,75,74,68,6f,72,69,74,79,82,0f,00,c1,00,8b,3c,3c,88,11,d1,3e,f6,63,ec,df,40,30,0d,06,09,2a,86,48,86,f7,0d,01,01,04,05,00,03,82,01,01,00,95,e8,0b,c0,8d,f3,97,18,35,ed,b8,01,24,d8,77,11,f3,5c,60,32,9f,9e,0b,cb,3e,05,91,88,8f,c9,3a,e6,21,f2,f0,57,93,2c,b5,a0,47,c8,62,ef,fc,d7,cc,3b,3b,5a,a9,36,54,69,fe,24,6d,3f,c9,cc,aa,de,05,7c,dd,31,8d,3d,9f,10,70,6a,bb,fe,12,4f,18,69,c0,fc,d0,43,e3,11,5a,20,4f,ea,62,7b,af,aa,19,c8,2b,37,25,2d,be,65,a1,12,8a,25,0f,63,a3,f7,54,1c,f9,21,c9,d6,15,f3,52,ac,6e,43,32,07,fd,82,17,f8,e5,67,6c,0d,51,f6,bd,f1,52,c7,bd,e7,c4,30,fc,20,31,09,88,1d,95,29,1a,4d,d5,1d,02,a5,f1,80,e0,03,b4,5b,f4,b1,dd,c8,57,ee,65,49,c7,52,54,b6,b4,03,28,12,ff,90,d6,f0,08,8f,7e,b8,97,c5,ab,37,2c,e4,7a,e4,a8,77,e3,76,a0,00,d0,6a,3f,c1,d2,36,8a,e0,41,12,a8,35,6a,1b,6a,db,35,e1,d4,1c,04,e4,a8,45,04,c8,5a,33,38,6e,4d,1c,0d,62,b7,0a,a2,8c,d3,d5,54,3f,46,cd,1c,55,a6,70,db,12,3a,87,93,75,9f,a7,d2,a0
+RegWrite,HKLM,0x3,Tmp_Software\Microsoft\SystemCertificates\ROOT\Certificates\CDD4EEAE6000AC7F40C3802C171E30148030C072,Blob,14,00,00,00,01,00,00,00,14,00,00,00,0e,ac,82,60,40,56,27,97,e5,25,13,fc,2a,e1,0a,53,95,59,e4,a4,04,00,00,00,01,00,00,00,10,00,00,00,e1,c0,7e,a0,aa,bb,d4,b7,7b,84,c2,28,11,78,08,a7,0b,00,00,00,01,00,00,00,4a,00,00,00,4d,00,69,00,63,00,72,00,6f,00,73,00,6f,00,66,00,74,00,20,00,52,00,6f,00,6f,00,74,00,20,00,43,00,65,00,72,00,74,00,69,00,66,00,69,00,63,00,61,00,74,00,65,00,20,00,41,00,75,00,74,00,68,00,6f,00,72,00,69,00,74,00,79,00,00,00,03,00,00,00,01,00,00,00,14,00,00,00,cd,d4,ee,ae,60,00,ac,7f,40,c3,80,2c,17,1e,30,14,80,30,c0,72,19,00,00,00,01,00,00,00,10,00,00,00,98,3b,13,26,35,b7,e9,1d,ee,f5,4a,67,80,c0,92,69,20,00,00,00,01,00,00,00,9d,05,00,00,30,82,05,99,30,82,03,81,a0,03,02,01,02,02,10,79,ad,16,a1,4a,a0,a5,ad,4c,73,58,f4,07,13,2e,65,30,0d,06,09,2a,86,48,86,f7,0d,01,01,05,05,00,30,5f,31,13,30,11,06,0a,09,92,26,89,93,f2,2c,64,01,19,16,03,63,6f,6d,31,19,30,17,06,0a,09,92,26,89,93,f2,2c,64,01,19,16,09,6d,69,63,72,6f,73,6f,66,74,31,2d,30,2b,06,03,55,04,03,13,24,4d,69,63,72,6f,73,6f,66,74,20,52,6f,6f,74,20,43,65,72,74,69,66,69,63,61,74,65,20,41,75,74,68,6f,72,69,74,79,30,1e,17,0d,30,31,30,35,30,39,32,33,31,39,32,32,5a,17,0d,32,31,30,35,30,39,32,33,32,38,31,33,5a,30,5f,31,13,30,11,06,0a,09,92,26,89,93,f2,2c,64,01,19,16,03,63,6f,6d,31,19,30,17,06,0a,09,92,26,89,93,f2,2c,64,01,19,16,09,6d,69,63,72,6f,73,6f,66,74,31,2d,30,2b,06,03,55,04,03,13,24,4d,69,63,72,6f,73,6f,66,74,20,52,6f,6f,74,20,43,65,72,74,69,66,69,63,61,74,65,20,41,75,74,68,6f,72,69,74,79,30,82,02,22,30,0d,06,09,2a,86,48,86,f7,0d,01,01,01,05,00,03,82,02,0f,00,30,82,02,0a,02,82,02,01,00,f3,5d,fa,80,67,d4,5a,a7,a9,0c,2c,90,20,d0,35,08,3c,75,84,cd,b7,07,89,9c,89,da,de,ce,c3,60,fa,91,68,5a,9e,94,71,29,18,76,7c,c2,e0,c8,25,76,94,0e,58,fa,04,34,36,e6,df,af,f7,80,ba,e9,58,0b,2b,93,e5,9d,05,e3,77,22,91,f7,34,64,3c,22,91,1d,5e,e1,09,90,bc,14,fe,fc,75,58,19,e1,79,b7,07,92,a3,ae,88,59,08,d8,9f,07,ca,03,58,fc,68,29,6d,32,d7,d2,a8,cb,4b,fc,e1,0b,48,32,4f,e6,eb,b8,ad,4f,e4,5c,6f,13,94,99,db,95,d5,75,db,a8,1a,b7,94,91,b4,77,5b,f5,48,0c,8f,6a,79,7d,14,70,04,7d,6d,af,90,f5,da,70,d8,47,b7,bf,9b,2f,6c,e7,05,b7,e1,11,60,ac,79,91,14,7c,c5,d6,a6,e4,e1,7e,d5,c3,7e,e5,92,d2,3c,00,b5,36,82,de,79,e1,6d,f3,b5,6e,f8,9f,33,c9,cb,52,7d,73,98,36,db,8b,a1,6b,a2,95,97,9b,a3,de,c2,4d,26,ff,06,96,67,25,06,c8,e7,ac,e4,ee,12,33,95,31,99,c8,35,08,4e,34,ca,79,53,d5,b5,be,63,32,59,40,36,c0,a5,4e,04,4d,3d,db,5b,07,33,e4,58,bf,ef,3f,53,64,d8,42,59,35,57,fd,0f,45,7c,24,04,4d,9e,d6,38,74,11,97,22,90,ce,68,44,74,92,6f,d5,4b,6f,b0,86,e3,c7,36,42,a0,d0,fc,c1,c0,5a,f9,a3,61,b9,30,47,71,96,0a,16,b0,91,c0,42,95,ef,10,7f,28,6a,e3,2a,1f,b1,e4,cd,03,3f,77,71,04,c7,20,fc,49,0f,1d,45,88,a4,d7,cb,7e,88,ad,8e,2d,ec,45,db,c4,51,04,c9,2a,fc,ec,86,9e,9a,11,97,5b,de,ce,53,88,e6,e2,b7,fd,ac,95,c2,28,40,db,ef,04,90,df,81,33,39,d9,b2,45,a5,23,87,06,a5,55,89,31,bb,06,2d,60,0e,41,18,7d,1f,2e,b5,97,cb,11,eb,15,d5,24,a5,94,ef,15,14,89,fd,4b,73,fa,32,5b,fc,d1,33,00,f9,59,62,70,07,32,ea,2e,ab,40,2d,7b,ca,dd,21,67,1b,30,99,8f,16,aa,23,a8,41,d1,b0,6e,11,9b,36,c4,de,40,74,9c,e1,58,65,c1,60,1e,7a,5b,38,c8,8f,bb,04,26,7c,d4,16,40,e5,b6,6b,6c,aa,86,fd,00,bf,ce,c1,35,02,03,01,00,01,a3,51,30,4f,30,0b,06,03,55,1d,0f,04,04,03,02,01,c6,30,0f,06,03,55,1d,13,01,01,ff,04,05,30,03,01,01,ff,30,1d,06,03,55,1d,0e,04,16,04,14,0e,ac,82,60,40,56,27,97,e5,25,13,fc,2a,e1,0a,53,95,59,e4,a4,30,10,06,09,2b,06,01,04,01,82,37,15,01,04,03,02,01,00,30,0d,06,09,2a,86,48,86,f7,0d,01,01,05,05,00,03,82,02,01,00,c5,11,4d,03,3a,60,dd,5d,52,11,77,8f,b2,bb,36,c8,b2,05,bf,b4,b7,a8,d8,20,9d,5c,13,03,b6,1c,22,fa,06,13,35,b6,c8,63,d4,9a,47,6f,26,57,d2,55,f1,04,b1,26,5f,d6,a9,50,68,a0,bc,d2,b8,6e,cc,c3,e9,ac,df,19,cd,78,ac,59,74,ac,66,34,36,c4,1b,3e,6c,38,4c,33,0e,30,12,0d,a3,26,fe,51,53,00,ff,af,5a,4e,84,0d,0f,1f,e4,6d,05,2e,4e,85,4b,8d,6c,33,6f,54,d2,64,ab,bf,50,af,7d,7a,39,a0,37,ed,63,03,0f,fc,13,06,ce,16,36,d4,54,3b,95,1b,51,62,3a,e5,4d,17,d4,05,39,92,9a,27,a8,5b,aa,bd,ec,bb,be,e3,20,89,60,71,6c,56,b3,a5,13,d0,6d,0e,23,7e,95,03,ed,68,3d,f2,d8,63,b8,6b,4d,b6,e8,30,b5,e1,ca,94,4b,f7,a2,aa,5d,99,30,b2,3d,a7,c2,51,6c,28,20,01,24,27,2b,4b,00,b7,9d,11,6b,70,be,b2,10,82,bc,0c,9b,68,d0,8d,3b,24,87,aa,99,28,72,9d,33,5f,59,90,bd,f5,de,93,9e,3a,62,5a,34,39,e2,88,55,1d,b9,06,b0,c1,89,6b,2d,d7,69,c3,19,12,36,84,d0,c9,a0,da,ff,2f,69,78,b2,e5,7a,da,eb,d7,0c,c0,f7,bd,63,17,b8,39,13,38,a2,36,5b,7b,f2,85,56,6a,1d,64,62,c1,38,e2,aa,bf,51,66,a2,94,f5,12,9c,66,22,10,6b,f2,b7,30,92,2d,f2,29,f0,3d,3b,14,43,68,a2,f1,9c,29,37,cb,ce,38,20,25,6d,7c,67,f3,7e,24,12,24,03,08,81,47,ec,a5,9e,97,f5,18,d7,cf,bb,d5,ef,76,96,ef,fd,ce,db,56,9d,95,a0,42,f9,97,58,e1,d7,31,22,d3,5f,59,e6,3e,6e,22,00,ea,43,84,b6,25,db,d9,f3,08,56,68,c0,64,6b,1d,7c,ec,b6,93,a2,62,57,6e,2e,d8,e7,58,8f,c4,31,49,26,dd,de,29,35,87,f5,30,71,70,5b,14,3c,69,bd,89,12,7d,eb,2e,a3,fe,d8,7f,9e,82,5a,52,0a,2b,c1,43,2b,d9,30,88,9f,c8,10,fb,89,8d,e6,a1,85,75,33,7e,6c,9e,db,73,13,64,62,69,a5,2f,7d,ca,96,6d,9f,f8,04,4d,30,92,3d,6e,21,14,21,c9,3d,e0,c3,fd,8a,6b,9d,4a,fd,d1,a1,9d,99,43,77,3f,b0,da
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2000",Dll,WINTRUST.DLL
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2000",FuncName,WVTAsn1SpcSpAgencyInfoDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2001",Dll,WINTRUST.DLL
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2001",FuncName,WVTAsn1SpcMinimalCriteriaInfoDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2002",Dll,WINTRUST.DLL
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2002",FuncName,WVTAsn1SpcFinancialCriteriaInfoDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2003",Dll,WINTRUST.DLL
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2003",FuncName,WVTAsn1SpcIndirectDataContentDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2004",Dll,WINTRUST.DLL
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2004",FuncName,WVTAsn1SpcPeImageDataDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2005",Dll,WINTRUST.DLL
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2005",FuncName,WVTAsn1SpcLinkDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2006",Dll,WINTRUST.DLL
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2006",FuncName,WVTAsn1SpcStatementTypeDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2007",Dll,WINTRUST.DLL
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2007",FuncName,WVTAsn1SpcSpOpusInfoDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2008",Dll,WINTRUST.DLL
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2008",FuncName,WVTAsn1SpcLinkDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2009",Dll,WINTRUST.DLL
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2009",FuncName,WVTAsn1SpcLinkDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2130",Dll,WINTRUST.DLL
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2130",FuncName,WVTAsn1SpcSigInfoDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2221",Dll,WINTRUST.DLL
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2221",FuncName,WVTAsn1CatNameValueDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2222",Dll,WINTRUST.DLL
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2222",FuncName,WVTAsn1CatMemberInfoDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\1.3.6.1.4.1.311.12.2.1",Dll,WINTRUST.DLL
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2000",Dll,WINTRUST.DLL
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2000",FuncName,WVTAsn1SpcSpAgencyInfoEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2001",Dll,WINTRUST.DLL
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2001",FuncName,WVTAsn1SpcMinimalCriteriaInfoEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2002",Dll,WINTRUST.DLL
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2002",FuncName,WVTAsn1SpcFinancialCriteriaInfoEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2003",Dll,WINTRUST.DLL
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2003",FuncName,WVTAsn1SpcIndirectDataContentEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2004",Dll,WINTRUST.DLL
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2004",FuncName,WVTAsn1SpcPeImageDataEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2005",Dll,WINTRUST.DLL
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2005",FuncName,WVTAsn1SpcLinkEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2006",Dll,WINTRUST.DLL
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2006",FuncName,WVTAsn1SpcStatementTypeEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2007",Dll,WINTRUST.DLL
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2007",FuncName,WVTAsn1SpcSpOpusInfoEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2008",Dll,WINTRUST.DLL
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2008",FuncName,WVTAsn1SpcLinkEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2009",Dll,WINTRUST.DLL
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2009",FuncName,WVTAsn1SpcLinkEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2130",Dll,WINTRUST.DLL
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2130",FuncName,WVTAsn1SpcSigInfoEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2221",Dll,WINTRUST.DLL
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2221",FuncName,WVTAsn1CatNameValueEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2222",Dll,WINTRUST.DLL
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2222",FuncName,WVTAsn1CatMemberInfoEncode
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{00AAC56B-CD44-11D0-8CC2-00C04FC295EE},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{00AAC56B-CD44-11D0-8CC2-00C04FC295EE},$Function,SoftpubCheckCert
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{189A3842-3041-11D1-85E1-00C04FC295EE},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{189A3842-3041-11D1-85E1-00C04FC295EE},$Function,SoftpubCheckCert
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{31D1ADC1-D329-11D1-8ED8-0080C76516C6},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{31D1ADC1-D329-11D1-8ED8-0080C76516C6},$Function,SoftpubCheckCert
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{573E31F8-AABA-11D0-8CCB-00C04FC295EE},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{573E31F8-AABA-11D0-8CCB-00C04FC295EE},$Function,SoftpubCheckCert
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{573E31F8-DDBA-11D0-8CCB-00C04FC295EE},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{573E31F8-DDBA-11D0-8CCB-00C04FC295EE},$Function,SoftpubCheckCert
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{64B9D180-8DA2-11CF-8736-00AA00A485EB},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{64B9D180-8DA2-11CF-8736-00AA00A485EB},$Function,SoftpubCheckCert
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{C6B2E8D0-E005-11CF-A134-00C04FD7BF43},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{C6B2E8D0-E005-11CF-A134-00C04FD7BF43},$Function,SoftpubCheckCert
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{D41E4F1D-A407-11D1-8BC9-00C04FA30A41},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{D41E4F1D-A407-11D1-8BC9-00C04FA30A41},$Function,SoftpubCheckCert
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{D41E4F1F-A407-11D1-8BC9-00C04FA30A41},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{D41E4F1F-A407-11D1-8BC9-00C04FA30A41},$Function,SoftpubCheckCert
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{F750E6C3-38EE-11D1-85E5-00C04FC295EE},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{F750E6C3-38EE-11D1-85E5-00C04FC295EE},$Function,SoftpubCheckCert
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{FC451C16-AC75-11D1-B4B8-00C04FB66EA0},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{FC451C16-AC75-11D1-B4B8-00C04FB66EA0},$Function,SoftpubCheckCert
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{00AAC56B-CD44-11D0-8CC2-00C04FC295EE},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{00AAC56B-CD44-11D0-8CC2-00C04FC295EE},$Function,WintrustCertificateTrust
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{189A3842-3041-11D1-85E1-00C04FC295EE},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{189A3842-3041-11D1-85E1-00C04FC295EE},$Function,WintrustCertificateTrust
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{31D1ADC1-D329-11D1-8ED8-0080C76516C6},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{31D1ADC1-D329-11D1-8ED8-0080C76516C6},$Function,WintrustCertificateTrust
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{573E31F8-AABA-11D0-8CCB-00C04FC295EE},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{573E31F8-AABA-11D0-8CCB-00C04FC295EE},$Function,HTTPSCertificateTrust
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{573E31F8-DDBA-11D0-8CCB-00C04FC295EE},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{573E31F8-DDBA-11D0-8CCB-00C04FC295EE},$Function,WintrustCertificateTrust
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{64B9D180-8DA2-11CF-8736-00AA00A485EB},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{64B9D180-8DA2-11CF-8736-00AA00A485EB},$Function,WintrustCertificateTrust
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{C6B2E8D0-E005-11CF-A134-00C04FD7BF43},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{C6B2E8D0-E005-11CF-A134-00C04FD7BF43},$Function,WintrustCertificateTrust
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{D41E4F1D-A407-11D1-8BC9-00C04FA30A41},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{D41E4F1D-A407-11D1-8BC9-00C04FA30A41},$Function,WintrustCertificateTrust
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{D41E4F1F-A407-11D1-8BC9-00C04FA30A41},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{D41E4F1F-A407-11D1-8BC9-00C04FA30A41},$Function,WintrustCertificateTrust
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{F750E6C3-38EE-11D1-85E5-00C04FC295EE},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{F750E6C3-38EE-11D1-85E5-00C04FC295EE},$Function,WintrustCertificateTrust
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{FC451C16-AC75-11D1-B4B8-00C04FB66EA0},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{FC451C16-AC75-11D1-B4B8-00C04FB66EA0},$Function,GenericChainCertificateTrust
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Cleanup
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Cleanup\{00AAC56B-CD44-11D0-8CC2-00C04FC295EE},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Cleanup\{00AAC56B-CD44-11D0-8CC2-00C04FC295EE},$Function,SoftpubCleanup
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Cleanup\{189A3842-3041-11D1-85E1-00C04FC295EE},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Cleanup\{189A3842-3041-11D1-85E1-00C04FC295EE},$Function,SoftpubCleanup
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Cleanup\{573E31F8-AABA-11D0-8CCB-00C04FC295EE},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Cleanup\{573E31F8-AABA-11D0-8CCB-00C04FC295EE},$Function,SoftpubCleanup
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Cleanup\{573E31F8-DDBA-11D0-8CCB-00C04FC295EE},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Cleanup\{573E31F8-DDBA-11D0-8CCB-00C04FC295EE},$Function,SoftpubCleanup
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Cleanup\{64B9D180-8DA2-11CF-8736-00AA00A485EB},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Cleanup\{64B9D180-8DA2-11CF-8736-00AA00A485EB},$Function,SoftpubCleanup
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Cleanup\{C6B2E8D0-E005-11CF-A134-00C04FD7BF43},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Cleanup\{C6B2E8D0-E005-11CF-A134-00C04FD7BF43},$Function,SoftpubCleanup
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Cleanup\{F750E6C3-38EE-11D1-85E5-00C04FC295EE},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Cleanup\{F750E6C3-38EE-11D1-85E5-00C04FC295EE},$Function,DriverCleanupPolicy
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Cleanup\{FC451C16-AC75-11D1-B4B8-00C04FB66EA0},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Cleanup\{FC451C16-AC75-11D1-B4B8-00C04FB66EA0},$Function,SoftpubCleanup
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\DiagnosticPolicy
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\DiagnosticPolicy\{573E31F8-DDBA-11D0-8CCB-00C04FC295EE},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\DiagnosticPolicy\{573E31F8-DDBA-11D0-8CCB-00C04FC295EE},$Function,SoftpubDumpStructure
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{00AAC56B-CD44-11D0-8CC2-00C04FC295EE},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{00AAC56B-CD44-11D0-8CC2-00C04FC295EE},$Function,SoftpubAuthenticode
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{189A3842-3041-11D1-85E1-00C04FC295EE},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{189A3842-3041-11D1-85E1-00C04FC295EE},$Function,SoftpubAuthenticode
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{31D1ADC1-D329-11D1-8ED8-0080C76516C6},$DLL,corpol.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{31D1ADC1-D329-11D1-8ED8-0080C76516C6},$Function,CORPolicyEE
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{573E31F8-AABA-11D0-8CCB-00C04FC295EE},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{573E31F8-AABA-11D0-8CCB-00C04FC295EE},$Function,HTTPSFinalProv
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{573E31F8-DDBA-11D0-8CCB-00C04FC295EE},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{573E31F8-DDBA-11D0-8CCB-00C04FC295EE},$Function,SoftpubAuthenticode
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{64B9D180-8DA2-11CF-8736-00AA00A485EB},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{64B9D180-8DA2-11CF-8736-00AA00A485EB},$Function,SoftpubAuthenticode
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{C6B2E8D0-E005-11CF-A134-00C04FD7BF43},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{C6B2E8D0-E005-11CF-A134-00C04FD7BF43},$Function,SoftpubAuthenticode
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{D41E4F1D-A407-11D1-8BC9-00C04FA30A41},$DLL,corpol.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{D41E4F1D-A407-11D1-8BC9-00C04FA30A41},$Function,CORPolicyProvider
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{D41E4F1F-A407-11D1-8BC9-00C04FA30A41},$DLL,corpol.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{D41E4F1F-A407-11D1-8BC9-00C04FA30A41},$Function,CORLockDownProvider
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{F750E6C3-38EE-11D1-85E5-00C04FC295EE},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{F750E6C3-38EE-11D1-85E5-00C04FC295EE},$Function,DriverFinalPolicy
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{FC451C16-AC75-11D1-B4B8-00C04FB66EA0},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{FC451C16-AC75-11D1-B4B8-00C04FB66EA0},$Function,GenericChainFinalProv
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{00AAC56B-CD44-11D0-8CC2-00C04FC295EE},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{00AAC56B-CD44-11D0-8CC2-00C04FC295EE},$Function,SoftpubInitialize
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{189A3842-3041-11D1-85E1-00C04FC295EE},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{189A3842-3041-11D1-85E1-00C04FC295EE},$Function,SoftpubDefCertInit
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{31D1ADC1-D329-11D1-8ED8-0080C76516C6},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{31D1ADC1-D329-11D1-8ED8-0080C76516C6},$Function,SoftpubInitialize
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{573E31F8-AABA-11D0-8CCB-00C04FC295EE},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{573E31F8-AABA-11D0-8CCB-00C04FC295EE},$Function,SoftpubInitialize
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{573E31F8-DDBA-11D0-8CCB-00C04FC295EE},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{573E31F8-DDBA-11D0-8CCB-00C04FC295EE},$Function,SoftpubInitialize
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{64B9D180-8DA2-11CF-8736-00AA00A485EB},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{64B9D180-8DA2-11CF-8736-00AA00A485EB},$Function,SoftpubInitialize
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{C6B2E8D0-E005-11CF-A134-00C04FD7BF43},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{C6B2E8D0-E005-11CF-A134-00C04FD7BF43},$Function,SoftpubInitialize
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{D41E4F1D-A407-11D1-8BC9-00C04FA30A41},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{D41E4F1D-A407-11D1-8BC9-00C04FA30A41},$Function,SoftpubInitialize
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{D41E4F1F-A407-11D1-8BC9-00C04FA30A41},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{D41E4F1F-A407-11D1-8BC9-00C04FA30A41},$Function,SoftpubInitialize
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{F750E6C3-38EE-11D1-85E5-00C04FC295EE},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{F750E6C3-38EE-11D1-85E5-00C04FC295EE},$Function,DriverInitializePolicy
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{FC451C16-AC75-11D1-B4B8-00C04FB66EA0},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{FC451C16-AC75-11D1-B4B8-00C04FB66EA0},$Function,SoftpubInitialize
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{00AAC56B-CD44-11D0-8CC2-00C04FC295EE},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{00AAC56B-CD44-11D0-8CC2-00C04FC295EE},$Function,SoftpubLoadMessage
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{189A3842-3041-11D1-85E1-00C04FC295EE},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{189A3842-3041-11D1-85E1-00C04FC295EE},$Function,SoftpubLoadMessage
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{31D1ADC1-D329-11D1-8ED8-0080C76516C6},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{31D1ADC1-D329-11D1-8ED8-0080C76516C6},$Function,SoftpubLoadMessage
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{573E31F8-AABA-11D0-8CCB-00C04FC295EE},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{573E31F8-AABA-11D0-8CCB-00C04FC295EE},$Function,SoftpubLoadMessage
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{573E31F8-DDBA-11D0-8CCB-00C04FC295EE},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{573E31F8-DDBA-11D0-8CCB-00C04FC295EE},$Function,SoftpubLoadMessage
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{64B9D180-8DA2-11CF-8736-00AA00A485EB},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{64B9D180-8DA2-11CF-8736-00AA00A485EB},$Function,SoftpubLoadMessage
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{C6B2E8D0-E005-11CF-A134-00C04FD7BF43},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{C6B2E8D0-E005-11CF-A134-00C04FD7BF43},$Function,SoftpubLoadMessage
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{D41E4F1D-A407-11D1-8BC9-00C04FA30A41},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{D41E4F1D-A407-11D1-8BC9-00C04FA30A41},$Function,SoftpubLoadMessage
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{D41E4F1F-A407-11D1-8BC9-00C04FA30A41},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{D41E4F1F-A407-11D1-8BC9-00C04FA30A41},$Function,SoftpubLoadMessage
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{F750E6C3-38EE-11D1-85E5-00C04FC295EE},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{F750E6C3-38EE-11D1-85E5-00C04FC295EE},$Function,SoftpubLoadMessage
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{FC451C16-AC75-11D1-B4B8-00C04FB66EA0},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{FC451C16-AC75-11D1-B4B8-00C04FB66EA0},$Function,SoftpubLoadMessage
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{00AAC56B-CD44-11D0-8CC2-00C04FC295EE},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{00AAC56B-CD44-11D0-8CC2-00C04FC295EE},$Function,SoftpubLoadSignature
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{189A3842-3041-11D1-85E1-00C04FC295EE},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{189A3842-3041-11D1-85E1-00C04FC295EE},$Function,SoftpubLoadSignature
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{31D1ADC1-D329-11D1-8ED8-0080C76516C6},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{31D1ADC1-D329-11D1-8ED8-0080C76516C6},$Function,SoftpubLoadSignature
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{573E31F8-AABA-11D0-8CCB-00C04FC295EE},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{573E31F8-AABA-11D0-8CCB-00C04FC295EE},$Function,SoftpubLoadSignature
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{573E31F8-DDBA-11D0-8CCB-00C04FC295EE},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{573E31F8-DDBA-11D0-8CCB-00C04FC295EE},$Function,SoftpubLoadSignature
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{64B9D180-8DA2-11CF-8736-00AA00A485EB},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{64B9D180-8DA2-11CF-8736-00AA00A485EB},$Function,SoftpubLoadSignature
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{C6B2E8D0-E005-11CF-A134-00C04FD7BF43},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{C6B2E8D0-E005-11CF-A134-00C04FD7BF43},$Function,SoftpubLoadSignature
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{D41E4F1D-A407-11D1-8BC9-00C04FA30A41},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{D41E4F1D-A407-11D1-8BC9-00C04FA30A41},$Function,SoftpubLoadSignature
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{D41E4F1F-A407-11D1-8BC9-00C04FA30A41},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{D41E4F1F-A407-11D1-8BC9-00C04FA30A41},$Function,SoftpubLoadSignature
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{F750E6C3-38EE-11D1-85E5-00C04FC295EE},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{F750E6C3-38EE-11D1-85E5-00C04FC295EE},$Function,SoftpubLoadSignature
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{FC451C16-AC75-11D1-B4B8-00C04FB66EA0},$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{FC451C16-AC75-11D1-B4B8-00C04FB66EA0},$Function,SoftpubLoadSignature
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Usages
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Usages\1.3.6.1.4.1.311.10.3.3,DefaultId,{573E31F8-AABA-11D0-8CCB-00C04FC295EE}
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Usages\1.3.6.1.4.1.311.10.3.3,$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Usages\1.3.6.1.4.1.311.10.3.3,CallbackAllocFunction,SoftpubLoadDefUsageCallData
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Usages\1.3.6.1.4.1.311.10.3.3,CallbackFreeFunction,SoftpubFreeDefUsageCallData
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Usages\1.3.6.1.5.5.7.3.1,DefaultId,{573E31F8-AABA-11D0-8CCB-00C04FC295EE}
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Usages\1.3.6.1.5.5.7.3.1,$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Usages\1.3.6.1.5.5.7.3.1,CallbackAllocFunction,SoftpubLoadDefUsageCallData
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Usages\1.3.6.1.5.5.7.3.1,CallbackFreeFunction,SoftpubFreeDefUsageCallData
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Usages\1.3.6.1.5.5.7.3.2,DefaultId,{573E31F8-AABA-11D0-8CCB-00C04FC295EE}
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Usages\1.3.6.1.5.5.7.3.2,$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Usages\1.3.6.1.5.5.7.3.2,CallbackAllocFunction,SoftpubLoadDefUsageCallData
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Usages\1.3.6.1.5.5.7.3.2,CallbackFreeFunction,SoftpubFreeDefUsageCallData
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Usages\1.3.6.1.5.5.7.3.3,DefaultId,{00AAC56B-CD44-11D0-8CC2-00C04FC295EE}
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Usages\2.16.840.1.113730.4.1,DefaultId,{573E31F8-AABA-11D0-8CCB-00C04FC295EE}
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Usages\2.16.840.1.113730.4.1,$DLL,WINTRUST.DLL
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Usages\2.16.840.1.113730.4.1,CallbackAllocFunction,SoftpubLoadDefUsageCallData
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Usages\2.16.840.1.113730.4.1,CallbackFreeFunction,SoftpubFreeDefUsageCallData
+//Run,%scriptfile%,atldll
+//Run,%scriptfile%,initpkidll
+RegHiveUnLoad,Tmp_System
+RegHiveUnLoad,Tmp_Default
+RegHiveUnLoad,Tmp_Software
+
+[atldll]
+//Not used by current script, kept for reference (seems not have effect so far)
+//atl.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\ATL.Registrar,,"Registrar Class"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\ATL.Registrar\CLSID,,{44EC053A-400F-11D0-9DCD-00A0C90391D3}
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{44EC053A-400F-11D0-9DCD-00A0C90391D3},,"Registrar Class"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{44EC053A-400F-11D0-9DCD-00A0C90391D3}\InprocServer32,ThreadingModel,Both
+RegWrite,HKLM,0x2,Tmp_Software\Classes\CLSID\{44EC053A-400F-11D0-9DCD-00A0C90391D3}\InProcServer32,,#$psystemroot#$p\system32\atl.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{44EC053A-400F-11D0-9DCD-00A0C90391D3}\ProgID,,ATL.Registrar
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\Interface\{B6EA2051-048A-11D1-82B9-00C04FB9942E},,IAxWinAmbientDispatch
+RegWrite,HKLM,0x1,Tmp_Software\Classes\Interface\{B6EA2051-048A-11D1-82B9-00C04FB9942E}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\Interface\{B6EA2051-048A-11D1-82B9-00C04FB9942E}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\Interface\{B6EA2051-048A-11D1-82B9-00C04FB9942E}\TypeLib,Version,1.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\Interface\{B6EA2051-048A-11D1-82B9-00C04FB9942E}\TypeLib,,{44EC0535-400F-11D0-9DCD-00A0C90391D3}
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\TypeLib\{44EC0535-400F-11D0-9DCD-00A0C90391D3}\1.0,,"ATL 2.0 Type Library"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\TypeLib\{44EC0535-400F-11D0-9DCD-00A0C90391D3}\1.0\0\win32,,atl.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\TypeLib\{44EC0535-400F-11D0-9DCD-00A0C90391D3}\1.0\FLAGS,,0
+RegWrite,HKLM,0x2,Tmp_Software\Classes\TypeLib\{44EC0535-400F-11D0-9DCD-00A0C90391D3}\1.0\HELPDIR,,#$psystemroot#$p\Help
+
+[initpkidll]
+//Not used by current script, kept for reference (seems not have effect so far)
+//initpki.dll - taken from Joshua
+RegWrite,HKLM,0x1,Tmp_Software\Classes\*\shellex\PropertySheetHandlers\CryptoSignMenu,,{7444C719-39BF-11D1-8CD9-00C04FC29D45}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.cat,"Content Type",application/vnd.ms-pki.seccat
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.cat,,CATFile
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.cer,"Content Type",application/x-x509-ca-cert
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.cer,,CERFile
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.crl,"Content Type",application/pkix-crl
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.crl,,CRLFile
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.crt,"Content Type",application/x-x509-ca-cert
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.crt,,CERFile
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.der,"Content Type",application/x-x509-ca-cert
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.der,,CERFile
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.p10,"Content Type",application/pkcs10
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.p10,,P10File
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.p12,"Content Type",application/x-pkcs12
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.p12,,PFXFile
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.p7b,"Content Type",application/x-pkcs7-certificates
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.p7b,,SPCFile
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.p7m,"Content Type",application/pkcs7-mime
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.p7m,,P7MFile
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.p7r,"Content Type",application/x-pkcs7-certreqresp
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.p7r,,SPCFile
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.p7s,"Content Type",application/pkcs7-signature
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.p7s,,P7SFile
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.pfx,"Content Type",application/x-pkcs12
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.pfx,,PFXFile
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.pko,"Content Type",application/vnd.ms-pki.pko
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.pko,,PKOFile
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.spc,"Content Type",application/x-pkcs7-certificates
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.spc,,SPCFile
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.sst,"Content Type",application/vnd.ms-pki.certstore
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.sst,,CertificateStoreFile
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.stl,"Content Type",application/vnd.ms-pki.stl
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.stl,,STLFile
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CATFile,,"Security Catalog"
+If,%version%,Smaller,80,RegWrite,HKLM,0x1,Tmp_Software\Classes\CATFile\shell\open
+Else,RegWrite,HKLM,0x0,Tmp_Software\Classes\CATFile\shell\open
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CEnroll.CEnroll,,"CEnroll Class"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CEnroll.CEnroll.1,,"CEnroll Class"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CEnroll.CEnroll.1\CLSID,,{43F8F289-7A20-11D0-8F06-00C04FC295E1}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CEnroll.CEnroll.2,,"CEnroll Class"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CEnroll.CEnroll.2\CLSID,,{127698e4-e730-4e5c-a2b1-21490a70c8a1}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CEnroll.CEnroll\CurVer,,CEnroll.CEnroll.2
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CERFile,,"Security Cert"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CERFile\shell\add,,"&Install cert"
+If,%version%,Smaller,80,RegWrite,HKLM,0x1,Tmp_Software\Classes\CERFile\shell\open
+Else,RegWrite,HKLM,0x0,Tmp_Software\Classes\CERFile\shell\open
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CertificateStoreFile,,"Serialized Microsoft cert archive"
+If,%version%,Smaller,80,RegWrite,HKLM,0x1,Tmp_Software\Classes\CertificateStoreFile\shell\open
+Else,RegWrite,HKLM,0x0,Tmp_Software\Classes\CertificateStoreFile\shell\open
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{127698e4-e730-4e5c-a2b1-21490a70c8a1},,"CEnroll Class"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{127698e4-e730-4e5c-a2b1-21490a70c8a1}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{127698e4-e730-4e5c-a2b1-21490a70c8a1}\ProgID,,CEnroll.CEnroll.2
+If,%version%,Smaller,80,RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{127698e4-e730-4e5c-a2b1-21490a70c8a1}\Programmable
+Else,RegWrite,HKLM,0x0,Tmp_Software\Classes\CLSID\{127698e4-e730-4e5c-a2b1-21490a70c8a1}\Programmable
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{127698e4-e730-4e5c-a2b1-21490a70c8a1}\VersionIndependentProgID,,CEnroll.CEnroll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{43F8F289-7A20-11D0-8F06-00C04FC295E1},,"CEnroll Class"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{43F8F289-7A20-11D0-8F06-00C04FC295E1}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{43F8F289-7A20-11D0-8F06-00C04FC295E1}\ProgID,,CEnroll.CEnroll.1
+If,%version%,Smaller,80,RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{43F8F289-7A20-11D0-8F06-00C04FC295E1}\Programmable
+Else,RegWrite,HKLM,0x0,Tmp_Software\Classes\CLSID\{43F8F289-7A20-11D0-8F06-00C04FC295E1}\Programmable
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{43F8F289-7A20-11D0-8F06-00C04FC295E1}\TreatAs,,{127698E4-E730-4E5C-A2B1-21490A70C8A1}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{43F8F289-7A20-11D0-8F06-00C04FC295E1}\VersionIndependentProgID,,CEnroll.CEnroll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{7444C717-39BF-11D1-8CD9-00C04FC29D45},,"CryptPKO Class"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{7444C717-39BF-11D1-8CD9-00C04FC29D45}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{7444C717-39BF-11D1-8CD9-00C04FC29D45}\ProgID,,CryptPKO.CryptPKO.1
+If,%version%,Smaller,80,RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{7444C717-39BF-11D1-8CD9-00C04FC29D45}\shellex\MayChangeDefaultMenu
+Else,RegWrite,HKLM,0x0,Tmp_Software\Classes\CLSID\{7444C717-39BF-11D1-8CD9-00C04FC29D45}\shellex\MayChangeDefaultMenu
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{7444C717-39BF-11D1-8CD9-00C04FC29D45}\VersionIndependentProgID,,CryptPKO.CryptPKO
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{7444C719-39BF-11D1-8CD9-00C04FC29D45},,"CryptSig Class"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{7444C719-39BF-11D1-8CD9-00C04FC29D45}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{7444C719-39BF-11D1-8CD9-00C04FC29D45}\ProgID,,CryptSig.CryptSig.1
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{7444C719-39BF-11D1-8CD9-00C04FC29D45}\VersionIndependentProgID,,CryptSig.CryptSig
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CRLFile,,"List of revoked certs"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CRLFile\shell\add,,"&Install CRL"
+If,%version%,Smaller,80,RegWrite,HKLM,0x1,Tmp_Software\Classes\CRLFile\shell\open
+Else,RegWrite,HKLM,0x0,Tmp_Software\Classes\CRLFile\shell\open
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CryptPKO.CryptPKO,,"CryptPKO Class"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CryptPKO.CryptPKO\CurVer,,CryptPKO.CryptPKO.1
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CryptPKO.CryptPKO.1,,"CryptPKO Class"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CryptPKO.CryptPKO.1\CLSID,,{7444C717-39BF-11D1-8CD9-00C04FC29D45}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CryptSig.CryptSig,,"CryptSig Class"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CryptSig.CryptSig\CurVer,,CryptSig.CryptSig.1
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CryptSig.CryptSig.1,,"CryptSig Class"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CryptSig.CryptSig.1\CLSID,,{7444C719-39BF-11D1-8CD9-00C04FC29D45}
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\MIME\Database\Content Type\application/pkcs10",Extension,.p10
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\MIME\Database\Content Type\application/pkcs7-mime",Extension,.p7m
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\MIME\Database\Content Type\application/pkcs7-signature",Extension,.p7s
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\MIME\Database\Content Type\application/pkix-cert",Extension,.cer
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\MIME\Database\Content Type\application/pkix-crl",Extension,.crl
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\MIME\Database\Content Type\application/vnd.ms-pki.certstore",Extension,.sst
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\MIME\Database\Content Type\application/vnd.ms-pki.pko",Extension,.pko
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\MIME\Database\Content Type\application/vnd.ms-pki.seccat",Extension,.cat
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\MIME\Database\Content Type\application/vnd.ms-pki.stl",Extension,.stl
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\MIME\Database\Content Type\application/x-pkcs12",Extension,.p12
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\MIME\Database\Content Type\application/x-pkcs7-certificates",Extension,.p7b
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\MIME\Database\Content Type\application/x-pkcs7-certreqresp",Extension,.p7r
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\MIME\Database\Content Type\application/x-x509-ca-cert",Extension,.cer
+RegWrite,HKLM,0x1,Tmp_Software\Classes\P10File,,"Request cert"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\P7MFile,,"MIME Message PKCS %hash%7"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\P7RFile,,"Reply to cert request"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\P7RFile\shell\add,,"&Install cert"
+If,%version%,Smaller,80,RegWrite,HKLM,0x1,Tmp_Software\Classes\P7RFile\shell\open
+Else,RegWrite,HKLM,0x0,Tmp_Software\Classes\P7RFile\shell\open
+RegWrite,HKLM,0x1,Tmp_Software\Classes\P7SFile,,"PKCS 7 Certs"
+If,%version%,Smaller,80,RegWrite,HKLM,0x1,Tmp_Software\Classes\P7SFile\shell\open
+Else,RegWrite,HKLM,0x0,Tmp_Software\Classes\P7SFile\shell\open
+RegWrite,HKLM,0x1,Tmp_Software\Classes\PFXFile,,"Personal info exchange"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\PFXFile\shell\add,,"Install PF&X"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\PKOFile,,"Public key security object"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\PKOFile\shellex\ContextMenuHandlers,,CryptoMenu
+RegWrite,HKLM,0x1,Tmp_Software\Classes\PKOFile\shellex\ContextMenuHandlers\CryptoMenu,,{7444C717-39BF-11D1-8CD9-00C04FC29D45}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\PKOFile\shellex\PropertySheetHandlers,,CryptoMenu
+RegWrite,HKLM,0x1,Tmp_Software\Classes\PKOFile\shellex\PropertySheetHandlers\CrytoMenu,,{7444C717-39BF-11D1-8CD9-00C04FC29D45}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\SPCFile,,"PKCS 7 Certs"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\SPCFile\shell\add,,"&Install cert"
+If,%version%,Smaller,80,RegWrite,HKLM,0x1,Tmp_Software\Classes\SPCFile\shell\open
+Else,RegWrite,HKLM,0x0,Tmp_Software\Classes\SPCFile\shell\open
+RegWrite,HKLM,0x1,Tmp_Software\Classes\STLFile,,"List of trusted certs"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\STLFile\shell\add,,"&Install CTL"
+If,%version%,Smaller,80,RegWrite,HKLM,0x1,Tmp_Software\Classes\STLFile\shell\open
+Else,RegWrite,HKLM,0x0,Tmp_Software\Classes\STLFile\shell\open
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CertDllOpenStoreProv\%hash%16",Dll,cryptnet.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CertDllOpenStoreProv\%hash%16",FuncName,LdapProvOpenStore
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CertDllOpenStoreProv\Ldap",Dll,cryptnet.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CertDllOpenStoreProv\Ldap",FuncName,LdapProvOpenStore
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllCreateIndirectData\{9BA61D3F-E73A-11D0-8CD2-00C04FC295EE}",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllCreateIndirectData\{9BA61D3F-E73A-11D0-8CD2-00C04FC295EE}",FuncName,"CryptSIPCreateIndirectData"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllCreateIndirectData\{C689AAB8-8E78-11D0-8C47-00C04FC295EE}",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllCreateIndirectData\{C689AAB9-8E78-11D0-8C47-00C04FC295EE}",FuncName,"CryptSIPCreateIndirectData"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllCreateIndirectData\{DE351A43-8E59-11D0-8C47-00C04FC295EE}",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllCreateIndirectData\{DE351A43-8E59-11D0-8C47-00C04FC295EE}",FuncName,"CryptSIPCreateIndirectData"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllGetSignedDataMsg\{9BA61D3F-E73A-11D0-8CD2-00C04FC295EE}",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllGetSignedDataMsg\{9BA61D3F-E73A-11D0-8CD2-00C04FC295EE}",FuncName,"CryptSIPGetSignedDataMsg"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllGetSignedDataMsg\{C689AAB8-8E78-11D0-8C47-00C04FC295EE}",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllGetSignedDataMsg\{C689AAB8-8E78-11D0-8C47-00C04FC295EE}",FuncName,"CryptSIPGetSignedDataMsg"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllGetSignedDataMsg\{C689AAB9-8E78-11D0-8C47-00C04FC295EE}",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllGetSignedDataMsg\{C689AAB9-8E78-11D0-8C47-00C04FC295EE}",FuncName,"CryptSIPGetSignedDataMsg"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllGetSignedDataMsg\{C689AABA-8E78-11D0-8C47-00C04FC295EE}",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllGetSignedDataMsg\{C689AABA-8E78-11D0-8C47-00C04FC295EE}",FuncName,"CryptSIPGetSignedDataMsg"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllGetSignedDataMsg\{DE351A42-8E59-11D0-8C47-00C04FC295EE}",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllGetSignedDataMsg\{DE351A42-8E59-11D0-8C47-00C04FC295EE}",FuncName,"CryptSIPGetSignedDataMsg"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllGetSignedDataMsg\{DE351A43-8E59-11D0-8C47-00C04FC295EE}",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllGetSignedDataMsg\{DE351A43-8E59-11D0-8C47-00C04FC295EE}",FuncName,"CryptSIPGetSignedDataMsg"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllPutSignedDataMsg\{9BA61D3F-E73A-11D0-8CD2-00C04FC295EE}",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllPutSignedDataMsg\{9BA61D3F-E73A-11D0-8CD2-00C04FC295EE}",FuncName,"CryptSIPPutSignedDataMsg"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllPutSignedDataMsg\{C689AAB8-8E78-11D0-8C47-00C04FC295EE}",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllPutSignedDataMsg\{C689AAB8-8E78-11D0-8C47-00C04FC295EE}",FuncName,"CryptSIPPutSignedDataMsg"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllPutSignedDataMsg\{C689AAB9-8E78-11D0-8C47-00C04FC295EE}",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllPutSignedDataMsg\{C689AAB9-8E78-11D0-8C47-00C04FC295EE}",FuncName,"CryptSIPPutSignedDataMsg"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllPutSignedDataMsg\{DE351A42-8E59-11D0-8C47-00C04FC295EE}",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllPutSignedDataMsg\{DE351A42-8E59-11D0-8C47-00C04FC295EE}",FuncName,"CryptSIPPutSignedDataMsg"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllPutSignedDataMsg\{DE351A43-8E59-11D0-8C47-00C04FC295EE}",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllPutSignedDataMsg\{DE351A43-8E59-11D0-8C47-00C04FC295EE}",FuncName,"CryptSIPPutSignedDataMsg"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllRemoveSignedDataMsg\{9BA61D3F-E73A-11D0-8CD2-00C04FC295EE}",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllRemoveSignedDataMsg\{9BA61D3F-E73A-11D0-8CD2-00C04FC295EE}",FuncName,"CryptSIPRemoveSignedDataMsg"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllRemoveSignedDataMsg\{C689AAB8-8E78-11D0-8C47-00C04FC295EE}",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllRemoveSignedDataMsg\{C689AAB8-8E78-11D0-8C47-00C04FC295EE}",FuncName,"CryptSIPRemoveSignedDataMsg"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllRemoveSignedDataMsg\{C689AAB9-8E78-11D0-8C47-00C04FC295EE}",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllRemoveSignedDataMsg\{C689AAB9-8E78-11D0-8C47-00C04FC295EE}",FuncName,"CryptSIPRemoveSignedDataMsg"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllRemoveSignedDataMsg\{C689AABA-8E78-11D0-8C47-00C04FC295EE}",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllRemoveSignedDataMsg\{C689AABA-8E78-11D0-8C47-00C04FC295EE}",FuncName,"CryptSIPRemoveSignedDataMsg"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllRemoveSignedDataMsg\{DE351A42-8E59-11D0-8C47-00C04FC295EE}",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllRemoveSignedDataMsg\{DE351A42-8E59-11D0-8C47-00C04FC295EE}",FuncName,"CryptSIPRemoveSignedDataMsg"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllRemoveSignedDataMsg\{DE351A43-8E59-11D0-8C47-00C04FC295EE}",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllRemoveSignedDataMsg\{DE351A43-8E59-11D0-8C47-00C04FC295EE}",FuncName,"CryptSIPRemoveSignedDataMsg"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllVerifyIndirectData\{9BA61D3F-E73A-11D0-8CD2-00C04FC295EE}",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllVerifyIndirectData\{9BA61D3F-E73A-11D0-8CD2-00C04FC295EE}",FuncName,"CryptSIPVerifyIndirectData"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllVerifyIndirectData\{C689AAB8-8E78-11D0-8C47-00C04FC295EE}",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllVerifyIndirectData\{C689AAB8-8E78-11D0-8C47-00C04FC295EE}",FuncName,"CryptSIPVerifyIndirectData"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllVerifyIndirectData\{C689AAB9-8E78-11D0-8C47-00C04FC295EE}",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllVerifyIndirectData\{C689AAB9-8E78-11D0-8C47-00C04FC295EE}",FuncName,"CryptSIPVerifyIndirectData"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllVerifyIndirectData\{C689AABA-8E78-11D0-8C47-00C04FC295EE}",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllVerifyIndirectData\{C689AABA-8E78-11D0-8C47-00C04FC295EE}",FuncName,"CryptSIPVerifyIndirectData"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllVerifyIndirectData\{DE351A42-8E59-11D0-8C47-00C04FC295EE}",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllVerifyIndirectData\{DE351A42-8E59-11D0-8C47-00C04FC295EE}",FuncName,"CryptSIPVerifyIndirectData"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllVerifyIndirectData\{DE351A43-8E59-11D0-8C47-00C04FC295EE}",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllVerifyIndirectData\{DE351A43-8E59-11D0-8C47-00C04FC295EE}",FuncName,"CryptSIPVerifyIndirectData"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2000",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2000",FuncName,WVTAsn1SpcSpAgencyInfoDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2001",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2001",FuncName,WVTAsn1SpcMinimalCriteriaInfoDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2002",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2002",FuncName,WVTAsn1SpcFinancialCriteriaInfoDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2003",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2003",FuncName,WVTAsn1SpcIndirectDataContentDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2004",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2004",FuncName,WVTAsn1SpcPeImageDataDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2005",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2005",FuncName,WVTAsn1SpcLinkDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2006",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2006",FuncName,WVTAsn1SpcStatementTypeDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2007",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2007",FuncName,WVTAsn1SpcSpOpusInfoDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2008",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2008",FuncName,WVTAsn1SpcLinkDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2009",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2009",FuncName,WVTAsn1SpcLinkDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2130",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2130",FuncName,WVTAsn1SpcSigInfoDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2221",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2221",FuncName,WVTAsn1CatNameValueDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2222",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\%hash%2222",FuncName,WVTAsn1CatMemberInfoDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\1.3.6.1.4.1.311.12.2.1",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\1.3.6.1.4.1.311.12.2.1",FuncName,WVTAsn1CatNameValueDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\1.3.6.1.4.1.311.12.2.2",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\1.3.6.1.4.1.311.12.2.2",FuncName,WVTAsn1CatMemberInfoDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\1.3.6.1.4.1.311.2.1.10",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\1.3.6.1.4.1.311.2.1.10",FuncName,WVTAsn1SpcSpAgencyInfoDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\1.3.6.1.4.1.311.2.1.11",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\1.3.6.1.4.1.311.2.1.11",FuncName,WVTAsn1SpcStatementTypeDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\1.3.6.1.4.1.311.2.1.12",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\1.3.6.1.4.1.311.2.1.12",FuncName,WVTAsn1SpcSpOpusInfoDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\1.3.6.1.4.1.311.2.1.15",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\1.3.6.1.4.1.311.2.1.15",FuncName,WVTAsn1SpcPeImageDataDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\1.3.6.1.4.1.311.2.1.20",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\1.3.6.1.4.1.311.2.1.20",FuncName,WVTAsn1SpcLinkDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\1.3.6.1.4.1.311.2.1.25",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\1.3.6.1.4.1.311.2.1.25",FuncName,WVTAsn1SpcLinkDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\1.3.6.1.4.1.311.2.1.26",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\1.3.6.1.4.1.311.2.1.26",FuncName,WVTAsn1SpcMinimalCriteriaInfoDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\1.3.6.1.4.1.311.2.1.27",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\1.3.6.1.4.1.311.2.1.27",FuncName,WVTAsn1SpcFinancialCriteriaInfoDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\1.3.6.1.4.1.311.2.1.28",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\1.3.6.1.4.1.311.2.1.28",FuncName,WVTAsn1SpcLinkDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\1.3.6.1.4.1.311.2.1.30",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\1.3.6.1.4.1.311.2.1.30",FuncName,WVTAsn1SpcSigInfoDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\1.3.6.1.4.1.311.2.1.4",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllDecodeObject\1.3.6.1.4.1.311.2.1.4",FuncName,WVTAsn1SpcIndirectDataContentDecode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2000",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2000",FuncName,WVTAsn1SpcSpAgencyInfoEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2001",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2001",FuncName,WVTAsn1SpcMinimalCriteriaInfoEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2002",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2002",FuncName,WVTAsn1SpcFinancialCriteriaInfoEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2003",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2003",FuncName,WVTAsn1SpcIndirectDataContentEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2004",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2004",FuncName,WVTAsn1SpcPeImageDataEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2005",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2005",FuncName,WVTAsn1SpcLinkEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2006",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2006",FuncName,WVTAsn1SpcStatementTypeEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2007",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2007",FuncName,WVTAsn1SpcSpOpusInfoEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2008",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2008",FuncName,WVTAsn1SpcLinkEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2009",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2009",FuncName,WVTAsn1SpcLinkEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2130",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2130",FuncName,WVTAsn1SpcSigInfoEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2221",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2221",FuncName,WVTAsn1CatNameValueEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2222",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\%hash%2222",FuncName,WVTAsn1CatMemberInfoEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\1.3.6.1.4.1.311.12.2.1",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\1.3.6.1.4.1.311.12.2.1",FuncName,WVTAsn1CatNameValueEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\1.3.6.1.4.1.311.12.2.2",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\1.3.6.1.4.1.311.12.2.2",FuncName,WVTAsn1CatMemberInfoEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\1.3.6.1.4.1.311.2.1.10",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\1.3.6.1.4.1.311.2.1.10",FuncName,WVTAsn1SpcSpAgencyInfoEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\1.3.6.1.4.1.311.2.1.11",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\1.3.6.1.4.1.311.2.1.11",FuncName,WVTAsn1SpcStatementTypeEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\1.3.6.1.4.1.311.2.1.12",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\1.3.6.1.4.1.311.2.1.12",FuncName,WVTAsn1SpcSpOpusInfoEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\1.3.6.1.4.1.311.2.1.15",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\1.3.6.1.4.1.311.2.1.15",FuncName,WVTAsn1SpcPeImageDataEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\1.3.6.1.4.1.311.2.1.20",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\1.3.6.1.4.1.311.2.1.20",FuncName,WVTAsn1SpcLinkEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\1.3.6.1.4.1.311.2.1.25",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\1.3.6.1.4.1.311.2.1.25",FuncName,WVTAsn1SpcLinkEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\1.3.6.1.4.1.311.2.1.26",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\1.3.6.1.4.1.311.2.1.26",FuncName,WVTAsn1SpcMinimalCriteriaInfoEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\1.3.6.1.4.1.311.2.1.27",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\1.3.6.1.4.1.311.2.1.27",FuncName,WVTAsn1SpcFinancialCriteriaInfoEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\1.3.6.1.4.1.311.2.1.28",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\1.3.6.1.4.1.311.2.1.28",FuncName,WVTAsn1SpcLinkEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\1.3.6.1.4.1.311.2.1.30",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\1.3.6.1.4.1.311.2.1.30",FuncName,WVTAsn1SpcSigInfoEncode
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\1.3.6.1.4.1.311.2.1.4",Dll,wintrust.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CryptDllEncodeObject\1.3.6.1.4.1.311.2.1.4",FuncName,WVTAsn1SpcIndirectDataContentEncode
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{00AAC56B-CD44-11D0-8CC2-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{00AAC56B-CD44-11D0-8CC2-00C04FC295EE},$Function,SoftpubCheckCert
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{189A3842-3041-11D1-85E1-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{189A3842-3041-11D1-85E1-00C04FC295EE},$Function,SoftpubCheckCert
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{5555C2CD-17FB-11D1-85C4-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{5555C2CD-17FB-11D1-85C4-00C04FC295EE},$Function,SoftpubCheckCert
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{573E31F8-AABA-11D0-8CCB-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{573E31F8-AABA-11D0-8CCB-00C04FC295EE},$Function,SoftpubCheckCert
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{573E31F8-DDBA-11D0-8CCB-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{573E31F8-DDBA-11D0-8CCB-00C04FC295EE},$Function,SoftpubCheckCert
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{64B9D180-8DA2-11CF-8736-00AA00A485EB},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{64B9D180-8DA2-11CF-8736-00AA00A485EB},$Function,SoftpubCheckCert
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{C6B2E8D0-E005-11CF-A134-00C04FD7BF43},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{C6B2E8D0-E005-11CF-A134-00C04FD7BF43},$Function,SoftpubCheckCert
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{F750E6C3-38EE-11D1-85E5-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{F750E6C3-38EE-11D1-85E5-00C04FC295EE},$Function,SoftpubCheckCert
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{FC451C16-AC75-11D1-B4B8-00C04FB66EA0},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\CertCheck\{FC451C16-AC75-11D1-B4B8-00C04FB66EA0},$Function,SoftpubCheckCert
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{00AAC56B-CD44-11D0-8CC2-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{00AAC56B-CD44-11D0-8CC2-00C04FC295EE},$Function,WintrustCertificateTrust
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{189A3842-3041-11D1-85E1-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{189A3842-3041-11D1-85E1-00C04FC295EE},$Function,WintrustCertificateTrust
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{5555C2CD-17FB-11D1-85C4-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{5555C2CD-17FB-11D1-85C4-00C04FC295EE},$Function,WintrustCertificateTrust
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{573E31F8-AABA-11D0-8CCB-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{573E31F8-AABA-11D0-8CCB-00C04FC295EE},$Function,HTTPSCertificateTrust
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{573E31F8-DDBA-11D0-8CCB-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{573E31F8-DDBA-11D0-8CCB-00C04FC295EE},$Function,WintrustCertificateTrust
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{64B9D180-8DA2-11CF-8736-00AA00A485EB},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{64B9D180-8DA2-11CF-8736-00AA00A485EB},$Function,WintrustCertificateTrust
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{C6B2E8D0-E005-11CF-A134-00C04FD7BF43},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{C6B2E8D0-E005-11CF-A134-00C04FD7BF43},$Function,WintrustCertificateTrust
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{F750E6C3-38EE-11D1-85E5-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{F750E6C3-38EE-11D1-85E5-00C04FC295EE},$Function,WintrustCertificateTrust
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{FC451C16-AC75-11D1-B4B8-00C04FB66EA0},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Certificate\{FC451C16-AC75-11D1-B4B8-00C04FB66EA0},$Function,GenericChainCertificateTrust
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Cleanup\{00AAC56B-CD44-11D0-8CC2-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Cleanup\{00AAC56B-CD44-11D0-8CC2-00C04FC295EE},$Function,SoftpubCleanup
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Cleanup\{189A3842-3041-11D1-85E1-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Cleanup\{189A3842-3041-11D1-85E1-00C04FC295EE},$Function,SoftpubCleanup
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Cleanup\{5555C2CD-17FB-11D1-85C4-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Cleanup\{5555C2CD-17FB-11D1-85C4-00C04FC295EE},$Function,OfficeCleanupPolicy
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Cleanup\{573E31F8-AABA-11D0-8CCB-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Cleanup\{573E31F8-AABA-11D0-8CCB-00C04FC295EE},$Function,SoftpubCleanup
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Cleanup\{573E31F8-DDBA-11D0-8CCB-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Cleanup\{573E31F8-DDBA-11D0-8CCB-00C04FC295EE},$Function,SoftpubCleanup
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Cleanup\{64B9D180-8DA2-11CF-8736-00AA00A485EB},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Cleanup\{64B9D180-8DA2-11CF-8736-00AA00A485EB},$Function,SoftpubCleanup
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Cleanup\{C6B2E8D0-E005-11CF-A134-00C04FD7BF43},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Cleanup\{C6B2E8D0-E005-11CF-A134-00C04FD7BF43},$Function,SoftpubCleanup
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Cleanup\{F750E6C3-38EE-11D1-85E5-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Cleanup\{F750E6C3-38EE-11D1-85E5-00C04FC295EE},$Function,DriverCleanupPolicy
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Cleanup\{FC451C16-AC75-11D1-B4B8-00C04FB66EA0},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Cleanup\{FC451C16-AC75-11D1-B4B8-00C04FB66EA0},$Function,SoftpubCleanup
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\DiagnosticPolicy\{573E31F8-DDBA-11D0-8CCB-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\DiagnosticPolicy\{573E31F8-DDBA-11D0-8CCB-00C04FC295EE},$Function,SoftpubDumpStructure
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{00AAC56B-CD44-11D0-8CC2-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{00AAC56B-CD44-11D0-8CC2-00C04FC295EE},$Function,SoftpubAuthenticode
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{189A3842-3041-11D1-85E1-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{189A3842-3041-11D1-85E1-00C04FC295EE},$Function,SoftpubAuthenticode
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{5555C2CD-17FB-11D1-85C4-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{5555C2CD-17FB-11D1-85C4-00C04FC295EE},$Function,SoftpubAuthenticode
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{573E31F8-AABA-11D0-8CCB-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{573E31F8-AABA-11D0-8CCB-00C04FC295EE},$Function,HTTPSFinalProv
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{573E31F8-DDBA-11D0-8CCB-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{573E31F8-DDBA-11D0-8CCB-00C04FC295EE},$Function,SoftpubAuthenticode
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{64B9D180-8DA2-11CF-8736-00AA00A485EB},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{64B9D180-8DA2-11CF-8736-00AA00A485EB},$Function,SoftpubAuthenticode
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{C6B2E8D0-E005-11CF-A134-00C04FD7BF43},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{C6B2E8D0-E005-11CF-A134-00C04FD7BF43},$Function,SoftpubAuthenticode
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{F750E6C3-38EE-11D1-85E5-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{F750E6C3-38EE-11D1-85E5-00C04FC295EE},$Function,DriverFinalPolicy
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{FC451C16-AC75-11D1-B4B8-00C04FB66EA0},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\FinalPolicy\{FC451C16-AC75-11D1-B4B8-00C04FB66EA0},$Function,GenericChainFinalProv
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{00AAC56B-CD44-11D0-8CC2-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{00AAC56B-CD44-11D0-8CC2-00C04FC295EE},$Function,SoftpubInitialize
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{189A3842-3041-11D1-85E1-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{189A3842-3041-11D1-85E1-00C04FC295EE},$Function,SoftpubDefCertInit
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{5555C2CD-17FB-11D1-85C4-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{5555C2CD-17FB-11D1-85C4-00C04FC295EE},$Function,OfficeInitializePolicy
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{573E31F8-AABA-11D0-8CCB-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{573E31F8-AABA-11D0-8CCB-00C04FC295EE},$Function,SoftpubInitialize
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{573E31F8-DDBA-11D0-8CCB-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{573E31F8-DDBA-11D0-8CCB-00C04FC295EE},$Function,SoftpubInitialize
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{64B9D180-8DA2-11CF-8736-00AA00A485EB},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{64B9D180-8DA2-11CF-8736-00AA00A485EB},$Function,SoftpubInitialize
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{C6B2E8D0-E005-11CF-A134-00C04FD7BF43},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{C6B2E8D0-E005-11CF-A134-00C04FD7BF43},$Function,SoftpubInitialize
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{F750E6C3-38EE-11D1-85E5-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{F750E6C3-38EE-11D1-85E5-00C04FC295EE},$Function,DriverInitializePolicy
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{FC451C16-AC75-11D1-B4B8-00C04FB66EA0},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Initialization\{FC451C16-AC75-11D1-B4B8-00C04FB66EA0},$Function,SoftpubInitialize
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{00AAC56B-CD44-11D0-8CC2-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{00AAC56B-CD44-11D0-8CC2-00C04FC295EE},$Function,SoftpubLoadMessage
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{189A3842-3041-11D1-85E1-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{189A3842-3041-11D1-85E1-00C04FC295EE},$Function,SoftpubLoadMessage
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{5555C2CD-17FB-11D1-85C4-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{5555C2CD-17FB-11D1-85C4-00C04FC295EE},$Function,SoftpubLoadMessage
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{573E31F8-AABA-11D0-8CCB-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{573E31F8-AABA-11D0-8CCB-00C04FC295EE},$Function,SoftpubLoadMessage
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{573E31F8-DDBA-11D0-8CCB-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{573E31F8-DDBA-11D0-8CCB-00C04FC295EE},$Function,SoftpubLoadMessage
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{64B9D180-8DA2-11CF-8736-00AA00A485EB},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{64B9D180-8DA2-11CF-8736-00AA00A485EB},$Function,SoftpubLoadMessage
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{C6B2E8D0-E005-11CF-A134-00C04FD7BF43},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{C6B2E8D0-E005-11CF-A134-00C04FD7BF43},$Function,SoftpubLoadMessage
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{F750E6C3-38EE-11D1-85E5-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{F750E6C3-38EE-11D1-85E5-00C04FC295EE},$Function,SoftpubLoadMessage
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{FC451C16-AC75-11D1-B4B8-00C04FB66EA0},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Message\{FC451C16-AC75-11D1-B4B8-00C04FB66EA0},$Function,SoftpubLoadMessage
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{00AAC56B-CD44-11D0-8CC2-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{00AAC56B-CD44-11D0-8CC2-00C04FC295EE},$Function,SoftpubLoadSignature
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{189A3842-3041-11D1-85E1-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{189A3842-3041-11D1-85E1-00C04FC295EE},$Function,SoftpubLoadSignature
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{5555C2CD-17FB-11D1-85C4-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{5555C2CD-17FB-11D1-85C4-00C04FC295EE},$Function,SoftpubLoadSignature
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{573E31F8-AABA-11D0-8CCB-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{573E31F8-AABA-11D0-8CCB-00C04FC295EE},$Function,SoftpubLoadSignature
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{573E31F8-DDBA-11D0-8CCB-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{573E31F8-DDBA-11D0-8CCB-00C04FC295EE},$Function,SoftpubLoadSignature
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{64B9D180-8DA2-11CF-8736-00AA00A485EB},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{64B9D180-8DA2-11CF-8736-00AA00A485EB},$Function,SoftpubLoadSignature
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{C6B2E8D0-E005-11CF-A134-00C04FD7BF43},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{C6B2E8D0-E005-11CF-A134-00C04FD7BF43},$Function,SoftpubLoadSignature
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{F750E6C3-38EE-11D1-85E5-00C04FC295EE},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{F750E6C3-38EE-11D1-85E5-00C04FC295EE},$Function,SoftpubLoadSignature
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{FC451C16-AC75-11D1-B4B8-00C04FB66EA0},$DLL,wintrust.dll
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Cryptography\Providers\Trust\Signature\{FC451C16-AC75-11D1-B4B8-00C04FB66EA0},$Function,SoftpubLoadSignature
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Approved",{7444C717-39BF-11D1-8CD9-00C04FC29D45},"Crypto PKO Extension"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Approved",{7444C719-39BF-11D1-8CD9-00C04FC29D45},"Cryptographic signature extension"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\CATFile,FriendlyTypeName,"@cryptext.dll,-6145"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\CATFile\DefaultIcon,,"cryptui.dll,-3418"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\CATFile\shell\open\command,,"rundll32.exe cryptext.dll,CryptExtOpenCAT %1"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\CERFile,FriendlyTypeName,"@cryptext.dll,-6108"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\CERFile\DefaultIcon,,"cryptui.dll,-3410"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\CERFile\shell\add\command,,"rundll32.exe cryptext.dll,CryptExtAddCER %1"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\CERFile\shell\open\command,,"rundll32.exe cryptext.dll,CryptExtOpenCER %1"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\CertificateStoreFile,FriendlyTypeName,"@cryptext.dll,-6112"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\CertificateStoreFile\shell\open\command,,"rundll32.exe cryptext.dll,CryptExtOpenSTR %1"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\CLSID\{127698e4-e730-4e5c-a2b1-21490a70c8a1}\InprocServer32,,xenroll.dll
+RegWrite,HKLM,0x2,Tmp_Software\Classes\CLSID\{43F8F289-7A20-11D0-8F06-00C04FC295E1}\InprocServer32,,xenroll.dll
+RegWrite,HKLM,0x2,Tmp_Software\Classes\CLSID\{7444C717-39BF-11D1-8CD9-00C04FC29D45}\InprocServer32,,cryptext.dll
+RegWrite,HKLM,0x2,Tmp_Software\Classes\CLSID\{7444C719-39BF-11D1-8CD9-00C04FC29D45}\InprocServer32,,cryptext.dll
+RegWrite,HKLM,0x2,Tmp_Software\Classes\CRLFile,FriendlyTypeName,"@cryptext.dll,-6110"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\CRLFile\DefaultIcon,,"cryptui.dll,-3417"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\CRLFile\shell\add\command,,"rundll32.exe cryptext.dll,CryptExtAddCRL %1"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\CRLFile\shell\open\command,,"rundll32.exe cryptext.dll,CryptExtOpenCRL %1"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\P10File,FriendlyTypeName,"@cryptext.dll,-6116"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\P7MFile,FriendlyTypeName,"@cryptext.dll,-6115"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\P7RFile,FriendlyTypeName,"@cryptext.dll,-6140"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\P7RFile\DefaultIcon,,"cryptui.dll,-3410"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\P7RFile\shell\add\command,,"rundll32.exe cryptext.dll,CryptExtAddP7R %1"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\P7RFile\shell\open\command,,"rundll32.exe cryptext.dll,CryptExtOpenP7R %1"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\P7SFile,FriendlyTypeName,"@cryptext.dll,-6113"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\P7SFile\shell\open\command,,"rundll32.exe cryptext.dll,CryptExtOpenPKCS7 %1"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\PFXFile,FriendlyTypeName,"@cryptext.dll,-6148"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\PFXFile\DefaultIcon,,"cryptui.dll,-3425"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\PFXFile\shell\add\command,,"rundll32.exe cryptext.dll,CryptExtAddPFX %1"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\PKOFile,FriendlyTypeName,"@cryptext.dll,-6118"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\SPCFile,FriendlyTypeName,"@cryptext.dll,-6111"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\SPCFile\DefaultIcon,,"cryptui.dll,-3410"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\SPCFile\shell\add\command,,"rundll32.exe cryptext.dll,CryptExtAddSPC %1"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\SPCFile\shell\open\command,,"rundll32.exe cryptext.dll,CryptExtOpenPKCS7 %1"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\STLFile,FriendlyTypeName,"@cryptext.dll,-6109"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\STLFile\DefaultIcon,,"cryptui.dll,-3413"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\STLFile\shell\add\command,,"rundll32.exe cryptext.dll,CryptExtAddCTL %1"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\STLFile\shell\open\command,,"rundll32.exe cryptext.dll,CryptExtOpenCTL %1"
+RegWrite,HKLM,0x7,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CertDllVerifyCTLUsage\DEFAULT",Dll,cryptnet.dll
+RegWrite,HKLM,0x7,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CertDllVerifyRevocation\DEFAULT",Dll,cryptnet.dll
+//RegWrite,HKLM,0x7,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CertDllVerifyCTLUsage\DEFAULT",Dll,63,72,79,70,74,6e,65,74,2e,64,6c,6c,00,00
+//RegWrite,HKLM,0x7,"Tmp_Software\Microsoft\Cryptography\OID\EncodingType 1\CertDllVerifyRevocation\DEFAULT",Dll,63,72,79,70,74,6e,65,74,2e,64,6c,6c,00,00
+
+[Boot-Time]
+//atl.dll Core_Main
+If,%BootTime_CheckBox_atldll%,Equal,True,RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\550,atl,"hiderun /w regsvr32.exe /s atl.DLL"
+//CORPOL.DLL 03CoreCrypto
+If,%BootTime_CheckBox_corpoldll%,Equal,True,RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\550,CORPOL,"hiderun /w regsvr32.exe /s CORPOL.DLL"
+//extmgr.dll 80CoreIE
+If,%Boottime_CheckBox_extmgrdll%,Equal,True,RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\550,extmgr,"hiderun /w regsvr32.exe /s extmgr.dll"
+//occache.dll 80CoreIE
+If,%BootTime_Button_Remove_occachedll%,Equal,True,RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\550,occache,"hiderun /w regsvr32.exe /s occache.dll"
+
+[Remove_atldll]
+RegHiveLoad,Tmp_Software,%target_sys%\config\software
+If,ExistRegKey,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\550,atl,RegDelete,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\550,atl
+RegHiveUnLoad,Tmp_Software
+
+[Remove_corpoldll]
+RegHiveLoad,Tmp_Software,%target_sys%\config\software
+If,ExistRegKey,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\550,CORPOL,RegDelete,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\550,CORPOL
+RegHiveUnLoad,Tmp_Software
+
+[Remove_extmgrdll]
+RegHiveLoad,Tmp_Software,%target_sys%\config\software
+If,ExistRegKey,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\550,extmgr,RegDelete,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\550,extmgr
+RegHiveUnLoad,Tmp_Software
+
+[Remove_occachedll]
+RegHiveLoad,Tmp_Software,%target_sys%\config\software
+If,ExistRegKey,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\550,occache,RegDelete,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\550,occache
+RegHiveUnLoad,Tmp_Software
+
+[Remove_initpkidll]
+RegHiveLoad,Tmp_Software,%target_sys%\config\software
+If,ExistRegKey,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\550,initpki,RegDelete,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\550,initpki
+RegHiveUnLoad,Tmp_Software
+
+[Show_Second_Gui]
+System,CURSOR,Wait
+Run,%scriptfile%,Second_Gui
+System,RefreshInterface
+System,CURSOR,Normal
+
+[Show_First_Gui]
+System,CURSOR,Wait
+Run,%scriptfile%,First_Gui
+System,RefreshInterface
+System,CURSOR,Normal
+
+[Second_Gui]
+Run,%ScriptFile%,Show-Hide-First_Gui,False
+Run,%ScriptFile%,Show-Hide-Second_Gui,True
+
+[First_Gui]
+Run,%ScriptFile%,Show-Hide-Second_Gui,False
+Run,%ScriptFile%,Show-Hide-First_Gui,True
+
+[Show-Hide-Second_Gui]
+Visible,%pCheckBox_AutoExitWithRF%,#1,PERMANENT
+Visible,%pTextLabel_Info%,#1,PERMANENT
+//Visible,%pCheckBox3%,#1,PERMANENT
+Visible,%BootTime_Button_Remove_initpkidll%,#1,PERMANENT
+//Visible,%pCheckBox2%,#1,PERMANENT
+Visible,%BootTime_CheckBox_atldll%,#1,PERMANENT
+Visible,%BootTime_CheckBox_corpoldll%,#1,PERMANENT
+Visible,%Boottime_CheckBox_extmgrdll%,#1,PERMANENT
+Visible,%BootTime_CheckBox_occachedll%,#1,PERMANENT
+Visible,%BootTime_Button_Remove_atldll%,#1,PERMANENT
+Visible,%BootTime_Button_Remove_corpoldll%,#1,PERMANENT
+Visible,%BootTime_Button_Remove_extmgrdll%,#1,PERMANENT
+Visible,%BootTime_Button_Remove_occachedll%,#1,PERMANENT
+Visible,%BootTime_Bevel%,#1,PERMANENT
+//--
+Visible,%pButton_Show_First_Gui%,#1,PERMANENT
+
+[Show-Hide-First_Gui]
+//Visible,%Button_Download%,#1,PERMANENT
+Visible,%Button_Upload%,#1,PERMANENT
+Visible,%Button_CompareEdit%,#1,PERMANENT
+//--
+Visible,%pButton_Show_Second_Gui%,#1,PERMANENT
+
+[EncodedFile-AuthorEncoded-activex-cache4848.ico]
+lines=1
+0=eJzNWgd4VGXavWBBNCxLEUQRlI4IoiAWmiBtFUWqrrLgKgKirDQBBSkCFlQsKAuiohQFlV4DIW1SJm2SSWYm01smM5lJm/SQwvnPd+8EIoL67O+uXp/DN5lJ5r7ne9/zlu8qSU34X//+Ev+9TdrbXZLaSZLUi+Bb0rOS8r641nSXfo+rCXEN0ZK4mehKiG/uRLQhmhNXhX7vz3YJm5oRNxJ9iFHEVGIa8Shxv6RwaU+0CP1uU+nPw0Xsu7D9nl49e6wdOOCeiP533ZXYpUuXI02bNl3H9+dLCp+HiH7EbURb4obQ3/6RPMS9/0L0GTTo3q9HPTyiZszohzFm9Cg8NHw4+vfv77m5Q4dT/Pw94jViFjGBGCIpvrqVaE1cT1wt/e+5iP3rOGzYkH2TJj6BTR+8gxNH9uPMqaPYu2cHli9ZiPGPjMN9gwbV9u7Vy9ymTZsf+PtvE0uImdLF+BLSFLr5K3Gd9L/Rivj+Ft27dR0zY/ozSFBFIuCxw+e2IOB1IViYh3yu6clx2LH933jpxdkYOfIh3N3/7oquXbtkhIXd8DX/XsTXAuIZYgwxUFK0cpP039eK2KN2w4YN3X3iyAHk+1ywmnTI0qYiKzMNBn0GPB4nKspLUVVRAr/HAXXcWWz5ZBOenfkPDB0yGH3v7FPUqdOtCddcc81n/K7VxDxJ0coISUmVt0tK6gwjrg1x+b0u4efuL8+bU5LrskKnTcKZ8MNIjIuAhnueoo5BzNkTiI48iUzyyfPnorqyDJVlRfA4LYiOOI733t2AaVMn4777BqFXz57eDh06nOF3vk+8TswmJhJDib5EZ0nJxb+HVsTftrrn7v6Lvt21AzlOMyJpj1GfDptZB6sxEybuv0mvgV6bgqT4s4g6cxSqmDMwGLQoKPCTSznKSwrgsOhw4uiPWLt6BSZMeAwDBtxT361rV1ub1q0P8h7vEEuJfxLjiQeJ3kRHSdFK8/+Qi9Dtrdz7dJspS95rA213WI0w0z67NZsxUwqXwwJDZip5pMvISlcjMfYMIs8cQQL9ZLEYUFxcgJqqcpQWBWAxZODAD3uwfOlijB0zGnf2ubO6U6dOuhYtwnbzfhuIhcR0Yhxxr6RopYOk5MAGrfyWvQ/r1rXLyC+3b6FO/YinTR6nVY5/izEL7761Gjt3bIXLZSOfdGRnaYhUmYtRp5F/Tk+JhyrqJM6eOQa1OhoOci0tKcY5xlhxgRe6jCTs/uYL6n4uhg4dgm49upcwvpKuvfbarbz/GkmpK08RD0tKXRE+aRHyxy9dsm5nTH9q57MznsHmzZsRyMuB226CjbY7bNk4eewgvt2zEyajDsbsLBh0GbRd2J0mcxAxJdDwc1qSCrGRJ+QYTCWvnBzqvizIGCtBQZ4bqUmx+Pzfn8i6HzjwXnTufJu/bdu2kU2aNPmQtqwknpeUui/80fJX7Be67bZu9crgAw/czxp1D8q4b8J+u1nP+Ncjh3vpdjhhNhplPditJljNjKUsLe1WbG7MQ6dNRjY1Ll6nJEQjijyiyScjPQk+r0eOxeryEuQxP8fHnMZHmzZiypRJ6Nu3L26+5RZX8+bNv6FNi4lHJKX3+qXYaTVuzOgFq1YsQ/ubOmDu3BdRze9320zUooEcDLBZbLBlx8Cd/gG82g3IM3yMgP0YcnMYT0aTzKGxL3QZyRcg3hOf6ZnPhO4jqfvY6HDoGHP5gTxZ91Xlxch1mXGWdXL9m6tZ64chLCzsUCimBv+C/bJuly15Jf3JaVPQtl07xMbEoIJ5ROy5k/vstNnhMCbCqV6EnLS1cBrOwqKLgEO7A179FgRyNLDzd/SZFzlcjkdjLpka6l6l6D5OFcG41Mu6r2Jt8ec6qKk0PPXktArWkU9o36Rf2PuwO3r3GvXW+lXo3fsOjB49lvtRikCuE7lOGznYmHM8cKR+AIdqFjy2BFitudxzM+9phUmnhitzO/KcsbDbnbImDL/CoQEivgS0afGIoz/OnDok+6SirJT7puffJtMPQyMkJdde7pJ1+8JzM3e/NG8OWrVqhc+3bQPqq+HlHnjcNsLFODLAEjMX9oTFyOXPdqtThs1ipwbsXLPhztoJrzMZDqcXRoOJtmfKMaXPSLmoictw0AufNFoFBzP15mVtF376btcOM2187gr2i1rRfcObK0uGDxuKHr16IcftRFkwgDz2OT72Cr5cH1zmeBhPT4ZNvRZeXwk1kQln1j440zbBlbIBbs07cKe9TayD17gbXlsEc68BTjtt0OtpZ4qMK3EQObq0pAgu5gttagJio8KpCx/9kogjB793SkpOvaxuH3/skSUrXl+Km6jbf82fD24+8v0e2f48rxv+vAK4sk/BcGI8LPGvwZGxA5boubBEPQtr7BzY4ubDHr8AjsRXqY/lcCYthSt5OTyadfAZd7FH0rEOOGm75gKHxjxE7di25WPWhe2MU5sccyrmoxzWGaGRjzdtPCspefSyul2xfLF2yuSJaNu2HXUUA9RVozDgRcCXAz8RCBTDZTgM3fFHkH367/TDkzBFzIQpcjbMMS/ConoJVtW/YItfBDs5OGQOK+BKWqnwSFsNvyOc8eilbRk/iydRw48c3IdPPtoIrSaZ9TwJqujTcs5WqyIr7x04QOTQfpfZ+xZ39btzzIZ1q9CrV0+MGj0a9bXVcv9SlO9DAXuz/Dwivxg5xhPQHhkJ/ampMJBDdsQ/YIx4FsbI52GOeoGYTX88D2vMbMUfCUvoj2Xk8boMl3oJ/Nb98DAW9dqf1gkBCzmI/kr4QtQCDeNGvP5g41uRtPNvklKHf6bbuXOe3z13ziy0pG63bd0KcZUUBmT7hQ8K/F4UFpUh1xaH9ANDkXnscehOTobu1JMwhJPH6elcp8J4dgbMCatgTVhNn8yDNXoW/fEKebxKnyxTfJK4CH6nirnYdYFD4/zUwCWK/a3oV3T0Q48e3cRMNEBS+rrGl9wnM2eWDBk8GN27d4fXm8P9r0BJUT57FT855HHl6+Iy+N06ZBwYgYxDo5B17DFkHZ9AHpMYU+Nhip7P/KSl7gNwO31wmDNhTnwL5uh/Mq7mk8dCOW/ZyScndR01lUNNa+Xc0tA/NfQdyazTyYkxsGRnYs/Orwy08QlJmReaXarbSU88vui1ZYvRvn17vPzyy/LeV5QVy/YH6YOSoiIUBVzU6x4E/EXIPDoemh8HQ3t4DDKPPEKMk3l4nHr4C8H4zmeudVN3ATk/GSOmwxw5E5bYeTIPoRGh9zyHClaLlTVCE+oB0y70gNHc+2xdhpxLJzz26CZJ6a3FfNC4B5V1u/K1xemTJk6gbttSt7Gy/WXMYaXBApSwDpaVViDgVCN13zD48ytgjHoFqd/2ZRw9hPSDo5AhcHgsDBEvwpa6BW5LPPNtDny+IDw5fphUbzC2nmSMMb6oFxNjyhQ5Ax79LvawHtqZLs8WRp3Sh4tcGc86bGXsnD552B/KmT0lZbZp0mjvw/r36ztyw7o30KN7D4waNZqWn0ddTYVsv8KhCBWV9fBkH4RqaxjzfyJcWT8gaWcXpO27n34YgrQfBkPzw4NI//EBYhC0h4ZDH/40LIwdt+kMvDku9jMWOLKOwhS/XtZ69qnxrOOsFa5c1jjOQ5wNBAcr+1mV6IdCvcWiBfP3Ssq8KWbmxr2zrNuX5s7aOXvWc2jZsiW2blN0K/pB0d+WlxbLvWdlNZBr+BGxm5tCe3Iu99aN5D19kbKnH1K/u5scRiB9/0ikfNuHP/cjF/I4MBgZ+x8kl4dkjVsT18lcct12xpYTTv0p2NL3sl6z92CMm0MQsRMbdUquY6lJqnOS0i+I+bLFJXsv19tlry4I9uzZAx07doLf75Ptl+dY9rMKhyCqaL/Pehoxn16H+M9vhNOkRmb4PCR81RGJX98Os/pTFBYG4TYcRHb0UsbUOPpmADkNk3WecXgUeYyQoTs5EaZY5lPtLpmL3Wq5MBeJPC80q2HdFfPp5o/ej5OUnvnWUKw3XEIDbcaNHbXw0P7vsGTJQnzxxTbZ9trqKpyrKpN9oHAoQXV1LYIFLsZPa3K4BpoDj8OWdQqJX96ChO3toI9aiWAFNUOUlNWhsKAQPq
+1=cG2uNT5bgS+pC1fnQca8dYaA8OZe4aC49dy77CBrvoywkbe3NxHqDkTDU4f6+QlDOXv0o/nYFl3S5/dYGGFsPF+byC9uJ8LW2vkHtw4YMGDlUV5ThXB+7jBER9JCH2s2a0eQ0yjs1A/LaW9EE3WDP2ozBYi7JKoJTItUQj7fsHqPlB0OwfzngaofA4NJqcBsKq3ojcXPYjnCucnKfFmsVco2beFLrd//0eq6T0yl1COb7x1Wz8o2Nnng0/whanCsmc33C+DrU13PvqCnIoD3FQeAjU0P4CtxpnP5QQvflqxG1ryxh6BQlf9+LrNojf3h5p9Is+chm0J2ZC/U0PJO+6A6l7BzKW7gtpfCg5DWRMjWGuNVHXHnmuyLGbIc5oEphzjELHrAVP/32aODMSs8qNIa3+xP5XF83fHCzIkXtTK3teOXZof825ystwEKgAKbAGvYnwtyVEfSwh7otbkbx3GDXRjvZ3QNzWVlDRHyKmhE+Sd/ehzvsj5bsB1PUApOy+E0m7e1K7R5HnDzL+HfK5gLBdzKYq2u+0GsSsXEgbn5aUc8fGOfNC/Kx5Y9l61FfI/Xouc7W46tjzCPsbc7jAQ7yuPoe6esFhDc5slBBBxH56PXXRij64kTxuou0dqevOSNxxO9Q7uiPpm570RU9qpSPUX3dlztmFgsJy+Fl7vTl2crDJ55GaFBUymTOtRi1Wvr5UnA2Jc4cO0uXPG5p++P6GydXl+eyJc5CuSULIAT/hIPOoasSjij+fq2WFAPJd0dzXQTIHgUjqIuazG7j/bYi2ckwJXjGfXY/YLWHUwBjOAgkopsxEPy/uK+z2y7OFXe6TnTajOEOqufrqq8U5dr9LcmbjS34mEfBaj9fWlCNJHQtLKIbki1qoq6kmncv5gq+Zo+qFv0gk3xnNHnQekhgnQheCh2qr0ANjiPuedXw6PMyrJaVVCJZUwufSooBzeiDPw3ztQWG+l/VXg7SUeGo4G19t35IsKWdx4tnOtZex/QKH+fNeaB3Md2dUVRQjgz5IiI+C2WRgv1B6kUp9jaLrmoscFJ8wT7Ew1JKI0IXQd5FXS9up66i1KCoKsm5Xo7IKIGXOVGUo9FpYKz5irSjiXJRLHrkoLsyTz+rEmZ6InSGDH1hD2+6TlOcGv3beJj5vlqaOmlbkd50tLvDAYtIiiTUkSa2CzW5hXi1rYIL6unOhmLroi6oGfQsu5wWHTCR82RWm5F1yLq2srGUNLEV5eT3y7LEwp3yOIIOoqMCHYJGf+d+ExPho6sCK8BOHXLRnCtFN+nnOvKIfJCU/NZs25Yn26SmqOQU+e2JhwM1+JA0JzMepqYlwOqy0tTLEpR61Qh/V5Y1qRZn8uob+KMm3sJcYgOSDT8PjyEJpOd8LBpEVPpfzQzJfl7Afz+N8VIhU6tbEecVlM2Du7Oe+kJTz6HbSz3Pmb+Ui9N584SvzOuq16kX5eY6MgNeBLK1SW1JT1ewpnaihPhS31JKHElsKB9aKGvZQLHh29Xokf/sg1HtHcR0EW8pn9EMt+3H2tUUBzkQeuc/0MQ9pklWlknJ2e4ekPDv7/z7TuMBl/dqVXbOzUt7I9zkNoo/MzEhCPLUi8pbPm0t9VIdkf65Rvq2SfVFZXoZgnoGznJtaqFP62mAhqljXDdSteB7i43e+9876E7zXaEl5zvRrZ7T/KZfrP/34vd6W7PR36RdbDmtouiaBe3iWuVvD2cbH+lCr1JKac+TAuBIaoTYqGXuiH6woK6IeiuT5KCEuUs6dbouuvk2b1uLZjHgm8xfpv/tsrOFZ9vX79nx1r92UuTngtXucdj1Sk1VIZIzpstLZwwVQX18nEpisFdFHVcr2BzmbVrFuGvj7ccj3OvHj3l1pktJnipzZ7Bfv/vteTUNcwo4c+G4ouWzP99oLrKZMpCSRC/NYNmeTYs6f5+kXkYtrWDucDjOiOaP4xZmY24LJEx8Xz5PukpQ+8/d8BvZbryah+4p60yL8+IG/cXbf7c+1lzDWmIujmZNVyOKMq06MRTLrpXgeGPDa2OucSpSUfH9T6O//6Of2DVxEHLRgL/aE22Y4kO9znPN5rKxZOSgpyGXc2JGSGC3O00SfIGy/Tvrjbb/0ulBbiL/ERBybqk1RvZsQE75qw5urGvoz8Tzlz7Dvv3Y1+EXopVkIf8T/U/CHXwg2UWqnUxoeWlvKa7TUJLQqH6zhJoXWJqFV/kB8SbPQyg/OK9/6s7XukrX6CmvwktV5hTX6knVN6P4Nq/z2VZesza6wtrxk7Rz6ns6h7x8euu/wkP3DQ/xXQzFUrOdlM5QNk9dgaD0f2khEX6Ws1S0vdvf4P1Ait/F4nBNNTC7JLEut0E1OTM5INbEwsdDLTM5nGAUjBOxThdDXhbDL551fn8PABADuUwuSZgDx+wEAAAACAAAAMQAAANcSAAAAAAAAAQAAAAAAAAAAAAAA
+
+[AuthorEncoded]
+activex-cache4848.ico=4908,6544
+Logo=activex-cache4848.ico
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+Call,UploadXQ
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+

@@ -1,0 +1,353 @@
+[Main]
+Title=EarlyStarter
+Type=Plugin
+Author=fxscrpt
+Description=EarlyStarter service executes tasks at an early boot stage.
+Credits=http://TheOven.org
+Version=026
+Download_Level=0
+Level=1
+Selected=False
+Mandatory=False
+NoWarning=False
+Contact=http://TheOven.org
+Date=2017.11.09
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Basic/Shells/FineTune/EarlyStarter.script
+CertifiedBy=
+Certification=
+HistoryNotes=
+History010=added some line for check and disable options to Process section for wimpack enabled
+History011=fxscript changed wimfilter and wimmount from 005 - 006 to 015 - 016
+History012=Lancelot new early starter with fbwf cause trouble when createiso enabled fbwf - unchecked (ps: there was no problem before with v7)
+History013=fxscrpt removed WimMount option (because some essential files moved to wim)/added WimPackExclude entries/fixed internal sync problem
+History015=fxscrpt added fixdriverimagepath command
+History016=Lancelot for now do not work on x64 builds (also not with wow64)
+History018=Lancelot (Thanks ChunkDog) temporary precaution - default selected false until issue at post 13-22 fixed  // a warning text added to interface
+History019=Lancelot minox 0x7 fix
+History020=Lancelot update for packuser
+History021=Lancelot FBWFCache.cmd now have OFF option not to start fbwf service
+History022=Lancelot WimPackExclude routine changed x 2
+History024=Lancelot updated v024 - Date:2016.01.28
+History025=Lancelot Added Basic_PluginCache_Extract - Date:2016.10.30
+History026=Lancelot - Fixed Syntax error - Thanks to ied206 PEBakery Auto Syntax Checking Reply 3 http://TheOven.org/index.php?topic=2271.msg24582#msg24582 - Date:2017.11.09
+
+[Interface]
+pCheckBox1=FBWF,1,3,11,60,64,18,True
+pCheckBox2="Imdisk ramdrive",1,3,82,60,102,18,True
+pCheckBox3=Packuser,1,3,10,85,64,18,True
+pCheckBox4="Fix 'ImagePath' registry values",1,3,82,85,173,18,True
+pTextLabel1="If available, execute these tasks:",1,1,10,35,170,18,8,Normal
+pTextLabel2="Execute custom commands:",1,1,12,109,137,18,8,Normal
+pTextBox1=,1,0,9,132,405,21,
+pTextBox2=,1,0,9,156,405,21,
+pTextBox3=,1,0,9,180,405,21,
+pCheckBox10="Show Gui",1,3,10,13,73,18,True
+pBevel1=pBevel1,0,12,4,220,389,43
+pTextLabel3="Warning: There is a special issue with 'Wimboot' + 'Run From CD'.#$xTill issue fixed, warning txt remains ;).",0,1,8,225,320,32,8,Normal
+pWebLabel2="Plugin Page",1,10,338,4,55,18,http://TheOven.org/index.php?board=9
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[Interface-save]
+pCheckBox5=WimMount,1,3,114,85,122,18,True
+
+[Process]
+If,ExistFile,%ProjectTemp%\Basic_PluginCache_Extract.ini,Echo,"Basic PluginCache"
+If,Not,ExistFile,%ProjectTemp%\Basic_PluginCache_Extract.ini,Run,%ScriptFile%,Process_Normal
+
+[Process_Normal]
+If,Not,%SourceArch%,Equal,x86,Exit,"EarlyStarter.script is designed to work only with PEx86 builds for NOW"
+Run,%ScriptFile%,InstallEarlyStarter
+Run,%ScriptFile%,ExplorerWaitForEarlyStarter
+If,%pCheckBox1%,Equal,True,Run,%ScriptFile%,StartFBWF
+If,%pCheckBox2%,Equal,True,Run,%ScriptFile%,StartImdisk
+If,%pCheckBox3%,Equal,True,Run,%ScriptFile%,StartPackuser
+If,%pCheckBox4%,Equal,True,Run,%ScriptFile%,FixImagePath
+//If,%pCheckBox5%,Equal,True,Run,%ScriptFile%,StartWimfltr
+Run,%ScriptFile%,CustomCommands
+
+[InstallEarlyStarter]
+RegHiveLoad,Tmp_System,%target_sys%\setupreg.hiv
+//fix : ServiceGroupOrder
+//RegWrite,HKLM,0x7,Tmp_System\ControlSet001\Control\ServiceGroupOrder,List,drivers,"System Reserved","Boot Bus Extender","System Bus Extender","Input Device Support","SCSI miniport",Port,"Primary Disk","SCSI Class","SCSI CDROM Class","FSFilter Infrastructure","FSFilter System","FSFilter Bottom","FSFilter Copy Protection","FSFilter Security Enhancer","FSFilter Open File","FSFilter Physical Quota Management","FSFilter Encryption","FSFilter Compression","FSFilter HSM","FSFilter Cluster File System","FSFilter System Recovery","FSFilter Quota Management","FSFilter Content Screener","FSFilter Continuous Backup","FSFilter Replication","FSFilter Anti-Virus","FSFilter Undelete","FSFilter Activity Monitor","FSFilter Top",Filter,"Boot File System",Base,"Pointer Port","Keyboard Port","Pointer Class","Keyboard Class","Video Init",Video,"Video Save","File System",EarlyStarter,PostEarlyStarter,"Event Log","Streams Drivers","NDIS Wrapper","COM Infrastructure",UIGroup,LocalValidation,PlugPlay,PNP_TDI,NDIS,TDI,NetBIOSGroup,ShellSvcGroup,SchedulerGroup,SpoolerGroup,AudioGroup,SmartCardGroup,NetworkProvider,RemoteValidation,NetDDEGroup,"Parallel arbitrator","Extended Base","PCI Configuration","MS Transactions",""
+RegWrite,HKLM,0x7,Tmp_System\ControlSet001\Control\ServiceGroupOrder,List,drivers,"System Reserved","Boot Bus Extender","System Bus Extender","Input Device Support","SCSI miniport",Port,"Primary Disk","SCSI Class","SCSI CDROM Class","FSFilter Infrastructure","FSFilter System","FSFilter Bottom","FSFilter Copy Protection","FSFilter Security Enhancer","FSFilter Open File","FSFilter Physical Quota Management","FSFilter Encryption","FSFilter Compression","FSFilter HSM","FSFilter Cluster File System","FSFilter System Recovery","FSFilter Quota Management","FSFilter Content Screener","FSFilter Continuous Backup","FSFilter Replication","FSFilter Anti-Virus","FSFilter Undelete","FSFilter Activity Monitor","FSFilter Top",Filter,"Boot File System",Base,"Pointer Port","Keyboard Port","Pointer Class","Keyboard Class","Video Init",Video,"Video Save","File System",EarlyStarter,PostEarlyStarter,"Event Log","Streams Drivers","NDIS Wrapper","COM Infrastructure",UIGroup,LocalValidation,PlugPlay,PNP_TDI,NDIS,TDI,NetBIOSGroup,ShellSvcGroup,SchedulerGroup,SpoolerGroup,AudioGroup,SmartCardGroup,NetworkProvider,RemoteValidation,NetDDEGroup,"Parallel arbitrator","Extended Base","PCI Configuration","MS Transactions"
+//wait up to 3 min for service
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Control,ServicesPipeTimeout,180000
+//
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Control\Windows,NoInteractiveServices,0
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_EARLYSTARTER,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_EARLYSTARTER\0000,Service,EarlyStarter
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_EARLYSTARTER\0000,Legacy,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_EARLYSTARTER\0000,ConfigFlags,0
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_EARLYSTARTER\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_EARLYSTARTER\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_EARLYSTARTER\0000,DeviceDesc,EarlyStarter
+//RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\EarlyStarter,Type,16
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\EarlyStarter,Type,272
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\EarlyStarter,Start,2
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\EarlyStarter,ErrorControl,0
+RegWrite,HKLM,0x2,Tmp_System\ControlSet001\Services\EarlyStarter,ImagePath,#$pSystemRoot#$p\System32\ESSvc.exe
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Services\EarlyStarter,DisplayName,EarlyStarter
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Services\EarlyStarter,ObjectName,LocalSystem
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Services\EarlyStarter,Group,EarlyStarter
+RegWrite,HKLM,0x7,Tmp_System\ControlSet001\Services\EarlyStarter,DependOnService,RPCSS
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Services\EarlyStarter\Enum,0,Root\LEGACY_EARLYSTARTER\0000
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\EarlyStarter\Enum,Count,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\EarlyStarter\Enum,NextInstance,1
+RegHiveUnLoad,Tmp_System
+RegHiveLoad,Tmp_Software,%target_sys%\config\software
+RegWrite,HKLM,0x4,Tmp_Software\EarlyStarter,run,1
+RegWrite,HKLM,0x1,Tmp_Software\EarlyStarter,"","Running commands..."
+RegWrite,HKLM,0x4,Tmp_Software\EarlyStarter\$config,guimode,1
+If,%pCheckBox10%,Equal,True,Begin
+RegWrite,HKLM,0x4,Tmp_Software\EarlyStarter\$config,showgui,1
+End
+Else,Begin
+RegWrite,HKLM,0x4,Tmp_Software\EarlyStarter\$config,showgui,0
+End
+RegHiveUnLoad,Tmp_Software
+// make sure rpcss and dcomlaunch can always start
+Run,%ScriptFile%,CoServicesAlteration
+//dirty, but IniWriteTextAddLine cant be used, because line is prepended
+TXTAddLine,%PreISOScript%,"Exec#$c%ScriptFile%#$cCoServicesAlteration",Append
+FileCopy,%Tools%\ESSvc.exe,%target_sys%
+If,Not,ExistFile,%target_sys%\sc.exe,CopyOrExpand,%source_win%\sc.exe,%target_sys%
+If,Not,ExistFile,%target_sys%\advapi32.dll,CopyOrExpand,%source_win%\advapi32.dll,%target_sys%
+If,Not,ExistFile,%target_sys%\comctl32.dll,CopyOrExpand,%source_win%\comctl32.dll,%target_sys%
+If,Not,ExistFile,%target_sys%\gdi32.dll,CopyOrExpand,%source_win%\gdi32.dll,%target_sys%
+If,Not,ExistFile,%target_sys%\setupapi.dll,CopyOrExpand,%source_win%\setupapi.dll,%target_sys%
+If,Not,ExistFile,%target_sys%\version.dll,CopyOrExpand,%source_win%\version.dll,%target_sys%
+If,Not,ExistFile,%target_sys%\oleaut32.dll,CopyOrExpand,%source_win%\oleaut32.dll,%target_sys%
+If,ExistSection,%projectdir%\script.project,VariablesWimPack,Begin
+AddVariables,%projectdir%\script.project,VariablesWimPack
+WimPackExclude,//EarlyStarter,ESSvcExcludeList.txt
+WimPackExclude,Essvc.exe,ESSvcExcludeList.txt
+WimPackExclude,advapi32.dll,ESSvcExcludeList.txt
+WimPackExclude,comctl32.dll,ESSvcExcludeList.txt
+WimPackExclude,gdi32.dll,ESSvcExcludeList.txt
+WimPackExclude,setupapi.dll,ESSvcExcludeList.txt
+WimPackExclude,version.dll,ESSvcExcludeList.txt
+WimPackExclude,oleaut32.dll,ESSvcExcludeList.txt
+End
+
+[CustomCommands]
+RegHiveLoad,Tmp_Software,%target_sys%\config\software
+If,Not,%pTextBox1%,Equal,"",RegWrite,HKLM,0x2,Tmp_Software\EarlyStarter,991_,"+%pTextBox1%"
+If,Not,%pTextBox2%,Equal,"",RegWrite,HKLM,0x2,Tmp_Software\EarlyStarter,992_,"+%pTextBox2%"
+If,Not,%pTextBox3%,Equal,"",RegWrite,HKLM,0x2,Tmp_Software\EarlyStarter,993_,"+%pTextBox3%"
+RegHiveUnLoad,Tmp_Software
+
+[ExplorerWaitForEarlyStarter]
+RegHiveLoad,Tmp_Software,%target_sys%\config\software
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\000,00_waitessvc,"hiderun.exe /w ESSvc.exe wait"
+RegHiveUnLoad,Tmp_Software
+
+[CoServicesAlteration]
+RegHiveLoad,Tmp_System,%target_sys%\setupreg.hiv
+System,ERROROFF
+RegDelete,HKLM,Tmp_System\ControlSet001\Services\RpcSs,Group
+System,ERROROFF
+RegDelete,HKLM,Tmp_System\ControlSet001\Services\DcomLaunch,Group
+RegHiveUnLoad,Tmp_System
+
+[StartImdisk]
+// run imdisk init by early starter
+//
+Run,%ScriptFile%,EarlyImdisk
+If,ExistFile,%PreISOScript%,Begin
+//dirty, but IniWriteTextAddLine cant be used, because line is prepended
+//IniWriteTextAddLine,%PreISOScript%,Process,"Exec,%ScriptFile%,EarlyImdisk"
+TXTAddLine,%PreISOScript%,"Exec#$c%ScriptFile%#$cEarlyImdisk",Append
+End
+
+[EarlyImdisk]
+RegHiveLoad,Tmp_Software,%target_sys%\config\software
+Set,%TMP%,""
+System,ERROROFF
+RegRead,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\000,1_imdisk,%TMP%
+System,ERROROFF
+RegDelete,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\000,1_imdisk
+If,Not,%TMP%,Equal,"",Begin
+RegWrite,HKLM,0x2,Tmp_Software\EarlyStarter,010_Starting_Imdisk_Driver,*Imdisk
+RegWrite,HKLM,0x2,Tmp_Software\EarlyStarter,011_Creating_Imdisk_Ramdrive,"+%TMP%"
+//
+Set,%TMP%,""
+System,ERROROFF
+RegRead,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\000,imdisktmp,%TMP%
+System,ERROROFF
+RegDelete,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\000,imdisktmp
+If,Not,%TMP%,Equal,"",RegWrite,HKLM,0x2,Tmp_Software\EarlyStarter,012_Creating_Temp_Folder,"+%TMP%"
+//
+Run,%ScriptFile%,ImdiskServiceAlteration
+End
+RegHiveUnLoad,Tmp_Software
+
+[ImdiskServiceAlteration]
+RegHiveLoad,Tmp_System,%target_sys%\setupreg.hiv
+System,ERROROFF
+RegDelete,HKLM,Tmp_System\ControlSet001\Services\Imdisk,Group
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\Imdisk,Start,0x3
+RegHiveUnLoad,Tmp_System
+
+[StartPackuser]
+// run Packuser init by early starter
+// packuser is created on every iso build!
+Run,%ScriptFile%,EarlyPackuser
+If,ExistFile,%PreISOScript%,Begin
+//dirty, but IniWriteTextAddLine cant be used, because line is prepended
+//IniWriteTextAddLine,%PreISOScript%,Process,"Exec,%ScriptFile%,EarlyPackuser"
+TXTAddLine,%PreISOScript%,"Exec#$c%ScriptFile%#$cEarlyPackuser",Append
+End
+
+[EarlyPackuser]
+//RegHiveLoad,Tmp_System,%target_sys%\setupreg.hiv
+//RegHiveUnLoad,Tmp_System
+RegHiveLoad,Tmp_Software,%target_sys%\config\software
+Set,%TMP%,""
+System,ERROROFF
+RegRead,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\000,packuser,%TMP%
+System,ERROROFF
+RegDelete,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\000,packuser
+If,Not,%TMP%,Equal,"",Begin
+//StrFormat,REPLACE,%TMP%,packuser,#$pSystemDrive#$p\packuser,%TMP%
+RegWrite,HKLM,0x2,Tmp_Software\EarlyStarter,020_Running_packuser,"+%TMP%"
+End
+RegHiveUnLoad,Tmp_Software
+
+[StartFBWF]
+// run FBWF init by early starter
+// FWBF is added by CreateISO.script, so comes very late!
+Run,%ScriptFile%,EarlyFBWF
+If,ExistFile,%PreISOScript%,Begin
+//dirty, but IniWriteTextAddLine cant be used, because line is prepended
+//IniWriteTextAddLine,%PreISOScript%,Process,"Exec,%ScriptFile%,EarlyFBWF"
+TXTAddLine,%PreISOScript%,"Exec#$c%ScriptFile%#$cEarlyFBWF",Append
+End
+
+[EarlyFBWF]
+RegHiveLoad,Tmp_Software,%target_sys%\config\software
+Set,%TMP%,""
+System,ERROROFF
+RegRead,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\000,2_fbwf,%TMP%
+System,ERROROFF
+RegDelete,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\000,2_fbwf
+If,Not,%TMP%,Equal,"",Begin
+RegWrite,HKLM,0x2,Tmp_Software\EarlyStarter,001_FBWF_Calculations,"+%TMP% OFF"
+RegWrite,HKLM,0x2,Tmp_Software\EarlyStarter,002_Starting_FBWF_Driver,*fbwf
+Run,%ScriptFile%,FBWFServiceAlteration
+End
+Set,%TMP%,""
+System,ERROROFF
+RegRead,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\000,fbwf,%TMP%
+System,ERROROFF
+RegDelete,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\000,fbwf
+If,Not,%TMP%,Equal,"",Begin
+RegWrite,HKLM,0x2,Tmp_Software\EarlyStarter,001_FBWF_Calculations,"+%TMP% OFF"
+RegWrite,HKLM,0x2,Tmp_Software\EarlyStarter,002_Starting_FBWF_driver,*fbwf
+Run,%ScriptFile%,FBWFServiceAlteration
+End
+RegHiveUnLoad,Tmp_Software
+//If,ExistFile,%target_sys%\FBWFCache.cmd,TXTDelLine,%target_sys%\FBWFCache.cmd,"hiderun.exe /w net.exe start fbwf"
+
+[FBWFServiceAlteration]
+RegHiveLoad,Tmp_System,%target_sys%\setupreg.hiv
+System,ERROROFF
+RegDelete,HKLM,Tmp_System\ControlSet001\Services\fbwf,Group
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\fbwf,Start,0x3
+RegHiveUnLoad,Tmp_System
+
+[FixImagePath]
+Run,%ScriptFile%,EarlyFixImagePath
+If,ExistFile,%PreISOScript%,Begin
+TXTAddLine,%PreISOScript%,"Exec#$c%ScriptFile%#$cEarlyFixImagePath",Append
+End
+
+[EarlyFixImagePath]
+RegHiveLoad,Tmp_Software,%target_sys%\config\software
+RegWrite,HKLM,0x2,Tmp_Software\EarlyStarter,900_,~fixdriverimagepath
+System,ERROROFF
+RegDelete,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\980,disk
+System,ERROROFF
+RegDelete,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\980,partmgr
+System,ERROROFF
+RegDelete,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\980,usbhub
+System,ERROROFF
+RegDelete,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\980,usbstor
+System,ERROROFF
+RegDelete,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\980,usbccgp
+System,ERROROFF
+RegDelete,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\980,hidusb
+System,ERROROFF
+RegDelete,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\980,mouhid
+System,ERROROFF
+RegDelete,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\980,kbdhid
+RegHiveUnLoad,Tmp_Software
+
+[StartWimfltr]
+Run,%ScriptFile%,EarlyWimfltr
+If,ExistFile,%PreISOScript%,Begin
+TXTAddLine,%PreISOScript%,"Exec#$c%ScriptFile%#$cEarlyWimfltr",Append
+End
+
+[EarlyWimfltr]
+RegHiveLoad,Tmp_Software,%target_sys%\config\software
+Set,%TMP%,""
+System,ERROROFF
+RegRead,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\000,WimPack,%TMP%
+System,ERROROFF
+RegDelete,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\000,WimPack
+If,Not,%TMP%,Equal,"",Begin
+RegWrite,HKLM,0x2,Tmp_Software\EarlyStarter,030_Starting_WimFltr_Driver,*wimfltr
+RegWrite,HKLM,0x2,Tmp_Software\EarlyStarter,031_Starting_WimMount,"+hiderun.exe /w cmd.exe /c WimMount.cmd /mount"
+Run,%ScriptFile%,WimfltrServiceAlteration
+End
+RegHiveUnLoad,Tmp_Software
+If,ExistFile,%target_win%\WimMount.cmd,TXTDelLine,%target_win%\WimMount.cmd,"if #$q%1#$q==#$q/mount#$q net start wimfltr"
+
+[WimfltrServiceAlteration]
+RegHiveLoad,Tmp_System,%target_sys%\setupreg.hiv
+System,ERROROFF
+RegDelete,HKLM,Tmp_System\ControlSet001\Services\wimfltr,Group
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\wimfltr,Start,0x3
+RegHiveUnLoad,Tmp_System
+
+[AuthorEncoded]
+logo.jpg=9826,13102
+Logo=logo.jpg
+
+[EncodedFile-AuthorEncoded-logo.jpg]
+lines=3
+0=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
+1=0eRdNsxWbWZ22cjNS7V7epF0a1LRCZ8EpY9DgJQ0frVucqH/VTXMjOicoUjUTErgFEMF3odg/PbvuOeWmwUuF1cZ7Lh73xM1qeQIf7EMr6s5CfHy5YgqYEVW0yLfejPBf7FTcCZjSrGiW6sNYuOmcPPu0YpQo12D4CqHYRuYyGeH/EvjpvYgQufexmwff/O/QIMI3U5j876fkQ4C3UGvNMvtTnmw9zBzuCzm75WQNpoUyashzJqG2ZB1bGcq3pTg+TZOd8Ux6aMufzagOJsutzu/alc/VUmTi9YQiTm77V18uGCAdDhxA8c2pzh6HD2z3hXu4CJu4+E17XMxRk0WqpPhnsulYLaPhdhLMT5nGzfPtqQ0rhYbve+QR8Q8phtjcYk7SYGt0edexKmY1ndZYuTwn5gphpOtADrYQAA4kS/o6aKk8rL7yHRTm853ofGXy9DdtqlJjbp0wddguejWYp2WXKJMUoRDl6TG+iDDyXF3/Pe0jaZzyxof2eUc+T0u/VkDSVqdmEsjJ8IYw1tSUWepzmNsJBnAqH+oDWg/VT1X1Wm3zSvPUZA7qrV8UXBw+r0pB5U7YYUGaiW6UC3JtilYOGGB0XuFHfAQ0txEX7DyewuS1+vsQv9ipeLze4SHSUYSXPQOQonM66IZ0LS4OiI1+dJvALo/dXuzfqFQ6jNL7L8EDzkxdoASH5L7qLWSmRPxpBX5C2Bc2usk8wEumq6uevrHpKGBYadhoKSYbFE2PaVTygNOmvU5M7q15Tu9cAUWmtVtDnivRkEf4dmGemKG9aAYQi/QFhCdDUoYekd7krb4h9pCDvCXawKI+zYJE96tLsEm9BpSLPqhEwxuan+LAUyh3sNGII1uc5Emt1HAjCiEGKgZwqSPv5vnzuD0iAMGrzH649GbOVZgzA4w74wOtle96+/L5m8wh6u+CtTlqnuG3OEfh8dr/OdqIdbfPSCxdP8Mis3t2YFlKpqdFi3WdMZ/Uiv4+48cw37id6Mb2+70I02gudi4MwZIdxtvOcDVd73/TLrV0eX5jWJ0y4X+4vE14jhsUX/GXTg5rMzq0ZZZkDfhzB8h0JYoDGlLSEBSHRxxYz2+sepH5cwrLXBRMRhffxHnh38wM714mWLXuh0rtPXc3Qwi6nlKitsZNbTQdtbWTtbqNveIvIDnT+S0e/3teF8oXGr7ObIj7AOGcj0pro9NLIRqrr5eFbZkS/r0tP1Vlig7HLajBqVLEycG4bdQv9eGInp88FczC4Wi506L0yg7kFUJ9dnRO9B33NcXC3iDtzaFNyvHu3dZz7Ybw40ma8FKMNPXv0l7jfe+JYlri+hHn8U58HbaP/lXyGJNcHhy+Xf+lK+119Z2ma1FhCsNKI3H3Zcp7A6ptuzCcWQueSLv7IT5XnNMkc1KlY8RRYUqgNfaLxNleJiP+qveYDUF21icaZj5H5ew8N++v9vb2nWKvQeNpHPvFr1hIqknCTtyQM8eAlOatMMx67emJxLNvdWe9tg0I0vrU6Dhq0smb2iLS4Tkq4bhpdMx+9dlhVDLHYKhPfPpFaDNr5uvQr9IeQMagic9K9BW5Lt3AcQePrNZdp7jIrL9Is17fWCPrrwby+N7xVhFf0LWx4fww5Eek9cvMhe/kj/VrNRVTfWKdLqcru0vBfIKmbeyBb/gcrlvTF5vwbdb5x9F+ftl4zH3npqDS7K72Flv7I8Wlhi++iaPs/vHuXIIwd4g9Go025IS/zioKIJdhGDmctKuCzZ9rjZXIfA6TMuUAfuRtGnKWiQp5vSzXszdpnmls2ILYK4ol4HRNDCn/3Ss62MoStfOyr3EyT6FGqbUD3kT59Ac/WfN3B7QOUp/Scp5Ul7PRYVtidouhNiIR60lkXM95HhgmkeEZSLjdHIpuyxCqzgxWNiUc6XzKhIj/evA0E6R0v+fvcZwx8i7hoY6+2fV3q6d4810VvGyaY+LpoYTVj1rrBw7LzsCAUmi7zBKYkYHHjVr/buVQUaP8KudvScfnRcvnqt3dpUpdTMHDXpt/0EVC+cV48JGatfYD2dr9aKX21df7nHN43LB8ewzw1s/NAef1XYeHdOQ+93eDR0jP75uOmFb+VIo4NV5dvote0m2I0uEWcu+Jw7a/jwufnwHOZ0tE1DDAkNaiXpjtNGh7KVka22TeuPqYsOwvXX85Um10vLW7jD2sBURp2uIys2Z8/nVUbLfRevg1akCRHQG6kIOgx/NG7KoqS0JJW5n2wD9JGIdNcIK+zGaPJQ3CpRICrbRdhyCDQVuXCbyDHSZ42ZKpO0BKFYleqciF+Hi+ZwIXDdeL1oeGNtIVTOEFLezuLlAJFso3TSkClCXanMzv7CL+RXMztIXKj9UVcqWvgQS52rr5Fgd+4hW3Wks8QfbiQDc2IrImz5krhcLT95GYAlRB6zHYU7cyGEhF5irncSmMh1Rid95VYytgNaOY1ragR4FU8nVa4eZpXIGtHVio153bbJLatlW2CfihkSJAv8vO5Ra+VcC0hl3GkqmYQS5XQp3fLFi2r/PcxRHk+z8/7XpGVIQqmrNDG9QczdLkmm/aaeufgWBYM4iJKboAW2Old2cpD+Bj7loPesP9ivZ3h5y77/CaEpYMJvV8DdcjKc3Fa/G7wHv/kqDaKxjCNdOCHvP0NaeUHGYbTCSZhx4wreaEG6xtpk1Zj3uKutUpnC8oWTwE3OUalvKJao8GH+1cKJH+yulMTot27VN8len2n86OdJAlc8j0pJR+Xi5bxTAn4aTQ4Hnk4vCUkyp7wcFbn+1ervhliAEvM2bryCg9IIftd4Oe3SrEfMMeb+Bk0a3DvHNBSwA/8Y93F5j8k6dN4D2u/fg4y2a4DvmuXYF1iJxiGLNsWv6jYH/233kSpRfp2hURd/5mmL5NbE5Ocn6n4oteKnhkgdGlOnK3fEQSL3hyBVCYn+rT2mC2NRlMioH9orURPLn53Xi/3R4Z/7hJ4vrfuIOfLFxB14+v0IVFrvOn4aNCzU4GEx+bzL8GJA/rX5YyshJUt3lJWjpyW9bYrarG7cZn26Q63yP0oLY9L9aVO3+3v4udjRBAtqUzX1GGD5cPVaZDt0P63hXrf3x2e/K7Pc98XVvj8+1fNqyT1ls1WP0S2fQ9zzrHkST7J9oYOFV7ALEv3qX3lXETOThl8YdOWy+lTTtKlUcrc6752k9u+lpTvkZDrW5q9W0EesbRL14fR5XLp27fS1n7KOTXHNO67YR0ebpuRjRx57ChwPaP7F8HnNnXdPsspC2dHNusImdLqBciKy3LLIPGY5RsGy7P9zKsTQRLTytlwPB6/7+ynNwZaJepqu94SL7aF4qRrfi60MF5dlgw6XzFFMcu3lzefRiyKYE4XfzqSYfOlbc7zP+5PAS/2avGX0FGd0UUGPhkxXmgysRD05pWgbWk202nwbCNMlq7BKRvJiP3dssoUzRpterdolSQd+VCkrXMzPn647XUS9Uw+QsqDfkKGfuAnzYXk1d5Zx6cR93/mvHlH8KMIRzAqza6xL3+4bLl2T5tGqm5X8ajzcuNimUm8jEbARfz5OPUIWjDdkZ+VOhNzXYPCO8ah2KGRu9cyfLYgt0a3yhvX8PsJrpmxMs58xfmuaomL2rgJNCVO9DL4YK8Fm4YtgGRaIGtb7/Mk1StjtTwvg253FyMWVmThwOQj4CisAP4IKGgZC6M/FdfYezFXx6nz0Z1MAk/MXc9xvmTRnWrQS+qtzd3IwEgKLTyFW0owO1piYxRk90X+1v6lCjV2Z5bnMOeTiRx+JjJuDzbMz2RU3wUJDsXQgNLKMzGhRwAZLEa4KkU+pRWtQZNcBIcXoaw0qZtSuzXFh+OgiezsnDOwRUT0FSMHF62d8kgLFfXYCMorUTNF/DkBrQFTNzEWD/bOFZuM07DjURzMdsbm58lTuuGAN1TUgskt87p4ERj1sa9SzglF8TlzRmATw9pvmrG/k5PBAJL8jFLcVoRcDzgiu52tXOneFdiGxQexEtI1wOWQSpYoVGGylWGdzJ/t0rrpooXLtLs29sE3KRkXC01vBjRgN+RxdjiFi0Y5cvXm3JZu2UgBk+LjGqIsnUW5RSKnja+e
+2=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
+3=QJgXWGYEOxHjXEnVeEW/buV2orHUW5MRKFxq+gdKsEBNyim6eYUtd0L25LUaLztocVb94Ns+t464cPTtyuoFJkekbgN6wu+ZOOS5R+jL0UOGaL9z85MA5tuTTAcN4fxJihaD5rwlNLSeZYU+M2r+li4lNJAoi0qLRMfqulO8NARqE7HRhTayK3WgLXnJKHgl1M1FxMlIPlkvwa7YRNSQkQrQWn1+GyBfxzmups24j0EOXt8awjx/Grctmb8piKoPr4P9icRPuD2TXYqfLiCuQqI/mh8CxKiTuD8UfAhzkABkHgG1ymDnEaNN0VtgbTCJZCMF0KAPYKlpzD8oDcVpb4xagI8M7FxjbJruAzIFIrUDz7PlVE/jn6JPon+cPuI2Al8h5UIPx6TEgfl1hvlgaAD2vxBdo367gQklg9yMqUrSu/L/swvhflsUGAQKHUia3FScbjEvFLqQifquPgUOKQmUuQK7nw3GTtn2nmVxNUElgQPkf+pLNWqdoaxAh4yzG0iiEuOvDLT4KDcstdWeJCGYCzK/TiEAUFuCrNIWMwuaOEuDm60lVpk13Z5Q2u42QeAbci7HJY9KFE2KOqZBVisdSqAki1LRcn1lRwKi7HpMHMI0Diphx+TXyXr0pFrqFLQEVgEMaWjMw8I5e4G9Hu+saufLgyx3IC0kDyiZoWF2oKhE6SEVClsYEH4TB4jnhjiszFRhUBPKUgyf5ubuBx+X8BZcB7Ynic48jJT8/XyypIZxgFIxF0qkFoKTXs8vPzZWYxMAEA5d4F3kzSh9MBAAAAAgAAACQAAAAaJgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+Call,UploadXQ
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+

@@ -1,0 +1,135 @@
+[Main]
+Title=Accessibility Keyboard
+Type=Plugin
+Author=Lancelot
+Description=Set 'Accessibility Keyboard' options (Control Panel -> Accessibility -> Keyboard) : "Sticky Keys" "Toggle Keys" "Show Extra Keyboard Help"
+Credits=http://TheOven.org
+Version=010
+Download_Level=0
+Level=3
+Selected=False
+Mandatory=False
+NoWarning=False
+Contact=http://TheOven.org
+Date=2018.11.28
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Components/Core/1%20System/Accessibility/Accessibility_Keyboard.script
+Web2=http://yomi.cwcodes.net/Yomi/ComponentsY/Core/1%20System/Accessibility/Accessibility_Keyboard.script
+CertifiedBy=
+Certification=
+HistoryNotes01=Enabling Sticky Keys does not work at startup --> when you open notepad it disables itsself ! --> Gena = enabling with access.cpl enables // WinSE !!!!
+HistoryNotes02=Explorer Shell provides requirements ;)
+HistoryNotes03=NOT tested on SE
+History001=Lancelot 2011.01.27 Plugin created
+History003=Lancelot NoWarnROW implemented
+History004=Lancelot Interface Adjustments - Date:2015.03.04
+History005=Lancelot Added DU buttons - Date:2016.10.04
+History006=Lancelot Added to servers - Reported working on Win10PESE joshuawilsoncom Reply .script http://TheOven.org/index.php?topic=1897 - Date:2016.10.07
+History007=Lancelot Added Components_PluginCache_Extract - Date:2016.11.09
+History008=Lancelot Fixed upload button - Date:2016.11.22
+History009=Lancelot Update empty Home Page WebLabel to https://Write_Homepage_Here - PEBakery - ied206 Reply 3 http://TheOven.org/index.php?topic=2329.msg25119#msg25119 - Date:2017.12.18
+History010=Lancelot no need https://Write_Homepage_Here anymore for a PEBakery workaround - PEBakery should behave same as with Image with WebLink = Do nothing if WebLabel is empty - Date:2018.11.28
+
+[Interface]
+pBevel_StickyKeys=pBevel2,1,12,2,16,298,273
+pTextLabel_StickyKeys_Head="Sticky Keys",1,1,12,1,58,18,8,Normal
+pTextLabel_StickyKeys_Info="Use StickyKeys if you want to use SHIFT, CTRL, ALT, or#$xWindows logo key by pressing one key at a time.",1,1,4,21,273,30,8,Normal
+pCheckBox_Accessbility_Keyboard_StickyKeys="Use StickyKeys",1,3,7,52,97,18,False
+pBevel_KeyboardShortcut=pBevel1,1,12,6,87,289,53
+pTextLabel_KeyboardShortcutHead="Keyboard Shortcut",1,1,11,71,95,18,8,Normal
+pTextLabel_KeyboardShortcutInfo="The shortcut for StickyKeys is:#$xPress the SHIFT key five times.",1,1,9,90,153,28,8,Normal
+pCheckBox_KeyboardShortcut="Use shortcut",1,3,11,119,89,18,False
+pBevel_Options=pBevel2,1,12,5,163,290,45
+pTextLabel_Options=Options,1,1,12,148,45,18,8,Normal
+pCheckBox_Options_twicetolock="Press modifier key twice to lock",1,3,11,167,174,18,True
+pCheckBox_Options_twiceoff="Turn Sticky Keys off if two keys are pressed at once",1,3,11,186,275,18,True
+pBevel_Notification=pBevel2,1,12,5,223,289,51
+pTextLabel_Notification=Notification,1,1,15,209,57,18,8,Normal
+pCheckBox_Notification_Sound="Make sounds when modifier key is pressed",1,3,9,232,258,18,True
+pCheckBox_Notification_Showstatus="Show StickyKeys status on screen",1,3,9,251,200,18,True
+ToggleKeys_pBevel=pBevel2,1,12,302,68,291,138
+ToggleKeys_pTextLabel_Head="Toggle Keys",1,1,311,50,65,18,8,Normal
+ToggleKeys_pTextLabel_Info="Use ToggleKeys if you want to hear tones when pressing#$xCAPS LOCK, NUM LOCK, and SCROLL LOCK.",1,1,307,76,280,29,8,Normal
+ToggleKeys_pCheckBox_UseToggleKeys="Use ToggleKeys",1,3,311,107,100,18,False
+ToggleKeys_pBevel_KeyboardShortcut=pBevel3,1,12,308,143,265,57
+ToggleKeys_pTextLabel_KeyboardShortcut_Head="Keyboard Shortcut",1,1,316,128,94,18,8,Normal
+ToggleKeys_pTextLabel_KeyboardShortcut_Info="The shortcut for ToggleKeys is:#$xHold down the NUM LOCK key for five seconds.",1,1,312,150,230,30,8,Normal
+ToggleKeys_pCheckBox_UseShortcut="Use shortcut",1,3,316,178,86,18,False
+ShowExtraKeyboardHelp_pCheckBox="Show extra keyboard help in programs",1,3,331,231,212,18,False
+WebLabel_Homepg=HomePage,1,10,343,20,55,18,
+WebLabel_Plugin="Plugin Page",1,10,338,4,55,18,http://TheOven.org/index.php?board=9
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[Variables]
+
+[Process]
+If,ExistFile,%ProjectTemp%\Components_PluginCache_Extract.ini,Echo,"Components PluginCache"
+If,Not,ExistFile,%ProjectTemp%\Components_PluginCache_Extract.ini,Run,%ScriptFile%,Process_Normal
+
+[Process_Normal]
+IniRead,%ProjectDir%\Script.Project,IniVariables,NoWarnRegOverWrite,%NoWarnROW%
+Set,%StickyKeysFlagsValue%,26
+If,%pCheckBox_Accessbility_Keyboard_StickyKeys%,Equal,True,StrFormat,inc,%StickyKeysFlagsValue%,1
+If,%pCheckBox_KeyboardShortcut%,Equal,True,StrFormat,inc,%StickyKeysFlagsValue%,4
+If,%pCheckBox_Options_twicetolock%,Equal,True,StrFormat,inc,%StickyKeysFlagsValue%,128
+If,%pCheckBox_Options_twiceoff%,Equal,True,StrFormat,inc,%StickyKeysFlagsValue%,256
+If,%pCheckBox_Notification_Sound%,Equal,True,StrFormat,inc,%StickyKeysFlagsValue%,64
+If,%pCheckBox_Notification_Showstatus%,Equal,True,StrFormat,inc,%StickyKeysFlagsValue%,32
+//
+Set,%ToggleKeysFlagsValue%,58
+If,%ToggleKeys_pCheckBox_UseToggleKeys%,Equal,True,StrFormat,inc,%ToggleKeysFlagsValue%,1
+If,%ToggleKeys_pCheckBox_UseShortcut%,Equal,True,StrFormat,inc,%ToggleKeysFlagsValue%,4
+//
+If,%ShowExtraKeyboardHelp_pCheckBox%,Equal,True,Set,%KeyboardpreferenceValue%,1
+If,%ShowExtraKeyboardHelp_pCheckBox%,Equal,False,Set,%KeyboardpreferenceValue%,0
+//--
+RegHiveLoad,Tmp_Default,%RegDefault%
+If,%NoWarnROW%,Equal,True,System,ERROROFF,3
+RegWrite,HKLM,0x1,"Tmp_Default\Control Panel\Accessibility\Keyboard Preference",On,%KeyboardpreferenceValue%
+RegWrite,HKLM,0x1,"Tmp_Default\Control Panel\Accessibility\StickyKeys",Flags,%StickyKeysFlagsValue%
+RegWrite,HKLM,0x1,"Tmp_Default\Control Panel\Accessibility\ToggleKeys",ToggleKeys,%ToggleKeysFlagsValue%
+RegHiveUnLoad,Tmp_Default
+
+[AuthorEncoded]
+Sticky.jpg=930,1240
+Logo=Sticky.jpg
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[EncodedFile-AuthorEncoded-Sticky.jpg]
+lines=0
+0=eJz7f+P/AwYBLzdPNwZGRkaGBCBk+H+bwZmBmYkJhICABYhYOVhZWVhYudjZ2Th4uHh4uLm4uXn5hAR4+QT5uLkFxAQEhUVERUV5+MUlxEQkhERERUCGMDID9bCwcrKycorwcvOKkAz+H2AQ5GAQYRBhZlRiYBJkZBZk/H+EQZ6BgZGVEQwYoICRCehGNnYOTi5uoIKtAgxMjMzMTCzMIFcDZWuB8gwsgqxCioaObMKBiexKhSJGjRMXcig7bTwoGnTxg4pxUlETJ5eYuISklKqauoamlompmbmFpZWzi6ubu4enV3BIaFh4RGRUckpqWnpGZlZxSWlZeUVlVXNLa1t7R2fXpMlTpk6bPmPmrEWLlyxdtnzFylWbNm/Zum37jp27Dh0+cvTY8RMnT126fOXqtes3bt56+Ojxk6fPnr94+erjp89fvn77/uPnL5C/GBmYGWEAq78Egf5iYmFhZmEH+YuRqRykQJCFVdGQTcgxkD2xUFjJqJFDxGniwo0HOZWNgz6IJhVd5BJTMXmo+hHkNbDPiPNYE1k+g3sM4a9bDDzMjMDIYxZksGf4JftP4cfzyI/53Sb7eX54H75+TU7+itLlee/DPsp8KzqrHHk7Vkip71iCCPfSmPcntfxYIz9876+J/s/ALez/YXtXjfGil/a3pELfLc8tX/x6c/x/huNbrm3cZeWZznbn71oPhe13FPqmPvpn/eHb4vKPysflFLdesd9cssImc2FG+DUxq76t6bbvby28lFjdrLptqYim0tJbK/4zuNs4zN48KVv84b3dq+sPRT+YPZf3wfaP6l0lv6VX2/ofMf+1b7vY7GVZYVWtryN/iku1nzfa182R3ZLR0nj83eQ06WnHrtsdX7Rjf4udxtU/sQ+27b0edyo27H7oVZOTSy+vvceh+lttYWHWuo17JhnlRYR26N1Q+ezq6Dr7P0PLPrarNUH71PZ+SG9fb+Ox6ajVa3GpGP4KlR6N3iNHzd8FdG95rpxxzEDbyr7Bnkfp8vLLlx8ebwk6VJk8Lzr0wlqXIE+J0t6bNXvEAnUahE8Imdl9POkqnlBaJ/fh3sSHsnL3PS9s2a0r7rX97pMbL6+9ZBHMSzq7VYBVMi2pwFJl3pdAV4b6/zcB+hqMqXic4wouyUzOrtTLKkhnGAUjD/xnhtARzNjlY3rXGDMwAQCb6wcY40lHsgEAAAACAAAAJgAAAFgDAAAAAAAAAQAAAAAAAAAAAAAA
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+Call,UploadXMultiQ
+
+[Settings_Default]
+IniWrite,%ScriptFile%,Main,Selected,False
+
+[Settings_Default_Yomi]
+IniWrite,%ScriptFile%,Main,Selected,False
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+

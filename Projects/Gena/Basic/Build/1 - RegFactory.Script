@@ -1,0 +1,2112 @@
+[Main]
+Title=Register Factory API
+Type=Plugin
+Author=fxscrpt
+Description=Installs OS components using virtual machines
+Credits=Lancelot and Galapo - http://TheOven.org
+Version=061
+Download_Level=0
+Level=1
+Selected=True
+Mandatory=True
+NoWarning=False
+Contact=http://TheOven.org/index.php?board=3
+Date=2018.01.08
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Basic/Build/1%20-%20RegFactory.Script
+CertifiedBy=
+Certification=
+HistoryNotes01=[Process] required for CoreMain Standalone
+HistoryNotes02=File transfer failed happens when emulator could not be executed for any reason.... (easy to reproduce: select and make qemu fail ;) OR at [selectvm] replace Set,%ApiRegVMType%,%mounttype% to Set,%ApiRegVMType%,"")
+HistoryNotes02=ApiRegUtil.exe makehdd creates hdd.bin
+History009=Lancelot - wb077b1 - 4 echo lines added to PostApiReg and PreApiReg creation to avoid warnings when regfactory disabled
+History010=Lancelot - FileCopy,%tempsource%,#1,%tempdest% ----> FileCopy,%tempsource%,%tempdest%
+History011=fxscrpt removed %PEDrive% / disabled imdisk installation if %RegFactoryState%=disabled
+History012=Lancelot Version=12 (There exists v11 on server at the moment this update made)
+History013=Lancelot default answer Yes
+History014=fxscrpt fixed Templates shell folder
+History015=fxscrpt fixed 'Common Documents' typo
+History016=fxscrpt updated imdiskinst, apiregcfg.ini, added AllUsersProfile+UserProfile environment variable.
+History017=removed imdisk -D command, added support for vbox 3.0.6
+History018=Lancelot changed work under VMWare workstation version 5
+History019=Lancelot hiderun line fixed
+History020=Lancelot (20100121) [runcmd]-registry addings of hiderun removed (find History20 in plugin). Reason: new hiderun have a problem (or maybe the line!!), when 05CoreScripting.script processed it adds "0011"="||hiderun /w cmd /c \"mshta.exe /register\"" , with old hiderun it is working but with new hiderun it does not (cause hang forever which results with RF fail at all) (source: xpsp2x86enu hostos:2k3sp2x64enu). This behaviour of psc's hiderun not reported since these days reporting bugs cause unwanted results ( showtopic=10199 ). Maybe the line maybe psc's hiderun, I am not sure. So I decide to remove hiderun, it will not hurt seeing cmd screens blinking :). (ps: alternate solutions are adding old hiderun to tools\x86 or extracting old hiderun from RegFactory.script or copying hiderun from tools, but from my point of view all alternate solutions disturbs the harmony, old hiderun only attached to RegFactory.script for future tests by advanced users)
+History021=Galapo fixed hiderun
+History022=Lancelot qEmu plugin Extraction added
+History023=Lancelot Virtual Box Oracle support added // to find imdisk version if,existregkey routine used to avoid newbies scare ;).
+History024=Lancelot new qemu location
+History027=Lancelot fix %Locale% --> %SourceLocale%
+History028=Lancelot DependOnService,DcomLaunch 0x7 line fixed
+History029=Lancelot Vbox removed from selection - in plugin search: " //Vbox Removed for now - " to re-enable
+History029=Olegpov Auto selected default
+History030=Lancelot no need selectvm when %RegFactoryState%=disabled
+History030=Lancelot no need process when %RegFactoryState%=disabled
+History032=Lancelot inf2hive.exe unupxed // vmplayer-7 no switch
+History033=Lancelot wb bug with vmware - if detected vmware will not run..... to prevent Auto (Default) or manual selection failures.....
+History034=Lancelot minor fix Bigger,7.1
+History035=Galapo RunLimited.au3 to workaround wb bug
+History036=Lancelot [Process] required for CoreMain Standalone // less warnings when files delete (thanks to cmd) // ifexistregkey routine ;) //
+History038=Lancelot wb bug workarounded
+History039=Lancelot workaround with ifexistregkey routine ;)
+History040=Lancelot speed enhancements (again wb bug workaround and round and round....)
+History041=Lancelot No need RF variables if not required
+History042=Lancelot SourceLocale IniVariables
+History043=Lancelot %PostApiRegScript% [ProcessEnd] added (for "ending" (shifted to end) plugins -> ps: first [PostVMBoot] than [Process] and now [ProcessEnd] ;))
+History044=Lancelot IniVariables RegFactory
+History045=Lancelot IniVariables OS
+History045=Lancelot NoWarnROW NoWarnFOW integrated
+History047=Lancelot Winbuilder bug with Vmware workarounded - If Vmware fails qemu // imdisk.exe -D -m added (after imdisk --D -m fails)
+History048=Lancelot no need warning when changing Environment,TEMP TMP
+History049=Lancelot reduced number of imdiskwait during normal unmount (windows never let normal unmount - no need to wait long)
+History050=Lancelot changed %vmlocation%="%ProjectTemp%" to %vmlocation%="%ProjectTemp%\RegFactoryHDD\HDD" to junc easier
+History051=Lancelot updated v051 - 2015.10.09
+History052=Lancelot fixed double if - Date:2016.10.02
+History053=Lancelot Added Basic_PluginCache_Extract - Date:2016.10.30
+History054=Lancelot Update hiderun lines - Date:2017.09.23
+History055=Lancelot Fixed exitscript lines -> Run,%ScriptFile%,exitscript - Date:2018.01.05
+History056=Lancelot PEBakery do not have Split Bug with #$q - Date:2018.01.05
+History057=Lancelot PEBakery Error if there exists no such section -> If,ExistSection,%ApiRegConfig%,build%apireglevel%,IniDeleteSection,%ApiRegConfig%,build%apireglevel% // If,ExistSection,%ApiRegConfig%,boot%apireglevel%,IniDeleteSection,%ApiRegConfig%,boot%apireglevel% - Date:2018.01.05
+History058=Lancelot PEBakery Less Warning - Gena\Finals\0 RegFactory\Register Factory VM Installer - If,Not,ExistFile, MSVCRT.DLL iernonce.dll WINLOGON.EXE regsvr32.exe aclui.dll clb.dll ulib.dll subst.exe - Date:2018.01.06
+History059=Lancelot Fix qemu.exe new location: %ProjectTemp%\qEmu\qemu.exe // Default set to qEmu (Vmware do not work anymway and Vbox need fix ) // [runqemu] ShellExecuteEx,Hide,%vmpath%,%switches% --> ShellExecuteEx,Open,%vmpath%,%switches% - Date:2018.01.06
+History060=Lancelot Add If,Not,Existfile,%vmlocation%\hdd.bin,Halt,"%vmlocation%\hdd.bin NOT FOUND" // Various lines inside plugin: If,Not,ExistDir,%vmlocation%,DirMake,%vmlocation% // fixed qEmu //wb \ bug - If %ApiRegHDDDrive% value empty than it copies to root folder of drive If,%ApiRegHDDDrive%-,Equal,-,Halt,"ApiRegHDDDrive=%ApiRegHDDDrive% Value Empty - Halt" - Date:2018.01.07
+History061=Lancelot FileVersion --> tFileVersion - FileVersion deprecated - Date:2018.01.08
+
+[Variables]
+%vmramsize%=
+%vmname%=
+%vmpath%=
+%mounttype%=
+%guimode%=no
+%vmlocation%="%ProjectTemp%\RegFactoryHDD\HDD"
+%sysdrive%=X:
+
+[Interface]
+pBevel1=pBevel1,1,12,6,27,510,122,
+pScrollBox1=QEMU,1,4,320,35,186,21,Autodetect,QEMU,"Virtual PC 2007","VMWare Workstation/Player"
+pTextLabel2="Virtual machine:",1,1,224,42,95,20,9,Normal
+pButton1="Import created registry settings",1,8,345,160,166,25,applyregistry
+pButton2="Detatch virtual HDD",1,8,345,244,166,25,umountimagegui
+pButton3="(Re)Attach virtual HDD",1,8,345,272,166,25,mountimagegui
+pTextLabel3="Ram size (MB):",1,1,321,63,95,20,9,Normal
+pNumberBox1=pNumberBox1,1,2,417,61,89,22,512,128,1024,16
+pTextLabel4="Temp folder for VM files: (blank for  ProjectTemp), NTFS volume on independent disk recommended",1,1,12,94,484,20,8,Normal
+pFileBox1=,1,13,9,114,502,30,dir
+pCheckBox1="2-pass registration",1,3,16,43,117,20,False
+pCheckBox4="debug mode for plugin developers",1,3,12,158,219,20,False
+pCheckBox5="show registration info",1,3,26,180,141,21,False
+pTextBox1=,1,0,24,224,286,21,"cmd /k"
+pTextBox2=,1,0,24,274,286,21,"cmd /k"
+pBevel3=pBevel3,1,12,6,153,510,149
+pCheckBox7="execute command before registration:",1,3,26,203,285,20,True
+pCheckBox8="execute command after registration:",1,3,26,253,285,20,True
+pWebLabel2="Plugin Page",1,10,338,4,55,18,http://TheOven.org/index.php?board=3
+Button_Download=,1,8,400,-1,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,423,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,446,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[Interface_Cancel]
+//Vbox Removed for now -
+pScrollBox1=Autodetect,1,4,320,11,186,21,Autodetect,QEMU,"Virtual Box","Virtual PC 2007","VMWare Workstation/Player"
+
+[Interface-save]
+pCheckBox2="force registrations at boot time",1,3,16,11,198,20,False
+
+[Process]
+If,ExistFile,%ProjectTemp%\Basic_PluginCache_Extract.ini,Echo,"Basic PluginCache"
+If,Not,ExistFile,%ProjectTemp%\Basic_PluginCache_Extract.ini,Run,%ScriptFile%,Process_Normal
+
+[Process_Normal]
+Set,%CoreMainStandaloneVar%,""
+If,ExistFile,%ProjectDir%\Basic\Shells\Core\Core_Main.script,IniRead,%ProjectDir%\Basic\Shells\Core\Core_Main.script,IniScriptVariables,CoreMainStandalone,%CoreMainStandaloneVar%
+IniRead,%Projectdir%\Script.Project,IniVariables,RegFactoryState,%RegFactoryState%
+If,Not,%RegFactoryState%%CoreMainStandaloneVar%,Equal,DisabledFalse,Begin
+Run,%ScriptFile%,vmlocation
+Set,%ApiRegScript%,%ScriptFile%
+IniWrite,%Projectdir%\Script.Project,IniVariables,ApiRegScript,%ApiRegScript%
+Set,%ApiRegScriptFiles%,"%ScriptDir%\1 - RegFactory_Files.Script"
+IniWrite,%Projectdir%\Script.Project,IniVariables,ApiRegScriptFiles,%ApiRegScriptFiles%
+Set,%PreApiRegName%,PreApiRegScript.txt
+IniWrite,%Projectdir%\Script.Project,IniVariables,PreApiRegName,%PreApiRegName%
+Set,%PostApiRegName%,PostApiRegScript.txt
+IniWrite,%Projectdir%\Script.Project,IniVariables,PostApiRegName,%PostApiRegName%
+Set,%ApiRegDir%,%ProjectTemp%\apireg
+IniWrite,%Projectdir%\Script.Project,IniVariables,ApiRegDir,%ApiRegDir%
+Set,%ApiRegBackupDir%,%ApiRegDir%\backup
+IniWrite,%Projectdir%\Script.Project,IniVariables,ApiRegBackupDir,%ApiRegBackupDir%
+Set,%ApiRegConfig%,%ApiRegDir%\ApiRegCfg.ini
+IniWrite,%Projectdir%\Script.Project,IniVariables,ApiRegConfig,%ApiRegConfig%
+Set,%PreApiRegScript%,%ApiRegDir%\%PreApiRegName%
+IniWrite,%Projectdir%\Script.Project,IniVariables,PreApiRegScript,%PreApiRegScript%
+Set,%PostApiRegScript%,%ApiRegDir%\%PostApiRegName%
+IniWrite,%Projectdir%\Script.Project,IniVariables,PostApiRegScript,%PostApiRegScript%
+Set,%ApiRegSecondPass%,no
+IniWrite,%Projectdir%\Script.Project,IniVariables,ApiRegSecondPass,%ApiRegSecondPass%
+Set,%ApiRegShowInfos%,no
+IniWrite,%Projectdir%\Script.Project,IniVariables,ApiRegShowInfos,%ApiRegShowInfos%
+Set,%t%,""
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegHDDDrive,%t%
+If,%t%,Equal,"",Begin
+Set,%ApiRegHDDDrive%,""
+IniWrite,%Projectdir%\Script.Project,IniVariables,ApiRegHDDDrive,""
+End
+//If,Not,EXISTVAR,%ApiRegHDDDrive%,Set,%ApiRegHDDDrive%,"",PERMANENT
+If,%pCheckBox1%,Equal,True,Begin
+Set,%ApiRegSecondPass%,yes
+IniWrite,%Projectdir%\Script.Project,IniVariables,ApiRegSecondPass,%ApiRegSecondPass%
+End
+If,%pCheckBox4%%pCheckBox5%,Equal,TrueTrue,Begin
+Set,%ApiRegShowInfos%,yes
+IniWrite,%Projectdir%\Script.Project,IniVariables,ApiRegShowInfos,%ApiRegShowInfos%
+End
+//If,%pCheckBox2%,Equal,False,Set,%ApiRegSupport%,both,PERMANENT
+//If,%pCheckBox2%,Equal,True,Set,%ApiRegSupport%,boot,PERMANENT
+Set,%ApiRegSupport%,both
+IniWrite,%Projectdir%\Script.Project,IniVariables,ApiRegSupport,%ApiRegSupport%
+//System,REBUILDVARS
+If,ExistDir,%ProjectTemp%\infs,DirDelete,%ProjectTemp%\infs
+If,Not,ExistDir,%ApiRegDir%,DirMake,%ApiRegDir%
+If,ExistDir,%ApiRegBackupDir%,DirDelete,%ApiRegBackupDir%
+//ExtractFile,%ScriptFile%,files,ApiRegUtil.exe,%ApiRegDir%
+//ExtractFile,%ScriptFile%,files,ApiRegCfg.ini,%ApiRegDir%
+If,Not,ExistFile,%ApiRegDir%\ApiRegUtil.exe,ExtractFile,%ApiRegScriptFiles%,files,ApiRegUtil.exe,%ApiRegDir%
+ExtractFile,%ApiRegScriptFiles%,files,ApiRegCfg.ini,%ApiRegDir%
+//
+FileCreateBlank,%PreApiRegScript%
+TXTAddLine,%PreApiRegScript%,Echo#$cPreApiRegScript_PreVMBoot,PREPEND
+TXTAddLine,%PreApiRegScript%,[PreVMBoot],PREPEND
+TXTAddLine,%PreApiRegScript%,Echo#$cPreApiRegScript_Process,PREPEND
+TXTAddLine,%PreApiRegScript%,[Process],PREPEND
+FileCreateBlank,%PostApiRegScript%
+TXTAddLine,%PostApiRegScript%,[ProcessEnd],PREPEND
+TXTAddLine,%PostApiRegScript%,Echo#$cPostApiRegScript_PostVMBoot,PREPEND
+TXTAddLine,%PostApiRegScript%,[PostVMBoot],PREPEND
+TXTAddLine,%PostApiRegScript%,"Run#$c#$pPostApiRegScript#$p#$cProcessEnd",PREPEND
+TXTAddLine,%PostApiRegScript%,"IniRead#$c#$q%Projectdir%\Script.Project#$q#$cIniVariables#$cPostApiRegScript#$c#$pPostApiRegScript#$p",PREPEND
+TXTAddLine,%PostApiRegScript%,Echo#$cPostApiRegScript_Process,PREPEND
+TXTAddLine,%PostApiRegScript%,[Process],PREPEND
+If,%ApiRegSupport%,Equal,both,Run,%ScriptFile%,checkimdisk
+If,Not,%RegFactoryState%,Equal,Disabled,Run,%ScriptFile%,selectvm
+Run,%ScriptFile%,vmlocation
+//System,REBUILDVARS
+End
+
+[vmlocation]
+Set,%vmlocation%,%ProjectTemp%\RegFactoryHDD\HDD
+If,Not,%pFileBox1%,Equal,"",Begin
+If,Not,ExistDir,%vmlocation%,Run,%ScriptFile%,exitscript,"VM directory does not exist."
+Set,%vmlocation%,%pFileBox1%/
+StrFormat,REPLACE,%vmlocation%,"\/","",%vmlocation%
+StrFormat,REPLACE,%vmlocation%,"/","",%vmlocation%
+End
+
+[checkimdisk]
+Set,%apiregimdiskfound%,""
+Call,HostSystemDir
+Set,%tmp%,%HostSystemDir%
+System,FILEREDIRECT,ON
+If,ExistFile,%tmp%\imdisk.exe,Set,%apiregimdiskfound%,1
+System,FILEREDIRECT,OFF
+If,ExistFile,%tmp%\imdisk.exe,Set,%apiregimdiskfound%,1
+System,FILEREDIRECT,ON
+If,%apiregimdiskfound%,Equal,1,Begin
+Set,%apiregimdiskver%,""
+//--System,FILEREDIRECT,ON
+//--System,ERROROFF
+//--If,%apiregimdiskver%,Equal,"",Retrieve,FILEVERSION,%tmp%\imdisk.exe,%apiregimdiskver%
+//--System,FILEREDIRECT,OFF
+If,%apiregimdiskver%,Equal,"",Begin
+System,FILEREDIRECT,ON
+If,ExistFile,%tmp%\imdisk.exe,Retrieve,FILEVERSION,%tmp%\imdisk.exe,%apiregimdiskver%
+System,FILEREDIRECT,OFF
+End
+//--System,ERROROFF
+//--If,%apiregimdiskver%,Equal,"",Retrieve,FILEVERSION,%tmp%\imdisk.exe,%apiregimdiskver%
+If,%apiregimdiskver%,Equal,"",Begin
+If,ExistFile,%tmp%\imdisk.exe,Retrieve,FILEVERSION,%tmp%\imdisk.exe,%apiregimdiskver%
+End
+If,%apiregimdiskver%,SMALLER,1.1.3.23,Set,%apiregimdiskfound%,""
+End
+If,%apiregimdiskfound%,Equal,"",Begin
+Set,%answer%,no
+IniRead,%Projectdir%\Script.Project,IniVariables,RegFactoryState,%RegFactoryState%
+If,%RegFactoryState%,Equal,Enabled,Begin
+//If,question,"Imdisk driver not found.#$xBoot time registration will be used.#$x#$xInstall Imdisk driver to enable build time registration?",10,False,Set,%answer%,yes
+//History13
+Set,%answer%,yes
+End
+If,%answer%,Equal,yes,Begin
+//ExtractFile,%ScriptFile%,files,imdiskinst.exe,%ProjectTemp%
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegScriptFiles,%ApiRegScriptFiles%
+ExtractFile,%ApiRegScriptFiles%,files,imdiskinst.exe,%ProjectTemp%
+ShellExecuteDelete,hide,%ProjectTemp%\imdiskinst.exe,-y
+End
+End
+Set,%apiregimdiskfound%,""
+Call,HostSystemDir
+Set,%tmp%,%HostSystemDir%
+System,FILEREDIRECT,ON
+If,ExistFile,%tmp%\imdisk.exe,Set,%apiregimdiskfound%,1
+System,FILEREDIRECT,OFF
+If,ExistFile,%tmp%\imdisk.exe,Set,%apiregimdiskfound%,1
+System,FILEREDIRECT,ON
+If,%apiregimdiskfound%,Equal,1,Begin
+Set,%ApiRegIMDISK%,%tmp%\imdisk.exe
+IniWrite,%Projectdir%\Script.Project,IniVariables,ApiRegIMDISK,%ApiRegIMDISK%
+End
+Else,Begin
+Set,%ApiRegSupport%,boot
+IniWrite,%Projectdir%\Script.Project,IniVariables,ApiRegSupport,%ApiRegSupport%
+End
+
+[setlevel]
+//setlevel,level,clear,description
+Set,%apireglevel%,#1
+Set,%apiregdescription%,#3
+Set,%apiregcount%,""
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegConfig,%ApiRegConfig%
+IniWrite,%ApiRegConfig%,level,level,%apireglevel%
+IniRead,%ApiRegConfig%,count,build%apireglevel%,%apiregcount%
+If,%apiregcount%,Equal,"",IniRead,%ApiRegConfig%,count,boot%apireglevel%,%apiregcount%
+If,#2,Equal,True,Set,%apiregcount%,""
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegScript,%ApiRegScript%
+If,%apiregcount%,Equal,"",Run,%ApiRegScript%,clearlevel,%apireglevel%
+If,%apiregdescription%,Equal,"",IniRead,%ScriptFile%,main,title,%apiregdescription%
+If,%apiregdescription%,Equal,-,Set,%apiregdescription%,""
+If,Not,%apiregdescription%,Equal,"",Begin
+IniWriteTextLine,%ApiRegConfig%,build%apireglevel%,"RegWrite#$cHKLM#$c0x1#$cWB-Software\Microsoft\Windows\CurrentVersion\RunOnceEx\%apireglevel%#$c#$c#$q%apiregdescription%#$q"
+IniWriteTextLine,%ApiRegConfig%,boot%apireglevel%,"RegWrite#$cHKLM#$c0x1#$cWB-Software\Microsoft\Windows\CurrentVersion\RunOnceEx\%apireglevel%#$c#$c#$q%apiregdescription%#$q"
+End
+
+[clearlevel]
+//clearlevel,level
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegConfig,%ApiRegConfig%
+IniRead,%ApiRegConfig%,levels,count,%apiregcount%
+IniRead,%ApiRegConfig%,levels,%apireglevel%,%tmp%
+If,%apiregcount%,Equal,"",Set,%apiregcount%,0
+If,%tmp%,Equal,"",Begin
+StrFormat,Inc,%apiregcount%,1
+IniWrite,%ApiRegConfig%,levels,count,%apiregcount%
+IniWrite,%ApiRegConfig%,levelscounter,%apiregcount%,%apireglevel%
+IniWrite,%ApiRegConfig%,levels,%apireglevel%,%apiregcount%
+End
+IniWrite,%ApiRegConfig%,count,build%apireglevel%,0
+IniWrite,%ApiRegConfig%,count,boot%apireglevel%,0
+If,ExistSection,%ApiRegConfig%,build%apireglevel%,IniDeleteSection,%ApiRegConfig%,build%apireglevel%
+If,ExistSection,%ApiRegConfig%,boot%apireglevel%,IniDeleteSection,%ApiRegConfig%,boot%apireglevel%
+IniAddSection,%ApiRegConfig%,build%apireglevel%
+IniAddSection,%ApiRegConfig%,boot%apireglevel%
+
+[register]
+//register,[boot,build,],dll1,dll2,dll3,dll4,dll5,dll6,dll7,dll8
+//build is default
+Set,%apiregmethod%,#1
+If,%apiregmethod%,Equal,"",Set,%apiregmethod%,build
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegSupport,%ApiRegSupport%
+If,%apiregsupport%,Equal,boot,Set,%apiregmethod%,boot
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegConfig,%ApiRegConfig%
+IniRead,%ApiRegConfig%,level,level,%apireglevel%
+IniRead,%ApiRegConfig%,count,%apiregmethod%%apireglevel%,%apiregcount%
+Set,%tmpcode%,""
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegScript,%ApiRegScript%
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegShowInfos,%ApiRegShowInfos%
+If,Not,#2,Equal,"",Run,%ApiRegScript%,regint_%ApiRegShowInfos%,#2
+If,Not,#3,Equal,"",Run,%ApiRegScript%,regint_%ApiRegShowInfos%,#3
+If,Not,#4,Equal,"",Run,%ApiRegScript%,regint_%ApiRegShowInfos%,#4
+If,Not,#5,Equal,"",Run,%ApiRegScript%,regint_%ApiRegShowInfos%,#5
+If,Not,#6,Equal,"",Run,%ApiRegScript%,regint_%ApiRegShowInfos%,#6
+If,Not,#7,Equal,"",Run,%ApiRegScript%,regint_%ApiRegShowInfos%,#7
+If,Not,#8,Equal,"",Run,%ApiRegScript%,regint_%ApiRegShowInfos%,#8
+If,Not,#9,Equal,"",Run,%ApiRegScript%,regint_%ApiRegShowInfos%,#9
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegConfig,%ApiRegConfig%
+IniWrite,%ApiRegConfig%,count,%apiregmethod%%apireglevel%,%apiregcount%
+IniWriteTextLine,%ApiRegConfig%,%apiregmethod%%apireglevel%,%tmpcode%
+
+[install]
+//install,[boot,build,],dll1,dll2,dll3,dll4,dll5,dll6,dll7,dll8
+//build is default
+Set,%apiregmethod%,#1
+If,%apiregmethod%,Equal,"",Set,%apiregmethod%,build
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegSupport,%ApiRegSupport%
+If,%apiregsupport%,Equal,boot,Set,%apiregmethod%,boot
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegConfig,%ApiRegConfig%
+IniRead,%ApiRegConfig%,level,level,%apireglevel%
+IniRead,%ApiRegConfig%,count,%apiregmethod%%apireglevel%,%apiregcount%
+Set,%tmpcode%,""
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegScript,%ApiRegScript%
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegShowInfos,%ApiRegShowInfos%
+If,Not,#2,Equal,"",Run,%ApiRegScript%,instint_%ApiRegShowInfos%,#2
+If,Not,#3,Equal,"",Run,%ApiRegScript%,instint_%ApiRegShowInfos%,#3
+If,Not,#4,Equal,"",Run,%ApiRegScript%,instint_%ApiRegShowInfos%,#4
+If,Not,#5,Equal,"",Run,%ApiRegScript%,instint_%ApiRegShowInfos%,#5
+If,Not,#6,Equal,"",Run,%ApiRegScript%,instint_%ApiRegShowInfos%,#6
+If,Not,#7,Equal,"",Run,%ApiRegScript%,instint_%ApiRegShowInfos%,#7
+If,Not,#8,Equal,"",Run,%ApiRegScript%,instint_%ApiRegShowInfos%,#8
+If,Not,#9,Equal,"",Run,%ApiRegScript%,instint_%ApiRegShowInfos%,#9
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegConfig,%ApiRegConfig%
+IniWrite,%ApiRegConfig%,count,%apiregmethod%%apireglevel%,%apiregcount%
+IniWriteTextLine,%ApiRegConfig%,%apiregmethod%%apireglevel%,%tmpcode%
+
+[runcmd]
+//runcmd,[boot,build,],cmd
+//build is default
+Set,%apiregmethod%,#1
+If,%apiregmethod%,Equal,"",Set,%apiregmethod%,build
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegSupport,%ApiRegSupport%
+If,%apiregsupport%,Equal,boot,Set,%apiregmethod%,boot
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegConfig,%ApiRegConfig%
+IniRead,%ApiRegConfig%,level,level,%apireglevel%
+IniRead,%ApiRegConfig%,count,%apiregmethod%%apireglevel%,%apiregcount%
+StrFormat,Inc,%apiregcount%,1
+if,Not,#2,Equal,"",Begin
+// avoid "," bug
+StrFormat,REPLACE,#2,"#$c","@#@$c",#2
+StrFormat,RIGHT,00%apiregcount%,3,%fmt%
+Set,%tmpcode%,""
+//History20
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegShowInfos,%ApiRegShowInfos%
+//If,%ApiRegShowInfos%,Equal,no,Set,%tmpcode%,"%tmpcode%#$xRegWrite#$cHKLM#$c0x1#$cWB-Software\Microsoft\Windows\CurrentVersion\RunOnceEx\%apireglevel%#$c0%fmt%#$c#$q||hiderun@#@$s/w@#@$scmd@#@$s/c@#@$s@#@$q#2@#@$q#$q"
+If,%ApiRegShowInfos%,Equal,no,Set,%tmpcode%,"%tmpcode%#$xRegWrite#$cHKLM#$c0x1#$cWB-Software\Microsoft\Windows\CurrentVersion\RunOnceEx\%apireglevel%#$c0%fmt%#$c#$q||cmd@#@$s/c@#@$s@#@$q#2@#@$q#$q"
+If,%ApiRegShowInfos%,Equal,yes,Set,%tmpcode%,"%tmpcode%#$xRegWrite#$cHKLM#$c0x1#$cWB-Software\Microsoft\Windows\CurrentVersion\RunOnceEx\%apireglevel%#$c0%fmt%#$c#$q||cmd@#@$s/k@#@$s@#@$q#2@#@$q#$q"
+IniWrite,%ApiRegConfig%,count,%apiregmethod%%apireglevel%,%apiregcount%
+IniWriteTextLine,%ApiRegConfig%,%apiregmethod%%apireglevel%,%tmpcode%
+End
+
+[regint_no]
+StrFormat,Inc,%apiregcount%,1
+StrFormat,POS,#1,"\",%tmp%
+//Echo,"delayed registration (#1)"
+StrFormat,RIGHT,00%apiregcount%,3,%fmt%
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegSecondPass,%ApiRegSecondPass%
+If,%tmp%,Equal,0,Begin
+Set,%tmpcode%,"%tmpcode%#$xRegWrite#$cHKLM#$c0x1#$cWB-Software\Microsoft\Windows\CurrentVersion\RunOnceEx\%apireglevel%#$c0%fmt%#$c#$q||regsvr32@#@$s/s@#@$s#1#$q"
+If,%ApiRegSecondPass%,Equal,yes,Set,%tmpcode%,"%tmpcode%#$xRegWrite#$cHKLM#$c0x1#$cWB-Software\Microsoft\Windows\CurrentVersion\RunOnceEx\%apireglevel%#$c1%fmt%#$c#$q||regsvr32@#@$s/s@#@$s#1#$q"
+End
+Else,Begin
+Set,%tmpcode%,"%tmpcode%#$xRegWrite#$cHKLM#$c0x1#$cWB-Software\Microsoft\Windows\CurrentVersion\RunOnceEx\%apireglevel%#$c0%fmt%#$c#$q||hiderun@#@$s/w@#@$scmd@#@$s/c@#@$sregsvr32@#@$s/s@#@$s@#@$q#1@#@$q#$q"
+If,%ApiRegSecondPass%,Equal,yes,Set,%tmpcode%,"%tmpcode%#$xRegWrite#$cHKLM#$c0x1#$cWB-Software\Microsoft\Windows\CurrentVersion\RunOnceEx\%apireglevel%#$c1%fmt%#$c#$q||hiderun@#@$s/w@#@$scmd@#@$s/c@#@$sregsvr32@#@$s/s@#@$s@#@$q#1@#@$q#$q"
+End
+
+[regint_yes]
+StrFormat,Inc,%apiregcount%,1
+StrFormat,POS,#1,"\",%tmp%
+StrFormat,RIGHT,00%apiregcount%,3,%fmt%
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegSecondPass,%ApiRegSecondPass%
+If,%tmp%,Equal,0,Begin
+Set,%tmpcode%,"%tmpcode%#$xRegWrite#$cHKLM#$c0x1#$cWB-Software\Microsoft\Windows\CurrentVersion\RunOnceEx\%apireglevel%#$c0%fmt%#$c#$q||regsvr32@#@$s#1#$q"
+If,%ApiRegSecondPass%,Equal,yes,Set,%tmpcode%,"%tmpcode%#$xRegWrite#$cHKLM#$c0x1#$cWB-Software\Microsoft\Windows\CurrentVersion\RunOnceEx\%apireglevel%#$c1%fmt%#$c#$q||regsvr32@#@$s#1#$q"
+End
+Else,Begin
+Set,%tmpcode%,"%tmpcode%#$xRegWrite#$cHKLM#$c0x1#$cWB-Software\Microsoft\Windows\CurrentVersion\RunOnceEx\%apireglevel%#$c0%fmt%#$c#$q||hiderun@#@$s/w@#@$scmd@#@$s/c@#@$sregsvr32@#@$s@#@$q#1@#@$q#$q"
+If,%ApiRegSecondPass%,Equal,yes,Set,%tmpcode%,"%tmpcode%#$xRegWrite#$cHKLM#$c0x1#$cWB-Software\Microsoft\Windows\CurrentVersion\RunOnceEx\%apireglevel%#$c1%fmt%#$c#$q||hiderun@#@$s/w@#@$scmd@#@$s/c@#@$sregsvr32@#@$s@#@$q#1@#@$q#$q"
+End
+
+[instint_no]
+StrFormat,Inc,%apiregcount%,1
+StrFormat,POS,#1,"\",%tmp%
+StrFormat,RIGHT,00%apiregcount%,3,%fmt%
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegSecondPass,%ApiRegSecondPass%
+If,%tmp%,Equal,0,Begin
+Set,%tmpcode%,"%tmpcode%#$xRegWrite#$cHKLM#$c0x1#$cWB-Software\Microsoft\Windows\CurrentVersion\RunOnceEx\%apireglevel%#$c0%fmt%#$c#$q||regsvr32@#@$s/s@#@$s/i@#@$s#1#$q"
+If,%ApiRegSecondPass%,Equal,yes,Set,%tmpcode%,"%tmpcode%#$xRegWrite#$cHKLM#$c0x1#$cWB-Software\Microsoft\Windows\CurrentVersion\RunOnceEx\%apireglevel%#$c1%fmt%#$c#$q||regsvr32@#@$s/s@#@$s/i@#@$s#1#$q"
+End
+Else,Begin
+Set,%tmpcode%,"%tmpcode%#$xRegWrite#$cHKLM#$c0x1#$cWB-Software\Microsoft\Windows\CurrentVersion\RunOnceEx\%apireglevel%#$c0%fmt%#$c#$q||hiderun@#@$s/w@#@$scmd@#@$s/c@#@$sregsvr32@#@$s/s@#@$s/i@#@$s@#@$q#1@#@$q#$q"
+If,%ApiRegSecondPass%,Equal,yes,Set,%tmpcode%,"%tmpcode%#$xRegWrite#$cHKLM#$c0x1#$cWB-Software\Microsoft\Windows\CurrentVersion\RunOnceEx\%apireglevel%#$c1%fmt%#$c#$q||hiderun@#@$s/w@#@$scmd@#@$s/c@#@$sregsvr32@#@$s/s@#@$s/i@#@$s@#@$q#1@#@$q#$q"
+End
+
+[instint_yes]
+StrFormat,Inc,%apiregcount%,1
+StrFormat,POS,#1,"\",%tmp%
+StrFormat,RIGHT,00%apiregcount%,3,%fmt%
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegSecondPass,%ApiRegSecondPass%
+If,%tmp%,Equal,0,Begin
+Set,%tmpcode%,"%tmpcode%#$xRegWrite#$cHKLM#$c0x1#$cWB-Software\Microsoft\Windows\CurrentVersion\RunOnceEx\%apireglevel%#$c0%fmt%#$c#$q||regsvr32@#@$s/i@#@$s#1#$q"
+If,%ApiRegSecondPass%,Equal,yes,Set,%tmpcode%,"%tmpcode%#$xRegWrite#$cHKLM#$c0x1#$cWB-Software\Microsoft\Windows\CurrentVersion\RunOnceEx\%apireglevel%#$c1%fmt%#$c#$q||regsvr32@#@$s/i@#@$s#1#$q"
+End
+Else,Begin
+Set,%tmpcode%,"%tmpcode%#$xRegWrite#$cHKLM#$c0x1#$cWB-Software\Microsoft\Windows\CurrentVersion\RunOnceEx\%apireglevel%#$c0%fmt%#$c#$q||hiderun@#@$s/w@#@$scmd@#@$s/c@#@$sregsvr32@#@$s/i@#@$s@#@$q#1@#@$q#$q"
+If,%ApiRegSecondPass%,Equal,yes,Set,%tmpcode%,"%tmpcode%#$xRegWrite#$cHKLM#$c0x1#$cWB-Software\Microsoft\Windows\CurrentVersion\RunOnceEx\%apireglevel%#$c1%fmt%#$c#$q||hiderun@#@$s/w@#@$scmd@#@$s/c@#@$sregsvr32@#@$s/i@#@$s@#@$q#1@#@$q#$q"
+End
+
+[ImportInfTHive]
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegScript,%ApiRegScript%
+If,Not,ExistFile,%ProjectTemp%\inf2hive\inf2hive.exe,Run,%ApiRegScript%,ImportInfTHive_ExeFile,#1,#2,#3,#4,#5,#6,#7,#8,#9
+If,ExistFile,%ProjectTemp%\inf2hive\#1,Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%ProjectTemp%\inf2hive\#1#$q&del /q /f /A:R /A:H /A:S /A:A #$q%ProjectTemp%\inf2hive\#1#$q"
+If,ExistFile,%ProjectTemp%\inf2hive\#1,FileDelete,%ProjectTemp%\inf2hive\#1
+CopyOrExpand,%Source_Win%\#1,%ProjectTemp%\inf2hive
+IniWrite,%ProjectTemp%\inf2hive\inf2hive.ini,INF,SOURCE,#$q%ProjectTemp%\inf2hive\#1#$q
+IniWrite,%ProjectTemp%\inf2hive\inf2hive.ini,INF,Section,#2
+IniMerge,%ProjectTemp%\inf2hive\inf2hive_Zero.ini,%ProjectTemp%\inf2hive\inf2hive.ini
+ShellExecute,hide,%ProjectTemp%\inf2hive\inf2hive.exe,,%ProjectTemp%\inf2hive
+If,ExistFile,%ProjectTemp%\inf2hive\inf2hive_#3.ini,Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%ProjectTemp%\inf2hive\inf2hive_#3.ini#$q&del /q /f /A:R /A:H /A:S /A:A #$q%ProjectTemp%\inf2hive\inf2hive_#3.ini#$q"
+If,ExistFile,%ProjectTemp%\inf2hive\inf2hive_#3.ini,FileDelete,%ProjectTemp%\inf2hive\inf2hive_#3.ini
+CopyOrExpand,%ProjectTemp%\inf2hive\inf2hive.ini,%ProjectTemp%\inf2hive\inf2hive_#3.ini
+If,#4,Equal,1,Run,%ApiRegScript%,ImportInfTHive_Debug,#1,#2,#3,#4,#5,#6,#7,#8,#9
+
+[ImportInfTHive_ExeFile]
+If,Not,ExistDir,%ProjectTemp%\inf2hive,DirMake,%ProjectTemp%\inf2hive
+//ExtractFile,%ApiRegScript%,files,inf2hive.exe,%ProjectTemp%\inf2hive
+//ExtractFile,%ApiRegScriptFiles%,files,inf2hive.exe,%ProjectTemp%\inf2hive
+StrFormat,Path,%ApiRegScript%,%t%
+StrFormat,CTRim,%t%,\,%t%
+ExtractFile,"%t%\1 - RegFactory_Files.Script",files,inf2hive.7z,%ProjectTemp%\inf2hive
+ShellExecute,Hide,%Tools%\7z.exe,"x #$q%ProjectTemp%\inf2hive\inf2hive.7z#$q -y -o#$q%ProjectTemp%\inf2hive#$q"
+//--
+FileCreateBlank,%ProjectTemp%\inf2hive\inf2hive_Zero.ini
+IniRead,%ProjectInfo%,BasePath,ProgramFiles,%tmpprogramfilesfolder%
+IniRead,%ProjectInfo%,BasePath,CommonFiles,%tmpcommonfilesfolder%
+TxtAddline,%ProjectTemp%\inf2hive\inf2hive_Zero.ini,[STRINGEX],Prepend
+TxtAddline,%ProjectTemp%\inf2hive\inf2hive_Zero.ini,[HIVES],Prepend
+TxtAddline,%ProjectTemp%\inf2hive\inf2hive_Zero.ini,[Version],Prepend
+TxtAddline,%ProjectTemp%\inf2hive\inf2hive_Zero.ini,[INF],Prepend
+//Set,%dolar%,$
+//IniWrite,%ProjectTemp%\inf2hive\inf2hive_Zero.ini,Version,signature,"#$q%dolar%Windows NT%dolar%#$q"
+IniWrite,%ProjectTemp%\inf2hive\inf2hive_Zero.ini,Version,signature,"$Windows NT$"
+IniWrite,%ProjectTemp%\inf2hive\inf2hive_Zero.ini,Version,SECTIONS,INF
+IniRead,%Projectdir%\Script.Project,IniVariables,SourceLocale,%SourceLocale%
+IniWrite,%ProjectTemp%\inf2hive\inf2hive_Zero.ini,Version,locale,%SourceLocale%
+IniWrite,%ProjectTemp%\inf2hive\inf2hive_Zero.ini,HIVES,SOFTWARE,#$q%Target_Sys%\config\software#$q
+IniWrite,%ProjectTemp%\inf2hive\inf2hive_Zero.ini,HIVES,DEFAULT,#$q%Target_Sys%\config\default#$q
+IniWrite,%ProjectTemp%\inf2hive\inf2hive_Zero.ini,HIVES,SYSTEM,#$q%Target_Sys%\SETUPREG.HIV#$q
+IniWrite,%ProjectTemp%\inf2hive\inf2hive_Zero.ini,STRINGEX,10,#$q%sysdrive%\I386#$q
+IniWrite,%ProjectTemp%\inf2hive\inf2hive_Zero.ini,STRINGEX,11,#$q%sysdrive%\I386\System32#$q
+IniWrite,%ProjectTemp%\inf2hive\inf2hive_Zero.ini,STRINGEX,12,#$q%sysdrive%\I386\System32#$q
+IniWrite,%ProjectTemp%\inf2hive\inf2hive_Zero.ini,STRINGEX,18,#$q%sysdrive%\I386\Help#$q
+IniWrite,%ProjectTemp%\inf2hive\inf2hive_Zero.ini,STRINGEX,16422,#$q%sysdrive%\%tmpprogramfilesfolder%#$q
+IniWrite,%ProjectTemp%\inf2hive\inf2hive_Zero.ini,STRINGEX,16427,#$q%sysdrive%\%tmpcommonfilesfolder%#$q
+
+[ImportInfTHive_Debug]
+If,ExistFile,%ProjectTemp%\inf2hive\inf2hive.ini,Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%ProjectTemp%\inf2hive\inf2hive.ini#$q&del /q /f /A:R /A:H /A:S /A:A #$q%ProjectTemp%\inf2hive\inf2hive.ini#$q"
+If,ExistFile,%ProjectTemp%\inf2hive\inf2hive.ini,FileDelete,%ProjectTemp%\inf2hive\inf2hive.ini
+CopyOrExpand,%ProjectTemp%\inf2hive\inf2hive_#3.ini,%ProjectTemp%\inf2hive\inf2hive.ini
+TXTReplace,%ProjectTemp%\inf2hive\inf2hive.ini,%Target_Sys%\config\software,%ProjectTemp%\inf2hive\inf2hive_#3Software
+TXTReplace,%ProjectTemp%\inf2hive\inf2hive.ini,%Target_Sys%\config\default,%ProjectTemp%\inf2hive\inf2hive_#3Default
+TXTReplace,%ProjectTemp%\inf2hive\inf2hive.ini,%Target_Sys%\SETUPREG.HIV,%ProjectTemp%\inf2hive\inf2hive_#3System
+ShellExecute,Hide,reg.exe,"load HKLM\Tmp_Software inf2hive_#3Software",%ProjectTemp%\inf2hive
+ShellExecute,Hide,reg.exe,"load HKLM\Tmp_Default inf2hive_#3Default",%ProjectTemp%\inf2hive
+ShellExecute,Hide,reg.exe,"load HKLM\Tmp_System inf2hive_#3System",%ProjectTemp%\inf2hive
+ShellExecute,Hide,reg.exe,"unload HKLM\Tmp_Software",%ProjectTemp%\inf2hive
+ShellExecute,Hide,reg.exe,"unload HKLM\Tmp_Default",%ProjectTemp%\inf2hive
+ShellExecute,Hide,reg.exe,"unload HKLM\Tmp_System",%ProjectTemp%\inf2hive
+ShellExecute,Hide,%ProjectTemp%\inf2hive\inf2hive.exe,,%ProjectTemp%\inf2hive
+//--
+RegHiveLoad,Tmp_Software,%ProjectTemp%\inf2hive\inf2hive_#3Software
+RegHiveLoad,Tmp_Default,%ProjectTemp%\inf2hive\inf2hive_#3Default
+RegHiveLoad,Tmp_System,%ProjectTemp%\inf2hive\inf2hive_#3System
+System,FILEREDIRECT,OFF
+ShellExecute,Hide,regedit.exe,"/e #$q%ProjectTemp%\inf2hive\inf2hive_#3Software.reg#$q HKEY_LOCAL_MACHINE\Tmp_Software"
+ShellExecute,Hide,regedit.exe,"/e #$q%ProjectTemp%\inf2hive\inf2hive_#3Default.reg#$q HKEY_LOCAL_MACHINE\Tmp_Default"
+ShellExecute,Hide,regedit.exe,"/e #$q%ProjectTemp%\inf2hive\inf2hive_#3System.reg#$q HKEY_LOCAL_MACHINE\Tmp_System"
+System,FILEREDIRECT,ON
+RegHiveUnLoad,Tmp_Software
+RegHiveUnLoad,Tmp_Default
+RegHiveUnLoad,Tmp_System
+ShellExecute,Hide,cmd.exe,"/c del /q /f inf2hive_*.log&del /q /f /A:R /A:H /A:S /A:A inf2hive_*.log",%ProjectTemp%\inf2hive
+Retrieve,FileSize,%projecttemp%\inf2hive\inf2hive_#3Software.reg,%t%
+If,%t%,Equal,156,Begin
+Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%ProjectTemp%\inf2hive\inf2hive_#3Software.reg#$q&del /q /f /A:R /A:H /A:S /A:A #$q%ProjectTemp%\inf2hive\inf2hive_#3Software.reg#$q"
+Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%ProjectTemp%\inf2hive\inf2hive_#3Software#$q&del /q /f /A:R /A:H /A:S /A:A #$q%ProjectTemp%\inf2hive\inf2hive_#3Software#$q"
+If,ExistFile,%ProjectTemp%\inf2hive\inf2hive_#3Software.reg,FileDelete,%ProjectTemp%\inf2hive\inf2hive_#3Software.reg
+If,ExistFile,%ProjectTemp%\inf2hive\inf2hive_#3Software,FileDelete,%ProjectTemp%\inf2hive\inf2hive_#3Software
+End
+Retrieve,FileSize,%ProjectTemp%\inf2hive\inf2hive_#3Default.reg,%t%
+If,%t%,Equal,154,Begin
+Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%ProjectTemp%\inf2hive\inf2hive_#3Default.reg#$q&del /q /f /A:R /A:H /A:S /A:A #$q%ProjectTemp%\inf2hive\inf2hive_#3Default.reg#$q"
+Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%ProjectTemp%\inf2hive\inf2hive_#3Default#$q&del /q /f /A:R /A:H /A:S /A:A #$q%ProjectTemp%\inf2hive\inf2hive_#3Default#$q"
+If,ExistFile,%ProjectTemp%\inf2hive\inf2hive_#3Default.reg,FileDelete,%ProjectTemp%\inf2hive\inf2hive_#3Default.reg
+If,ExistFile,%ProjectTemp%\inf2hive\inf2hive_#3Default,FileDelete,%ProjectTemp%\inf2hive\inf2hive_#3Default
+End
+Retrieve,FileSize,%ProjectTemp%\inf2hive\inf2hive_#3System.reg,%t%
+If,%t%,Equal,152,Begin
+Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%ProjectTemp%\inf2hive\inf2hive_#3System.reg#$q&del /q /f /A:R /A:H /A:S /A:A #$q%ProjectTemp%\inf2hive\inf2hive_#3System.reg#$q"
+Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%ProjectTemp%\inf2hive\inf2hive_#3System#$q&del /q /f /A:R /A:H /A:S /A:A #$q%ProjectTemp%\inf2hive\inf2hive_#3System#$q"
+If,ExistFile,%ProjectTemp%\inf2hive\inf2hive_#3System.reg,FileDelete,%ProjectTemp%\inf2hive\inf2hive_#3System.reg
+If,ExistFile,%ProjectTemp%\inf2hive\inf2hive_#3System,FileDelete,%ProjectTemp%\inf2hive\inf2hive_#3System
+End
+
+[RunProcess]
+IniRead,%Projectdir%\Script.Project,IniVariables,NoWarnRegOverWrite,%NoWarnROW%
+IniRead,%Projectdir%\Script.Project,IniVariables,NoWarnFileOverWrite,%NoWarnFOW%
+Run,%ScriptFile%,vmlocation
+Set,%PInfo%,%ProjectInfo%
+IniRead,%PInfo%,Settings,Target,%tmp%
+If,%tmp%,Equal,"",Set,%PInfo%,%ProjectTemp%\ProjectInfo.ini
+//ExtractFile,%ScriptFile%,files,ApiRegUtil.exe,%ApiRegDir%
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegScriptFiles,%ApiRegScriptFiles%
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegDir,%ApiRegDir%
+If,Not,ExistFile,%ApiRegDir%\ApiRegUtil.exe,ExtractFile,%ApiRegScriptFiles%,files,ApiRegUtil.exe,%ApiRegDir%
+Run,%ScriptFile%,selectvm
+IniRead,%Projectdir%\Script.Project,IniVariables,PreApiRegScript,%PreApiRegScript%
+If,ExistFile,%PreApiRegScript%,Run,%PreApiRegScript%,Process
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegConfig,%ApiRegConfig%
+If,ExistFile,%ApiRegConfig%,IniRead,%ApiRegConfig%,levels,count,%count%
+If,%count%,Equal,"",Set,%count%,0
+If,%count%,Bigger,0,Begin
+Set,%apiregfileseq%,""
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegScriptFiles,%ApiRegScriptFiles%
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegDir,%ApiRegDir%
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegConfig,%ApiRegConfig%
+If,ExistFile,%ApiRegConfig%.old,Begin
+ShellExecute,hide,%ApiRegDir%\ApiRegUtil.exe,"filecompare#$s#$q%ApiRegConfig%#$q#$s#$q%ApiRegConfig%.old#$q#$s#$q%ApiRegConfig%.info#$q"
+IniRead,%ApiRegConfig%.info,compare,equal,%apiregfileseq%
+If,ExistFile,%ApiRegConfig%.info,Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%ApiRegConfig%.info#$q&del /q /f /A:R /A:H /A:S /A:A #$q%ApiRegConfig%.info#$q"
+If,ExistFile,%ApiRegConfig%.info,FileDelete,%ApiRegConfig%.info
+If,%apiregfileseq%,Equal,1,Begin
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegDir,%ApiRegDir%
+If,Not,ExistFile,%ApiRegDir%\default.dat,Set,%apiregfileseq%,""
+If,Not,ExistFile,%ApiRegDir%\software.dat,Set,%apiregfileseq%,""
+If,Not,ExistFile,%ApiRegDir%\system.dat,Set,%apiregfileseq%,""
+If,Not,ExistFile,%vmlocation%\hdd.bin,Set,%apiregfileseq%,""
+End
+End
+If,%apiregfileseq%,Equal,1,Begin
+Run,%ScriptFile%,mountimage
+IniRead,%Projectdir%\Script.Project,IniVariables,PreApiRegScript,%PreApiRegScript%
+If,ExistFile,%PreApiRegScript%,Run,%PreApiRegScript%,PreVMBoot
+Run,%ScriptFile%,applyregistry
+IniRead,%Projectdir%\Script.Project,IniVariables,PreApiRegScript,%PreApiRegScript%
+IniRead,%Projectdir%\Script.Project,IniVariables,PostApiRegScript,%PostApiRegScript%
+If,ExistFile,%PreApiRegScript%,Run,%PostApiRegScript%,PostVMBoot
+Run,%ScriptFile%,umountimage
+End
+Else,Begin
+If,ExistFile,%ApiRegConfig%.old,Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%ApiRegConfig%.old#$q&del /q /f /A:R /A:H /A:S /A:A #$q%ApiRegConfig%.old#$q"
+If,ExistFile,%ApiRegConfig%.old,FileDelete,%ApiRegConfig%.old
+FileCopy,%ApiRegConfig%,%ApiRegConfig%.old
+Run,%ScriptFile%,doregister
+End
+End
+RegHiveLoad,WB-Software,%Target_Sys%\config\software
+Run,%ScriptFile%,create,boot
+RegHiveUnLoad,WB-Software
+IniRead,%Projectdir%\Script.Project,IniVariables,PostApiRegScript,%PostApiRegScript%
+If,ExistFile,%PostApiRegScript%,Run,%PostApiRegScript%,Process
+
+[selectvm]
+If,%pScrollBox1%,Equal,"Virtual PC 2007",Set,%mounttype%,vpc
+//Vbox Removed for now - If,%pScrollBox1%,Equal,"Virtual Box",Set,%mounttype%,vbox
+If,%pScrollBox1%,Equal,QEMU,Set,%mounttype%,qemu
+If,%pScrollBox1%,Equal,"VMWare Workstation/Player",Set,%mounttype%,vmware
+If,%pScrollBox1%,Equal,Autodetect,Begin
+Set,%mounttype%,""
+If,%mounttype%,Equal,"",Begin
+Run,%ScriptFile%,checkvmware,"",no
+If,%vmcheck%,Equal,"",Set,%mounttype%,vmware
+End
+//Vbox Removed for now - If,%mounttype%,Equal,"",B eg in
+//Vbox Removed for now - Run,%ScriptFile%,checkvbox,"",no
+//Vbox Removed for now - If,%vmcheck%,Equal,"",Set,%mounttype%,vbox
+//Vbox Removed for now - E n d
+If,%mounttype%,Equal,"",Begin
+Run,%ScriptFile%,checkvpc,"",no
+If,%vmcheck%,Equal,"",Set,%mounttype%,vpc
+End
+If,%mounttype%,Equal,"",Begin
+Run,%ScriptFile%,checkqemu,"",no
+If,%vmcheck%,Equal,"",Set,%mounttype%,qemu
+End
+If,%mounttype%,Equal,"",Run,%ScriptFile%,exitscript,"VM Software not found."
+End
+Set,%ApiRegVMType%,%mounttype%
+//System,REBUILDVARS
+If,%ApiRegVMType%,Equal,vpc,Run,%ScriptFile%,checkvpc,"",yes
+If,%ApiRegVMType%,Equal,vbox,Run,%ScriptFile%,checkvbox,"",yes
+If,%ApiRegVMType%,Equal,qemu,Run,%ScriptFile%,checkqemu,"",yes
+If,%ApiRegVMType%,Equal,vmware,Run,%ScriptFile%,checkvmware,"",yes
+
+[doregister]
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegConfig,%ApiRegConfig%
+TXTreplace,"%ApiRegConfig%","@#@","#"
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegSupport,%ApiRegSupport%
+If,%ApiRegSupport%,Equal,both,Begin
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegBackupDir,%ApiRegBackupDir%
+Run,%ScriptFile%,backuprestore,backup
+Run,%ScriptFile%,setup
+RegHiveLoad,WB-Software,%Target_Sys%\config\software
+If,%pCheckBox4%,Equal,True,Begin
+If,%pCheckBox7%,Equal,True,RegWrite,HKLM,0x1,WB-Software\Microsoft\Windows\CurrentVersion\RunOnceEx\0000,0000,"||%pTextBox1%"
+End
+If,%pCheckBox4%,Equal,True,Begin
+If,%pCheckBox8%,Equal,True,RegWrite,HKLM,0x1,WB-Software\Microsoft\Windows\CurrentVersion\RunOnceEx\ZZZZ,ZZZZ,"||%pTextBox2%"
+End
+Set,%apiregstartvm%,no
+Run,%ScriptFile%,create,build
+RegHiveUnLoad,WB-Software
+If,%apiregstartvm%,Equal,yes,Begin
+Run,%ScriptFile%,installhdd,%ApiRegVMType%
+Run,%ScriptFile%,mountimage
+Run,%ScriptFile%,createhdd
+IniRead,%Projectdir%\Script.Project,IniVariables,PreApiRegScript,%PreApiRegScript%
+If,ExistFile,%PreApiRegScript%,Run,%PreApiRegScript%,PreVMBoot
+Run,%ScriptFile%,umountimage
+Run,%ScriptFile%,runvm
+Run,%ScriptFile%,mountimage
+Run,%ScriptFile%,copyresult
+If,Not,%apiregvmsuccess%,Equal,yes,Begin
+Set,%answer%,no
+If,question,"File transfer failed.#$xTry again?",10,False,Set,%answer%,yes
+If,%answer%,Equal,yes,Begin
+Run,%ScriptFile%,createhdd
+IniRead,%Projectdir%\Script.Project,IniVariables,PreApiRegScript,%PreApiRegScript%
+IniRead,%Projectdir%\Script.Project,IniVariables,PostApiRegScript,%PostApiRegScript%
+If,ExistFile,%PreApiRegScript%,Run,%PreApiRegScript%,PreVMBoot
+Run,%ScriptFile%,umountimage
+Run,%ScriptFile%,runvm
+Run,%ScriptFile%,mountimage
+Run,%ScriptFile%,copyresult
+End
+End
+End
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegBackupDir,%ApiRegBackupDir%
+Run,%ScriptFile%,backuprestore,restore
+If,%apiregstartvm%,Equal,yes,Begin
+If,%apiregvmsuccess%,Equal,yes,Begin
+Run,%ScriptFile%,transferregistry
+Run,%ScriptFile%,applyregistry
+IniRead,%Projectdir%\Script.Project,IniVariables,PreApiRegScript,%PreApiRegScript%
+IniRead,%Projectdir%\Script.Project,IniVariables,PostApiRegScript,%PostApiRegScript%
+If,ExistFile,%PreApiRegScript%,Run,%PostApiRegScript%,PostVMBoot
+End
+Run,%ScriptFile%,umountimage
+If,Not,%apiregvmsuccess%,Equal,yes,Run,%ScriptFile%,exitscript,"File transfer failed."
+End
+End
+
+[runvm]
+If,%ApiRegVMType%,Equal,vpc,Run,%ScriptFile%,runvpc,%pNumberBox1%,APIREGVM,""
+If,%ApiRegVMType%,Equal,vbox,Run,%ScriptFile%,runvbox,%pNumberBox1%,APIREGVM,""
+If,%ApiRegVMType%,Equal,qemu,Run,%ScriptFile%,runqemu,%pNumberBox1%,APIREGVM,""
+If,%ApiRegVMType%,Equal,vmware,Run,%ScriptFile%,runvmware,%pNumberBox1%,APIREGVM,""
+
+[transferregistry]
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegDir,%ApiRegDir%
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegConfig,%ApiRegConfig%
+If,ExistFile,%ApiRegDir%\system.dat,Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%ApiRegDir%\system.dat#$q&del /q /f /A:R /A:H /A:S /A:A #$q%ApiRegDir%\system.dat#$q"
+If,ExistFile,%ApiRegDir%\default.dat,Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%ApiRegDir%\default.dat#$q&del /q /f /A:R /A:H /A:S /A:A #$q%ApiRegDir%\default.dat#$q"
+If,ExistFile,%ApiRegDir%\software.dat,Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%ApiRegDir%\software.dat#$q&del /q /f /A:R /A:H /A:S /A:A #$q%ApiRegDir%\software.dat#$q"
+If,ExistFile,%ApiRegDir%\system.dat,FileDelete,%ApiRegDir%\system.dat
+If,ExistFile,%ApiRegDir%\default.dat,FileDelete,%ApiRegDir%\default.dat
+If,ExistFile,%ApiRegDir%\software.dat,FileDelete,%ApiRegDir%\software.dat
+Run,%ScriptFile%,createhivescript,%ApiRegDir%\system0.txt,%ApiRegDir%\system1.txt,%ApiRegConfig%,%ApiRegDir%\system.dat,"Creating system hive ..."
+Run,%ScriptFile%,createhivescript,%ApiRegDir%\default0.txt,%ApiRegDir%\default1.txt,%ApiRegConfig%,%ApiRegDir%\default.dat,"Creating default user hive ..."
+Run,%ScriptFile%,createhivescript,%ApiRegDir%\software0.txt,%ApiRegDir%\software1.txt,%ApiRegConfig%,%ApiRegDir%\software.dat,"Creating software hive ..."
+
+[applyregistry]
+Echo,"Writing registry values ..."
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegDir,%ApiRegDir%
+RegHiveLoad,WB-System,%Target_Sys%\setupreg.hiv
+RegHiveLoad,WB-Software,%Target_Sys%\config\software
+RegHiveLoad,WB-Default,%Target_Sys%\config\default
+System,FILEREDIRECT,OFF
+ShellExecute,hide,regedit.exe,"/s#$s#$q%ApiRegDir%\default.dat#$q"
+ShellExecute,hide,regedit.exe,"/s#$s#$q%ApiRegDir%\software.dat#$q"
+ShellExecute,hide,regedit.exe,"/s#$s#$q%ApiRegDir%\system.dat#$q"
+System,FILEREDIRECT,ON
+RegHiveUnLoad,WB-Software
+RegHiveUnLoad,WB-Default
+RegHiveUnLoad,WB-System
+
+[copyresult]
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegDir,%ApiRegDir%
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegHDDDrive,%ApiRegHDDDrive%
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegDir,%ApiRegDir%
+If,ExistFile,%ApiRegDir%\system0.dat,Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%ApiRegDir%\system0.dat#$q&del /q /f /A:R /A:H /A:S /A:A #$q%ApiRegDir%\system0.dat#$q"
+If,ExistFile,%ApiRegDir%\default0.dat,Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%ApiRegDir%\default0.dat#$q&del /q /f /A:R /A:H /A:S /A:A #$q%ApiRegDir%\default0.dat#$q"
+If,ExistFile,%ApiRegDir%\software0.dat,Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%ApiRegDir%\software0.dat#$q&del /q /f /A:R /A:H /A:S /A:A #$q%ApiRegDir%\software0.dat#$q"
+If,ExistFile,%ApiRegDir%\system1.dat,Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%ApiRegDir%\system1.dat#$q&del /q /f /A:R /A:H /A:S /A:A #$q%ApiRegDir%\system1.dat#$q"
+If,ExistFile,%ApiRegDir%\default1.dat,Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%ApiRegDir%\default1.dat#$q&del /q /f /A:R /A:H /A:S /A:A #$q%ApiRegDir%\default1.dat#$q"
+If,ExistFile,%ApiRegDir%\software1.dat,Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%ApiRegDir%\software1.dat#$q&del /q /f /A:R /A:H /A:S /A:A #$q%ApiRegDir%\software1.dat#$q"
+If,ExistFile,%ApiRegDir%\system0.txt,FileDelete,%ApiRegDir%\system0.txt
+If,ExistFile,%ApiRegDir%\software0.txt,FileDelete,%ApiRegDir%\software0.txt
+If,ExistFile,%ApiRegDir%\default0.txt,FileDelete,%ApiRegDir%\default0.txt
+If,ExistFile,%ApiRegDir%\system1.txt,FileDelete,%ApiRegDir%\system1.txt
+If,ExistFile,%ApiRegDir%\software1.txt,FileDelete,%ApiRegDir%\software1.txt
+If,ExistFile,%ApiRegDir%\default1.txt,FileDelete,%ApiRegDir%\default1.txt
+If,ExistFile,%ApiRegHDDDrive%\APIREG\REGS\system0.txt,FileCopy,%ApiRegHDDDrive%\APIREG\REGS\system0.txt,%ApiRegDir%\system0.txt
+If,ExistFile,%ApiRegHDDDrive%\APIREG\REGS\software0.txt,FileCopy,%ApiRegHDDDrive%\APIREG\REGS\software0.txt,%ApiRegDir%\software0.txt
+If,ExistFile,%ApiRegHDDDrive%\APIREG\REGS\default0.txt,FileCopy,%ApiRegHDDDrive%\APIREG\REGS\default0.txt,%ApiRegDir%\default0.txt
+If,ExistFile,%ApiRegHDDDrive%\APIREG\REGS\system1.txt,FileCopy,%ApiRegHDDDrive%\APIREG\REGS\system1.txt,%ApiRegDir%\system1.txt
+If,ExistFile,%ApiRegHDDDrive%\APIREG\REGS\software1.txt,FileCopy,%ApiRegHDDDrive%\APIREG\REGS\software1.txt,%ApiRegDir%\software1.txt
+If,ExistFile,%ApiRegHDDDrive%\APIREG\REGS\default1.txt,FileCopy,%ApiRegHDDDrive%\APIREG\REGS\default1.txt,%ApiRegDir%\default1.txt
+//If,ExistFile,%ApiRegHDDDrive%\APIREG\REGS\sam,FileCopy,%ApiRegHDDDrive%\APIREG\REGS\sam,%ApiRegDir%\sam1
+//If,ExistFile,%ApiRegHDDDrive%\APIREG\REGS\security,FileCopy,%ApiRegHDDDrive%\APIREG\REGS\security,%ApiRegDir%\security1
+Set,%apiregvmsuccess%,yes
+If,Not,ExistFile,%ApiRegDir%\system0.txt,Set,%apiregvmsuccess%,no
+If,Not,ExistFile,%ApiRegDir%\system1.txt,Set,%apiregvmsuccess%,no
+If,Not,ExistFile,%ApiRegDir%\default0.txt,Set,%apiregvmsuccess%,no
+If,Not,ExistFile,%ApiRegDir%\default1.txt,Set,%apiregvmsuccess%,no
+If,Not,ExistFile,%ApiRegDir%\software0.txt,Set,%apiregvmsuccess%,no
+If,Not,ExistFile,%ApiRegDir%\software1.txt,Set,%apiregvmsuccess%,no
+
+[createhivescript]
+Echo,#5
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegDir,%ApiRegDir%
+ShellExecute,hide,%ApiRegDir%\ApiRegUtil.exe,"regcompare#$s#$q#1#$q#$s#$q#2#$q#$s#$q#3#$q#$s#$q#4#$q"
+
+[create]
+Set,%apireglevelcount%,""
+Set,%apiregtask%,#1
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegConfig,%ApiRegConfig%
+IniRead,%ApiRegConfig%,levels,count,%apireglevelcount%
+If,%apireglevelcount%,Bigger,0,Loop,%ScriptFile%,readlevels,1,%apireglevelcount%,#c
+
+[readlevels]
+Set,%apireglevel%,""
+IniRead,%ApiRegConfig%,levelscounter,#1,%apireglevel%
+IniRead,%ApiRegConfig%,count,%apiregtask%%apireglevel%,%apiregcount%
+If,%apiregcount%,Bigger,0,Begin
+If,ExistRegSection,HKLM,WB-Software\Microsoft\Windows\CurrentVersion\RunOnceEx\%apireglevel%,RegDelete,HKLM,WB-Software\Microsoft\Windows\CurrentVersion\RunOnceEx\%apireglevel%
+Run,%ApiRegConfig%,%apiregtask%%apireglevel%
+Set,%apiregstartvm%,yes
+End
+
+[backuprestore]
+set,%apiregrunaction%,0
+If,#1,Equal,backup,Begin
+IniRead,%ApiRegConfig%,progress,backupcomplete,%apiregbackupcomplete%
+If,%apiregbackupcomplete%,Equal,"",Set,%apiregbackupcomplete%,0
+If,%apiregbackupcomplete%,Equal,0,Set,%apiregrunaction%,1
+End
+If,#1,Equal,restore,Begin
+IniRead,%ApiRegConfig%,progress,backupcomplete,%apiregbackupcomplete%
+If,%apiregbackupcomplete%,Equal,"",Set,%apiregbackupcomplete%,0
+If,%apiregbackupcomplete%,Equal,1,Set,%apiregrunaction%,1
+End
+if,%apiregrunaction%,Equal,1,Begin
+If,#1,Equal,backup,Echo,"Backup files ..."
+If,#1,Equal,restore,Echo,"Restore files ..."
+Run,%ScriptFile%,#1,%TargetDir%\bootsect.bin
+Run,%ScriptFile%,#1,%Target_Win%\txtsetup.sif
+Run,%ScriptFile%,#1,%Target_Sys%\setupreg.hiv
+Run,%ScriptFile%,#1,%Target_Sys%\config\software
+Run,%ScriptFile%,#1,%Target_Sys%\config\default
+Run,%ScriptFile%,#1,%Target_Sys%\shutdown.exe
+Run,%ScriptFile%,#1,%Target_Sys%\shutdownres.dll
+Run,%ScriptFile%,#1,%Target_Sys%\iernonce.dll
+Run,%ScriptFile%,#1,%Target_Sys%\MSVCRT.DLL
+Run,%ScriptFile%,#1,%Target_Sys%\WINLOGON.EXE
+Run,%ScriptFile%,#1,%Target_Sys%\regsvr32.exe
+Run,%ScriptFile%,#1,%Target_Sys%\rundll32.dll
+Run,%ScriptFile%,#1,%Target_Sys%\regedit.exe
+Run,%ScriptFile%,#1,%Target_Sys%\reg.exe
+Run,%ScriptFile%,#1,%Target_Sys%\aclui.dll
+Run,%ScriptFile%,#1,%Target_Sys%\clb.dll
+Run,%ScriptFile%,#1,%Target_Sys%\ulib.dll
+Run,%ScriptFile%,#1,%Target_Sys%\advapi32.dll
+Run,%ScriptFile%,#1,%Target_Sys%\rpcrt4.dll
+Run,%ScriptFile%,#1,%Target_Sys%\PELoader.exe
+Run,%ScriptFile%,#1,%Target_Sys%\wait.exe
+Run,%ScriptFile%,#1,%Target_Sys%\hiderun.exe
+Run,%ScriptFile%,#1,%Target_Sys%\register.cmd
+Run,%ScriptFile%,#1,%Target_Sys%\subst.exe
+If,#1,Equal,backup,IniWrite,%ApiRegConfig%,progress,backupcomplete,1
+If,#1,Equal,restore,IniWrite,%ApiRegConfig%,progress,backupcomplete,0
+End
+
+[restore]
+If,ExistFile,#1,Shellexecute,Hide,cmd.exe,"/C del /q /f #$q#1#$q&del /q /f /A:R /A:H /A:S /A:A #$q#1#$q"
+If,ExistFile,#1,ShellExecute,Hide,attrib.exe,"-R -S -A -H #$q#1#$q"
+If,ExistFile,#1,Shellexecute,Hide,cmd.exe,"/C del /q /f #$q#1#$q&del /q /f /A:R /A:H /A:S /A:A #$q#1#$q"
+If,ExistFile,#1,ShellExecute,Hide,attrib.exe,"-R -S -A -H #$q#1#$q"
+If,ExistFile,#1,Shellexecute,Hide,cmd.exe,"/C del /q /f #$q#1#$q&del /q /f /A:R /A:H /A:S /A:A #$q#1#$q"
+If,ExistFile,#1,FileDelete,#1
+StrFormat,REPLACE,#1,%TargetDir%,"",%temppath%
+Set,%tempsource%,%ApiRegBackupDir%%temppath%
+If,ExistFile,%tempsource%,Begin
+StrFormat,Path,#1,%tempdest%
+If,Not,ExistDir,%tempdest%,DirMake,%tempdest%
+//FileCopy,%tempsource%,#1,%tempdest%
+FileCopy,%tempsource%,%tempdest%
+Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%tempsource%#$q&del /q /f /A:R /A:H /A:S /A:A #$q%tempsource%#$q"
+If,ExistFile,%tempsource%,FileDelete,%tempsource%
+End
+
+[backup]
+If,ExistFile,#1,Begin
+StrFormat,REPLACE,#1,%TargetDir%,"",%temppath%
+Set,%tempdest%,%ApiRegBackupDir%%temppath%
+If,ExistFile,%tempdest%,Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%tempdest%#$q&del /q /f /A:R /A:H /A:S /A:A #$q%tempdest%#$q"
+If,ExistFile,%tempdest%,FileDelete,%tempdest%
+StrFormat,Path,%tempdest%,%tempdest%
+If,Not,ExistDir,%tempdest%,DirMake,%tempdest%
+FileCopy,#1,%tempdest%
+End
+
+[setup]
+Echo,"VM Setup ..."
+//
+Run,%ScriptFile%,FixShellFolders
+//
+RegHiveLoad,Tmp_Default,%Target_Sys%\config\default
+If,ExistRegSection,HKLM,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Run,RegDelete,HKLM,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Run
+If,ExistRegSection,HKLM,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\RunOnce,RegDelete,HKLM,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\RunOnce
+If,ExistRegSection,HKLM,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\RunOnceEx,RegDelete,HKLM,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\RunOnceEx
+If,ExistRegSection,HKLM,"Tmp_Default\Software\Microsoft\Windows NT\CurrentVersion\Windows\Run",RegDelete,HKLM,"Tmp_Default\Software\MicrosoftWindows NT\CurrentVersion\Windows\Run"
+If,%NoWarnROW%,Equal,True,System,ERROROFF,2
+RegWrite,HKLM,0x2,Tmp_Default\Environment,TEMP,"#$pUSERPROFILE#$p\%DirLocalSettings%\Temp"
+RegWrite,HKLM,0x2,Tmp_Default\Environment,TMP,"#$pUSERPROFILE#$p\%DirLocalSettings%\Temp"
+RegHiveUnLoad,Tmp_Default
+//
+RegHiveLoad,Tmp_Software,%Target_Sys%\config\software
+RegWrite,HKLM,0x2,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\ProfileList",ProfilesDirectory,%TmpDrive%\%DirSettings%
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\ProfileList",AllUsersProfile,%DirAllUsers%
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\ProfileList",DefaultUserProfile,%DirDefaultUser%
+If,ExistRegSection,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\Run,RegDelete,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\Run
+If,ExistRegSection,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnce,RegDelete,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnce
+If,ExistRegSection,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx,RegDelete,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx
+If,ExistRegSection,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run,RegDelete,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run
+RegWrite,HKLM,0x4,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx,Flags,76
+//RegWrite,HKLM,0x4,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx,Flags,204
+RegHiveUnLoad,Tmp_Software
+//
+RegHiveLoad,Tmp_System,%Target_Sys%\setupreg.hiv
+IniRead,%ProjectInfo%,String,ProfileBase,%settingsfolder%
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x1,Tmp_System\Setup,CmdLine,"PELoader.exe#$s-hide#$scmd.exe#$s/c#$sregister.cmd#$s%TmpDrive%#$s%sysdrive%\BasePrfile"
+//RegWrite,HKLM,0x1,Tmp_System\Setup,CmdLine,"PELoader.exe#$s-hide#$scmd.exe#$s/c#$sregister.cmd#$s%TmpDrive%#$s%sysdrive%\$ModelRAM"
+If,%NoWarnROW%,Equal,True,System,ERROROFF,2
+RegWrite,HKLM,0x2,"Tmp_System\ControlSet001\Control\Session Manager\Environment",TEMP,%TmpDrive%\%DirSettings%\%DirDefaultUser%\%DirLocalSettings%\Temp
+RegWrite,HKLM,0x2,"Tmp_System\ControlSet001\Control\Session Manager\Environment",TMP,%TmpDrive%\%DirSettings%\%DirDefaultUser%\%DirLocalSettings%\Temp
+//RegWrite,HKLM,0x2,"Tmp_System\ControlSet001\Control\Session Manager\Environment",UserProfile,"%TmpDrive%\%DirSettings%\%DirDefaultUser%"
+Run,%ScriptFile%,stopservices
+RegHiveUnLoad,Tmp_System
+//
+//ExtractFile,%ScriptFile%,files,Shutdown.exe,%Target_Sys%
+//ExtractFile,%ScriptFile%,files,wait.exe,%Target_Sys%
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegScriptFiles,%ApiRegScriptFiles%
+ExtractFile,%ApiRegScriptFiles%,files,Shutdown.exe,%Target_Sys%
+ExtractFile,%ApiRegScriptFiles%,files,wait.exe,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\HideRun.exe,Require,File,HideRun.exe
+//If,ExistFile,%Target_Sys%\shutdownres.dll,Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%Target_Sys%\shutdownres.dll#$q&del /q /f /A:R /A:H /A:S /A:A #$q%Target_Sys%\shutdownres.dll#$q"
+//If,ExistFile,%Target_Sys%\shutdownres.dll,ShellExecute,Hide,attrib.exe,"-R -S -A -H #$q%Target_Sys%\shutdownres.dll#$q"
+//If,ExistFile,%Target_Sys%\shutdownres.dll,Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%Target_Sys%\shutdownres.dll#$q&del /q /f /A:R /A:H /A:S /A:A #$q%Target_Sys%\shutdownres.dll#$q"
+//If,ExistFile,%Target_Sys%\shutdownres.dll,ShellExecute,Hide,attrib.exe,"-R -S -A -H #$q%Target_Sys%\shutdownres.dll#$q"
+If,ExistFile,%Target_Sys%\shutdownres.dll,Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%Target_Sys%\shutdownres.dll#$q&del /q /f /A:R /A:H /A:S /A:A #$q%Target_Sys%\shutdownres.dll#$q"
+If,ExistFile,%Target_Sys%\shutdownres.dll,FileDelete,%Target_Sys%\shutdownres.dll
+If,Not,ExistFile,%Target_Sys%\MSVCRT.DLL,CopyOrExpand,%Source_Win%\MSVCRT.DLL,%Target_Sys%
+//Expand,%Source_Win%\iernonce.dl_,%Target_Sys%
+//Expand,%Source_Win%\WINLOGON.EX_,%Target_Sys%
+//Expand,%Source_Win%\regsvr32.ex_,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\iernonce.dll,CopyOrExpand,%Source_Win%\iernonce.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\WINLOGON.EXE,CopyOrExpand,%Source_Win%\WINLOGON.EXE,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\regsvr32.exe,CopyOrExpand,%Source_Win%\regsvr32.exe,%Target_Sys%
+CopyOrExpand,%Source_Win%\regedit.exe,%Target_Sys%
+//Expand,%Source_Win%\aclui.dl_,%Target_Sys%
+//Expand,%Source_Win%\clb.dl_,%Target_Sys%
+//Expand,%Source_Win%\ulib.dl_,%Target_Sys%
+//Expand,%Source_Win%\subst.ex_,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\aclui.dll,CopyOrExpand,%Source_Win%\aclui.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\clb.dll,CopyOrExpand,%Source_Win%\clb.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\ulib.dll,CopyOrExpand,%Source_Win%\ulib.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\subst.exe,CopyOrExpand,%Source_Win%\subst.exe,%Target_Sys%
+//ExtractFile,%ScriptFile%,files,PEloader.exe,%Target_Sys%
+//ExtractFile,%ScriptFile%,files,register.cmd,%Target_Sys%
+ExtractFile,%ApiRegScriptFiles%,files,PEloader.exe,%Target_Sys%
+ExtractFile,%ApiRegScriptFiles%,files,register.cmd,%Target_Sys%
+////ExtractFile,%ScriptFile%,files,apireg0.reg,%Target_Sys%
+////ExtractFile,%ScriptFile%,files,apireg1.reg,%Target_Sys%
+//ExtractFile,%ApiRegScriptFiles%,files,apireg0.reg,%Target_Sys%
+//ExtractFile,%ApiRegScriptFiles%,files,apireg1.reg,%Target_Sys%
+IniRead,%Projectdir%\Script.Project,IniVariables,OS,%OS%
+If,%OS%%SP%,Equal,XPSP2,Run,%ScriptFile%,InstallDComLaunch
+If,%OS%%SP%,Equal,XPSP3,Run,%ScriptFile%,InstallDComLaunch
+If,%OS%,Equal,w2003,Run,%ScriptFile%,InstallDComLaunch
+
+[FixShellFolders]
+//Fix missing folders
+IniRead,%PInfo%,OS,Type,%OS%
+IniRead,%PInfo%,OS,ServicePack,%SP%
+IniRead,%PInfo%,RamDrive,Settings,%TmpDrive%
+IniRead,%PInfo%,RamDrive,DriveLetter,%RamDisk%
+IniRead,%PInfo%,String,ProgramFiles,%DirProgramFiles%
+IniRead,%PInfo%,String,CommonFiles,%DirCommonFiles%
+IniRead,%PInfo%,String,ProfileBase,%DirSettings%
+IniRead,%PInfo%,String,LocalSettings,%DirLocalSettings%
+IniRead,%PInfo%,String,MyDocuments,%DirMyDocuments%
+IniRead,%PInfo%,String,AllUsersDocuments,%DirCommonDocuments%
+IniRead,%PInfo%,String,ApplicationData,%DirAppData%
+IniRead,%PInfo%,String,StartMenu,%DirStartMenu%
+IniRead,%PInfo%,String,Desktop,%DirDesktop%
+IniRead,%PInfo%,String,Startup,%DirAutoStart%
+IniRead,%PInfo%,String,Programs,%t%
+Set,%DirStartMenuPrograms%,%DirStartMenu%\%t%
+//IniRead,%PInfo%,String,sStartmenu_Programs,%DirStartMenuPrograms%
+IniRead,%PInfo%,String,AdministrativeTools,%DirAdminTools%
+IniRead,%PInfo%,String,SendTo,%DirSendTo%
+IniRead,%PInfo%,String,MyPictures,%DirMyPictures%
+IniRead,%PInfo%,String,PrintHood,%DirPrintHood%
+IniRead,%PInfo%,String,NetHood,%DirNetHood%
+IniRead,%PInfo%,String,Templates,%DirTemplates%
+IniRead,%PInfo%,String,Favorites,%DirFavorites%
+IniRead,%PInfo%,String,AllUsers,%DirAllUsers%
+IniRead,%PInfo%,String,DefaultUser,%DirDefaultUser%
+IniRead,%PInfo%,BasePath,ProfileBase,%settingsfolder%
+IniRead,%PInfo%,BasePath,DU,%defaultuserfolder%
+IniRead,%PInfo%,BasePath,AU,%allusersfolder%
+IniRead,%PInfo%,BasePath,LocalSettingsAppdata,%localappdatafolder%
+IniRead,%PInfo%,BasePath,Appdata,%appdatafolder%
+IniRead,%PInfo%,BasePath,AUAppData,%commonappdatafolder%
+IniRead,%PInfo%,BasePath,QuickLaunch,%quicklaunchfolder%
+IniRead,%PInfo%,BasePath,Desktop,%desktopfolder%
+IniRead,%PInfo%,BasePath,SendTo,%sendtofolder%
+IniRead,%PInfo%,BasePath,StartMenuRoot,%startmenufolder%
+IniRead,%PInfo%,BasePath,StartMenu,%startmenuprogramsfolder%
+IniRead,%PInfo%,BasePath,Startup,%startmenuautostartfolder%
+IniRead,%PInfo%,BasePath,AdministrativeTools,%admintoolsfolder%
+IniRead,%PInfo%,BasePath,Accessories,%startmenuaccessoriesfolder%
+IniRead,%PInfo%,BasePath,SystemTools,%systemtoolsfolder%
+IniRead,%PInfo%,BasePath,LocalSettings,%localsettingsfolder%
+If,Not,%settingsfolder%,Equal,"",Begin
+//Set,%mram%,""
+//IniRead,%PInfo%,TargetPaths,Model,%mram%
+Set,%mram%,%TargetProfilesBaseDir%
+If,Not,ExistDir,%mram%,Set,%mram%,%TargetDir%
+DirMake,%mram%\%settingsfolder%
+If,Not,%defaultuserfolder%,Equal,"",DirMake,%mram%\%defaultuserfolder%
+If,Not,%localappdatafolder%,Equal,"",DirMake,%mram%\%localappdatafolder%
+If,Not,%allusersfolder%,Equal,"",DirMake,%mram%\%allusersfolder%
+If,Not,%appdatafolder%,Equal,"",DirMake,%mram%\%appdatafolder%
+If,Not,%commonappdatafolder%,Equal,"",DirMake,%mram%\%commonappdatafolder%
+If,Not,%quicklaunchfolder%,Equal,"",DirMake,%mram%\%quicklaunchfolder%
+If,Not,%desktopfolder%,Equal,"",DirMake,%mram%\%desktopfolder%
+If,Not,%sendtofolder%,Equal,"",DirMake,%mram%\%sendtofolder%
+If,Not,%startmenufolder%,Equal,"",DirMake,%mram%\%startmenufolder%
+If,Not,%startmenuprogramsfolder%,Equal,"",DirMake,%mram%\%startmenuprogramsfolder%
+If,Not,%startmenuautostartfolder%,Equal,"",DirMake,%mram%\%startmenuautostartfolder%
+If,Not,%startmenuaccessoriesfolder%,Equal,"",DirMake,%mram%\%startmenuaccessoriesfolder%
+If,Not,%systemtoolsfolder%,Equal,"",DirMake,%mram%\%systemtoolsfolder%
+Set,%tmp%,%admintoolsfolder%
+StrFormat,REPLACE,%tmp%,%DirDefaultUser%,%DirAllUsers%,%tmp2%
+If,Not,%tmp%,Equal,"",DirMake,%mram%\%tmp2%
+//
+If,Not,%localsettingsfolder%,Equal,"",DirMake,%mram%\%localsettingsfolder%
+If,Not,%localsettingsfolder%,Equal,"",DirMake,%mram%\%localsettingsfolder%\History
+If,Not,%localsettingsfolder%,Equal,"",DirMake,"%mram%\%localsettingsfolder%\Temporary Internet Files"
+If,Not,%localsettingsfolder%,Equal,"",DirMake,%mram%\%localsettingsfolder%\Temp
+//
+IniRead,%PInfo%,BasePath,DU,%tmp%
+If,Not,%tmp%,Equal,"",DirMake,%mram%\%tmp%\Cookies
+If,Not,%tmp%,Equal,"",DirMake,%mram%\%tmp%\Recent
+//
+If,Not,%defaultuserfolder%,Equal,"",Begin
+If,Not,%DirMyDocuments%,Equal,"",DirMake,%mram%\%defaultuserfolder%\%DirMyDocuments%
+If,Not,%DirFavorites%,Equal,"",DirMake,%mram%\%defaultuserfolder%\%DirFavorites%
+If,Not,%DirTemplates%,Equal,"",DirMake,%mram%\%defaultuserfolder%\%DirTemplates%
+If,Not,%DirDesktop%,Equal,"",DirMake,%mram%\%defaultuserfolder%\%DirDesktop%
+End
+//
+If,Not,%allusersfolder%,Equal,"",Begin
+If,Not,%DirFavorites%,Equal,"",DirMake,%mram%\%allusersfolder%\%DirFavorites%
+If,Not,%DirTemplates%,Equal,"",DirMake,%mram%\%allusersfolder%\%DirTemplates%
+If,Not,%DirDesktop%,Equal,"",DirMake,%mram%\%allusersfolder%\%DirDesktop%
+If,Not,%DirCommonDocuments%,Equal,"",DirMake,%mram%\%allusersfolder%\%DirCommonDocuments%
+If,Not,%DirStartMenuPrograms%,Equal,"",Begin
+DirMake,%mram%\%allusersfolder%\%DirStartMenuPrograms%
+If,Not,%DirAutoStart%,Equal,"",Begin
+DirMake,%mram%\%allusersfolder%\%DirStartMenuPrograms%\%DirAutoStart%
+End
+End
+End
+End
+//
+If,Not,%TmpDrive%,Equal,%RamDisk%,Set,%TmpDrive%,%sysdrive%
+//
+RegHiveLoad,Tmp_Default,%Target_Sys%\config\default
+Set,%key%,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders"
+//
+System,ERROROFF
+RegDelete,HKLM,%key%,AppData
+RegWrite,HKLM,0x1,%key%,AppData,%TmpDrive%\%DirSettings%\%DirDefaultUser%\%DirAppData%
+System,ERROROFF
+RegDelete,HKLM,%key%,Desktop
+RegWrite,HKLM,0x1,%key%,Desktop,%TmpDrive%\%DirSettings%\%DirDefaultUser%\%DirDesktop%
+System,ERROROFF
+RegDelete,HKLM,%key%,"Local AppData"
+RegWrite,HKLM,0x1,%key%,"Local AppData",%TmpDrive%\%DirSettings%\%DirDefaultUser%\%DirLocalSettings%\%DirAppData%
+System,ERROROFF
+RegDelete,HKLM,%key%,"Local Settings"
+RegWrite,HKLM,0x1,%key%,"Local Settings",%TmpDrive%\%DirSettings%\%DirDefaultUser%\%DirLocalSettings%
+System,ERROROFF
+RegDelete,HKLM,%key%,Personal
+RegWrite,HKLM,0x1,%key%,Personal,%TmpDrive%\%DirSettings%\%DirDefaultUser%\%DirMyDocuments%
+System,ERROROFF
+RegDelete,HKLM,%key%,Programs
+RegWrite,HKLM,0x1,%key%,Programs,%TmpDrive%\%DirSettings%\%DirDefaultUser%\%DirStartMenuPrograms%
+System,ERROROFF
+RegDelete,HKLM,%key%,"Start Menu"
+RegWrite,HKLM,0x1,%key%,"Start Menu",%TmpDrive%\%DirSettings%\%DirDefaultUser%\%DirStartMenu%
+System,ERROROFF
+RegDelete,HKLM,%key%,StartUp
+RegWrite,HKLM,0x1,%key%,StartUp,%TmpDrive%\%DirSettings%\%DirDefaultUser%\%DirStartMenuPrograms%\%DirAutoStart%
+System,ERROROFF
+RegDelete,HKLM,%key%,Cache
+RegWrite,HKLM,0x1,%key%,Cache,"%TmpDrive%\%DirSettings%\%DirDefaultUser%\%DirLocalSettings%\Temporary Internet Files"
+System,ERROROFF
+RegDelete,HKLM,%key%,SendTo
+RegWrite,HKLM,0x1,%key%,SendTo,%TmpDrive%\%DirSettings%\%DirDefaultUser%\%DirSendTo%
+System,ERROROFF
+RegDelete,HKLM,%key%,Cookies
+RegWrite,HKLM,0x1,%key%,Cookies,%TmpDrive%\%DirSettings%\%DirDefaultUser%\Cookies
+System,ERROROFF
+RegDelete,HKLM,%key%,History
+RegWrite,HKLM,0x1,%key%,History,%TmpDrive%\%DirSettings%\%DirDefaultUser%\%DirLocalSettings%\History
+System,ERROROFF
+RegDelete,HKLM,%key%,Recent
+RegWrite,HKLM,0x1,%key%,Recent,%TmpDrive%\%DirSettings%\%DirDefaultUser%\Recent
+System,ERROROFF
+RegDelete,HKLM,%key%,PrintHood
+RegWrite,HKLM,0x1,%key%,PrintHood,%TmpDrive%\%DirSettings%\%DirDefaultUser%\%DirPrintHood%
+System,ERROROFF
+RegDelete,HKLM,%key%,"My Pictures"
+RegWrite,HKLM,0x1,%key%,"My Pictures",%TmpDrive%\%DirSettings%\%DirDefaultUser%\%DirMyPictures%
+System,ERROROFF
+RegDelete,HKLM,%key%,NetHood
+RegWrite,HKLM,0x1,%key%,NetHood,%TmpDrive%\%DirSettings%\%DirDefaultUser%\%DirNetHood%
+System,ERROROFF
+RegDelete,HKLM,%key%,Templates
+RegWrite,HKLM,0x1,%key%,Templates,%TmpDrive%\%DirSettings%\%DirDefaultUser%\%DirTemplates%
+System,ERROROFF
+RegDelete,HKLM,%key%,Favorites
+RegWrite,HKLM,0x1,%key%,Favorites,%TmpDrive%\%DirSettings%\%DirDefaultUser%\%DirFavorites%
+//
+Set,%key%,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders"
+//
+//System,ERROROFF
+//RegDelete,HKLM,%key%,Temp
+//System,ERROROFF
+//RegDelete,HKLM,%key%,Tmp
+If,ExistRegKey,HKLM,%key%,Temp,RegDelete,HKLM,%key%,Temp
+If,ExistRegKey,HKLM,%key%,Tmp,RegDelete,HKLM,%key%,Tmp
+RegWrite,HKLM,0x2,%key%,Temp,#$pUSERPROFILE#$p\%DirLocalSettings%\Temp
+RegWrite,HKLM,0x2,%key%,Tmp,#$pUSERPROFILE#$p\%DirLocalSettings%\Temp
+System,ERROROFF
+RegDelete,HKLM,%key%,"Local Settings"
+RegWrite,HKLM,0x2,%key%,"Local Settings",#$pUSERPROFILE#$p\%DirLocalSettings%
+System,ERROROFF
+RegDelete,HKLM,%key%,"Local AppData"
+RegWrite,HKLM,0x2,%key%,"Local AppData",#$pUSERPROFILE#$p\%DirLocalSettings%\%DirAppData%
+System,ERROROFF
+RegDelete,HKLM,%key%,Personal
+RegWrite,HKLM,0x2,%key%,Personal,#$pUSERPROFILE#$p\%DirMyDocuments%
+System,ERROROFF
+RegDelete,HKLM,%key%,Programs
+RegWrite,HKLM,0x2,%key%,Programs,#$pUSERPROFILE#$p\%DirStartMenuPrograms%
+System,ERROROFF
+RegDelete,HKLM,%key%,"Start Menu"
+RegWrite,HKLM,0x2,%key%,"Start Menu",#$pUSERPROFILE#$p\%DirStartMenu%
+System,ERROROFF
+RegDelete,HKLM,%key%,StartUp
+RegWrite,HKLM,0x2,%key%,StartUp,#$pUSERPROFILE#$p\%DirStartMenuPrograms%\%DirAutoStart%
+System,ERROROFF
+RegDelete,HKLM,%key%,AppData
+RegWrite,HKLM,0x2,%key%,AppData,#$pUSERPROFILE#$p\%DirAppData%
+System,ERROROFF
+RegDelete,HKLM,%key%,Desktop
+RegWrite,HKLM,0x2,%key%,Desktop,#$pUSERPROFILE#$p\%DirDesktop%
+System,ERROROFF
+RegDelete,HKLM,%key%,SendTo
+RegWrite,HKLM,0x2,%key%,SendTo,#$pUSERPROFILE#$p\%DirSendTo%
+System,ERROROFF
+RegDelete,HKLM,%key%,Cache
+RegWrite,HKLM,0x2,%key%,Cache,"#$pUSERPROFILE#$p\%DirLocalSettings%\Temporary Internet Files"
+System,ERROROFF
+RegDelete,HKLM,%key%,Cookies
+RegWrite,HKLM,0x2,%key%,Cookies,#$pUSERPROFILE#$p\Cookies
+System,ERROROFF
+RegDelete,HKLM,%key%,History
+RegWrite,HKLM,0x2,%key%,History,#$pUSERPROFILE#$p\%DirLocalSettings%\History
+System,ERROROFF
+RegDelete,HKLM,%key%,Recent
+RegWrite,HKLM,0x2,%key%,Recent,#$pUSERPROFILE#$p\Recent
+System,ERROROFF
+RegDelete,HKLM,%key%,PrintHood
+RegWrite,HKLM,0x2,%key%,PrintHood,#$pUSERPROFILE#$p\%DirPrintHood%
+System,ERROROFF
+RegDelete,HKLM,%key%,"My Pictures"
+RegWrite,HKLM,0x2,%key%,"My Pictures",#$pUSERPROFILE#$p\%DirMyPictures%
+System,ERROROFF
+RegDelete,HKLM,%key%,NetHood
+RegWrite,HKLM,0x2,%key%,NetHood,#$pUSERPROFILE#$p\%DirNetHood%
+System,ERROROFF
+RegDelete,HKLM,%key%,Templates
+RegWrite,HKLM,0x2,%key%,Templates,#$pUSERPROFILE#$p\%DirTemplates%
+System,ERROROFF
+RegDelete,HKLM,%key%,Favorites
+RegWrite,HKLM,0x2,%key%,Favorites,#$pUSERPROFILE#$p\%DirFavorites%
+RegHiveUnLoad,Tmp_Default
+//
+RegHiveLoad,Tmp_Software,%Target_Sys%\config\software
+Set,%key%,"Tmp_Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders"
+//
+//System,ERROROFF
+//RegDelete,HKLM,%key%,Desktop
+If,ExistRegKey,HKLM,%key%,Desktop,RegDelete,HKLM,%key%,Desktop
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common NetHood"
+If,ExistRegKey,HKLM,%key%,"Common NetHood",RegDelete,HKLM,%key%,"Common NetHood"
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common Personal"
+If,ExistRegKey,HKLM,%key%,"Common Personal",RegDelete,HKLM,%key%,"Common Personal"
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common PrintHood"
+If,ExistRegKey,HKLM,%key%,"Common PrintHood",RegDelete,HKLM,%key%,"Common PrintHood"
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common Recent"
+If,ExistRegKey,HKLM,%key%,"Common Recent",RegDelete,HKLM,%key%,"Common Recent"
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common SendTo"
+If,ExistRegKey,HKLM,%key%,"Common SendTo",RegDelete,HKLM,%key%,"Common SendTo"
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common Cookies"
+If,ExistRegKey,HKLM,%key%,"Common Cookies",RegDelete,HKLM,%key%,"Common Cookies"
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common My Pictures"
+If,ExistRegKey,HKLM,%key%,"Common My Pictures",RegDelete,HKLM,%key%,"Common My Pictures"
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common Local Settings"
+If,ExistRegKey,HKLM,%key%,"Common Local Settings",RegDelete,HKLM,%key%,"Common Local Settings"
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common Local AppData"
+If,ExistRegKey,HKLM,%key%,"Common Local AppData",RegDelete,HKLM,%key%,"Common Local AppData"
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common Cache"
+If,ExistRegKey,HKLM,%key%,"Common Cache",RegDelete,HKLM,%key%,"Common Cache"
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common History"
+If,ExistRegKey,HKLM,%key%,"Common History",RegDelete,HKLM,%key%,"Common History"
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common Administrative Tools"
+If,ExistRegKey,HKLM,%key%,"Common Administrative Tools",RegDelete,HKLM,%key%,"Common Administrative Tools"
+RegWrite,HKLM,0x1,%key%,"Common Administrative Tools",%TmpDrive%\%DirSettings%\%DirAllUsers%\%DirStartMenuPrograms%\%DirAdminTools%
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common AppData"
+If,ExistRegKey,HKLM,%key%,"Common AppData",RegDelete,HKLM,%key%,"Common AppData"
+RegWrite,HKLM,0x1,%key%,"Common AppData",%TmpDrive%\%DirSettings%\%DirAllUsers%\%DirAppData%
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common Desktop"
+If,ExistRegKey,HKLM,%key%,"Common Desktop",RegDelete,HKLM,%key%,"Common Desktop"
+RegWrite,HKLM,0x1,%key%,"Common Desktop",%TmpDrive%\%DirSettings%\%DirAllUsers%\%DirDesktop%
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common Programs"
+If,ExistRegKey,HKLM,%key%,"Common Programs",RegDelete,HKLM,%key%,"Common Programs"
+RegWrite,HKLM,0x1,%key%,"Common Programs",%TmpDrive%\%DirSettings%\%DirAllUsers%\%DirStartMenuPrograms%
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common Start Menu"
+If,ExistRegKey,HKLM,%key%,"Common Start Menu",RegDelete,HKLM,%key%,"Common Start Menu"
+RegWrite,HKLM,0x1,%key%,"Common Start Menu",%TmpDrive%\%DirSettings%\%DirAllUsers%\%DirStartMenu%
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common Startup"
+If,ExistRegKey,HKLM,%key%,"Common Startup",RegDelete,HKLM,%key%,"Common Startup"
+RegWrite,HKLM,0x1,%key%,"Common Startup",%TmpDrive%\%DirSettings%\%DirAllUsers%\%DirStartMenuPrograms%\%DirAutoStart%
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common Favorites"
+If,ExistRegKey,HKLM,%key%,"Common Favorites",RegDelete,HKLM,%key%,"Common Favorites"
+//RegWrite ! Overwrote existing key "B:\GenaP\All Users\Sýk Kullanýlanlar" with different data
+//Local Names for Common Favorites
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x1,%key%,"Common Favorites",%TmpDrive%\%DirSettings%\%DirAllUsers%\Favorites
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common Templates"
+If,ExistRegKey,HKLM,%key%,"Common Templates",RegDelete,HKLM,%key%,"Common Templates"
+RegWrite,HKLM,0x1,%key%,"Common Templates",%TmpDrive%\%DirSettings%\%DirAllUsers%\%DirTemplates%
+// todo : currently not available in projectinfo
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common Documents"
+If,ExistRegKey,HKLM,%key%,"Common Documents",RegDelete,HKLM,%key%,"Common Documents"
+RegWrite,HKLM,0x1,%key%,"Common Documents",%TmpDrive%\%DirSettings%\%DirAllUsers%\%DirCommonDocuments%
+//
+Set,%key%,"Tmp_Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders"
+//
+//System,ERROROFF
+//RegDelete,HKLM,%key%,Desktop
+If,ExistRegKey,HKLM,%key%,Desktop,RegDelete,HKLM,%key%,Desktop
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common NetHood"
+If,ExistRegKey,HKLM,%key%,"Common NetHood",RegDelete,HKLM,%key%,"Common NetHood"
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common Personal"
+If,ExistRegKey,HKLM,%key%,"Common Personal",RegDelete,HKLM,%key%,"Common Personal"
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common PrintHood"
+If,ExistRegKey,HKLM,%key%,"Common PrintHood",RegDelete,HKLM,%key%,"Common PrintHood"
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common Recent"
+If,ExistRegKey,HKLM,%key%,"Common Recent",RegDelete,HKLM,%key%,"Common Recent"
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common SendTo"
+If,ExistRegKey,HKLM,%key%,"Common SendTo",RegDelete,HKLM,%key%,"Common SendTo"
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common Cookies"
+If,ExistRegKey,HKLM,%key%,"Common Cookies",RegDelete,HKLM,%key%,"Common Cookies"
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common My Pictures"
+If,ExistRegKey,HKLM,%key%,"Common My Pictures",RegDelete,HKLM,%key%,"Common My Pictures"
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common Local Settings"
+If,ExistRegKey,HKLM,%key%,"Common Local Settings",RegDelete,HKLM,%key%,"Common Local Settings"
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common Local AppData"
+If,ExistRegKey,HKLM,%key%,"Common Local AppData",RegDelete,HKLM,%key%,"Common Local AppData"
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common Cache"
+If,ExistRegKey,HKLM,%key%,"Common Cache",RegDelete,HKLM,%key%,"Common Cache"
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common History"
+If,ExistRegKey,HKLM,%key%,"Common History",RegDelete,HKLM,%key%,"Common History"
+//
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common Administrative Tools"
+If,ExistRegKey,HKLM,%key%,"Common Administrative Tools",RegDelete,HKLM,%key%,"Common Administrative Tools"
+RegWrite,HKLM,0x2,%key%,"Common Administrative Tools",#$pALLUSERSPROFILE#$p\%DirStartMenuPrograms%\%DirAdminTools%
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common AppData"
+If,ExistRegKey,HKLM,%key%,"Common AppData",RegDelete,HKLM,%key%,"Common AppData"
+RegWrite,HKLM,0x2,%key%,"Common AppData",#$pALLUSERSPROFILE#$p\%DirAppData%
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common Desktop"
+If,ExistRegKey,HKLM,%key%,"Common Desktop",RegDelete,HKLM,%key%,"Common Desktop"
+RegWrite,HKLM,0x2,%key%,"Common Desktop",#$pALLUSERSPROFILE#$p\%DirDesktop%
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common Programs"
+If,ExistRegKey,HKLM,%key%,"Common Programs",RegDelete,HKLM,%key%,"Common Programs"
+RegWrite,HKLM,0x2,%key%,"Common Programs",#$pALLUSERSPROFILE#$p\%DirStartMenuPrograms%
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common Start Menu"
+If,ExistRegKey,HKLM,%key%,"Common Start Menu",RegDelete,HKLM,%key%,"Common Start Menu"
+RegWrite,HKLM,0x2,%key%,"Common Start Menu",#$pALLUSERSPROFILE#$p\%DirStartMenu%
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common Startup"
+If,ExistRegKey,HKLM,%key%,"Common Startup",RegDelete,HKLM,%key%,"Common Startup"
+RegWrite,HKLM,0x2,%key%,"Common Startup",#$pALLUSERSPROFILE#$p\%DirStartMenuPrograms%\%DirAutoStart%
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common Favorites"
+If,ExistRegKey,HKLM,%key%,"Common Favorites",RegDelete,HKLM,%key%,"Common Favorites"
+RegWrite,HKLM,0x2,%key%,"Common Favorites",#$pALLUSERSPROFILE#$p\%DirFavorites%
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common Templates"
+If,ExistRegKey,HKLM,%key%,"Common Templates",RegDelete,HKLM,%key%,"Common Templates"
+RegWrite,HKLM,0x2,%key%,"Common Templates",#$pALLUSERSPROFILE#$p\%DirTemplates%
+// todo : currently not available in projectinfo
+//System,ERROROFF
+//RegDelete,HKLM,%key%,"Common Documents"
+If,ExistRegKey,HKLM,%key%,"Common Documents",RegDelete,HKLM,%key%,"Common Documents"
+RegWrite,HKLM,0x2,%key%,"Common Documents",#$pALLUSERSPROFILE#$p\%DirCommonDocuments%
+//
+RegHiveUnLoad,Tmp_Software
+RegHiveLoad,Tmp_System,%Target_Sys%\setupreg.hiv
+RegWrite,HKLM,0x2,"Tmp_System\ControlSet001\Control\Session Manager\Environment",AllUsersProfile,%TmpDrive%\%DirSettings%\%DirAllUsers%
+RegWrite,HKLM,0x2,"Tmp_System\ControlSet001\Control\Session Manager\Environment",UserProfile,%TmpDrive%\%DirSettings%\%DirDefaultUser%
+RegHiveUnLoad,Tmp_System
+
+[checkvpc]
+Set,%vmpath%,#1
+Set,%count%,0
+If,%vmpath%,Equal,"",Begin
+System,ERROROFF
+If,ExistRegSection,HKLM,"Software\Classes\Applications\Virtual PC.exe\shell\open\command",RegRead,HKLM,"Software\Classes\Applications\Virtual PC.exe\shell\open\command","",%vmpath%
+End
+If,%vmpath%,Equal,"",Begin
+System,ERROROFF
+If,ExistRegSection,HKLM,"Software\Classes\Virtual.MAchine.VMC\shell\open\command",RegRead,HKLM,"Software\Classes\Virtual.MAchine.VMC\shell\open\command","",%vmpath%
+End
+StrFormat,LEFT,%vmpath%,1,%tmp%
+If,%tmp%,Equal,"#$q",StrFormat,SPLIT,%vmpath%,#$q,0,%count%
+If,%count%,Bigger,0,Begin
+If,ExistVar,%EngineVersion%,Begin
+//PEBakery do not have Split Bug with #$q
+StrFormat,SPLIT,%vmpath%,#$q,2,%vmpath%
+End
+Else,Begin
+//wb have bug (077rc2 and 082 15) value 1 should be empty but wb does not count correctly with #$q
+StrFormat,SPLIT,%vmpath%,#$q,1,%vmpath%
+End
+End
+Set,%vmcheck%,""
+If,%vmpath%,Equal,"",Set,%vmcheck%,"Virtual PC not found."
+If,Not,ExistFile,%vmpath%,Set,%vmcheck%,"Virtual PC not found."
+If,#2,Equal,yes,Begin
+If,Not,%vmcheck%,Equal,"",Run,%ScriptFile%,exitscript,%vmcheck%
+End
+
+[runvpc]
+Set,%vmramsize%,#1
+Set,%vmname%,#2
+Set,%vmpath%,#3
+Set,%count%,0
+Set,%switches%,"-quiet#$s-singlepc#$s-usehostdiskcache"
+Run,%ScriptFile%,checkvpc,#3
+If,Not,ExistDir,%vmlocation%,DirMake,%vmlocation%
+//ExtractFile,%ScriptFile%,files,APIREGVM.vmc,%vmlocation%
+ExtractFile,%ApiRegScriptFiles%,files,APIREGVM.vmc,%vmlocation%
+If,Not,%vmname%,Equal,APIREGVM,FileRename,%vmlocation%\APIREGVM.vmc,%vmlocation%\%vmname%.vmc
+TXTreplace,%vmlocation%\APIREGVM.vmc,"@ram@",%vmramsize%
+TXTreplace,%vmlocation%\APIREGVM.vmc,"@path@",""
+TXTreplace,%vmlocation%\APIREGVM.vmc,"@hdd@",%vmlocation%\hdd.bin
+Echo,"Starting Virtual PC ... please wait."
+ShellExecuteEx,hide,#$q%vmpath%#$q,"%switches%#$s-startvm#$s#$q%vmlocation%\APIREGVM.vmc#$q"
+Run,%ScriptFile%,waitvm
+Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%vmlocation%\%vmname%.vmc#$q&del /q /f /A:R /A:H /A:S /A:A #$q%vmlocation%\%vmname%.vmc#$q"
+If,ExistFile,%vmlocation%\%vmname%.vmc,FileDelete,%vmlocation%\%vmname%.vmc
+RegRead,HKCU,"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders",AppData,%appdatafolder%
+If,ExistFile,"%appdatafolder%\Microsoft\Virtual PC\Virtual Machines\%vmname%.lnk",Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%appdatafolder%\Microsoft\Virtual PC\Virtual Machines\%vmname%.lnk#$q&del /q /f /A:R /A:H /A:S /A:A #$q%appdatafolder%\Microsoft\Virtual PC\Virtual Machines\%vmname%.lnk#$q"
+If,ExistFile,"%appdatafolder%\Microsoft\Virtual PC\Virtual Machines\%vmname%.lnk",FileDelete,"%appdatafolder%\Microsoft\Virtual PC\Virtual Machines\%vmname%.lnk"
+
+[checkvmware]
+Set,%vmpath%,#1
+Set,%count%,0
+If,%vmpath%,Equal,"",Begin
+If,ExistRegSection,HKLM,Software\Classes\Applications\vmware.exe\shell\open\command,RegRead,HKLM,Software\Classes\Applications\vmware.exe\shell\open\command,"",%vmpath%
+End
+If,%vmpath%,Equal,"",Begin
+If,ExistRegSection,HKLM,Software\Classes\Applications\vmplayer.exe\shell\open\command,RegRead,HKLM,Software\Classes\Applications\vmplayer.exe\shell\open\command,"",%vmpath%
+End
+If,%vmpath%,Equal,"",Begin
+If,ExistRegSection,HKLM,Software\Classes\VMware.Document\shell\open\command,RegRead,HKLM,Software\Classes\VMware.Document\shell\open\command,"",%vmpath%
+End
+StrFormat,LEFT,%vmpath%,1,%tmp%
+If,%tmp%,Equal,"#$q",StrFormat,SPLIT,%vmpath%,#$q,0,%count%
+If,%count%,Bigger,0,Begin
+//ex: %vmpath%="C:\Program Files (x86)\VMware\VMware Workstation\vmware.exe" -t "%1"
+If,ExistVar,%EngineVersion%,Begin
+//PEBakery do not have Split Bug with #$q
+StrFormat,SPLIT,%vmpath%,#$q,2,%vmpath%
+End
+Else,Begin
+//wb have bug (077rc2 and 082 15) value 1 should be empty but wb does not count correctly with #$q
+StrFormat,SPLIT,%vmpath%,#$q,1,%vmpath%
+End
+End
+//--
+Set,%vmcheck%,""
+If,%vmpath%,Equal,"",Set,%vmcheck%,"VMWare not found."
+If,Not,ExistFile,%vmpath%,Set,%vmcheck%,"VMWare not found."
+If,#2,Equal,yes,Begin
+If,Not,%vmcheck%,Equal,"",Run,%ScriptFile%,exitscript,%vmcheck%
+End
+
+[runvmware]
+Set,%vmramsize%,#1
+Set,%vmname%,#2
+Set,%vmpath%,#3
+Set,%count%,0
+//Set,%switches%,"-B#$s-n#$s-x#$s-q"
+//Run,%ScriptFile%,checkvmware,#3
+Run,%ScriptFile%,checkvmware,#3
+//History18--removed +
+////StrFormat,POS,%vmpath%,Server,%vers%
+////If,Not,%vers%,Equal,0,Set,%switches%,"-x#$s-q"
+////Else,Set,%switches%,"-B#$s-n#$s-x#$s-q"
+//History18--removed -
+//History18--added +
+// Thanks to psc codes: check vmware workstation version. there are different switches
+Retrieve,FILEVERSION,%vmpath%,%fv%
+StrFormat,LEFT,%fv%,1,%tFileVersion%
+If,%tFileVersion%,Equal,5,Set,%switches%,-x#$s-q
+Else,Begin
+StrFormat,POS,%vmpath%,Server,%vers%
+If,Not,%vers%,Equal,0,Set,%switches%,"-x#$s-q"
+Else,Set,%switches%,"-B#$s-n#$s-x#$s-q"
+StrFormat,FileName,%vmpath%,%vmpathfname%
+If,%vmpathfname%,Equal,vmplayer.exe,Set,%switches%,
+End
+//History18--added -
+//ExtractFile,%ScriptFile%,files,APIREGVM.vmx,%vmlocation%
+//ExtractFile,%ScriptFile%,files,nvram,%vmlocation%
+If,Not,ExistDir,%vmlocation%,DirMake,%vmlocation%
+ExtractFile,%ApiRegScriptFiles%,files,APIREGVM.vmx,%vmlocation%
+ExtractFile,%ApiRegScriptFiles%,files,nvram,%vmlocation%
+TXTreplace,%vmlocation%\APIREGVM.vmx,"@ram@",%vmramsize%
+TXTreplace,%vmlocation%\APIREGVM.vmx,"@vmname@",%vmname%
+TXTreplace,%vmlocation%\APIREGVM.vmx,"@path@",""
+TXTreplace,%vmlocation%\APIREGVM.vmx,"@isoconnected@",FALSE
+TXTreplace,%vmlocation%\APIREGVM.vmx,"@hdd@",%vmlocation%\hdd.vmdk
+IniRead,%Projectdir%\Script.Project,IniVariables,OS,%OS%
+If,%OS%,Equal,XP,TXTreplace,%vmlocation%\APIREGVM.vmx,"@OS@",winxppro
+If,%OS%,Equal,W2003,TXTreplace,%vmlocation%\APIREGVM.vmx,"@OS@",winnetstandard
+TXTreplace,%ProjectTemp%\APIREGVM.vmx,"@OS@",other
+Echo,"Starting VMWare ... please wait."
+Retrieve,FileVersion,%vmpath%,%vmpathVer%
+Set,%waround%,noo
+If,%version%,Smaller,80,Begin
+If,%vmpathVer%,Bigger,7.1,Set,%waround%,yes
+End
+If,%waround%,Equal,yes,Begin
+//if enabled Since vmware-tray.exe (workstation) populated with this method better kill them - if enabled it comes back again with next vmware run ;)
+ShellExecute,Hide,taskkill.exe,"/f /im vmware-tray.exe"
+ShellExecute,Hide,taskkill.exe,"/f /im vmware-tray.exe"
+ShellExecute,Hide,taskkill.exe,"/f /im vmware-tray.exe"
+ShellExecute,Hide,taskkill.exe,"/f /im vmware-tray.exe"
+ShellExecute,Hide,taskkill.exe,"/f /im vmware-tray.exe"
+ShellExecute,Hide,taskkill.exe,"/f /im vmware-tray.exe"
+ShellExecute,Hide,taskkill.exe,"/f /im vmware-tray.exe"
+//--
+ExtractFile,%ApiRegScriptFiles%,RunLimited,RunLimited.au3,%vmlocation%
+Call,HostOSArch
+ShellExecuteEx,Open,%Tools%\%HostOSArch%\AU3361.exe,"#$q%vmlocation%\RunLimited.au3#$q #$q%vmpath%#$q %switches%#$s#$s#$q%vmlocation%\APIREGVM.vmx#$q"
+End
+If,%waround%,Equal,noo,ShellExecuteEx,open,"#$q%vmpath%#$q","%switches%#$s#$s#$q%vmlocation%\APIREGVM.vmx#$q"
+Wait,5
+//--
+//If Vmware fails (10 secs too early ;)) run qemu (winbuilder vmaware bug workaround)
+Wait,5
+Shellexecute,Hide,cmd.exe,"/C ren #$q%vmlocation%\hdd.bin#$q hdd.tmp"
+If,ExistFile,%vmlocation%\hdd.tmp,Begin
+Shellexecute,Hide,cmd.exe,"/C ren #$q%vmlocation%\hdd.tmp#$q hdd.bin"
+Echo,"VMware fails - Running Qemu"
+Set,%ApiRegVMType%,qemu
+Set,%mounttype%,qemu
+Run,%ScriptFile%,runqemu,%pNumberBox1%,APIREGVM,""
+End
+Else,Begin
+//--
+Run,%ScriptFile%,waitvm
+Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%vmlocation%\APIREGVM.vmx#$q&del /q /f /A:R /A:H /A:S /A:A #$q%vmlocation%\APIREGVM.vmx#$q"
+If,ExistFile,%vmlocation%\APIREGVM.vmx,FileDelete,%vmlocation%\APIREGVM.vmx
+If,ExistFile,%vmlocation%\APIREGVM.vmsd,Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%vmlocation%\APIREGVM.vmsd#$q&del /q /f /A:R /A:H /A:S /A:A #$q%vmlocation%\APIREGVM.vmsd#$q"
+If,ExistFile,%vmlocation%\APIREGVM.vmxf,Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%vmlocation%\APIREGVM.vmxf#$q&del /q /f /A:R /A:H /A:S /A:A #$q%vmlocation%\APIREGVM.vmxf#$q"
+If,ExistFile,%vmlocation%\APIREGVM.vmem,Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%vmlocation%\APIREGVM.vmem#$q&del /q /f /A:R /A:H /A:S /A:A #$q%vmlocation%\APIREGVM.vmem#$q"
+If,ExistFile,%vmlocation%\APIREGVM.vmss,Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%vmlocation%\APIREGVM.vmss#$q&del /q /f /A:R /A:H /A:S /A:A #$q%vmlocation%\APIREGVM.vmss#$q"
+If,ExistFile,%vmlocation%\APIREGVM.vmsd,FileDelete,%vmlocation%\APIREGVM.vmsd
+If,ExistFile,%vmlocation%\APIREGVM.vmxf,FileDelete,%vmlocation%\APIREGVM.vmxf
+If,ExistFile,%vmlocation%\APIREGVM.vmem,FileDelete,%vmlocation%\APIREGVM.vmem
+If,ExistFile,%vmlocation%\APIREGVM.vmss,FileDelete,%vmlocation%\APIREGVM.vmss
+//--
+//SYSTEM,ERROROFF
+//FileDelete,%vmlocation%\vmware.log
+If,ExistFile,%vmlocation%\vmware.log,Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%vmlocation%\vmware.log#$q&del /q /f /A:R /A:H /A:S /A:A #$q%vmlocation%\vmware.log#$q"
+SYSTEM,ERROROFF
+If,ExistFile,%vmlocation%\vmware.log,FileDelete,%vmlocation%\vmware.log
+//--
+//SYSTEM,ERROROFF
+//FileDelete,%vmlocation%\vmware-0.log
+If,ExistFile,%vmlocation%\vmware-0.log,Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%vmlocation%\vmware-0.log#$q&del /q /f /A:R /A:H /A:S /A:A #$q%vmlocation%\vmware-0.log#$q"
+SYSTEM,ERROROFF
+If,ExistFile,%vmlocation%\vmware-0.log,FileDelete,%vmlocation%\vmware-0.log
+//--
+End
+
+[checkqemu]
+Set,%vmpath%,#1
+If,%vmpath%,Equal,"",Set,%vmpath%,%ProjectTemp%\qEmu\qemu.exe
+Set,%vmcheck%,""
+If,Not,ExistFile,%vmpath%,Begin
+If,ExistFile,%ProjectDir%\VirtualTest\qEmu.Script,Exec,%ProjectDir%\VirtualTest\qEmu.Script,Extraction
+End
+If,Not,ExistFile,%vmpath%,Set,%vmcheck%,"QEMU not found."
+If,#2,Equal,yes,Begin
+If,Not,%vmcheck%,Equal,"",Run,%ScriptFile%,exitscript,%vmcheck%
+End
+
+[runqemu]
+Set,%vmramsize%,#1
+Set,%vmname%,#2
+Set,%vmpath%,#3
+Set,%switches%,"-hda #$q%vmlocation%\hdd.bin#$q -m %vmramsize% -boot c -L #$q%ProjectTemp%\qEmu#$q -no-kqemu -localtime -net none"
+Run,%ScriptFile%,checkqemu,#3
+Echo,"Starting QEMU ... please wait."
+ShellExecuteEx,Hide,%vmpath%,%switches%
+//ShellExecuteEx,Open,%vmpath%,%switches%
+Run,%ScriptFile%,waitvm
+
+[checkvbox]
+Set,%vmpath%,#1
+Set,%count%,0
+if,%vmpath%,Equal,"",Begin
+Set,%vmdir%,""
+System,ERROROFF
+If,%vmdir%,Equal,"",RegRead,HKLM,SOFTWARE\InnoTek\VirtualBox,InstallDir,%vmdir%
+System,ERROROFF
+If,%vmdir%,Equal,"",RegRead,HKLM,"SOFTWARE\Sun\xVM VirtualBox",InstallDir,%vmdir%
+System,REGREDIRECT,64
+System,ERROROFF
+If,%vmdir%,Equal,"",RegRead,HKLM,"SOFTWARE\Sun\xVM VirtualBox",InstallDir,%vmdir%
+System,REGREDIRECT,OFF
+System,ERROROFF
+If,%vmdir%,Equal,"",RegRead,HKLM,SOFTWARE\Sun\VirtualBox,InstallDir,%vmdir%
+System,REGREDIRECT,64
+System,ERROROFF
+If,%vmdir%,Equal,"",RegRead,HKLM,SOFTWARE\Sun\VirtualBox,InstallDir,%vmdir%
+System,REGREDIRECT,OFF
+//--
+System,ERROROFF
+If,%vmdir%,Equal,"",RegRead,HKLM,SOFTWARE\Oracle\VirtualBox,InstallDir,%vmdir%
+System,REGREDIRECT,64
+System,ERROROFF
+If,%vmdir%,Equal,"",RegRead,HKLM,SOFTWARE\Oracle\VirtualBox,InstallDir,%vmdir%
+System,REGREDIRECT,OFF
+End
+If,%vmpath%,Equal,"",Begin
+If,Not,%vmdir%,Equal,"",Begin
+StrFormat,CTRIM,%vmdir%,"#$q",%vmdir%
+StrFormat,CTRIM,%vmdir%,"\",%vmdir%
+If,Not,%vmdir%,Equal,"",Set,%vmpath%,%vmdir%\VirtualBox.exe
+End
+End
+If,Not,%vmpath%,Equal,"",Begin
+StrFormat,path,%vmpath%,%vmdir%
+StrFormat,CTRIM,%vmdir%,"\",%vmdir%
+End
+If,Not,%vmdir%,Equal,"",Set,%vmutil%,%vmdir%\VBoxManage.exe
+Set,%vmcheck%,""
+If,%vmpath%,Equal,"",Set,%vmcheck%,"VirtualBox not found."
+If,Not,ExistFile,%vmpath%,Set,%vmcheck%,"VirtualBox not found."
+If,%vmutil%,Equal,"",Set,%vmcheck%,"VirtualBox manager not found."
+If,Not,ExistFile,%vmutil%,Set,%vmcheck%,"VirtualBox manager not found."
+If,#2,Equal,yes,Begin
+If,Not,%vmcheck%,Equal,"",Run,%ScriptFile%,exitscript,%vmcheck%
+End
+
+[runvbox]
+Set,%vmramsize%,#1
+Set,%vmname%,#2
+Set,%vmpath%,#3
+Set,%switches%,"-nologo -acpi on -ioapic off -pae off -biosbootmenu disabled -audio none -nic1 none -nic2 none -nic3 none -nic4 none -usb off -usbehci off -uart1 off -uart2 off -floppy disabled -sata off -clipboard disabled -vrdp off"
+Run,%ScriptFile%,checkvbox,#3
+ShellExecute,Hide,%vmutil%,"modifyvm %vmname% -hda none"
+ShellExecute,Hide,%vmutil%,"modifyvm %vmname% -hdb none"
+ShellExecute,Hide,%vmutil%,"modifyvm %vmname% -hdd none"
+ShellExecute,Hide,%vmutil%,"modifyvm %vmname% -dvd none"
+// unregisterimage problem for vbox < 2.1
+Set,%vmver%,""
+System,ERROROFF
+If,%vmver%,Equal,"",RegRead,HKLM,SOFTWARE\InnoTek\VirtualBox,Version,%vmver%
+System,ERROROFF
+If,%vmver%,Equal,"",RegRead,HKLM,"SOFTWARE\Sun\xVM VirtualBox",Version,%vmver%
+System,REGREDIRECT,64
+System,ERROROFF
+If,%vmver%,Equal,"",RegRead,HKLM,"SOFTWARE\Sun\xVM VirtualBox",Version,%vmver%
+System,REGREDIRECT,OFF
+System,ERROROFF
+If,%vmver%,Equal,"",RegRead,HKLM,SOFTWARE\Oracle\VirtualBox,Version,%vmver%
+System,REGREDIRECT,64
+System,ERROROFF
+If,%vmver%,Equal,"",RegRead,HKLM,SOFTWARE\Oracle\VirtualBox,Version,%vmver%
+System,REGREDIRECT,OFF
+Set,%image%,%vmlocation%\hdd.vmdk
+if,%vmver%,SMALLER,2.1.0,Begin
+Set,%imageuid%,""
+ShellExecute,hide,cmd.exe,"/a /c #$q#$q%vmutil%#$q list hdds > #$q%ProjectTemp%\info.txt#$q#$q"
+If,ExistFile,%ProjectTemp%\info.txt,Begin
+TXTReplace,%ProjectTemp%\info.txt," ",""
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegDir,%ApiRegDir%
+ShellExecute,hide,%ApiRegDir%\ApiRegUtil.exe,"makeini#$s#$q%ProjectTemp%\info.txt#$q#$s#$qUUID:#$q#$s#$qLocation:#$q"
+TXTReplace,%ProjectTemp%\info.txt,UUID:,UUID=
+IniRead,%ProjectTemp%\info.txt,%vmlocation%\hdd.vmdk,UUID,%imageuid%
+If,Not,%imageuid%,Equal,"",Set,%image%,%imageuid%
+Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%ProjectTemp%\info.txt#$q&del /q /f /A:R /A:H /A:S /A:A #$q%ProjectTemp%\info.txt#$q"
+If,ExistFile,%ProjectTemp%\info.txt,FileDelete,%ProjectTemp%\info.txt
+End
+End
+ShellExecute,Hide,%vmutil%,"unregisterimage disk #$q%image%#$q"
+ShellExecute,Hide,%vmutil%,"unregistervm %vmname% -delete"
+ShellExecute,Hide,%vmutil%,"createvm -name %vmname% -register"
+ShellExecute,Hide,%vmutil%,"registerimage disk #$q%vmlocation%\hdd.vmdk#$q -type writethrough"
+ShellExecute,Hide,%vmutil%,"modifyvm %vmname% -hda #$q%vmlocation%\hdd.vmdk#$q"
+ShellExecute,Hide,%vmutil%,"modifyvm %vmname% -memory %vmramsize%"
+ShellExecute,Hide,%vmutil%,"modifyvm %vmname% -boot1 hda"
+ShellExecute,Hide,%vmutil%,"modifyvm %switches%"
+Echo,"Starting VirtualBox ... please wait."
+ShellExecuteEx,hide,"#$q%vmutil%#$q","startvm#$s%vmname%"
+Run,%ScriptFile%,waitvm
+ShellExecute,Hide,%vmutil%,"modifyvm %vmname% -hda none"
+ShellExecute,Hide,%vmutil%,"modifyvm %vmname% -hdb none"
+ShellExecute,Hide,%vmutil%,"modifyvm %vmname% -hdd none"
+ShellExecute,Hide,%vmutil%,"modifyvm %vmname% -dvd none"
+// unregisterimage problem for vbox < 2.1
+Set,%image%,%vmlocation%\hdd.vmdk
+if,%vmver%,SMALLER,2.1.0,Begin
+Set,%imageuid%,""
+ShellExecute,hide,cmd.exe,"/a /c #$q#$q%vmutil%#$q list hdds > #$q%ProjectTemp%\info.txt#$q#$q"
+If,ExistFile,%ProjectTemp%\info.txt,Begin
+TXTReplace,%ProjectTemp%\info.txt," ",""
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegDir,%ApiRegDir%
+ShellExecute,hide,%ApiRegDir%\ApiRegUtil.exe,"makeini#$s#$q%ProjectTemp%\info.txt#$q#$s#$qUUID:#$q#$s#$qLocation:#$q"
+TXTReplace,%ProjectTemp%\info.txt,UUID:,UUID=
+IniRead,%ProjectTemp%\info.txt,%vmlocation%\hdd.vmdk,UUID,%imageuid%
+If,Not,%imageuid%,Equal,"",Set,%image%,%imageuid%
+Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%ProjectTemp%\info.txt#$q&del /q /f /A:R /A:H /A:S /A:A #$q%ProjectTemp%\info.txt#$q"
+If,ExistFile,%ProjectTemp%\info.txt,FileDelete,%ProjectTemp%\info.txt
+End
+End
+ShellExecute,Hide,%vmutil%,"unregisterimage disk #$q%image%#$q"
+ShellExecute,Hide,%vmutil%,"unregistervm %vmname% -delete"
+
+[waitvm]
+Set,%apireginfo%,"Waiting for VM "
+If,ExistFile,%vmlocation%\hdd.bin,Begin
+If,ExistFile,%vmlocation%\hdd.tmp,Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%vmlocation%\hdd.tmp#$q&del /q /f /A:R /A:H /A:S /A:A #$q%vmlocation%\hdd.tmp#$q"
+//If,ExistFile,%vmlocation%\hdd.tmp,FileDelete,%vmlocation%\hdd.tmp
+Loop,%ScriptFile%,checkhdd,1,5,no
+Loop,%ScriptFile%,checkhdd,1,999,yes
+Wait,1
+FileRename,%vmlocation%\hdd.tmp,%vmlocation%\hdd.bin
+End
+
+[checkhdd]
+Set,%apireginfo%,%apireginfo%.
+Echo,%apireginfo%
+Wait,3
+//System,ERROROFF
+//If,#1,Equal,yes,FileRename,%vmlocation%\hdd.bin,%vmlocation%\hdd.tmp
+If,#1,Equal,yes,Shellexecute,Hide,cmd.exe,"/C ren #$q%vmlocation%\hdd.bin#$q hdd.tmp"
+If,ExistFile,%vmlocation%\hdd.tmp,Loop,BREAK
+
+[installhdd]
+Run,%ScriptFile%,umountimage
+If,Not,ExistDir,%vmlocation%,DirMake,%vmlocation%
+Echo,"Creating virtual HDD ..."
+If,ExistFile,%vmlocation%\hdd.tmp,Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%vmlocation%\hdd.tmp#$q&del /q /f /A:R /A:H /A:S /A:A #$q%vmlocation%\hdd.tmp#$q"
+If,ExistFile,%vmlocation%\hdd.bin,Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%vmlocation%\hdd.bin#$q&del /q /f /A:R /A:H /A:S /A:A #$q%vmlocation%\hdd.bin#$q"
+If,ExistFile,%vmlocation%\hdd.vmdk,Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%vmlocation%\hdd.vmdk#$q&del /q /f /A:R /A:H /A:S /A:A #$q%vmlocation%\hdd.vmdk#$q"
+If,ExistFile,%vmlocation%\hdd.tmp,FileDelete,%vmlocation%\hdd.tmp
+If,ExistFile,%vmlocation%\hdd.bin,FileDelete,%vmlocation%\hdd.bin
+If,ExistFile,%vmlocation%\hdd.vmdk,FileDelete,%vmlocation%\hdd.vmdk
+//ExtractFile,%ScriptFile%,files,hddinfo.txt,%ApiRegDir%
+//If,#1,Equal,vbox,ExtractFile,%ScriptFile%,files,hdd.vmdk,%vmlocation%
+//If,#1,Equal,vmware,ExtractFile,%ScriptFile%,files,hdd.vmdk,%vmlocation%
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegScriptFiles,%ApiRegScriptFiles%
+ExtractFile,%ApiRegScriptFiles%,files,hddinfo.txt,%ApiRegDir%
+If,#1,Equal,vbox,ExtractFile,%ApiRegScriptFiles%,files,hdd.vmdk,%vmlocation%
+If,#1,Equal,vmware,ExtractFile,%ApiRegScriptFiles%,files,hdd.vmdk,%vmlocation%
+//512
+//ShellExecute,hide,%ApiRegDir%\ApiRegUtil.exe,"makehdd#$s20000200#$s#$q%ApiRegDir%\hddinfo.txt#$q#$s#$q%vmlocation%\hdd.bin#$q#$ssparsefile"
+//1023
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegDir,%ApiRegDir%
+ShellExecute,hide,%ApiRegDir%\ApiRegUtil.exe,"makehdd#$s3FF00200#$s#$q%ApiRegDir%\hddinfo.txt#$q#$s#$q%vmlocation%\hdd.bin#$q#$ssparsefile"
+If,Not,Existfile,%vmlocation%\hdd.bin,Echo,"%vmlocation%\hdd.bin NOT FOUND - Restart Builder and Build again"
+If,Not,Existfile,%vmlocation%\hdd.bin,Halt,"%vmlocation%\hdd.bin NOT FOUND - Restart Builder and Build again"
+If,ExistFile,%ApiRegDir%\hddinfo.txt,Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%ApiRegDir%\hddinfo.txt#$q&del /q /f /A:R /A:H /A:S /A:A #$q%ApiRegDir%\hddinfo.txt#$q"
+If,ExistFile,%ApiRegDir%\hddinfo.txt,FileDelete,%ApiRegDir%\hddinfo.txt
+
+[createhdd]
+//wb \ bug - This is first section that is used to copy to %ApiRegHDDDrive% - If %ApiRegHDDDrive% value empty than it copies to root folder of drive
+If,%ApiRegHDDDrive%-,Equal,-,Echo,"ApiRegHDDDrive=%ApiRegHDDDrive% Value Empty - Halt",Warn
+If,%ApiRegHDDDrive%-,Equal,-,Halt,"ApiRegHDDDrive=%ApiRegHDDDrive% Value Empty - Halt"
+//-
+Echo,"Creating virtual environment ..."
+IniRead,%PInfo%,String,ProgramFiles,%progdir%
+IniRead,%PInfo%,String,CommonFiles,%commonfilesfolder%
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegHDDDrive,%ApiRegHDDDrive%
+DirMake,%ApiRegHDDDrive%\minint
+DirMake,%ApiRegHDDDrive%\I386
+DirMake,"%ApiRegHDDDrive%\%progdir%\Internet Explorer"
+DirMake,%ApiRegHDDDrive%\%progdir%\%commonfilesfolder%
+If,ExistDir,"%TargetDir%\%progdir%\Internet Explorer",FileCopy,"%TargetDir%\%progdir%\Internet Explorer\*","%ApiRegHDDDrive%\%progdir%\Internet Explorer"
+If,ExistDir,%TargetDir%\%progdir%\%commonfilesfolder%,FileCopy,%TargetDir%\%progdir%\%commonfilesfolder%\*,%ApiRegHDDDrive%\%progdir%\%commonfilesfolder%
+//DirCopy,%TargetDir%\*,%ApiRegHDDDrive%
+Echo,"Copying I386 folder ..."
+FileCopy,%TargetDir%\I386\*,%ApiRegHDDDrive%\I386
+//--
+IniRead,%PInfo%,RamDrive,Settings,%TmpDrive%
+IniRead,%PInfo%,RamDrive,DriveLetter,%RamDisk%
+If,%TmpDrive%,Equal,%RamDisk%,Begin
+DirMake,%ApiRegHDDDrive%\BasePrfile
+FileCopy,%TargetProfilesBaseDir%\*,%ApiRegHDDDrive%\BasePrfile
+End
+Else,Begin
+IniRead,%PInfo%,String,ProfileBase,%DirSettings%
+DirMake,%ApiRegHDDDrive%\%DirSettings%
+FileCopy,%TargetProfilesBaseDir%\%DirSettings%\*,%ApiRegHDDDrive%\%DirSettings%
+End
+//--
+//If,ExistDir,%ModelRam%,Be gin
+//IniRead,%PInfo%,RamDrive,Settings,%TmpDrive%
+//IniRead,%PInfo%,RamDrive,DriveLetter,%RamDisk%
+//If,%TmpDrive%,Equal,%RamDisk%,Be gin
+//DirMake,%ApiRegHDDDrive%\$ModelRAM
+//If,ExistDir,%ModelRam%,FileCopy,%ModelRam%\*,%ApiRegHDDDrive%\$ModelRAM
+//Else,Be gin
+//If,ExistDir,%ProjectTemp%\Model\$ModelRAM,FileCopy,%ProjectTemp%\Model\$ModelRAM\*,%ApiRegHDDDrive%\$ModelRAM
+//E nd
+//E nd
+//Else,Be gin
+//If,ExistDir,%ModelRam%,FileCopy,%ModelRam%\*,%ApiRegHDDDrive%
+//E nd
+//E nd
+//--
+FileCopy,%ApiRegHDDDrive%\I386\NTDETECT.COM,%ApiRegHDDDrive%\NTDETECT.COM
+FileCopy,%ApiRegHDDDrive%\I386\SETUPLDR.BIN,%ApiRegHDDDrive%\ntldr
+If,ExistFile,%TargetDir%\BOOT,FileCopy,%TargetDir%\BOOT,%ApiRegHDDDrive%\BOOT
+If,ExistFile,%TargetDir%\BOOTFONT.BIN,FileCopy,%TargetDir%\BOOTFONT.BIN,%ApiRegHDDDrive%\BOOTFONT.BIN
+If,ExistSection,%ApiRegHDDDrive%\I386\txtsetup.sif,DiskDrivers,IniDeleteSection,%ApiRegHDDDrive%\I386\txtsetup.sif,DiskDrivers
+If,ExistSection,%ApiRegHDDDrive%\I386\txtsetup.sif,DiskDrivers.Load,IniDeleteSection,%ApiRegHDDDrive%\I386\txtsetup.sif,DiskDrivers.Load
+If,ExistSection,%ApiRegHDDDrive%\I386\txtsetup.sif,FileSystems,IniDeleteSection,%ApiRegHDDDrive%\I386\txtsetup.sif,FileSystems
+If,ExistSection,%ApiRegHDDDrive%\I386\txtsetup.sif,FileSystems.Load,IniDeleteSection,%ApiRegHDDDrive%\I386\txtsetup.sif,FileSystems.Load
+If,ExistSection,%ApiRegHDDDrive%\I386\txtsetup.sif,BootBusExtenders,IniDeleteSection,%ApiRegHDDDrive%\I386\txtsetup.sif,BootBusExtenders
+If,ExistSection,%ApiRegHDDDrive%\I386\txtsetup.sif,BootBusExtenders.Load,IniDeleteSection,%ApiRegHDDDrive%\I386\txtsetup.sif,BootBusExtenders.Load
+If,ExistSection,%ApiRegHDDDrive%\I386\txtsetup.sif,BusExtenders,IniDeleteSection,%ApiRegHDDDrive%\I386\txtsetup.sif,BusExtenders
+If,ExistSection,%ApiRegHDDDrive%\I386\txtsetup.sif,BusExtenders.Load,IniDeleteSection,%ApiRegHDDDrive%\I386\txtsetup.sif,BusExtenders.Load
+If,ExistSection,%ApiRegHDDDrive%\I386\txtsetup.sif,HardwareIdsDatabase,IniDeleteSection,%ApiRegHDDDrive%\I386\txtsetup.sif,HardwareIdsDatabase
+If,ExistSection,%ApiRegHDDDrive%\I386\txtsetup.sif,Hal,IniDeleteSection,%ApiRegHDDDrive%\I386\txtsetup.sif,Hal
+If,ExistSection,%ApiRegHDDDrive%\I386\txtsetup.sif,Hal.Load,IniDeleteSection,%ApiRegHDDDrive%\I386\txtsetup.sif,Hal.Load
+If,ExistSection,%ApiRegHDDDrive%\I386\txtsetup.sif,Keyboard,IniDeleteSection,%ApiRegHDDDrive%\I386\txtsetup.sif,Keyboard
+If,ExistSection,%ApiRegHDDDrive%\I386\txtsetup.sif,Keyboard.Load,IniDeleteSection,%ApiRegHDDDrive%\I386\txtsetup.sif,Keyboard.Load
+If,ExistSection,%ApiRegHDDDrive%\I386\txtsetup.sif,ScsiClass,IniDeleteSection,%ApiRegHDDDrive%\I386\txtsetup.sif,ScsiClass
+If,ExistSection,%ApiRegHDDDrive%\I386\txtsetup.sif,ScsiClass.Load,IniDeleteSection,%ApiRegHDDDrive%\I386\txtsetup.sif,ScsiClass.Load
+If,ExistSection,%ApiRegHDDDrive%\I386\txtsetup.sif,Scsi.Load,IniDeleteSection,%ApiRegHDDDrive%\I386\txtsetup.sif,Scsi.Load
+If,ExistSection,%ApiRegHDDDrive%\I386\txtsetup.sif,FloppyDrivers.Load,IniDeleteSection,%ApiRegHDDDrive%\I386\txtsetup.sif,FloppyDrivers.Load
+If,ExistSection,%ApiRegHDDDrive%\I386\txtsetup.sif,CdRomDrivers.Load,IniDeleteSection,%ApiRegHDDDrive%\I386\txtsetup.sif,CdRomDrivers.Load
+If,ExistSection,%ApiRegHDDDrive%\I386\txtsetup.sif,SpecialFiles,IniDeleteSection,%ApiRegHDDDrive%\I386\txtsetup.sif,SpecialFiles
+If,ExistSection,%ApiRegHDDDrive%\I386\txtsetup.sif,Computer,IniDeleteSection,%ApiRegHDDDrive%\I386\txtsetup.sif,Computer
+If,ExistSection,%ApiRegHDDDrive%\I386\txtsetup.sif,Display,IniDeleteSection,%ApiRegHDDDrive%\I386\txtsetup.sif,Display
+If,ExistSection,%ApiRegHDDDrive%\I386\txtsetup.sif,Mouse,IniDeleteSection,%ApiRegHDDDrive%\I386\txtsetup.sif,Mouse
+If,ExistSection,%ApiRegHDDDrive%\I386\txtsetup.sif,Keyboard,IniDeleteSection,%ApiRegHDDDrive%\I386\txtsetup.sif,Keyboard
+If,ExistSection,%ApiRegHDDDrive%\I386\txtsetup.sif,InputDevicesSupport,IniDeleteSection,%ApiRegHDDDrive%\I386\txtsetup.sif,InputDevicesSupport
+//ExtractFile,%ScriptFile%,files,txtsetup.ini,%ApiRegHDDDrive%\I386
+ExtractFile,%ApiRegScriptFiles%,files,txtsetup.ini,%ApiRegHDDDrive%\I386
+IniMerge,%ApiRegHDDDrive%\I386\txtsetup.ini,%ApiRegHDDDrive%\I386\txtsetup.sif
+FileCopy,%ApiRegHDDDrive%\I386\txtsetup.sif,%ApiRegHDDDrive%\minint\txtsetup.sif
+Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%ApiRegHDDDrive%\I386\txtsetup.sif#$q&del /q /f /A:R /A:H /A:S /A:A #$q%ApiRegHDDDrive%\I386\txtsetup.sif#$q"
+Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%ApiRegHDDDrive%\I386\txtsetup.ini#$q&del /q /f /A:R /A:H /A:S /A:A #$q%ApiRegHDDDrive%\I386\txtsetup.ini#$q"
+If,ExistFile,%ApiRegHDDDrive%\I386\txtsetup.sif,FileDelete,%ApiRegHDDDrive%\I386\txtsetup.sif
+If,ExistFile,%ApiRegHDDDrive%\I386\txtsetup.ini,FileDelete,%ApiRegHDDDrive%\I386\txtsetup.ini
+IniWrite,%ApiRegHDDDrive%\minint\txtsetup.sif,SetupData,BootPath,\I386\System32\
+IniDelete,%ApiRegHDDDrive%\minint\txtsetup.sif,SetupData,loaderprompt
+If,ExistFile,%ApiRegHDDDrive%\I386\System32\HAL.DLL,Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%ApiRegHDDDrive%\I386\System32\HAL.DLL#$q&del /q /f /A:R /A:H /A:S /A:A #$q%ApiRegHDDDrive%\I386\System32\HAL.DLL#$q"
+If,ExistFile,%ApiRegHDDDrive%\I386\System32\HAL.DLL,FileDelete,%ApiRegHDDDrive%\I386\System32\HAL.DLL
+If,ExistFile,%ApiRegHDDDrive%\I386\System32\HAL.DL_,Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%ApiRegHDDDrive%\I386\System32\HAL.DL_#$q&del /q /f /A:R /A:H /A:S /A:A #$q%ApiRegHDDDrive%\I386\System32\HAL.DL_#$q"
+If,ExistFile,%ApiRegHDDDrive%\I386\System32\HAL.DL_,FileDelete,%ApiRegHDDDrive%\I386\System32\HAL.DL_
+CopyOrExpand,%Source_Win%\HAL.DLL,%ApiRegHDDDrive%\I386\System32
+
+[mountimagegui]
+Set,%guimode%,yes
+Run,%ScriptFile%,mountimage
+If,Not,%ApiRegHDDDrive%,Equal,"",Begin
+Message,"Attached virtual HDD as Drive %ApiRegHDDDrive%",Information,3
+End
+Else,Begin
+Message,"Failed to attach virtual HDD.",Information,3
+End
+Set,%guimode%,no
+
+[umountimagegui]
+Set,%guimode%,yes
+Run,%ScriptFile%,umountimage
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegHDDDrive,%ApiRegHDDDrive%
+If,%ApiRegHDDDrive%,Equal,"",Begin
+Message,"Detached virtual HDD.",Information,3
+End
+Else,Begin
+Message,"Failed to detach virtual HDD.",Information,3
+End
+Set,%guimode%,no
+
+[mountimage]
+Run,%ScriptFile%,vmlocation
+//Run,%ScriptFile%,umountimage
+Set,%t%,""
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegHDDDrive,%t%
+If,%t%,Equal,"",Begin
+Set,%ApiRegHDDDrive%,""
+IniWrite,%Projectdir%\Script.Project,IniVariables,ApiRegHDDDrive,""
+End
+Set,%apiregfreedrive%,%ApiRegHDDDrive%
+If,%apiregfreedrive%,Equal,"",Begin
+Echo,"Attaching virtual HDD ..."
+System,GETFREEDRIVE,%apiregfreedrive%
+System,FILEREDIRECT,ON
+If,ExistFile,%vmlocation%\hdd.bin,Begin
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegIMDISK,%ApiRegIMDISK%
+If,Not,ExistFile,%ApiRegIMDISK%,System,FILEREDIRECT,OFF
+//512
+//ShellExecute,Hide,%ApiRegIMDISK%,"-a#$s-t#$sfile#$s-f#$s#$q%vmlocation%\hdd.bin#$q#$s-s#$s536739840#$s-b#$s32256#$s-o#$shd#$crem#$s-m#$s%apiregfreedrive%"
+//1023
+ShellExecute,Hide,%ApiRegIMDISK%,"-a#$s-t#$sfile#$s-f#$s#$q%vmlocation%\hdd.bin#$q#$s-s#$s1067216896#$s-b#$s32256#$s-o#$shd#$crem#$s-m#$s%apiregfreedrive%"
+Set,%ApiRegHDDDrive%,%apiregfreedrive%
+IniWrite,%Projectdir%\Script.Project,IniVariables,ApiRegHDDDrive,%ApiRegHDDDrive%
+End
+Else,Begin
+Set,%apiregfreedrive%,""
+End
+System,FILEREDIRECT,ON
+If,Not,%apiregfreedrive%,Equal,"",Begin
+If,Not,ExistDir,%apiregfreedrive%,Begin
+If,Not,ExistDir,%apiregfreedrive%,Run,%ScriptFile%,ImdiskWait
+If,Not,ExistDir,%apiregfreedrive%,Run,%ScriptFile%,ImdiskWait
+If,Not,ExistDir,%apiregfreedrive%,Run,%ScriptFile%,ImdiskWait
+If,Not,ExistDir,%apiregfreedrive%,Run,%ScriptFile%,ImdiskWait
+If,Not,ExistDir,%apiregfreedrive%,Run,%ScriptFile%,ImdiskWait
+If,Not,ExistDir,%apiregfreedrive%,Run,%ScriptFile%,ImdiskWait
+If,Not,ExistDir,%apiregfreedrive%,Run,%ScriptFile%,ImdiskWait
+If,Not,ExistDir,%apiregfreedrive%,Run,%ScriptFile%,ImdiskWait
+If,Not,ExistDir,%apiregfreedrive%,Run,%ScriptFile%,ImdiskWait
+If,Not,ExistDir,%apiregfreedrive%,Run,%ScriptFile%,ImdiskWait
+End
+If,Not,ExistDir,%apiregfreedrive%,Begin
+Run,%ScriptFile%,exitscript,"Failed to attach virtual HDD."
+End
+End
+End
+
+[umountimage]
+Run,%ScriptFile%,vmlocation
+Set,%t%,""
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegHDDDrive,%t%
+If,%t%,Equal,"",Begin
+Set,%ApiRegHDDDrive%,""
+IniWrite,%Projectdir%\Script.Project,IniVariables,ApiRegHDDDrive,""
+End
+Set,%apiregfreedrive%,%ApiRegHDDDrive%
+If,Not,%apiregfreedrive%,Equal,"",Begin
+Echo,"Detaching virtual HDD ..."
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegIMDISK,%ApiRegIMDISK%
+System,FILEREDIRECT,ON
+If,Not,ExistFile,%ApiRegIMDISK%,System,FILEREDIRECT,OFF
+ShellExecuteEx,Hide,%ApiRegIMDISK%,"-d#$s-m#$s%apiregfreedrive%"
+System,FILEREDIRECT,ON
+If,ExistDir,%apiregfreedrive%,Begin
+If,ExistDir,%apiregfreedrive%,Run,%ScriptFile%,ImdiskWait
+If,ExistDir,%apiregfreedrive%,Run,%ScriptFile%,ImdiskWait
+//If,ExistDir,%apiregfreedrive%,Run,%ScriptFile%,ImdiskWait
+//If,ExistDir,%apiregfreedrive%,Run,%ScriptFile%,ImdiskWait
+//If,ExistDir,%apiregfreedrive%,Run,%ScriptFile%,ImdiskWait
+//If,ExistDir,%apiregfreedrive%,Run,%ScriptFile%,ImdiskWait
+//If,ExistDir,%apiregfreedrive%,Run,%ScriptFile%,ImdiskWait
+//If,ExistDir,%apiregfreedrive%,Run,%ScriptFile%,ImdiskWait
+//If,ExistDir,%apiregfreedrive%,Run,%ScriptFile%,ImdiskWait
+//If,ExistDir,%apiregfreedrive%,Run,%ScriptFile%,ImdiskWait
+End
+//--
+If,ExistDir,%apiregfreedrive%,Begin
+System,FILEREDIRECT,ON
+If,Not,ExistFile,%ApiRegIMDISK%,System,FILEREDIRECT,OFF
+ShellExecuteEx,Hide,%ApiRegIMDISK%,"-D -m %apiregfreedrive%"
+System,FILEREDIRECT,ON
+If,ExistDir,%apiregfreedrive%,Begin
+If,ExistDir,%apiregfreedrive%,Run,%ScriptFile%,ImdiskWait
+If,ExistDir,%apiregfreedrive%,Run,%ScriptFile%,ImdiskWait
+If,ExistDir,%apiregfreedrive%,Run,%ScriptFile%,ImdiskWait
+If,ExistDir,%apiregfreedrive%,Run,%ScriptFile%,ImdiskWait
+If,ExistDir,%apiregfreedrive%,Run,%ScriptFile%,ImdiskWait
+If,ExistDir,%apiregfreedrive%,Run,%ScriptFile%,ImdiskWait
+If,ExistDir,%apiregfreedrive%,Run,%ScriptFile%,ImdiskWait
+If,ExistDir,%apiregfreedrive%,Run,%ScriptFile%,ImdiskWait
+If,ExistDir,%apiregfreedrive%,Run,%ScriptFile%,ImdiskWait
+If,ExistDir,%apiregfreedrive%,Run,%ScriptFile%,ImdiskWait
+End
+End
+//--
+If,Not,ExistDir,%apiregfreedrive%,Begin
+Set,%ApiRegHDDDrive%,""
+IniWrite,%Projectdir%\Script.Project,IniVariables,ApiRegHDDDrive,""
+End
+Else,Begin
+Set,%infomassage%,"Failed to detach virtual HDD.#$x"
+Set,%infomassage%,"%infomassage%Please detach virtual HDD manually:#$x"
+Set,%infomassage%,"%infomassage%Navigate in Windows Explorer to drive 'APIREGHDD'.#$x"
+Set,%infomassage%,"%infomassage%From context menu of drive 'APIREGHDD' #$xselect 'Unmount ImDisk Virtual Disk'.#$x"
+Set,%infomassage%,"%infomassage%Wait until virtual HDD is detached and continue."
+Message,%infomassage%,Information
+If,ExistDir,%apiregfreedrive%,Begin
+Run,%ScriptFile%,exitscript,"Failed to detach virtual HDD."
+End
+Else,Begin
+Set,%ApiRegHDDDrive%,""
+IniWrite,%Projectdir%\Script.Project,IniVariables,ApiRegHDDDrive,""
+End
+End
+End
+
+[ImdiskWait]
+Wait,1
+Wait,1
+Wait,1
+
+[stopservices]
+Echo,"Disable services ..."
+Run,%ScriptFile%,stopservice,6to4
+Run,%ScriptFile%,stopservice,ALG
+Run,%ScriptFile%,stopservice,AeLookupSvc
+Run,%ScriptFile%,stopservice,Alerter
+Run,%ScriptFile%,stopservice,AppMgmt
+Run,%ScriptFile%,stopservice,AudioSrv
+Run,%ScriptFile%,stopservice,BITS
+Run,%ScriptFile%,stopservice,Browser
+Run,%ScriptFile%,stopservice,COMSysApp
+Run,%ScriptFile%,stopservice,ClipSrv
+Run,%ScriptFile%,stopservice,Dhcp
+Run,%ScriptFile%,stopservice,Dnscache
+Run,%ScriptFile%,stopservice,ERSvc
+Run,%ScriptFile%,stopservice,EventSystem
+Run,%ScriptFile%,stopservice,Eventlog
+Run,%ScriptFile%,stopservice,HTTPFilter
+Run,%ScriptFile%,stopservice,HidServ
+Run,%ScriptFile%,stopservice,IASJet
+Run,%ScriptFile%,stopservice,IISADMIN
+Run,%ScriptFile%,stopservice,ImapiService
+Run,%ScriptFile%,stopservice,LmHosts
+Run,%ScriptFile%,stopservice,MDM
+Run,%ScriptFile%,stopservice,MSDTC
+Run,%ScriptFile%,stopservice,MSFtpsvc
+Run,%ScriptFile%,stopservice,MSIServer
+Run,%ScriptFile%,stopservice,Messenger
+Run,%ScriptFile%,stopservice,MsDtsServer
+Run,%ScriptFile%,stopservice,NetDDE
+Run,%ScriptFile%,stopservice,NetDDEdsdm
+Run,%ScriptFile%,stopservice,NetTcpPortSharing
+Run,%ScriptFile%,stopservice,Netman
+Run,%ScriptFile%,stopservice,Nla
+Run,%ScriptFile%,stopservice,NtLmSsp
+Run,%ScriptFile%,stopservice,NtmsSvc
+Run,%ScriptFile%,stopservice,PNRPSvc
+Run,%ScriptFile%,stopservice,PolicyAgent
+Run,%ScriptFile%,stopservice,RDSessMgr
+Run,%ScriptFile%,stopservice,RasAuto
+Run,%ScriptFile%,stopservice,RasMan
+Run,%ScriptFile%,stopservice,RemoteAccess
+Run,%ScriptFile%,stopservice,RemoteRegistry
+Run,%ScriptFile%,stopservice,RpcLocator
+Run,%ScriptFile%,stopservice,sacsvr
+Run,%ScriptFile%,stopservice,SCardSvr
+Run,%ScriptFile%,stopservice,SENS
+Run,%ScriptFile%,stopservice,SNMP
+Run,%ScriptFile%,stopservice,SNMPTRAP
+Run,%ScriptFile%,stopservice,SSDPSRV
+Run,%ScriptFile%,stopservice,Schedule
+Run,%ScriptFile%,stopservice,SharedAccess
+Run,%ScriptFile%,stopservice,ShellHWDetection
+Run,%ScriptFile%,stopservice,Spooler
+Run,%ScriptFile%,stopservice,SysmonLog
+Run,%ScriptFile%,stopservice,TapiSrv
+Run,%ScriptFile%,stopservice,TermService
+Run,%ScriptFile%,stopservice,Themes
+Run,%ScriptFile%,stopservice,TlntSvr
+Run,%ScriptFile%,stopservice,TrkWks
+Run,%ScriptFile%,stopservice,UPS
+Run,%ScriptFile%,stopservice,VSS
+Run,%ScriptFile%,stopservice,W32Time
+Run,%ScriptFile%,stopservice,W3SVC
+Run,%ScriptFile%,stopservice,WMPNetworkSvc
+Run,%ScriptFile%,stopservice,WSearch
+Run,%ScriptFile%,stopservice,WebClient
+Run,%ScriptFile%,stopservice,WinHttpAutoProxySvc
+Run,%ScriptFile%,stopservice,WmdmPmSN
+Run,%ScriptFile%,stopservice,Wmi
+Run,%ScriptFile%,stopservice,WmiApSrv
+Run,%ScriptFile%,stopservice,WudfSvc
+Run,%ScriptFile%,stopservice,aspnet_state
+Run,%ScriptFile%,stopservice,btwdins
+Run,%ScriptFile%,stopservice,cisvc
+Run,%ScriptFile%,stopservice,clr_optimization_v2.0.50727_32
+Run,%ScriptFile%,stopservice,dmadmin
+Run,%ScriptFile%,stopservice,dmserver
+Run,%ScriptFile%,stopservice,helpsvc
+Run,%ScriptFile%,stopservice,idsvc
+Run,%ScriptFile%,stopservice,lanmanserver
+Run,%ScriptFile%,stopservice,lanmanworkstation
+Run,%ScriptFile%,stopservice,mnmsrvc
+Run,%ScriptFile%,stopservice,p2pgasvc
+Run,%ScriptFile%,stopservice,p2pimsvc
+Run,%ScriptFile%,stopservice,p2psvc
+Run,%ScriptFile%,stopservice,seclogon
+Run,%ScriptFile%,stopservice,srservice
+Run,%ScriptFile%,stopservice,stisvc
+Run,%ScriptFile%,stopservice,swprv
+Run,%ScriptFile%,stopservice,upnphost
+Run,%ScriptFile%,stopservice,vds
+Run,%ScriptFile%,stopservice,winmgmt
+Run,%ScriptFile%,stopservice,wscsvc
+Run,%ScriptFile%,stopservice,wuauserv
+Run,%ScriptFile%,stopservice,EarlyStarter
+//vpc
+Run,%ScriptFile%,stopservice,1-driver-vmsrvc
+Run,%ScriptFile%,stopservice,1-vmsrvc
+Run,%ScriptFile%,stopservice,MRxVPC
+Run,%ScriptFile%,stopservice,VPCMap
+Run,%ScriptFile%,stopservice,msvmmouf
+Run,%ScriptFile%,stopservice,vpc-s3
+RegWrite,HKLM,0x7,Tmp_System\ControlSet001\Control\Class\{4D36E96F-E325-11CE-BFC1-08002BE10318},UpperFilters,mouclass
+//ramdisk
+Run,%ScriptFile%,stopservice,ImDisk
+Run,%ScriptFile%,stopservice,ImDskSvc
+Run,%ScriptFile%,stopservice,NTRamdrv
+Run,%ScriptFile%,stopservice,Ramdriv
+Run,%ScriptFile%,stopservice,RRamdisk
+Run,%ScriptFile%,stopservice,Ramdisk
+//fbwf
+Run,%ScriptFile%,stopservice,FBWF
+
+[stopservice]
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+If,ExistRegSection,HKLM,Tmp_System\ControlSet001\Services\#1,RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\#1,Start,4
+
+[exitscript]
+if,%guimode%,Equal,no,Begin
+IniRead,%Projectdir%\Script.Project,IniVariables,ApiRegBackupDir,%ApiRegBackupDir%
+Run,%ScriptFile%,backuprestore,restore
+Beep,Error
+Message,#1,Error
+Halt,#1
+End
+
+[InstallDComLaunch]
+If,Not,ExistFile,%Target_Sys%\msv1_0.dll,CopyOrExpand,%Source_Win%\msv1_0.dll,%Target_Sys%
+RegHiveLoad,Tmp_System,%Target_Sys%\setupreg.hiv
+//RegWrite,HKLM,0x7,Tmp_System\ControlSet001\Services\RpcSs,DependOnService,DcomLaunch,""
+RegWrite,HKLM,0x7,Tmp_System\ControlSet001\Services\RpcSs,DependOnService,DcomLaunch
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_DCOMLAUNCH,NextInstance,0x1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_DCOMLAUNCH\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_DCOMLAUNCH\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_DCOMLAUNCH\0000,ConfigFlags,0x0
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_DCOMLAUNCH\0000,DeviceDesc,"DCOM Services"
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_DCOMLAUNCH\0000,Legacy,0x1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_DCOMLAUNCH\0000,Service,DcomLaunch
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_DCOMLAUNCH\0000\Control,ActiveService,DcomLaunch
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Services\DcomLaunch,Description,"DCOM Services"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Services\DcomLaunch,DisplayName,"DCOM Services"
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\DcomLaunch,ErrorControl,0x1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Services\DcomLaunch,Group,"Event Log"
+RegWrite,HKLM,0x2,Tmp_System\ControlSet001\Services\DcomLaunch,ImagePath,"svchost -k DcomLaunch"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Services\DcomLaunch,ObjectName,LocalSystem
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\DcomLaunch,Start,0x2
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\DcomLaunch,Type,0x20
+RegWrite,HKLM,0x3,Tmp_System\ControlSet001\Services\DcomLaunch,FailureActions,00,00,00,00,00,00,00,00,00,00,00,00,01,00,00,00,00,00,00,00,02,00,00,00,60,ea,00,00
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Services\DcomLaunch\Enum,0,Root\LEGACY_DCOMLAUNCH\0000
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\DcomLaunch\Enum,Count,0x1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\DcomLaunch\Enum,NextInstance,0x1
+RegWrite,HKLM,0x2,Tmp_System\ControlSet001\Services\DcomLaunch\Parameters,ServiceDll,rpcss.dll
+RegHiveUnLoad,Tmp_System
+
+[EncodedFolders]
+files
+
+[files]
+
+[AuthorEncoded]
+logo.jpg=11697,15596
+Logo=logo.jpg
+
+[EncodedFile-AuthorEncoded-logo.jpg]
+lines=3
+0=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
+1=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
+2=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
+3=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
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+Call,UploadXQ
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+

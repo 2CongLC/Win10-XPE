@@ -1,0 +1,446 @@
+[Main]
+Title=CMD Adds_Network
+Type=Plugin
+Author=Lancelot
+Description=(Gena) Adds Network related CMD Toys of Windows from your Windows Install CD/DVD or folder into your build.
+Credits=http://TheOven.org
+Version=008
+Download_Level=0
+Level=3
+Selected=True
+Mandatory=False
+NoWarning=False
+Contact=http://TheOven.org
+Date=2017.02.11
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Components/Core/1%20System/CMD%20Adds_Network.script
+CertifiedBy=
+Certification=
+HistoryNotes01=TO DO: work on plugin to be compatible to SE (so to Yomi server) and add things to Macro Library in time....
+HistoryNotes02=Lancelot keep in mind rnr20.dll
+HistoryNotes03=Atm.exe requires ATM Call manager
+HistoryNotes04=Getmac.exe gives Error: The remote system must be running Windows 2000 or above.
+HistoryNotes05=Irftp.exe Not exists on source
+HistoryNotes06=MacFile.exe only exists on w2003 x86 source (no in xp, no in x64)
+HistoryNotes07=Ipseccmd.exe Not exists on source. Keep in mind Ipsec6 sys etc. maybe a seperate Plugin
+HistoryNotes08=Ipxroute.exe Unable to open transparet \Device\NwlnkIpx ==> ;) add NwlnkIpx device please ;).
+HistoryNotes09=Rsh.exe Windows XP and Windows 2000 do not provide an RSH service. An RSH service called Rshsvc.exe is provided with the Windows 2000 Server Resource Kit.
+History001=Lancelot Require_FileQ soo goood internal macro getfile droped :>:>
+History002=Lancelot IniVariables OS
+History002=Lancelot apinux -> 2k3 support for ipconfig.exe // + XPx86SP3 support for ipconfig.exe
+History004=Lancelot arp.exe Atmadm.exe Netsh.exe Netstat.exe Pathping.exe not exists at POSReady 2009
+History005=Lancelot Netsh.exe with ML (since more updated) - Date:2015.08.06 - Date:2016.02.01 - Date:2016.10.21
+History006=Lancelot updated Netstat.EXE - Date:2016.10.23
+History007=Lancelot Added Components_PluginCache_Extract - Date:2016.11.08
+History008=Lancelot - Add DUC Buttons - Date:2017.02.11
+
+[Variables]
+GetFile=Run,%ScriptFile%,ScriptApiGetFile
+
+[ScriptApiGetFile]
+If,%OSFamily%,Equal,NT5,Run,%ScriptFile%,ScriptApiGetFilePE1,#1
+Else,Require_FileQ,#1
+
+[ScriptApiGetFilePE1]
+If,%targetdirvalue%,Equal,%Target_Sys%,CopyOrExpand,%source_sys%\#1,%Target_Sys%\#1
+If,%targetdirvalue%,Equal,%Target_Win%\SysWOW64,CopyOrExpand,%SourceDir%\i386\W#1,%Target_Win%\SysWOW64\#1
+
+[Interface]
+pWebLabel1="MS Command-line reference A-Z (XP)",1,10,324,220,154,18,http://www.microsoft.com/resources/documentation/windows/xp/all/proddocs/en-us/ntcmds.mspx?mfr=true
+pWebLabel2="CommandWindows XP",1,10,337,240,200,18,http://commandwindows.com/command3.htm
+pWebLabel3="CommandWindows Vista",1,10,337,260,200,18,http://commandwindows.com/vista-commands.htm
+pWebLabel4="TCP/IP utilities and services",1,10,319,189,200,18,http://www.microsoft.com/resources/documentation/windows/xp/all/proddocs/en-us/tcpip_utils.mspx?mfr=true
+pCheckBox_WOW64CmdFiles="Add WOW64 cmd files",1,3,160,2,131,18,False
+pTextLabel2="Popular Network cmd Tools:#$xArp, Ipconfig, Nbtstat, Ping, Route, Tracert,#$xFtp, NsLookup, NetStat",1,1,311,46,229,41,8,Normal
+pTextLabel3="Plugin Notes:#$x2nd checkbox on left is for WOW64.#$xPlugin only copies files.#$x(services etc. should be added by seperate Plugin)#$xFiles without checkbox only there to fill the list#$x-- will not work (experimental)#$x+++ and ++ are popular ones",1,1,317,93,257,91,8,Normal
+pTextLabel4="Msg.exe --",1,1,55,272,91,18,8,Normal
+pTextLabel_ntcmdschm="List in Help File ntcmds.chm    (nt5x)",1,1,336,301,188,18,8,Normal
+pButton_ntcmdschm=ntcmds.chm,1,8,406,301,67,16,HelpView_ntcmdschm
+WebLabel_Plugin="Plugin Page",1,10,338,4,55,18,http://TheOven.org/index.php?board=9
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+pCheckBox_Arp="Arp.exe +++",1,3,36,25,110,18,True
+pCheckBox_Arp_WOW64=,1,3,12,25,14,18,True
+pCheckBox_Atmadm="Atmadm.exe --",1,3,36,44,110,18,False
+pCheckBox_Atmadm_WOW64=,1,3,12,44,14,18,False
+pCheckBox_Finger=Finger.exe,1,3,36,63,110,18,False
+pCheckBox_Finger_WOW64=,1,3,12,63,14,18,False
+pCheckBox_Ftp="Ftp.exe ++",1,3,36,82,110,18,True
+pCheckBox_Ftp_WOW64=,1,3,12,82,14,18,True
+pCheckBox_Getmac="Getmac.exe --",1,3,36,101,110,18,False
+pCheckBox_Getmac_WOW64=,1,3,12,101,14,18,False
+pCheckBox_Hostname="Hostname.exe +",1,3,36,120,110,18,False
+pCheckBox_Hostname_WOW64=,1,3,12,120,14,18,False
+pCheckBox_Ipconfig="Ipconfig.exe +++",1,3,36,139,110,18,True
+pCheckBox_Ipconfig_WOW64=,1,3,12,139,14,18,True
+pTextLabel_Ipseccmd=Ipseccmd.exe,1,1,54,158,92,18,8,Normal
+pCheckBox_IpxRoute="IpxRoute.exe --",1,3,36,177,110,18,False
+pCheckBox_IpxRoute_WOW64=,1,3,12,177,14,18,False
+pTextLabel_Irftp=Irftp.exe,1,1,55,196,91,18,8,Normal
+pCheckBox_Lpq="Lpq.exe --",1,3,37,215,109,18,False
+pCheckBox_Lpq_WOW64=,1,3,12,215,14,18,False
+pCheckBox_Lpr=Lpr.exe,1,3,37,234,109,18,False
+pCheckBox_Lpr_WOW64=,1,3,12,234,14,18,False
+pTextLabel_Macfile=Macfile.exe,1,1,55,253,91,18,8,Normal
+pCheckBox_Nbtstat="Nbtstat.exe +++",1,3,193,44,110,18,True
+pCheckBox_Nbtstat_WOW64=,1,3,169,44,14,18,True
+pCheckBox_Netsh="Netsh.exe --",1,3,193,25,110,18,True
+pCheckBox_Netsh_WOW64=,1,3,169,25,14,18,False
+pCheckBox_Pathping=Pathping.exe,1,3,193,101,110,18,True
+pCheckBox_Pathping_WOW64=,1,3,169,101,14,18,True
+pCheckBox_Ping="Ping.exe +++",1,3,193,120,110,18,True
+pCheckBox_Ping_WOW64=,1,3,169,120,14,18,True
+pCheckBox_Rasdial=Rasdial.exe,1,3,193,139,110,18,True
+pCheckBox_Rasdial_WOW64=,1,3,169,139,14,18,True
+pCheckBox_Rcp=Rcp.exe,1,3,193,158,110,18,True
+pCheckBox_Rcp_WOW64=,1,3,169,158,14,18,True
+pCheckBox_Rexec=Rexec.exe,1,3,193,177,110,18,True
+pCheckBox_Rexec_WOW64=,1,3,169,177,14,18,True
+pCheckBox_Route="Route.exe +++",1,3,193,196,110,18,True
+pCheckBox_Route_WOW64=,1,3,169,196,14,18,True
+pTextLabel_Telnet=Telnet.exe,1,1,209,215,94,18,8,Normal
+pCheckBox_Tftp=Tftp.exe,1,3,193,234,110,18,True
+pCheckBox_Tracert="Tracert.exe +++",1,3,193,253,110,18,True
+pCheckBox_Tracert_WOW64=,1,3,169,253,14,18,True
+pCheckBox_Nslookup="Nslookup.exe ++",1,3,193,82,110,18,True
+pCheckBox_Nslookup_WOW64=,1,3,169,82,14,18,True
+pCheckBox_Netstat="Netstat.exe ++",1,3,193,63,110,18,True
+pCheckBox_Netstat_WOW64=,1,3,169,63,14,18,True
+
+[HelpView_ntcmdschm]
+Call,HostWindowsDir
+System,FILEREDIRECT,OFF
+ShellExecuteEx,Hide,cmd.exe,/c#$sStart#$s#$pSYSTEMROOT#$p\Help\ntcmds.chm,%HostWindowsDir%
+System,FILEREDIRECT,ON
+
+[Process]
+If,ExistFile,%ProjectTemp%\Components_PluginCache_Extract.ini,Echo,"Components PluginCache"
+If,Not,ExistFile,%ProjectTemp%\Components_PluginCache_Extract.ini,Run,%ScriptFile%,Process_Normal
+
+[Process_Normal]
+IniRead,%ProjectDir%\script.project,IniVariables,OSServicePack,%OSServicePack%
+If,Not,ExistVar,%OS%,IniRead,%projectdir%\script.project,IniVariables,OS,%OS%
+Set,%targetdirvalue%,%Target_Sys%
+//--
+Run,%ScriptFile%,Process_Main
+//--
+IF,%pCheckBox_WOW64CmdFiles%,Equal,True,Run,%ScriptFile%,Process_WOW64_Pre
+
+[Process_WOW64_Pre]
+If,Not,%SourceArch%,Equal,x86,If,%TargetWOW64%,Equal,x86,Run,%ScriptFile%,Process_WOW64
+
+[Process_WOW64]
+Set,%PluginArch%,x86
+Set,%targetdirvalue%,%Target_Win%\SysWOW64
+//--
+Run,%ScriptFile%,Process_Main_WOW64
+
+[Process_Main]
+If,Not,ExistFile,%targetdirvalue%\cmd.exe,Require_FileQ,cmd.exe
+If,%pCheckBox_Arp%,Equal,True,Run,%ScriptFile%,Dependencies_Arp_EXE
+If,%pCheckBox_Atmadm%,Equal,True,Run,%ScriptFile%,Dependencies_Atmadm_EXE
+If,%pCheckBox_Finger%,Equal,True,Run,%ScriptFile%,Dependencies_Finger_EXE
+If,%pCheckBox_Ftp%,Equal,True,Run,%ScriptFile%,Dependencies_Ftp_EXE
+If,%pCheckBox_Getmac%,Equal,True,Run,%ScriptFile%,Dependencies_Getmac_EXE
+If,%pCheckBox_Hostname%,Equal,True,Run,%ScriptFile%,Dependencies_Hostname_EXE
+If,%pCheckBox_Ipconfig%,Equal,True,Run,%ScriptFile%,Dependencies_Ipconfig_EXE
+If,%pCheckBox_IpxRoute%,Equal,True,Run,%ScriptFile%,Dependencies_IpxRoute_EXE
+If,%pCheckBox_Lpq%,Equal,True,Run,%ScriptFile%,Dependencies_Lpq_EXE
+If,%pCheckBox_Lpr%,Equal,True,Run,%ScriptFile%,Dependencies_Lpr_EXE
+If,%pCheckBox_Netsh%,Equal,True,Run,%ScriptFile%,Dependencies_Netsh_EXE
+If,%pCheckBox_Netstat%,Equal,True,Run,%ScriptFile%,Dependencies_Netstat_EXE
+If,%pCheckBox_Nbtstat%,Equal,True,Run,%ScriptFile%,Dependencies_Nbtstat_EXE
+If,%pCheckBox_Nslookup%,Equal,True,Run,%ScriptFile%,Dependencies_Nslookup_EXE
+If,%pCheckBox_Pathping%,Equal,True,Run,%ScriptFile%,Dependencies_Pathping_EXE
+If,%pCheckBox_Ping%,Equal,True,Run,%ScriptFile%,Dependencies_Ping_EXE
+If,%pCheckBox_Rasdial%,Equal,True,Run,%ScriptFile%,Dependencies_Rasdial_EXE
+If,%pCheckBox_Rcp%,Equal,True,Run,%ScriptFile%,Dependencies_Rcp_EXE
+If,%pCheckBox_Rexec%,Equal,True,Run,%ScriptFile%,Dependencies_Rexec_EXE
+If,%pCheckBox_Route%,Equal,True,Run,%ScriptFile%,Dependencies_Route_EXE
+If,%pCheckBox_Tracert%,Equal,True,Run,%ScriptFile%,Dependencies_Tracert_EXE
+If,%pCheckBox_Tftp%,Equal,True,Run,%ScriptFile%,Dependencies_Tftp_EXE
+
+[Process_Main_WOW64]
+If,Not,ExistFile,%targetdirvalue%\cmd.exe,Require_FileQ,cmd.exe
+If,%pCheckBox_Arp_WOW64%,Equal,True,Run,%ScriptFile%,Dependencies_Arp_EXE
+If,%pCheckBox_Atmadm_WOW64%,Equal,True,Run,%ScriptFile%,Dependencies_Atmadm_EXE
+If,%pCheckBox_Finger_WOW64%,Equal,True,Run,%ScriptFile%,Dependencies_Finger_EXE
+If,%pCheckBox_Ftp_WOW64%,Equal,True,Run,%ScriptFile%,Dependencies_Ftp_EXE
+If,%pCheckBox_Getmac_WOW64%,Equal,True,Run,%ScriptFile%,Dependencies_Getmac_EXE
+If,%pCheckBox_Hostname_WOW64%,Equal,True,Run,%ScriptFile%,Dependencies_Hostname_EXE
+If,%pCheckBox_Ipconfig_WOW64%,Equal,True,Run,%ScriptFile%,Dependencies_Ipconfig_EXE
+If,%pCheckBox_IpxRoute_WOW64%,Equal,True,Run,%ScriptFile%,Dependencies_IpxRoute_EXE
+If,%pCheckBox_Lpq_WOW64%,Equal,True,Run,%ScriptFile%,Dependencies_Lpq_EXE
+If,%pCheckBox_Lpr_WOW64%,Equal,True,Run,%ScriptFile%,Dependencies_Lpr_EXE
+If,%pCheckBox_Netsh_WOW64%,Equal,True,Run,%ScriptFile%,Dependencies_Netsh_EXE
+If,%pCheckBox_Nbtstat_WOW64%,Equal,True,Run,%ScriptFile%,Dependencies_Nbtstat_EXE
+If,%pCheckBox_Netstat_WOW64%,Equal,True,Run,%ScriptFile%,Dependencies_Netstat_EXE
+If,%pCheckBox_Nslookup_WOW64%,Equal,True,Run,%ScriptFile%,Dependencies_Nslookup_EXE
+If,%pCheckBox_Pathping_WOW64%,Equal,True,Run,%ScriptFile%,Dependencies_Pathping_EXE
+If,%pCheckBox_Ping_WOW64%,Equal,True,Run,%ScriptFile%,Dependencies_Ping_EXE
+If,%pCheckBox_Rasdial_WOW64%,Equal,True,Run,%ScriptFile%,Dependencies_Rasdial_EXE
+If,%pCheckBox_Rcp_WOW64%,Equal,True,Run,%ScriptFile%,Dependencies_Rcp_EXE
+If,%pCheckBox_Rexec_WOW64%,Equal,True,Run,%ScriptFile%,Dependencies_Rexec_EXE
+If,%pCheckBox_Route_WOW64%,Equal,True,Run,%ScriptFile%,Dependencies_Route_EXE
+If,%pCheckBox_Tracert_WOW64%,Equal,True,Run,%ScriptFile%,Dependencies_Tracert_EXE
+
+[Dependencies_Arp_EXE]
+//Arp.exe not exists at POSReady2009
+If,ExistFile,%Source_Sys%\Arp.EX?,Begin
+If,Not,ExistFile,%targetdirvalue%\Arp.exe,Require_FileQ,Arp.exe
+If,Not,ExistFile,%targetdirvalue%\ws2_32.dll,Require_FileQ,ws2_32.dll
+If,Not,ExistFile,%targetdirvalue%\WS2HELP.dll,Require_FileQ,WS2HELP.dll
+If,Not,ExistFile,%targetdirvalue%\snmpapi.dll,Require_FileQ,snmpapi.dll
+End
+Else,Echo,"Arp.exe not exists",Warn
+
+[Dependencies_Atmadm_EXE]
+If,ExistFile,%Source_Sys%\Atmadm.EX?,Begin
+If,Not,ExistFile,%targetdirvalue%\Atmadm.exe,Require_FileQ,Atmadm.exe
+End
+Else,Echo,"Atmadm.exe not exists",Warn
+
+[Dependencies_Finger_EXE]
+If,Not,ExistFile,%targetdirvalue%\Finger.exe,Require_FileQ,Finger.exe
+If,Not,ExistFile,%targetdirvalue%\ws2_32.dll,Require_FileQ,ws2_32.dll
+If,Not,ExistFile,%targetdirvalue%\WS2HELP.dll,Require_FileQ,WS2HELP.dll
+If,Not,ExistFile,%targetdirvalue%\mswsock.dll,Require_FileQ,mswsock.dll
+
+[Dependencies_Ftp_EXE]
+If,Not,ExistFile,%targetdirvalue%\Ftp.exe,Require_FileQ,Ftp.exe
+If,Not,ExistFile,%targetdirvalue%\ws2_32.dll,Require_FileQ,ws2_32.dll
+If,Not,ExistFile,%targetdirvalue%\WS2HELP.dll,Require_FileQ,WS2HELP.dll
+If,Not,ExistFile,%targetdirvalue%\mswsock.dll,Require_FileQ,mswsock.dll
+//ftp: socket
+
+[Dependencies_Getmac_EXE]
+If,Not,ExistFile,%targetdirvalue%\Getmac.exe,Require_FileQ,Getmac.exe
+If,Not,ExistFile,%targetdirvalue%\ws2_32.dll,Require_FileQ,ws2_32.dll
+If,Not,ExistFile,%targetdirvalue%\WS2HELP.dll,Require_FileQ,WS2HELP.dll
+If,Not,ExistFile,%targetdirvalue%\framedyn.dll,Require_FileQ,framedyn.dll
+
+[Dependencies_Hostname_EXE]
+If,Not,ExistFile,%targetdirvalue%\Hostname.exe,Require_FileQ,Hostname.exe
+If,Not,ExistFile,%targetdirvalue%\ws2_32.dll,Require_FileQ,ws2_32.dll
+If,Not,ExistFile,%targetdirvalue%\WS2HELP.dll,Require_FileQ,WS2HELP.dll
+If,Not,ExistFile,%targetdirvalue%\mswsock.dll,Require_FileQ,mswsock.dll
+
+[Dependencies_Ipconfig_EXE]
+If,Not,ExistFile,%targetdirvalue%\Ipconfig.exe,Require_FileQ,Ipconfig.exe
+If,Not,ExistFile,%targetdirvalue%\netman.dll,Require_FileQ,netman.dll
+If,Not,ExistFile,%targetdirvalue%\netshell.dll,Require_FileQ,netshell.dll
+If,Not,ExistFile,%targetdirvalue%\rtutils.dll,Require_FileQ,rtutils.dll
+If,Not,ExistFile,%targetdirvalue%\credui.dll,Require_FileQ,credui.dll
+If,Not,ExistFile,%targetdirvalue%\WS2_32.dll,Require_FileQ,WS2_32.dll
+If,Not,ExistFile,%targetdirvalue%\WS2HELP.dll,Require_FileQ,WS2HELP.dll
+If,Not,ExistFile,%targetdirvalue%\Atl.dll,Require_FileQ,Atl.dll
+If,Not,ExistFile,%targetdirvalue%\clusapi.dll,Require_FileQ,clusapi.dll
+If,Not,ExistFile,%targetdirvalue%\mprapi.dll,Require_FileQ,mprapi.dll
+If,Not,ExistFile,%targetdirvalue%\activeds.dll,Require_FileQ,activeds.dll
+If,Not,ExistFile,%targetdirvalue%\adsldpc.dll,Require_FileQ,adsldpc.dll
+If,Not,ExistFile,%targetdirvalue%\samlib.dll,Require_FileQ,samlib.dll
+If,Not,ExistFile,%targetdirvalue%\rasapi32.dll,Require_FileQ,rasapi32.dll
+If,Not,ExistFile,%targetdirvalue%\rasman.dll,Require_FileQ,rasman.dll
+If,Not,ExistFile,%targetdirvalue%\tapi32.dll,Require_FileQ,tapi32.dll
+//If,Not,%OS%%SourceArch%,Equal,XPx86,If,Not,ExistFile,%targetdirvalue%\WZCSvc.dll,Require_FileQ,WZCSvc.dll
+If,Not,%OS%%SourceArch%,Equal,XPx86,Require,HighVersion,wzcsvc.dll,TargetWin\System32
+If,Not,ExistFile,%targetdirvalue%\WMI.dll,Require_FileQ,WMI.dll
+If,Not,ExistFile,%targetdirvalue%\dhcpcsvc.dll,Require_FileQ,dhcpcsvc.dll
+If,Not,ExistFile,%targetdirvalue%\WTSAPI32.dll,Require_FileQ,WTSAPI32.dll
+If,Not,ExistFile,%targetdirvalue%\WINSTA.dll,Require_FileQ,WINSTA.dll
+If,Not,ExistFile,%targetdirvalue%\esent.dll,Require_FileQ,esent.dll
+//If,Not,%OS%%SourceArch%,Equal,XPx86,If,Not,ExistFile,%targetdirvalue%\WZCSAPI.dll,Require_FileQ,WZCSAPI.dll
+If,Not,%OS%%SourceArch%,Equal,XPx86,Require,HighVersion,WZCSAPI.dll,TargetWin\System32
+//-
+If,%OS%%SourceArch%%OSServicePack%,Equal,XPx86SP3,Begin
+If,Not,ExistFile,%targetdirvalue%\dot3api.dll,Require_FileQ,dot3api.dll
+If,Not,ExistFile,%targetdirvalue%\dot3dlg.dll,Require_FileQ,dot3dlg.dll
+If,Not,ExistFile,%targetdirvalue%\onex.dll,Require_FileQ,onex.dll
+If,Not,ExistFile,%targetdirvalue%\eappcfg.dll,Require_FileQ,eappcfg.dll
+If,Not,ExistFile,%targetdirvalue%\eappprxy.dll,Require_FileQ,eappprxy.dll
+Require,HighVersion,wzcsvc.dll,TargetWin\System32
+Require,HighVersion,wzcsapi.dll,TargetWin\System32
+If,Not,ExistFile,%targetdirvalue%\EapolQec.dll,Require_FileQ,EapolQec.dll
+If,Not,ExistFile,%targetdirvalue%\QUtil.dll,Require_FileQ,QUtil.dll
+End
+
+[Dependencies_Ipseccmd_EXE]
+If,Not,ExistFile,%targetdirvalue%\Ipseccmd.exe,Require_FileQ,Ipseccmd.exe
+
+[Dependencies_IpxRoute_EXE]
+If,Not,ExistFile,%targetdirvalue%\IpxRoute.exe,Require_FileQ,IpxRoute.exe
+If,Not,ExistFile,%targetdirvalue%\mprapi.dll,Require_FileQ,mprapi.dll
+If,Not,ExistFile,%targetdirvalue%\activeds.dll,Require_FileQ,activeds.dll
+If,Not,ExistFile,%targetdirvalue%\adsldpc.dll,Require_FileQ,adsldpc.dll
+If,Not,ExistFile,%targetdirvalue%\credui.dll,Require_FileQ,credui.dll
+If,Not,ExistFile,%targetdirvalue%\Atl.dll,Require_FileQ,Atl.dll
+If,Not,ExistFile,%targetdirvalue%\rtutils.dll,Require_FileQ,rtutils.dll
+If,Not,ExistFile,%targetdirvalue%\samlib.dll,Require_FileQ,samlib.dll
+//--> Unable to open transpoert \Device\NwlnkIpx==> ;) add NwlnkIpx device please ;).
+
+[Dependencies_Lpq_EXE]
+If,Not,ExistFile,%targetdirvalue%\Lpq.exe,Require_FileQ,Lpq.exe
+If,Not,ExistFile,%targetdirvalue%\Lprhelp.dll,Require_FileQ,Lprhelp.dll
+If,Not,ExistFile,%targetdirvalue%\WS2_32.dll,Require_FileQ,WS2_32.dll
+If,Not,ExistFile,%targetdirvalue%\WS2HELP.dll,Require_FileQ,WS2HELP.dll
+
+[Dependencies_Lpr_EXE]
+If,Not,ExistFile,%targetdirvalue%\Lpr.exe,Require_FileQ,Lpr.exe
+If,Not,ExistFile,%targetdirvalue%\Lprhelp.dll,Require_FileQ,Lprhelp.dll
+If,Not,ExistFile,%targetdirvalue%\WS2_32.dll,Require_FileQ,WS2_32.dll
+If,Not,ExistFile,%targetdirvalue%\WS2HELP.dll,Require_FileQ,WS2HELP.dll
+
+[Dependencies_Nbtstat_EXE]
+If,Not,ExistFile,%targetdirvalue%\Nbtstat.exe,Require_FileQ,Nbtstat.exe
+If,Not,ExistFile,%targetdirvalue%\WSock32.dll,Require_FileQ,WSock32.dll
+If,Not,ExistFile,%targetdirvalue%\WS2_32.dll,Require_FileQ,WS2_32.dll
+If,Not,ExistFile,%targetdirvalue%\WS2HELP.dll,Require_FileQ,WS2HELP.dll
+//--The ordinal 1108 could not be located in the dynamic link library WSOCK32.dll== mswsock.dll
+If,Not,ExistFile,%targetdirvalue%\mswsock.dll,Require_FileQ,mswsock.dll
+
+[Dependencies_Netsh_EXE]
+Require,File,Netsh.exe
+
+[Dependencies_Netsh_EXE_CANCEL]
+If,Not,ExistFile,%targetdirvalue%\Netsh.exe,Require_FileQ,Netsh.exe
+If,Not,ExistFile,%targetdirvalue%\credui.dll,Require_FileQ,credui.dll
+If,Not,ExistFile,%targetdirvalue%\mprapi.dll,Require_FileQ,mprapi.dll
+If,Not,ExistFile,%targetdirvalue%\activeds.dll,Require_FileQ,activeds.dll
+If,Not,ExistFile,%targetdirvalue%\adsldpc.dll,Require_FileQ,adsldpc.dll
+If,Not,ExistFile,%targetdirvalue%\Atl.dll,Require_FileQ,Atl.dll
+If,Not,ExistFile,%targetdirvalue%\rtutils.dll,Require_FileQ,rtutils.dll
+If,Not,ExistFile,%targetdirvalue%\samlib.dll,Require_FileQ,samlib.dll
+If,Not,ExistFile,%targetdirvalue%\rasapi32.dll,Require_FileQ,rasapi32.dll
+If,Not,ExistFile,%targetdirvalue%\rasman.dll,Require_FileQ,rasman.dll
+If,Not,ExistFile,%targetdirvalue%\WS2_32.dll,Require_FileQ,WS2_32.dll
+If,Not,ExistFile,%targetdirvalue%\WS2HELP.dll,Require_FileQ,WS2HELP.dll
+If,Not,ExistFile,%targetdirvalue%\tapi32.dll,Require_FileQ,tapi32.dll
+//--> at this point cmd sheel should convert to netsh prompt !!!!
+If,Not,ExistFile,%targetdirvalue%\Ipmontr.dll,Require_FileQ,Ipmontr.dll
+If,Not,ExistFile,%targetdirvalue%\Ifmon.dll,Require_FileQ,Ifmon.dll
+If,Not,ExistFile,%targetdirvalue%\Ippromon.dll,Require_FileQ,Ippromon.dll
+If,Not,ExistFile,%targetdirvalue%\Rasmontr.dll,Require_FileQ,Rasmontr.dll
+If,Not,ExistFile,%targetdirvalue%\Dgnet.dll,Require_FileQ,Dgnet.dll
+If,Not,ExistFile,%targetdirvalue%\Fwcfg.dll,Require_FileQ,Fwcfg.dll
+If,Not,ExistFile,%targetdirvalue%\Hnetmon.dll,Require_FileQ,Hnetmon.dll
+If,Not,ExistFile,%targetdirvalue%\Ipv6mon.dll,Require_FileQ,Ipv6mon.dll
+If,Not,%OS%%SourceArch%,Equal,XPx86,Begin
+If,Not,ExistFile,%targetdirvalue%\Nshipsec.dll,Require_FileQ,Nshipsec.dll
+End
+If,Not,%OS%%SourceArch%,Equal,XPx86,Begin
+If,Not,ExistFile,%targetdirvalue%\Rpcnsh.dll,Require_FileQ,Rpcnsh.dll
+End
+//--> At this point, yes you get netsh prompt but there are some errors on Plugin
+
+[Dependencies_Netstat_EXE]
+If,ExistFile,%Source_Sys%\Netstat.EX?,Begin
+If,Not,ExistFile,%targetdirvalue%\Netstat.exe,Require_FileQ,Netstat.exe
+If,Not,ExistFile,%targetdirvalue%\dbghelp.dll,Require_FileQ,dbghelp.dll
+If,Not,ExistFile,%targetdirvalue%\WS2_32.dll,Require_FileQ,WS2_32.dll
+If,Not,ExistFile,%targetdirvalue%\WS2HELP.dll,Require_FileQ,WS2HELP.dll
+If,Not,ExistFile,%targetdirvalue%\snmpapi.dll,Require_FileQ,snmpapi.dll
+//w03a2409.dll exists on x64 and 2003x86
+If,Not,%OS%%SourceArch%,Equal,XPx86,Begin
+Require,File,w03a2409.dll
+End
+//The interface initialization failed: 2== inetmib1.dll
+If,Not,ExistFile,%targetdirvalue%\inetmib1.dll,Require_FileQ,inetmib1.dll
+If,Not,ExistFile,%targetdirvalue%\samlib.dll,Require_FileQ,samlib.dll
+End
+Else,Echo,"Netstat.exe not exists",Warn
+
+[Dependencies_Nslookup_EXE]
+If,Not,ExistFile,%targetdirvalue%\Nslookup.exe,Require_FileQ,Nslookup.exe
+If,Not,ExistFile,%targetdirvalue%\WSock32.dll,Require_FileQ,WSock32.dll
+If,Not,ExistFile,%targetdirvalue%\WS2_32.dll,Require_FileQ,WS2_32.dll
+If,Not,ExistFile,%targetdirvalue%\WS2HELP.dll,Require_FileQ,WS2HELP.dll
+//--The ordinal 1108 could not be located in the dynamic link library WSOCK32.dll== mswsock.dll
+If,Not,ExistFile,%targetdirvalue%\mswsock.dll,Require_FileQ,mswsock.dll
+
+[Dependencies_Pathping_EXE]
+If,ExistFile,%Source_Sys%\Pathping.EX?,Begin
+If,Not,ExistFile,%targetdirvalue%\Pathping.exe,Require_FileQ,Pathping.exe
+If,Not,ExistFile,%targetdirvalue%\ws2_32.dll,Require_FileQ,ws2_32.dll
+If,Not,ExistFile,%targetdirvalue%\WS2HELP.dll,Require_FileQ,WS2HELP.dll
+End
+Else,Echo,"Pathping.exe not exists",Warn
+
+[Dependencies_Ping_EXE]
+If,Not,ExistFile,%targetdirvalue%\Ping.exe,Require_FileQ,Ping.exe
+If,Not,ExistFile,%targetdirvalue%\ws2_32.dll,Require_FileQ,ws2_32.dll
+If,Not,ExistFile,%targetdirvalue%\WS2HELP.dll,Require_FileQ,WS2HELP.dll
+
+[Dependencies_Rasdial_EXE]
+If,Not,ExistFile,%targetdirvalue%\Rasdial.exe,Require_FileQ,Rasdial.exe
+If,Not,ExistFile,%targetdirvalue%\rasapi32.dll,Require_FileQ,rasapi32.dll
+If,Not,ExistFile,%targetdirvalue%\rasman.dll,Require_FileQ,rasman.dll
+If,Not,ExistFile,%targetdirvalue%\ws2_32.dll,Require_FileQ,ws2_32.dll
+If,Not,ExistFile,%targetdirvalue%\WS2HELP.dll,Require_FileQ,WS2HELP.dll
+If,Not,ExistFile,%targetdirvalue%\tapi32.dll,Require_FileQ,tapi32.dll
+If,Not,ExistFile,%targetdirvalue%\rtutils.dll,Require_FileQ,rtutils.dll
+
+[Dependencies_Rcp_EXE]
+If,Not,ExistFile,%targetdirvalue%\Rcp.exe,Require_FileQ,Rcp.exe
+If,Not,ExistFile,%targetdirvalue%\ws2_32.dll,Require_FileQ,ws2_32.dll
+If,Not,ExistFile,%targetdirvalue%\WS2HELP.dll,Require_FileQ,WS2HELP.dll
+If,Not,ExistFile,%targetdirvalue%\MSWSOCK.dll,Require_FileQ,MSWSOCK.dll
+
+[Dependencies_Rexec_EXE]
+If,Not,ExistFile,%targetdirvalue%\Rexec.exe,Require_FileQ,Rexec.exe
+If,Not,ExistFile,%targetdirvalue%\ws2_32.dll,Require_FileQ,ws2_32.dll
+If,Not,ExistFile,%targetdirvalue%\WS2HELP.dll,Require_FileQ,WS2HELP.dll
+If,Not,ExistFile,%targetdirvalue%\MSWSOCK.dll,Require_FileQ,MSWSOCK.dll
+//-- Rexec service may required for further process :>.
+
+[Dependencies_Route_EXE]
+If,Not,ExistFile,%targetdirvalue%\Route.exe,Require_FileQ,Route.exe
+If,Not,ExistFile,%targetdirvalue%\ws2_32.dll,Require_FileQ,ws2_32.dll
+If,Not,ExistFile,%targetdirvalue%\WS2HELP.dll,Require_FileQ,WS2HELP.dll
+If,Not,ExistFile,%targetdirvalue%\MSWSOCK.dll,Require_FileQ,MSWSOCK.dll
+
+[Dependencies_Tftp_EXE]
+If,Not,ExistFile,%targetdirvalue%\Tftp.exe,Require_FileQ,Tftp.exe
+If,Not,ExistFile,%targetdirvalue%\MSWSOCK.dll,Require_FileQ,MSWSOCK.dll
+
+[Dependencies_Tracert_EXE]
+If,Not,ExistFile,%targetdirvalue%\Tracert.exe,Require_FileQ,Tracert.exe
+If,Not,ExistFile,%targetdirvalue%\icmp.dll,Require_FileQ,icmp.dll
+If,Not,ExistFile,%targetdirvalue%\ws2_32.dll,Require_FileQ,ws2_32.dll
+If,Not,ExistFile,%targetdirvalue%\WS2HELP.dll,Require_FileQ,WS2HELP.dll
+
+[AuthorEncoded]
+cmdICON4848.ico=1699,2266
+Logo=cmdICON4848.ico
+
+[EncodedFile-AuthorEncoded-cmdICON4848.ico]
+lines=0
+0=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
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+Call,UploadXQ
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+

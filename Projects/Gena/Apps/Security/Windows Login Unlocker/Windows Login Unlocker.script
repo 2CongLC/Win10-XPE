@@ -1,0 +1,42 @@
+[main]
+Title=Windows Login Unlocker
+Type=XPEPlugin
+Description=(v1.5.0.5977) Windows Login Unlocker. NTFS, GPT UEFI x32\x64. Reset Local Account and Live ID, Create a New User (with Administrator Rights)
+Selected=True
+Level=5
+Version=1
+Download_Level=0
+NoWarning=False
+Date=19.08.2020
+Author=2CongLC.Vn
+
+[variables]
+%ProgramTitle%=Windows Login Unlocker
+%ProgramEXE%=WLU_x86.exe
+%ProgramExex64%=WLU_x64.exe
+%ProgramFolder%=Windows Login Unlocker
+
+[Interface]
+pCheckBox2="Desktop Shortcut",1,3,18,43,200,18,True
+pCheckBox1="Run from RAM (boot.wim) - Recommended",1,3,19,18,264,18,True
+
+[process]
+If,%pCheckBox1%,Equal,True,Begin
+DirMake,"%Target_Prog%\%ProgramFolder%\"
+If,%SourceArch%,Equal,x86,Begin
+DirCopy,"%ScriptDir%\x86\*.*","%Target_Prog%\%ProgramFolder%\"
+End
+If,%SourceArch%,Equal,x64,Begin
+DirCopy,"%ScriptDir%\x64\*.*","%Target_Prog%\%ProgramFolder%\"
+Set,%ProgramExe%,%ProgramExex64%
+End
+Run,%ScriptFile%,Add_Shortcuts
+Run,%ScriptFile%,Add_Registry
+End
+
+[Add_Shortcuts]
+If,%pCheckBox2%,Equal,True,Add_Shortcut,Desktop
+
+[Add_Registry]
+//0x1=String, 0x2 = Expand String, 0x3 = Binary Data, 0x4 = Dword
+

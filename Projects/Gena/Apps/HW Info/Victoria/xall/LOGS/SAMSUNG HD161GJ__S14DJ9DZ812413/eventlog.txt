@@ -1,0 +1,8 @@
+12:44:26 : Get drive passport... OK
+21/09/2020
+12:44:43 : Get drive passport... OK
+12:44:44 : Model: SAMSUNG HD161GJ; Capacity 312581808 LBAs; SN: S14DJ9DZ812413; FW: 1AC01118
+12:44:50 : Get S.M.A.R.T. command... OK
+21/09/2020
+12:44:58 : Get drive passport... OK
+21/09/2020

@@ -1,0 +1,210 @@
+[Main]
+Title=CMD Support Font
+Type=Plugin
+Author=Lancelot
+Description=Change font settings of cmd to Lucida font
+Credits=Michael S. Kaplan and Someone who reminded Lucido Console font is only font for unicode console applications (sorry man, I forgot to take notes..:))
+Version=008
+Download_Level=1
+Level=3
+Selected=False
+Mandatory=False
+NoWarning=False
+Contact=http://TheOven.org/index.php?topic=392
+Date=2016.11.10
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Components/Tweaks%20CMD/CMD%20Support_Font.script
+Web2=http://yomi.cwcodes.net/Yomi/ComponentsY/Tweaks%20CMD/CMD%20Support_Font.script
+CertifiedBy=
+Certification=
+HistoryNotes01=With having %SystemRoot%_system32_cmd.exe option at hand, with NOT having a trustable, badly developing Winbuilder through versions, due to handling of variables where % exists, coding made in a simple way (avoiding using changed variables/parameters) which MAY increase a bit more of this Plugin's being compatible (and increase on speed), keeping in mind options for these cmd settings are solid.
+HistoryNotes02=Lucida with "no bold" + 14 font --> is good :)
+HistoryNotes03=A:from http://blogs.msdn.com/michkap/archive/2005/06/29/433669.aspx
+HistoryNotes04=A:Peter Ibbotson : If you're using raster fonts the codepage is fixed at system install time and very hard to change,
+HistoryNotes05=A:simply copying over the .FON files from a 437 installed system to an 850 installed system doesn't fix the problem
+HistoryNotes06=A:(or at least last time I tried it didn't).
+HistoryNotes07=A:Michael S. Kaplan: Any time you are doing anything vaguely international in the console,
+HistoryNotes08=A:you should not use one of the raster, bitmap fonts. Ever.
+HistoryNotes09=A:Especially when you change the codepage. :-)
+HistoryNotes09=A:Tod Nelson: I agree. Switching to Lucida Console is one of the first steps of every new machine I set up.
+HistoryNotes10=B:Lancelot: This Plugin does NOT add lucida console at boottime, only changes font setting of console to lucida, above conversation is to show why lucida font have its good place in our hearts :>..
+HistoryNotes11=C:Thanks to CWorks HKEY_CURRENT_USER\Console\%SystemRoot%_system32_cmd.exe , VERRRRRRRRY nice trick where you can go back to default settings easly ;) also helped to make a test button without effecting hostos settings :>:>.
+HistoryNotes12=C:Relevant information http://support.microsoft.com/kb/105674/en-us
+History006=Lancelot Added DU Buttons - 2015.10.11
+History007=Lancelot syntax updated - Date:2016.02.02
+History008=Lancelot Added Components_PluginCache_Extract - Date:2016.11.10
+
+[Interface]
+Test_pButton=Test,1,8,352,256,80,20,Process_Test,0
+Test_RegDel_pButton="Delete Test Registry",1,8,352,280,106,20,Process_Test_Delete_Reg,0
+Lucida_lucon_ttf_CheckBox="Add lucon.ttf Lucida Console font (only font for unicode console applications)",1,3,9,22,396,18,True
+Lucida_default_CheckBox="Set Lucida Console CMD default font:",1,3,36,43,200,18,True
+Lucida_CheckBox=HKCU\Console\,1,3,65,62,102,18,False
+Lucida_system32_CheckBox=HKCU\Console\%SystemRoot%_system32_cmd.exe,1,3,65,82,273,18,True
+Lucida_HKLM_CheckBox="HKLM\Software\Microsoft\Windows NT\CurrentVersion\Console\TrueTypeFont 0",1,3,65,157,236,26,True
+NtfsAllowExtChaIn8dot3Name_Check=NtfsAllowExtendedCharacterIn8dot3Name,1,3,66,188,230,18,True
+Lucida_FontSize_TextLabel="Font Size",1,1,100,128,51,18,8,Normal
+Lucida_FontSize_ScrollBox=14,1,4,155,128,40,21,5,6,7,8,10,12,14,16,18,20,24,28,36,72
+Lucida_FontSize_ScrollBox_default_TextLabel=12,1,1,198,129,18,18,8,Normal
+Lucida_BoldFonts_CheckBox=BoldFonts,1,3,98,108,72,18,False
+Lucida_BoldFonts_CheckBox_Default_TextLabel=-,1,1,174,108,18,18,8,Normal
+Lucida_Bevel=Bevel,1,12,5,40,416,186
+Lucida_Sub_Bevel=Bevel,1,12,29,60,315,155
+Default_Set_CheckBox="Set Factory Font Settings",1,3,42,236,147,18,False
+Default_CheckBox=HKCU\Console\,1,3,66,263,106,18,False
+Default_System32_CheckBox=HKCU\Console\%SystemRoot%_system32_cmd.exe,1,3,66,284,273,18,True
+Default_Bevel=Bevel,1,12,29,255,315,51
+WebLabel_Homepg="Michael S. Kaplan msdn blog",1,10,309,235,134,18,http://blogs.msdn.com/michkap/archive/2005/06/29/433669.aspx
+WebLabel_Plugin="Plugin Page",1,10,320,2,55,18,http://TheOven.org/index.php?topic=392
+Button_Download=,1,8,382,-1,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,404,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[Variables]
+%ConsoleTestKey%=Testing_Cmd_Settings
+
+[Process]
+If,ExistFile,%ProjectTemp%\Components_PluginCache_Extract.ini,Echo,"Components PluginCache"
+If,Not,ExistFile,%ProjectTemp%\Components_PluginCache_Extract.ini,Run,%ScriptFile%,Process_Normal
+
+[Process_Normal]
+If,%Lucida_lucon_ttf_CheckBox%,Equal,True,Run,%scriptfile%,lucon_add
+If,%Default_Set_CheckBox%,Equal,True,Run,%scriptfile%,default_reg
+
+[lucon_add]
+Run,%ScriptFile%,lucon_ttf_add
+Run,%ScriptFile%,lucon_reg
+
+[lucon_ttf_add]
+RegHiveLoad,Tmp_Software,%RegSoftware%
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Fonts","Lucida Console (TrueType)",lucon.ttf
+RegHiveUnLoad,Tmp_Software
+Require,Font,lucon.ttf
+
+[lucon_reg]
+Set,%FontSizeValue%,%Lucida_FontSize_ScrollBox%
+StrFormat,MULT,%FontSizeValue%,65536
+RegHiveLoad,Tmp_Default,%RegDefault%
+If,%Lucida_CheckBox%,Equal,True,Begin
+//http://blogs.msdn.com/michkap/archive/2005/06/29/433669.aspx
+//KEY== HKEY_CURRENT_USER\Console, ValueName == FaceName, Value == <whatever font you like>
+//KEY== HKEY_CURRENT_USER\Console, ValueName == FontFamily, Value == <50 for decorative, 40 for Script, 30 for Modern, 20 for Swiss, or 10 for Roman>.
+RegWrite,HKLM,0x1,Tmp_Default\Console,FaceName,"Lucida Console"
+RegWrite,HKLM,0x4,Tmp_Default\Console,FontFamily,54
+RegWrite,HKLM,0x4,Tmp_Default\Console,FontSize,%FontSizeValue%
+If,%Lucida_BoldFonts_CheckBox%,Equal,True,RegWrite,HKLM,0x4,Tmp_Default\Console,FontWeight,700
+Else,RegWrite,HKLM,0x4,Tmp_Default\Console,FontWeight,400
+End
+If,%Lucida_system32_CheckBox%,Equal,True,Begin
+RegWrite,HKLM,0x1,Tmp_Default\Console\#$pSystemRoot#$p_system32_cmd.exe,FaceName,"Lucida Console"
+RegWrite,HKLM,0x4,Tmp_Default\Console\#$pSystemRoot#$p_system32_cmd.exe,FontFamily,54
+RegWrite,HKLM,0x4,Tmp_Default\Console\#$pSystemRoot#$p_system32_cmd.exe,FontSize,%FontSizeValue%
+If,%Lucida_BoldFonts_CheckBox%,Equal,True,RegWrite,HKLM,0x4,Tmp_Default\Console\#$pSystemRoot#$p_system32_cmd.exe,FontWeight,700
+Else,RegWrite,HKLM,0x4,Tmp_Default\Console\#$pSystemRoot#$p_system32_cmd.exe,FontWeight,400
+End
+RegHiveUnLoad,Tmp_Default
+If,%Lucida_HKLM_CheckBox%,Equal,True,Begin
+RegHiveLoad,Tmp_Software,%RegSoftware%
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Console\TrueTypeFont",0,Lucida#$sConsole
+RegHiveUnLoad,Tmp_Software
+End
+If,%NtfsAllowExtChaIn8dot3Name_Check%,Equal,True,Begin
+RegHiveLoad,Tmp_System,%RegSystem%
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Control\FileSystem,NtfsAllowExtendedCharacterIn8dot3Name,1
+RegHiveUnLoad,Tmp_System
+End
+
+[default_reg]
+RegHiveLoad,Tmp_Default,%RegDefault%
+If,%Default_CheckBox%,Equal,True,Begin
+//Default setting is No value (Null),
+//Terminal means having 'Raster Fonts' but I do not think most of the world uses 'Raster Fonts' (not checked)
+//RegWrite,HKLM,0x1,Tmp_Default\Console\#$pSystemRoot#$p_system32_cmd.exe,FaceName,Terminal
+RegWrite,HKLM,0x1,Tmp_Default\Console,FaceName,
+RegWrite,HKLM,0x4,Tmp_Default\Console,FontFamily,48
+//better to delete FontSize to set back default settings , reason is default is 'Raster Fonts' host PE have,
+//value can be  4x6 6x8 8x8 16x8 5x12 7x12 8x12 16x12 12x16 10x18 --> due to 'Raster Fonts' PE contains !!!!!
+//If required (I do not think so) one can make a Plugin (or add current Plugin) required fonts due to 'Raster Font' size...
+If,ExistRegKey,HKLM,Tmp_Default\Console,FontSize,RegDelete,HKLM,Tmp_Default\Console,FontSize
+RegWrite,HKLM,0x4,Tmp_Default\Console,FontWeight,400
+End
+If,%Default_System32_CheckBox%,Equal,True,Begin
+//Default setting is No value (Null),
+//Terminal means having 'Raster Fonts' but I do not think most of the world uses 'Raster Fonts' (not checked)
+//RegWrite,HKLM,0x1,Tmp_Default\Console\#$pSystemRoot#$p_system32_cmd.exe,FaceName,Terminal
+RegWrite,HKLM,0x1,Tmp_Default\Console\#$pSystemRoot#$p_system32_cmd.exe,FaceName,
+RegWrite,HKLM,0x4,Tmp_Default\Console\#$pSystemRoot#$p_system32_cmd.exe,FontFamily,48
+//better to delete FontSize to set back default settings , reason is default is 'Raster Fonts' host PE have,
+//value can be  4x6 6x8 8x8 16x8 5x12 7x12 8x12 16x12 12x16 10x18 --> due to 'Raster Fonts' PE contains !!!!!
+//If required (I do not think so) one can make a Plugin (or add current Plugin) required fonts due to 'Raster Font' size...
+If,ExistRegKey,HKLM,Tmp_Default\Console\#$pSystemRoot#$p_system32_cmd.exe,FontSize,RegDelete,HKLM,Tmp_Default\Console\#$pSystemRoot#$p_system32_cmd.exe,FontSize
+RegWrite,HKLM,0x4,Tmp_Default\Console\#$pSystemRoot#$p_system32_cmd.exe,FontWeight,400
+End
+RegHiveUnLoad,Tmp_Default
+
+[Process_Test]
+// For tests, naturally %Lucida_lucon_ttf_CheckBox% is the (only) main switch as shown in interface, since it is hostos test nothing done to lucon.ttf
+If,%Lucida_lucon_ttf_CheckBox%%Lucida_default_CheckBox%,Equal,TrueTrue,Begin
+Set,%FontSizeValue%,%Lucida_FontSize_ScrollBox%
+StrFormat,MULT,%FontSizeValue%,65536
+RegWrite,HKCU,0x1,Console\%ConsoleTestKey%,FaceName,"Lucida Console"
+RegWrite,HKCU,0x4,Console\%ConsoleTestKey%,FontFamily,54
+RegWrite,HKCU,0x4,Console\%ConsoleTestKey%,FontSize,%FontSizeValue%
+If,%Lucida_BoldFonts_CheckBox%,Equal,True,RegWrite,HKCU,0x4,Console,FontWeight,700
+Else,RegWrite,HKCU,0x4,Console,FontWeight,400
+End
+If,%Default_Set_CheckBox%,Equal,True,Begin
+RegWrite,HKCU,0x1,Console\%ConsoleTestKey%,FaceName,
+RegWrite,HKCU,0x4,Console\%ConsoleTestKey%,FontFamily,48
+If,ExistRegKey,HKCU,Console\%ConsoleTestKey%,FontSize,RegDelete,HKCU,Console\%ConsoleTestKey%,FontSize
+RegWrite,HKCU,0x4,Console,FontWeight,400
+End
+ShellExecuteEx,Hide,cmd.exe,"/c Start #$q%ConsoleTestKey%#$q cmd.exe",%scriptdir%
+
+[Process_Test_Delete_Reg]
+If,ExistRegSection,HKCU,Console\%ConsoleTestKey%,RegDelete,HKCU,Console\%ConsoleTestKey%
+
+[AuthorEncoded]
+CommandAndFont4848.ico=2767,3690
+Logo=CommandAndFont4848.ico
+
+[EncodedFile-AuthorEncoded-CommandAndFont4848.ico]
+lines=0
+0=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
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+Call,UploadXMultiQ
+
+[Settings_Default]
+IniWrite,%ScriptFile%,Main,Selected,False
+
+[Settings_Default_Gena]
+IniWrite,%ScriptFile%,Main,Selected,False
+
+[Settings_Default_Yomi]
+IniWrite,%ScriptFile%,Main,Selected,False
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+

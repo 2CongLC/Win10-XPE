@@ -1,0 +1,329 @@
+[Main]
+Title=LSI and LSI SAS and VMWare scsi
+Type=Plugin
+Author=Lancelot
+Description=SCSI drivers for VMware (vmscsi.sys v1.2.0.6 , LSI driver versions written on interface)
+Credits=JFX
+Version=010
+Download_Level=0
+Level=6
+Selected=False
+Mandatory=False
+NoWarning=False
+Contact=http://TheOven.org
+Date=2018.01.04_14:25.17 (GMT0: -3 Hours)
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Drivers/4%20Storage/lsi_buslogic.script
+CertifiedBy=
+Certification=
+HistoryNotes01=Lancelot vmscsi.sys v1.2.0.4 source for vmscsi.sys http://downloads.vmware.com/d/info/desktop_downloads/vmware_workstation/7_0#drivers_tools - http://download3.vmware.com/software/vmscsi-1.2.0.4.flp
+History002=Lancelot rewritten to support multArchitecture in future + to obey redistributable thingies
+History003=Lancelot thanks to JFX: LSI_SCSI.SYS could not be load, cause depending file STORPORT.SYS is missing. :):)
+History005=Lancelot IniVariables OS
+History007=Lancelot Auto_Download_SizeCheck // SupplyFile-Exit added // pButton1 (autodownload button) hidden since not working anymore - Date:2016.01.28
+History008=Lancelot Improved copy STORPORT.SYS (winbuilder bad development filecopy is default recursive - if found 2 files copied both with subfolders !!!) - Date:2016.10.04
+History009=Lancelot Improved Require,File,storport.sys - Date:2016.10.06 - Date:2017.02.16
+History010=Lancelot Depreciate old syntax (PEBakery Support) - Date:2017.12.07 - Date:2018.01.04
+
+[Variables]
+%LSI_Logic_Dir%=%GlobalTemplates%\LSI_Logic_Drivers
+%LSI_Logic_XP%=LSIMPT_SCSI_WinXP_1.28.03.zip
+%LSI_Logic_XP_DL%=http://www.lsi.com/DistributionSystem/AssetDocument/support/downloads/hbas/scsi/software_drivers/windows/LSIMPT_SCSI_WinXP_1.28.03.zip
+%LSI_Logic_W2003%=LSIMPT_SCSI_W2k3_1.28.03.zip
+%LSI_Logic_W2003_DL%=http://www.lsi.com/DistributionSystem/AssetDocument/LSIMPT_SCSI_W2k3_1.28.03.zip
+%LSI_Logic_SAS_XP%=LSImpt_SAS_XP_P16_13002.zip
+%LSI_Logic_SAS_XP_DL%=http://www.lsi.com/DistributionSystem/AssetDocument/LSImpt_SAS_XP_P16_13002.zip
+%LSI_Logic_SAS_W2003%=LSImpt_SAS_SRV03_P16_13002.zip
+%LSI_Logic_SAS_W2003_DL%=http://www.lsi.com/DistributionSystem/AssetDocument/LSImpt_SAS_SRV03_P16_13002.zip
+
+[InterFace]
+OpenSourceFilesbutton="LSI Files Location",1,8,361,249,102,24,OpenSourceFilesDir
+pTextLabel1="Providing Files:",1,1,3,5,112,18,10,Bold
+pWebLabel1="Visit 'LSI Logic' Driver Page",1,10,37,114,127,18,http://www.lsi.com/storage_home/products_home/host_bus_adapters/scsi_hbas/lsi20320r/index.html
+pTextLabel2="Click Support and Downloads,#$xDownload 'Windows XP' and 'Windows Server 2003' files,#$xFiles are LSIMPT_SCSI_W2k3_1.28.03.zip and LSIMPT_SCSI_WinXP_1.28.03.zip",1,1,51,135,407,45,8,Normal
+pWebLabel2="Visit 'LSI Logic SAS' Driver Page",1,10,39,183,149,18,http://www.lsi.com/storage_home/products_home/standard_product_ics/sas_ics/lsisas1068/index.html
+pTextLabel3="Click Support and Downloads,#$xDownload 'Windows XP' and 'Windows Server 2003' files,#$xFiles are LSImpt_SAS_SRV03_P16_13002.zip and LSImpt_SAS_XP_P16_13002.zip",1,1,52,203,407,43,8,Normal
+pTextLabel4="Click the following button 'LSI Files Location' and copy 4 zip files",1,1,43,249,314,18,8,Normal
+pTextLabel5="Manual Method:",1,1,16,94,90,18,8,Bold
+pTextLabel6="Auto Download Method:",1,1,14,29,146,18,8,Bold
+pTextLabel7="Click 'AutoDownload' button which hopefully download 4 required files",1,1,34,49,339,18,8,Normal
+pButton1="Auto Download",0,8,378,46,80,25,Auto_Download
+pTextLabel8="ps: If files not exists Plugin will autodownload",1,1,34,71,230,18,8,Normal
+pWebLabel2="Plugin Page",1,10,338,4,55,18,http://TheOven.org/index.php?board=9
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[Auto_Download]
+//note: Web_Get_If_Not_Exist not used because of a bugy behaviour of wb, probably will be fixed on wb078sp5
+Run,%ScriptFile%,Auto_Download_SizeCheck
+If,Not,ExistDir,%LSI_Logic_Dir%,DirMake,%LSI_Logic_Dir%
+If,Not,ExistFile,%LSI_Logic_Dir%\%LSI_Logic_XP%,Call,Download,%LSI_Logic_Dir%\%LSI_Logic_XP%,%LSI_Logic_XP_DL%
+If,Not,ExistFile,%LSI_Logic_Dir%\%LSI_Logic_SAS_XP%,Call,Download,%LSI_Logic_Dir%\%LSI_Logic_SAS_XP%,%LSI_Logic_SAS_XP_DL%
+If,Not,ExistFile,%LSI_Logic_Dir%\%LSI_Logic_W2003%,Call,Download,%LSI_Logic_Dir%\%LSI_Logic_W2003%,%LSI_Logic_W2003_DL%
+If,Not,ExistFile,%LSI_Logic_Dir%\%LSI_Logic_SAS_W2003%,Call,Download,%LSI_Logic_Dir%\%LSI_Logic_SAS_W2003%,%LSI_Logic_SAS_W2003_DL%
+Run,%ScriptFile%,Auto_Download_SizeCheck
+
+[Auto_Download_SizeCheck]
+Run,%ScriptFile%,Auto_Download_SizeCheck_M,%LSI_Logic_Dir%\%LSI_Logic_XP%
+Run,%ScriptFile%,Auto_Download_SizeCheck_M,%LSI_Logic_Dir%\%LSI_Logic_SAS_XP%
+Run,%ScriptFile%,Auto_Download_SizeCheck_M,%LSI_Logic_Dir%\%LSI_Logic_W2003%
+Run,%ScriptFile%,Auto_Download_SizeCheck_M,%LSI_Logic_Dir%\%LSI_Logic_SAS_W2003%
+
+[Auto_Download_SizeCheck_M]
+If,ExistFile,#1,Begin
+Set,%t%,0
+Retrieve,FileSize,#1,%t%
+If,%t%,Smaller,1000,Call,FileDelete,#1
+End
+
+[Process]
+Run,%ScriptFile%,Auto_Download
+IniRead,%ProjectDir%\Script.Project,IniVariables,OS,%OS%
+If,%OS%%SourceArch%,Equal,XPx86,If,Not,ExistFile,%LSI_Logic_Dir%\%LSI_Logic_SAS_XP%,Exit,"lsi_buslogic Plugin - You have to provide files first"
+If,%OS%%SourceArch%,Equal,XPx64,If,Not,ExistFile,%LSI_Logic_Dir%\%LSI_Logic_XP%,Exit,"lsi_buslogic Plugin - You have to provide files first"
+If,%OS%%SourceArch%,Equal,XPx64,If,Not,ExistFile,%LSI_Logic_Dir%\%LSI_Logic_SAS_XP%,Exit,"lsi_buslogic Plugin - You have to provide files first"
+If,%OS%,Equal,W2003,If,Not,ExistFile,%LSI_Logic_Dir%\%LSI_Logic_W2003%,Exit,"lsi_buslogic Plugin - You have to provide files first"
+If,%OS%,Equal,W2003,If,Not,ExistFile,%LSI_Logic_Dir%\%LSI_Logic_SAS_W2003%,Exit,"lsi_buslogic Plugin - You have to provide files first"
+If,%OS%,Equal,XP,Run,%ScriptFile%,process_LSI_%OS%_%SourceArch%
+If,%OS%,Equal,W2003,Run,%ScriptFile%,process_LSI_%OS%
+If,%OS%,Equal,XP,Run,%ScriptFile%,process_LSI_SAS_%OS%_%SourceArch%
+If,%OS%,Equal,W2003,Run,%ScriptFile%,process_LSI_SAS_%OS%
+If,%SourceArch%,Equal,x86,Run,%ScriptFile%,VMscsi_x86
+Require,File,storport.sys
+
+[STORPORT_SYS_CANCELLED]
+//If,Not,ExistFile,%Target_Sys%\DRIVERS\STORPORT.SY?,CopyOrExpand,%source_win%\STORPORT.SYS,%Target_Sys%\DRIVERS
+If,%OSFamily%,Equal,NT5,Begin
+Set,%StorPortSYS_Add%,0
+If,%OS%%SourceArch%,Equal,W2003x86,Set,%StorPortSYS_Add%,1
+If,%SourceArch%,Equal,x64,Set,%StorPortSYS_Add%,1
+If,%StorPortSYS_Add%,Equal,1,Require,Drivers,STORPORT.SYS
+End
+Else,Require,Drivers,STORPORT.SYS
+
+[Process_LSI_XP_x86]
+Echo,"lsi_buslogic Plugin - 'LSI Logic' Not_Exists_XP_x86"
+
+[Process_LSI_XP_x64]
+Run,%ScriptFile%,Extract,%LSI_Logic_XP%,,lsi_scsi.sys
+Run,%ScriptFile%,txtsetup_add_lsi_scsi
+
+[Process_LSI_XP_IA64]
+Echo,"lsi_buslogic Plugin - 'LSI Logic' Not_Exists_XP_IA64"
+
+[Process_LSI_W2003]
+Run,%ScriptFile%,Extract,%LSI_Logic_W2003%,lsimpt_scsi_srv03_%SourceArch%,lsi_scsi.sys
+Run,%ScriptFile%,txtsetup_add_lsi_scsi
+
+[Process_LSI_SAS_XP_x86]
+Run,%ScriptFile%,Extract,%LSI_Logic_SAS_XP%,symmpi_xp_x86_rel,symmpi.sys
+Run,%ScriptFile%,txtsetup_add_symmpi
+
+[Process_LSI_SAS_XP_x64]
+Run,%ScriptFile%,Extract,%LSI_Logic_SAS_XP%,lsimpt_sas_xp_x64_rel,lsi_sas.sys
+Run,%ScriptFile%,txtsetup_add_lsi_sas
+
+[Process_LSI_SAS_XP_IA64]
+Run,%ScriptFile%,Extract,%LSI_Logic_SAS_XP%,symmpi_xp_IA64_rel,symmpi.sys
+Run,%ScriptFile%,txtsetup_add_symmpi
+
+[Process_LSI_SAS_W2003]
+Run,%ScriptFile%,Extract,%LSI_Logic_SAS_W2003%,lsimpt_sas_srv03_%SourceArch%_rel,lsi_sas.sys
+Run,%ScriptFile%,txtsetup_add_lsi_sas
+
+[Extract]
+If,ExistDir,%ProjectTemp%\Lsi_Logic_Driver_Copy,DirDelete,%ProjectTemp%\Lsi_Logic_Driver_Copy
+DirMake,%ProjectTemp%\Lsi_Logic_Driver_Copy
+If,"bla#2bla",Equal,"blabla",ShellExecute,Hide,%Tools%\7z.exe,"e -y -o#$q%ProjectTemp%\Lsi_Logic_Driver_Copy#$q #$q%LSI_Logic_Dir%\#1#$q #3"
+Else,ShellExecute,Hide,%Tools%\7z.exe,"e -y -o#$q%ProjectTemp%\Lsi_Logic_Driver_Copy#$q #$q%LSI_Logic_Dir%\#1#$q #2\#3"
+ShellExecute,Hide,attrib.exe,"-R #$q%LSI_Logic_Dir%\#3#$q"
+ShellExecute,Hide,attrib.exe,"-R #$q%Target_Sys%\Drivers\#3#$q"
+If,ExistFile,%ProjectTemp%\Lsi_Logic_Driver_Copy\#3,FileCopy,%ProjectTemp%\Lsi_Logic_Driver_Copy\#3,%Target_Sys%\Drivers
+Else,Exit,"%ScriptTitle% - You must provide files"
+//ShellExecute,Hide,%Tools%\7z.exe,"e -y -o#$q%Target_Sys%\Drivers#$q #$q%LSI_Logic_Dir%\#1#$q #2\#3"
+ShellExecute,Hide,attrib.exe,"-R #$q%Target_Sys%\Drivers\#3#$q"
+
+[OpenSourceFilesDir]
+If,Not,ExistDir,%LSI_Logic_Dir%,DirMake,%LSI_Logic_Dir%
+System,FILEREDIRECT,OFF
+ShellExecuteEx,Open,explorer.exe,/e#$c#$q%LSI_Logic_Dir%#$q,%LSI_Logic_Dir%
+System,FILEREDIRECT,ON
+
+[txtsetup_add_symmpi]
+//symmpi not exists for w2k3
+//If,%SourceArch%,Equal,x86,IniWrite,%Target_Win%\TXTSETUP.SIF,SourceDisksFiles,symmpi.sys,"1,,,,,,4_,4,1,,,1,4"
+//If,%SourceArch%,Equal,x64,IniWrite,%Target_Win%\TXTSETUP.SIF,SourceDisksFiles.amd64,symmpi.sys,"1,,,,,,4_,4,1,,,1,4"
+//If,%SourceArch%,Equal,IA64,IniWrite,%Target_Win%\TXTSETUP.SIF,SourceDisksFiles.IA64,symmpi.sys,"1,,,,,,4_,4,1,,,1,4"
+//--
+//If,%SourceArch%,Equal,x86,IniWrite,%Target_Win%\TXTSETUP.SIF,SourceDisksFiles,symmpi.sys,"1#$c#$c#$c#$c#$c#$c4_#$c4#$c1#$c#$c#$c1#$c4"
+//If,%SourceArch%,Equal,x64,IniWrite,%Target_Win%\TXTSETUP.SIF,SourceDisksFiles.amd64,symmpi.sys,"1#$c#$c#$c#$c#$c#$c4_#$c4#$c1#$c#$c#$c1#$c4"
+//If,%SourceArch%,Equal,IA64,IniWrite,%Target_Win%\TXTSETUP.SIF,SourceDisksFiles.IA64,symmpi.sys,"1#$c#$c#$c#$c#$c#$c4_#$c4#$c1#$c#$c#$c1#$c4"
+//--
+IniWrite,%Target_Win%\TXTSETUP.SIF,SourceDisksFiles,symmpi.sys,"1#$c#$c#$c#$c#$c#$c4_#$c4#$c1#$c#$c#$c1#$c4"
+IniWrite,%Target_Win%\TXTSETUP.SIF,SCSI.Load,SYMMPI,"SYMMPI.SYS,4"
+IniWrite,%Target_Win%\TXTSETUP.SIF,SCSI,symmpi,"#$qLSI Logic SAS 3000/Dell SAS 5X/6I (WXP)#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0622,"#$qsymmpi#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0624,"#$qsymmpi#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0626,"#$qsymmpi#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0628,"#$qsymmpi#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0030,"#$qsymmpi#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0032,"#$qsymmpi#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0050,"#$qsymmpi#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0054,"#$qsymmpi#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0058,"#$qsymmpi#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0056,"#$qsymmpi#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0640,"#$qsymmpi#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0646,"#$qsymmpi#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0062,"#$qsymmpi#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0054&SUBSYS_1F041028,"#$qsymmpi#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0054&SUBSYS_1F061028,"#$qsymmpi#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0054&SUBSYS_1F071028,"#$qsymmpi#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0054&SUBSYS_1F081028,"#$qsymmpi#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0054&SUBSYS_1F091028,"#$qsymmpi#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0058&SUBSYS_1F0E1028,"#$qsymmpi#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0058&SUBSYS_1F0F1028,"#$qsymmpi#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0058&SUBSYS_1F101028,"#$qsymmpi#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0058&SUBSYS_021D1028,"#$qsymmpi#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_005E,"#$qsymmpi#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_005A,"#$qsymmpi#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0054&SUBSYS_1F051028,"#$qsymmpi#$q"
+
+[txtsetup_add_lsi_scsi]
+//only on w2003 - LSIMPT_SCSI_W2k3_1.28.03 - lsimpt_scsi_srv03_x86
+//If,%SourceArch%,Equal,x86,IniWrite,%Target_Win%\TXTSETUP.SIF,SourceDisksFiles,LSI_SCSI.SYS,"1,,,,,,4_,4,1,,,1,4"
+//If,%SourceArch%,Equal,x64,IniWrite,%Target_Win%\TXTSETUP.SIF,SourceDisksFiles.amd64,LSI_SCSI.SYS,"1,,,,,,4_,4,1,,,1,4"
+//If,%SourceArch%,Equal,IA64,IniWrite,%Target_Win%\TXTSETUP.SIF,SourceDisksFiles.IA64,LSI_SCSI.SYS,"1,,,,,,4_,4,1,,,1,4"
+//1,,,,,,4_,4,1,,,1,4
+//1,,,,,,6_,4,0,0,,1,4
+//1,,,,,,3_,4,0,0,,1,4
+//1,,,,,,_x,4,1
+//1,,,,,,3_,4,1
+//--
+//If,%SourceArch%,Equal,x86,IniWrite,%Target_Win%\TXTSETUP.SIF,SourceDisksFiles,LSI_SCSI.SYS,"1#$c#$c#$c#$c#$c#$c4_#$c4#$c1#$c#$c#$c1#$c4"
+//If,%SourceArch%,Equal,x64,IniWrite,%Target_Win%\TXTSETUP.SIF,SourceDisksFiles.amd64,LSI_SCSI.SYS,"1#$c#$c#$c#$c#$c#$c4_#$c4#$c1#$c#$c#$c1#$c4"
+//If,%SourceArch%,Equal,IA64,IniWrite,%Target_Win%\TXTSETUP.SIF,SourceDisksFiles.IA64,LSI_SCSI.SYS,"1#$c#$c#$c#$c#$c#$c4_#$c4#$c1#$c#$c#$c1#$c4"
+//--
+IniWrite,%Target_Win%\TXTSETUP.SIF,SourceDisksFiles,LSI_SCSI.SYS,"1#$c#$c#$c#$c#$c#$c4_#$c4#$c1#$c#$c#$c1#$c4"
+IniWrite,%Target_Win%\TXTSETUP.SIF,SCSI.Load,LSI_SCSI,"LSI_SCSI.SYS,4"
+IF,%OS%,Equal,W2003,IniWrite,%Target_Win%\TXTSETUP.SIF,SCSI,LSI_SCSI,"#$qLSI Fusion-MPT U320 Driver (XP x64)#$q"
+IF,%OS%,Equal,XP,IniWrite,%Target_Win%\TXTSETUP.SIF,SCSI,LSI_SCSI,"#$qLSI Logic Ultra320 SCSI RAID/2000/VMWare LSI (W2K3)#$q"
+//IniWrite,%Target_Win%\TXTSETUP.SIF,SCSI,LSI_SCSI,"#$qLSI PCI Fusion-MPT U320 Driver Install Disk (StorPort)#$q"
+//0030 added from reading inf file !
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0030,"#$qLSI_SCSI#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0032,"#$qLSI_SCSI#$q"
+
+[txtsetup_add_lsi_sas]
+//only on w2003 - info taken from v1.28.3.0 - the package is v1.30.2.0 - LSImpt_SAS_SRV03_P16_13002 - lsimpt_sas_srv03_x86_rel
+//If,%SourceArch%,Equal,x86,IniWrite,%Target_Win%\TXTSETUP.SIF,SourceDisksFiles,LSI_SAS.SYS,"1,,,,,,4_,4,1,,,1,4"
+//If,%SourceArch%,Equal,x64,IniWrite,%Target_Win%\TXTSETUP.SIF,SourceDisksFiles.amd64,LSI_SAS.SYS,"1,,,,,,4_,4,1,,,1,4"
+//If,%SourceArch%,Equal,IA64,IniWrite,%Target_Win%\TXTSETUP.SIF,SourceDisksFiles.IA64,LSI_SAS.SYS,"1,,,,,,4_,4,1,,,1,4"
+//--
+//If,%SourceArch%,Equal,x86,IniWrite,%Target_Win%\TXTSETUP.SIF,SourceDisksFiles,LSI_SAS.SYS,"1#$c#$c#$c#$c#$c#$c4_#$c4#$c1#$c#$c#$c1#$c4"
+//If,%SourceArch%,Equal,x64,IniWrite,%Target_Win%\TXTSETUP.SIF,SourceDisksFiles.amd64,LSI_SAS.SYS,"1#$c#$c#$c#$c#$c#$c4_#$c4#$c1#$c#$c#$c1#$c4"
+//If,%SourceArch%,Equal,IA64,IniWrite,%Target_Win%\TXTSETUP.SIF,SourceDisksFiles.IA64,LSI_SAS.SYS,"1#$c#$c#$c#$c#$c#$c4_#$c4#$c1#$c#$c#$c1#$c4"
+//--
+IniWrite,%Target_Win%\TXTSETUP.SIF,SourceDisksFiles,LSI_SAS.SYS,"1#$c#$c#$c#$c#$c#$c4_#$c4#$c1#$c#$c#$c1#$c4"
+IniWrite,%Target_Win%\TXTSETUP.SIF,SCSI.Load,LSI_SAS,"LSI_SAS.SYS,4"
+IF,%OS%,Equal,W2003,IniWrite,%Target_Win%\TXTSETUP.SIF,SCSI,LSI_SAS,"#$qLSI Logic SAS 3000/Dell SAS 5x/6I (W2K3)#$q"
+IF,%OS%,Equal,XP,IniWrite,%Target_Win%\TXTSETUP.SIF,SCSI,LSI_SAS,"#$qLSI Fusion-MPT SAS Driver (XP x64)#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0050,"#$qLSI_SAS#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0054,"#$qLSI_SAS#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0058,"#$qLSI_SAS#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0056,"#$qLSI_SAS#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0062,"#$qLSI_SAS#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0054&SUBSYS_1F041028,"#$qLSI_SAS#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0054&SUBSYS_1F061028,"#$qLSI_SAS#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0054&SUBSYS_1F071028,"#$qLSI_SAS#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0054&SUBSYS_1F081028,"#$qLSI_SAS#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0054&SUBSYS_1F091028,"#$qLSI_SAS#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0058&SUBSYS_1F0E1028,"#$qLSI_SAS#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0058&SUBSYS_1F0F1028,"#$qLSI_SAS#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0058&SUBSYS_1F101028,"#$qLSI_SAS#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_0058&SUBSYS_021D1028,"#$qLSI_SAS#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1000&DEV_005E,"#$qLSI_SAS#$q"
+
+[VMscsi_x86]
+Echo,"Adding drivers for: VMware SCSI Controller"
+ExtractFile,%ScriptFile%,Drv,vmscsi.sys,%Target_Sys%\Drivers
+//IniWrite,%Target_Win%\TXTSETUP.SIF,SourceDisksFiles,vmscsi.sys,"1,,,,,,4_,4,1,,,1,4"
+IniWrite,%Target_Win%\TXTSETUP.SIF,SourceDisksFiles,vmscsi.sys,"1#$c#$c#$c#$c#$c#$c4_#$c4#$c1#$c#$c#$c1#$c4"
+IniWrite,%Target_Win%\TXTSETUP.SIF,SCSI.Load,VMSCSI,"vmscsi.sys,4"
+IniWrite,%Target_Win%\TXTSETUP.SIF,SCSI,VMSCSI,"#$qVMware SCSI Controller#$q"
+IniWrite,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_104B&DEV_1040,"#$qVMscsi#$q"
+
+[process_old]
+//ps: symmpi.sys removed from Plugin
+If,Not,ExistSection,%TargetDir%\I386\TXTSETUP.SIF,SCSI,TXTAddLine,"%TargetDir%\I386\TXTSETUP.SIF","[SCSI]","Append"
+Echo,"Adding drivers for: LSI Logic Fusion-MPT MiniPort (ScsiPort)"
+ExtractFile,"%ScriptFile%","Drv","symmpi.sys","%TargetDir%\I386\System32\Drivers"
+IniWriteTextLine,"%TargetDir%\I386\TXTSETUP.SIF","SourceDisksFiles","symmpi.sys=1,,,,,,_3,4,1"
+IniWriteTextLine,"%TargetDir%\I386\TXTSETUP.SIF","SCSI.Load","symmpi=symmpi.sys,4"
+IniWriteTextLine,"%TargetDir%\I386\TXTSETUP.SIF","SCSI","symmpi=#$qLSI Logic PCI Fibre Channel/LSI Logic PCI-X Ultra320 SCSI Host Adapter#$q"
+IniWriteTextLine,"%TargetDir%\I386\TXTSETUP.SIF","HardwareIdsDatabase","PCI\VEN_1000&DEV_0622=#$qsymmpi#$q"
+IniWriteTextLine,"%TargetDir%\I386\TXTSETUP.SIF","HardwareIdsDatabase","PCI\VEN_1000&DEV_0624=#$qsymmpi#$q"
+IniWriteTextLine,"%TargetDir%\I386\TXTSETUP.SIF","HardwareIdsDatabase","PCI\VEN_1000&DEV_0626=#$qsymmpi#$q"
+IniWriteTextLine,"%TargetDir%\I386\TXTSETUP.SIF","HardwareIdsDatabase","PCI\VEN_1000&DEV_0628=#$qsymmpi#$q"
+IniWriteTextLine,"%TargetDir%\I386\TXTSETUP.SIF","HardwareIdsDatabase","PCI\VEN_1000&DEV_0030=#$qsymmpi#$q"
+IniWriteTextLine,"%TargetDir%\I386\TXTSETUP.SIF","HardwareIdsDatabase","PCI\VEN_1000&DEV_0032=#$qsymmpi#$q"
+IniWriteTextLine,"%TargetDir%\I386\TXTSETUP.SIF","HardwareIdsDatabase","PCI\VEN_1000&DEV_0050=#$qsymmpi#$q"
+IniWriteTextLine,"%TargetDir%\I386\TXTSETUP.SIF","HardwareIdsDatabase","PCI\VEN_1000&DEV_0054=#$qsymmpi#$q"
+IniWriteTextLine,"%TargetDir%\I386\TXTSETUP.SIF","HardwareIdsDatabase","PCI\VEN_1000&DEV_0058=#$qsymmpi#$q"
+IniWriteTextLine,"%TargetDir%\I386\TXTSETUP.SIF","HardwareIdsDatabase","PCI\VEN_1000&DEV_005E=#$qsymmpi#$q"
+IniWriteTextLine,"%TargetDir%\I386\TXTSETUP.SIF","HardwareIdsDatabase","PCI\VEN_1000&DEV_0640=#$qsymmpi#$q"
+IniWriteTextLine,"%TargetDir%\I386\TXTSETUP.SIF","HardwareIdsDatabase","PCI\VEN_1000&DEV_0642=#$qsymmpi#$q"
+Echo,"Adding drivers for: VMware SCSI Controller"
+ExtractFile,"%ScriptFile%","Drv","vmscsi.sys","%TargetDir%\I386\System32\Drivers"
+IniWriteTextLine,"%TargetDir%\I386\TXTSETUP.SIF","SourceDisksFiles","vmscsi.sys=1,,,,,,4_,4,1,,,1,4"
+IniWriteTextLine,"%TargetDir%\I386\TXTSETUP.SIF","SCSI.Load","VMSCSI=vmscsi.sys,4"
+IniWriteTextLine,"%TargetDir%\I386\TXTSETUP.SIF","SCSI","VMSCSI=#$qVMware SCSI Controller#$q"
+IniWriteTextLine,"%TargetDir%\I386\TXTSETUP.SIF","HardwareIdsDatabase","PCI\VEN_104B&DEV_1040=#$qVMscsi#$q"
+
+[AuthorEncoded]
+vmware_hd_icon.bmp=406,542
+Logo=vmware_hd_icon.bmp
+
+[EncodedFile-AuthorEncoded-vmware_hd_icon.bmp]
+lines=0
+0=eJxz8jViYQADMyDWAGIRIBYEYkYGCbD4H2YGhiN8EAwDv76+H6Jo27ql/k5mRKL503uR9S7tr57VFEMkyogJRNO7b3ld/FQ3rzX2dnNMzm7sOrWl6/TmTiA6taUbwgCiC9u7Dq1qxNS7f0VDY24Q/2dtxi7us5snQtCpLX2ntved3DwRhLZNPLNnys5F1Zh6t84tIRJh6v1PNMDU++DmJRQV//7+//fn/99f///8+P/n6//fn///+vD/59vj25e2laUh6z2weenmhf34df3/8er/9+eTm4o2Lp2BrPfZ/WsrJjc8unUFj67/356c3rkQaOnjO1fQkgfUahy6/n95+P/zPaCl29fMx0xaEKtvXzqFVdf/T7ceXNiF1VK41UDti7srl/TVLOmtXNJTvbS3allf9dK+SmBgAkWwWkp/BABQ5UdteJwTKsstTyxKjc9Iic9Mzs/TS8otYBgFIwcYsUBoF0bs8vdepUYxMAEAeP0KSbmO+zsBAAAAAgAAAC4AAABEAQAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFolders]
+Drv
+
+[Drv]
+vmscsi.sys=11Kb,15Kb
+
+[EncodedFile-Drv-vmscsi.sys]
+lines=3
+0=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
+1=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
+2=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
+3=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
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+Call,UploadXQ
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+

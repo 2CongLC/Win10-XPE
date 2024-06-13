@@ -1,0 +1,233 @@
+[Main]
+Title=Other Tweaks
+Type=Plugin
+Author=Galapo
+Description=(NT5x) Add a (growing) set of extra customisations
+Credits=Gena People, http://TheOven.org
+Version=046
+Download_Level=0
+Level=3
+Selected=True
+Mandatory=False
+NoWarning=False
+Contact=http://TheOven.org/index.php?topic=418
+Date=2016.11.10
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Components/Tweaks/yOther%20Tweaks.script
+Web2=http://yomi.cwcodes.net/Yomi/ComponentsY/Tweaks/yOther%20Tweaks.script
+CertifiedBy=
+Certification=
+HistoryNotes01=LowLevelHooksTimeout: hook calls will not be made exceeding of the LowLevelHooksTimeout occurs, no key is Infinitive :< , Vmware asks for the existance of this setting (nothing serious), hence setting default (5000ms).
+History024=JFX Added Allow RightClick Format On Drives
+History030=Galapo updated Plugin to no longer use ML commands (for speed - old times)
+History031a=wyefye added LMCompatibilityLevel options
+History031b=Lancelot added LowLevelHooksTimeout options
+History033=Lancelot RemoveBitmaps option removed from RemoveSearch RemoveHelp RemoveDocs . (we now can show small icons with classical startmenu easly) --> options saved at oem logo Plugin for future reference
+History034=CrashControl AlwaysUnloadDll ([UnloadDLLs]) removed from options since it is no longer supported in Microsoft Windows 2000 or later. ( pCheckBox4="Unload dlls from memory after use for better performance",1,3,14,46,302,14,True)
+History037=Nikzzzz bugfix post1 http://TheOven.org/index.php?topic=182.msg3197#msg3197
+History038=Lancelot ClearPageFileAtShutdown added following maanu request Reply 39 - http://TheOven.org/index.php?topic=173.msg3381#msg3381
+History039=Lancelot ClearPageFileAtShutdown unselected default (since not working as expected ;) besides option kept to be used easly for future tests)
+History040=Lancelot NoWarnROW implemented
+History041=Lancelot View type moved to a seperate plugin
+History042=Lancelot added VdsAlignmentSet - Date:2015.11.05
+History043=Lancelot added Sound_Beep_No_CheckBox Sound_ExtendedSounds_No_CheckBox - Date:2016.02.11
+History045=Lancelot NoAutoMount_RunOnce_CheckBox NoAutoMount_MountMgr_CheckBox - Date:2016.10.02
+History046=Lancelot Added Components_PluginCache_Extract - Date:2016.11.10
+
+[Interface]
+pCheckBox2="Disable low diskspace warning",1,3,14,16,171,14,True
+pCheckBox3="Disable the NTFS last access time stamp",1,3,14,31,217,14,True
+pCheckBox9="Suppress driver *.pnf file creation",1,3,14,46,183,14,True
+pCheckBox18="hide system processes errors; display application errors",1,3,14,61,294,14,False
+pCheckBox23=NoDriveTypeAutoRun,1,3,14,76,124,14,True
+LowLevelHooksTimeout_CheckBox=LowLevelHooksTimeout,1,3,15,107,133,14,True
+LowLevelHooksTimeout_NumberBox=NumberBox,1,2,149,103,65,22,5000,1000,9999999,100
+LowLevelHooksTimeout_Label_Value_TextLabel=MiliSeconds,1,1,214,105,57,18,8,Normal
+LMCompatibilityLevel_CheckBox="LSA - LMLMCompatibilityLevel",1,3,15,141,164,14,True
+LMCompatibilityLevel_ScrollBox=3,1,4,181,137,34,21,0,1,2,3,4,5
+LMCompatibilityLevel_Advice_TextLabel="Adviced 3",1,1,216,138,53,18,8,Normal
+LMCompatibilityLevel_Info_Button=i,1,8,271,137,10,20,LMCompatibilityLevel_Info,_LMCompatibilityLevel_Info_,False
+pCheckBox27="ClearPageFileAtShutdown (not working - only to test)",1,3,15,207,278,14,False
+NT5xVDSAllignment_CheckBox="NT5x VDS Allignment",1,3,15,172,120,14,True
+Sound_Beep_No_CheckBox="Sound Beep No",1,3,15,237,95,18,True
+Sound_ExtendedSounds_No_CheckBox="Sound ExtendedSounds No",1,3,15,252,152,18,True
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+NoAutoMount_RunOnce_CheckBox="Remove RunOnce NoAutoMount",1,3,204,233,183,18,True
+NoAutoMount_MountMgr_CheckBox="Services\MountMgr] NoAutoMount=0",1,3,204,251,200,18,True
+WebLabel_Plugin="Plugin Page",1,10,338,4,55,18,http://TheOven.org/index.php?topic=418
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+
+[Variables]
+%reshackpackfilename%=reshack_3.5beta.zip
+%reshackpackfoldername%=reshack
+%reshackProgramFolder%=reshack_3_5beta
+%reshackWorkingFolder%=%ProjectTemp%\%reshackProgramFolder%
+%reshackexe%=%reshackWorkingFolder%\reshacker.exe
+%check%=
+
+[Process]
+If,ExistFile,%ProjectTemp%\Components_PluginCache_Extract.ini,Echo,"Components PluginCache"
+If,Not,ExistFile,%ProjectTemp%\Components_PluginCache_Extract.ini,Run,%ScriptFile%,Process_Normal
+
+[Process_Normal]
+IniRead,%ProjectDir%\Script.Project,IniVariables,NoWarnRegOverWrite,%NoWarnROW%
+RegHiveLoad,Tmp_System,%RegSystem%
+RegHiveLoad,Tmp_Default,%RegDefault%
+RegHiveLoad,Tmp_Software,%RegSoftware%
+//
+If,%pCheckBox2%,Equal,True,Run,%ScriptFile%,DisableDiskSpaceWarning
+If,%pCheckBox3%,Equal,True,Run,%ScriptFile%,DisableNTFSstamp
+If,%pCheckBox9%,Equal,True,Run,%ScriptFile%,SuppressPNF
+If,%pCheckBox18%,Equal,True,Run,%ScriptFile%,SystemErrors
+If,%NT5xVDSAllignment_CheckBox%,Equal,True,Run,%ScriptFile%,VdsAlignmentSet
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+If,%pCheckBox23%,Equal,True,RegWrite,HKLM,0x4,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer,NoDriveTypeAutoRun,255
+//--
+If,%LowLevelHooksTimeout_CheckBox%,Equal,True,RegWrite,HKLM,0x4,"Tmp_Default\Control Panel\Desktop",LowLevelHooksTimeout,%LowLevelHooksTimeout_NumberBox%
+If,%LMCompatibilityLevel_CheckBox%,Equal,True,RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Control\Lsa,lmcompatibilitylevel,%LMCompatibilityLevel_ScrollBox%
+//
+If,%NoWarnROW%,Equal,True,System,ERROROFF,2
+If,%pCheckBox27%,Equal,True,RegWrite,HKLM,0x4,"Tmp_System\ControlSet001\Control\Session Manager\Memory Management",ClearPageFileAtShutdown,1
+Else,RegWrite,HKLM,0x4,"Tmp_System\ControlSet001\Control\Session Manager\Memory Management",ClearPageFileAtShutdown,0
+//-
+Set,%t%,Yes
+If,%Sound_Beep_No_CheckBox%,Equal,True,Set,%t%,No
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x1,"Tmp_Default\Control Panel\Sound",Beep,%t%
+//-
+Set,%t%,Yes
+If,%Sound_ExtendedSounds_No_CheckBox%,Equal,True,Set,%t%,No
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x1,"Tmp_Default\Control Panel\Sound",ExtendedSounds,%t%
+//-
+If,%NoAutoMount_RunOnce_CheckBox%,Equal,True,Begin
+//W2003 Adds "NoAutoMount"="mountvol /n" to RunOnce - On PE We like drives to get automounted
+If,ExistRegKey,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnce,NoAutoMount,Begin
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegDelete,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnce,NoAutoMount
+End
+End
+//-
+If,%NoAutoMount_MountMgr_CheckBox%,Equal,True,Begin
+//mountmgr.sys NoAutoMount setting to 0 - On PE We like drives to get automounted
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\MountMgr,NoAutoMount,0
+End
+//-
+RegHiveUnLoad,Tmp_System
+RegHiveUnLoad,Tmp_Default
+RegHiveUnLoad,Tmp_Software
+
+[UnloadDLLs]
+//it is no longer supported in Microsoft Windows 2000 or later. http://support.microsoft.com/kb/196480
+// http://home.comcast.net/~SupportCD/XPMyths.html (-> CTRL+F AlwaysUnloadDll )
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Windows\CurrentVersion\Explorer,AlwaysUnloadDll,1
+
+[DisableDiskSpaceWarning]
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x4,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer,NoLowDiskSpaceChecks,1
+
+[SuppressPNF]
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x4,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Setup,MinimizeFootprint,1
+
+[DisableNTFSstamp]
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Control\FileSystem,NtfsDisableLastAccessUpdate,1
+
+[SystemErrors]
+//http://www.microsoft.com/technet/prodtechnol/windows2000serv/reskit/regentry/29991.mspx
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Control\Windows,ErrorMode,1
+
+[VdsAlignmentSet]
+Echo,"Adjusting Diskpart to make W2K3 / XP boot OK after PE Diskpart..."
+//nt5x vds services exists only with 'None XP32 bit' builds - RF have support to vds service (35 Core Storage)
+//-Seems to me, this more useful for nt6x where it is well known using this registry helps (check google) - http://support.microsoft.com/kb/931760/en-us
+//--Besides Krokodox had made this setting for 2k3sp1 before there were any nt6x around ;)
+//Credits: Krokodox
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\vds\Alignment,LessThan4GB,0
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\vds\Alignment,Between4_8GB,0
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\vds\Alignment,Between8_32GB,0
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\vds\Alignment,GreaterThan32GB,0
+
+[LMCompatibilityLevel_Info]
+If,Not,ExistDir,%ProjectTemp%,DirMake,%ProjectTemp%
+ExtractFile,%ScriptFile%,Folder,LMCompatibilityLevel_Info.txt,%ProjectTemp%
+Call,StartDoc,%ProjectTemp%\LMCompatibilityLevel_Info.txt
+
+[LMCompatibilityLevel_Info_TXT]
+wyefye Notes:
+//-
+Desc:
+LmCompatibility level changes the way that windows authenticates
+_to a domain/network environment.
+__In my situation, Level 3 is suitable, and works in most situations.
+//-
+Signature LSA problems:
+-When trying to connect to a network resource (\\server\share),
+_it prompts for username and password,
+__but everytime a correct password is input,
+___it returns bad password and will lock the account.
+//-
+-Web browsing on network prompts for username and password, and fails to authenticate
+//-
+technet info:
+http://technet.microsoft.com/en-us/library/cc960646.aspx
+
+[EncodedFolders]
+Folder
+
+[EncodedFile-AuthorEncoded-tweaks.gif]
+lines=0
+0=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
+
+[AuthorEncoded]
+tweaks.gif=2923,3898
+Logo=tweaks.gif
+
+[Folder]
+LMCompatibilityLevel_Info.txt=454,606
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+Call,UploadXMultiQ
+
+[Settings_Default]
+IniWrite,%ScriptFile%,Main,Selected,False
+
+[Settings_Default_Gena]
+IniWrite,%ScriptFile%,Main,Selected,True
+
+[Settings_Default_Yomi]
+IniWrite,%ScriptFile%,Main,Selected,False
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-Folder-LMCompatibilityLevel_Info.txt]
+lines=0
+0=eJyFkT+P2zAMxfcA+Q4cr0DOLtAiQLMV7VIguOWGLllkhY6Jk0SDpOL625fy9XrdOunf4+PvUcuK44rwxIZ62u/2u++o0Tfn/I3zHIwGSmQrJLxjgjiFckMFmxCWsPoaDBYqV14UQvXrYhSDe+13YAwBrpwDlb6gLSwvgOVOwiW7rnMJ/CiQV1Cy6q24HOC89fkEpKCVLAwJDxDKFVq5Arme1d4rtGvQz3QrwaognJ+/wizsZVlPsN89/nQmMFmp3BpR5FIw2ivcG5WgcpWI8HC5KMod5aJTEPxwcEayZphnUxhZoLqghIwb1BxU3eHadDBUA6eX1ag9eyuR1upN1DJRmatt6uYr6MxFYQjvVq9hKSVIHF+2SYcYuW4Da3lwgEF83i0Ql78Z/s+4ncZASbf0//xWMzaMk3s54cj+/5PZfOr7P7ddpiisPFoXOfdYHqv2iQYJsvYxfjl+PH4+dkHnX78BjV7PGnick/Xxdc7PLUgsyUzKzMksqfRJLUvNiffMS8vXK6koYRgFwxwEMEHoTEbs8neWOtgxMAEAL+EOP6GiHVwBAAAAAgAAADkAAABpAQAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+

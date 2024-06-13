@@ -1,0 +1,211 @@
+[Main]
+Title=exFAT
+Type=Plugin
+Author=Lancelot
+Description=(Date Published: 1/26/2009 ) KB955704 - exFAT File System Driver
+Credits=cdob, this Plugin is converted from cdob's WindowsXP-KB955704-x86 plugin
+Version=019
+Download_Level=1
+Level=3
+Selected=False
+Mandatory=False
+NoWarning=False
+Contact=http://TheOven.org
+Date=2016.11.10
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Components/Core/2%20Update/20090126_WindowsXP-KB955704-x86-ENU_exFat.script
+CertifiedBy=
+Certification=
+HistoryNotes01=2003x86 - IA64 - x64: (Date Published: 8/25/2009 )
+History008=Lancelot improved for multilanguage and multiarchitecture sources
+History011=Lancelot wb workaround
+History014=Lancelot read localize infos
+History015=Lancelot IniVariables OSServicePack
+History016=Lancelot IniVariables OS
+History017=Lancelot NoWarnFOW implemented - 2012.01.07
+History019=Lancelot Added Components_PluginCache_Extract x 2 - Date:2016.11.09 - Date:2016.11.10
+
+[Cache_SCD_Info_Additional_Plugin]
+IniRead,%ScriptFile%,Main,Selected,%t%
+If,%t%,Equal,True,Begin
+Run,%api%,Cache_SCD_Info_Additional_Plugin_ML,#1,#2,#3,#4,#5,#6,#7,#8,#9
+//-
+Call,RetrieveFolderUniqueID,%sourcepath%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,%Plugin_FName_Sub%_|_sourcepath_RetrieveFolderUniqueID,%RetrieveFolderUniqueID%
+If,%RetrieveFolderUniqueID%,Equal,1,IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,%Plugin_FName_Sub%_|_sourcepath_RetrieveFolderUniqueID,"%RetrieveFolderUniqueID% : Directory Not Exists"
+If,%RetrieveFolderUniqueID%,Equal,2,IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,%Plugin_FName_Sub%_|_sourcepath_RetrieveFolderUniqueID,"%RetrieveFolderUniqueID% : Directory exists but empty"
+//-
+Echo,"Cache_SCD_Info_Additional_Plugin - Finish - %Plugin_FName%"
+End
+
+[Interface]
+OpenSourceFilesbutton="Location of your localized (or ENU) WindowsXX-KB955704-XXX-XXX.exe",1,8,28,21,358,24,OpenSourceFilesDir,_OpenSourceFilesDir_,False
+pWebLabel1=WindowsXP-KB914882-x86-ENU_MS1,1,10,21,185,153,18,http://www.microsoft.com/downloads/details.aspx?FamilyID=1cbe3906-ddd1-4ca2-b727-c2dff5e30f61&displaylang=en
+pWebLabel2=WindowsXP-KB914882-x86-ENU_MS2,1,10,21,204,153,18,http://support.microsoft.com/kb/955704
+pWebLabel3=Extra_Info,1,10,21,242,27,18,http://changetheworldwithyourpassion.blogspot.com/2008/11/enable-exfat-in-windows-xp2003.html
+pWebLabel4="Find WindowsXP-KB955704-x86-ENU.exe",1,10,96,240,200,18,http://www.google.com/search?hl=en&q=WindowsXP-KB955704-x86-ENU.exe&aq=f&oq=&aqi=
+pTextLabel2="Reminder: shell32.dll , format.com also updated",1,1,6,146,239,18,8,Normal
+pTextLabel3=Example:#$xWindowsXP-KB955704-x86-ENU.exe#$xWindowsXP-KB955704-x86-TRK.exe#$xWindowsServer2003-KB955704-x86-ENU.exe#$xWindowsServer2003.WindowsXP-KB955704-x64-ENU.exe,1,1,192,47,287,68,8,Normal
+WebLabel_Plugin="Plugin Page",1,10,338,4,55,18,http://TheOven.org/index.php?board=9
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[Interface_old]
+pFileBox1=%GlobalTemplates%\Hotfixes\KB955704\WindowsXP-KB955704-x86-DEU.exe,1,13,18,278,432,30,file
+pTextLabel1="Location of your localized WindowsXP-KB955704-x86-???.exe:",1,1,18,258,308,18,8,Normal
+
+[Variables]
+%FixPath%=%GlobalTemplates%\Hotfixes\KB955704
+%FixFile%=%FixPath%\WindowsXP-KB955704-x86.exe
+%sourcepath%=%GlobalTemplates%\Hotfixes\KB955704
+%filebasenameXPx86%=WindowsXP-KB955704
+%filebasenamew2003x86%=WindowsServer2003-KB955704
+%filebasenamex64%=WindowsServer2003.WindowsXP-KB955704
+%filebasenameIA64%=WindowsServer2003-KB955704
+%fileexistlocal%=
+%fileexistenu%=
+
+[Process]
+If,ExistFile,%ProjectTemp%\Components_PluginCache_Extract.ini,Echo,"Components PluginCache"
+If,Not,ExistFile,%ProjectTemp%\Components_PluginCache_Extract.ini,Run,%ScriptFile%,Process_Normal
+
+[Process_Normal]
+IniRead,%projectdir%\script.project,IniVariables,OS,%OS%
+IniRead,%projectdir%\script.project,IniVariables,OSServicePack,%OSServicePack%
+IniRead,%projectdir%\script.project,IniVariables,LocalizeExtUpdate,%LocalizeExtUpdate%
+IniRead,%ProjectDir%\script.project,IniVariables,NoWarnFileOverWrite,%NoWarnFOW%
+Set,%sourceokey%,not
+If,%OSServicePack%,Equal,SP2,Set,%sourceokey%,yes
+If,%OSServicePack%,Equal,SP3,Set,%sourceokey%,yes
+If,Not,%sourceokey%,Equal,yes,Exit,"%ScriptTitle% source must be sp2 or sp3"
+//--
+If,%SourceArch%%OS%,Equal,x86XP,Set,%filebasename%,%filebasenameXPx86%
+If,%SourceArch%%OS%,Equal,x86W2003,Set,%filebasename%,%filebasenamew2003x86%
+If,%SourceArch%,Equal,x64,Set,%filebasename%,%filebasenamex64%
+If,%SourceArch%,Equal,IA64,Set,%filebasename%,%filebasenameIA64%
+If,Not,ExistFile,%sourcepath%\%filebasename%-%SourceArch%-%LocalizeExtUpdate%.exe,set,%fileexistlocal%,no
+If,Not,ExistFile,%sourcepath%\%filebasename%-%SourceArch%-ENU.exe,set,%fileexistenu%,no
+If,%fileexistlocal%%fileexistenu%,Equal,nono,Exit,"%ScriptTitle% - No source files found - please download"
+If,ExistFile,%sourcepath%\%filebasename%-%SourceArch%-ENU.exe,set,%basenamebuild%,%filebasename%-%SourceArch%-ENU
+If,ExistFile,%sourcepath%\%filebasename%-%SourceArch%-%LocalizeExtUpdate%.exe,set,%basenamebuild%,%filebasename%-%SourceArch%-%LocalizeExtUpdate%
+If,Not,ExistFile,%sourcepath%\%basenamebuild%\spmsg.dll,ShellExecute,Hide,%sourcepath%\%basenamebuild%.exe,/x:#$s#$q%sourcepath%\%basenamebuild%#$q#$s/passive,%sourcepath%
+If,%NoWarnFOW%,Equal,True,System,ERROROFF,8
+FileCopy,%sourcepath%\%basenamebuild%\%OSServicePack%GDR\EXFAT.SYS,%target_sys%\drivers
+FileCopy,%sourcepath%\%basenamebuild%\%OSServicePack%GDR\fmifs.dll,%target_sys%
+FileCopy,%sourcepath%\%basenamebuild%\%OSServicePack%GDR\format.com,%target_sys%
+FileCopy,%sourcepath%\%basenamebuild%\%OSServicePack%GDR\FS_REC.SYS,%target_sys%\drivers
+FileCopy,%sourcepath%\%basenamebuild%\%OSServicePack%GDR\ifsutil.dll,%target_sys%
+FileCopy,%sourcepath%\%basenamebuild%\%OSServicePack%GDR\shell32.dll,%target_sys%
+FileCopy,%sourcepath%\%basenamebuild%\%OSServicePack%GDR\uexfat.dll,%target_sys%
+FileCopy,%sourcepath%\%basenamebuild%\%OSServicePack%GDR\ulib.dll,%target_sys%
+IniWrite,%target_win%\TXTSETUP.SIF,SourceDisksFiles,exfat.sys,1#$c#$c#$c#$c#$c#$c4_#$c4#$c1#$c#$c#$c1#$c4
+IniWrite,%target_win%\TXTSETUP.SIF,FileSystems.Load,exfat,exfat.sys
+IniWrite,%target_win%\TXTSETUP.SIF,FileSystems,exfat,#$qexFAT#$sFile#$sSystem#$sDriver#$q
+If,NOT,%SourceArch%,Equal,%TargetWOW64%,Begin
+If,%NoWarnFOW%,Equal,True,System,ERROROFF,6
+FileCopy,%sourcepath%\%basenamebuild%\%OSServicePack%GDR\wow\wfmifs.dll,%target_win%\SysWOW64\fmifs.dll
+FileCopy,%sourcepath%\%basenamebuild%\%OSServicePack%GDR\wow\wformat.com,%target_win%\SysWOW64\format.com
+FileCopy,%sourcepath%\%basenamebuild%\%OSServicePack%GDR\wow\wifsutil.dll,%target_win%\SysWOW64\ifsutil.dll
+FileCopy,%sourcepath%\%basenamebuild%\%OSServicePack%GDR\wow\wshell32.dll,%target_win%\SysWOW64\shell32.dll
+FileCopy,%sourcepath%\%basenamebuild%\%OSServicePack%GDR\wow\wuexfat.dll,%target_win%\SysWOW64\uexfat.dll
+FileCopy,%sourcepath%\%basenamebuild%\%OSServicePack%GDR\wow\wulib.dll,%target_win%\SysWOW64\ulib.dll
+End
+
+[Process_OLD]
+If,Not,%SourceArch%,Equal,x86,Exit,"WindowsXP-KB955704-x86-ENU_exFat.script only for PEx86 builds"
+If,%OS%,Equal,XP,Run,%ScriptFile%,Hotfix
+If,%OS%,Equal,W2003,Exit,"KB955704-x86-ENU can not be used with 2k3 source"
+
+[Hotfix]
+Echo,"Copying hotfix files..."
+Echo,"%OSServicePack%"
+If,Not,ExistFile,%FixFile%,Begin
+If,ExistFile,%pFileBox1%,Begin
+StrFormat,PATH,%pFileBox1%,%var%
+If,%var%,EQUAL,%FixPath%\,Begin
+FileRename,%pFileBox1%,%FixFile%
+End
+Else,Begin
+If,Not,EXISTDIR,%FixPath%,DirMake,%FixPath%\KB955704_files
+FileCopy,%pFileBox1%,%FixPath%
+StrFormat,FILENAME,%pFileBox1%,%FileName%
+FileRename,%FixPath%\%FileName%,%FixFile%
+End
+End
+Else,Begin
+Exit,"'WindowsXP-KB955704-x86-ENU: exFAT' script requires a Windows hotfix file to be provided."
+End
+End
+If,Not,ExistFile,%FixPath%\KB955704_files\SP2QFE\exfat.sys,ShellExecute,Hide,%FixFile%,"/x:#$q%FixPath%\KB955704_files#$q#$s/passive"
+If,%OSServicePack%,Equal,sp2,Begin
+If,%NoWarnFOW%,Equal,True,System,ERROROFF,8
+FileCopy,%FixPath%\KB955704_files\SP2GDR\EXFAT.SYS,%target_sys%\drivers
+FileCopy,%FixPath%\KB955704_files\SP2GDR\fmifs.dll,%target_sys%
+FileCopy,%FixPath%\KB955704_files\SP2GDR\format.com,%target_sys%
+FileCopy,%FixPath%\KB955704_files\SP2GDR\FS_REC.SYS,%target_sys%\drivers
+FileCopy,%FixPath%\KB955704_files\SP2GDR\ifsutil.dll,%target_sys%
+FileCopy,%FixPath%\KB955704_files\SP2GDR\shell32.dll,%target_sys%
+FileCopy,%FixPath%\KB955704_files\SP2GDR\uexfat.dll,%target_sys%
+FileCopy,%FixPath%\KB955704_files\SP2GDR\ulib.dll,%target_sys%
+End
+If,%OSServicePack%,Equal,sp3,Begin
+If,%NoWarnFOW%,Equal,True,System,ERROROFF,8
+FileCopy,%FixPath%\KB955704_files\SP3GDR\EXFAT.SYS,%target_sys%\drivers
+FileCopy,%FixPath%\KB955704_files\SP3GDR\fmifs.dll,%target_sys%
+FileCopy,%FixPath%\KB955704_files\SP3GDR\format.com,%target_sys%
+FileCopy,%FixPath%\KB955704_files\SP3GDR\FS_REC.SYS,%target_sys%\drivers
+FileCopy,%FixPath%\KB955704_files\SP3GDR\ifsutil.dll,%target_sys%
+FileCopy,%FixPath%\KB955704_files\SP3GDR\shell32.dll,%target_sys%
+FileCopy,%FixPath%\KB955704_files\SP3GDR\uexfat.dll,%target_sys%
+FileCopy,%FixPath%\KB955704_files\SP3GDR\ulib.dll,%target_sys%
+End
+//IniWrite,txtsetup.sif,"SourceDisksFiles","exfat.sys","1#$c#$c#$c#$c#$c#$c4_#$c4#$c1#$c#$c#$c1#$c4"
+//IniWrite,txtsetup.sif,"FileSystems.Load","exfat","exfat.sys"
+//IniWrite,txtsetup.sif,"FileSystems","exfat ","#$qexFAT File System Driver#$q"
+IniWrite,%target_win%\TXTSETUP.SIF,SourceDisksFiles,exfat.sys,1#$c#$c#$c#$c#$c#$c4_#$c4#$c1#$c#$c#$c1#$c4
+IniWrite,%target_win%\TXTSETUP.SIF,FileSystems.Load,exfat,exfat.sys
+IniWrite,%target_win%\TXTSETUP.SIF,FileSystems,exfat,#$qexFAT#$sFile#$sSystem#$sDriver#$q
+
+[OpenSourceFilesDir]
+If,Not,ExistDir,%sourcepath%,DirMake,%sourcepath%
+System,FILEREDIRECT,OFF
+ShellExecuteEx,Open,explorer.exe,/e#$c#$q%sourcepath%#$q,%sourcepath%
+System,FILEREDIRECT,ON
+
+[EncodedFile-AuthorEncoded-Hard Disk_4848.ico]
+lines=1
+0=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
+1=t/1kEH4mzyUfudNVeUaOwkGOmHH35gEdzp7t27LEL6O+xwxELHgXQukD6/q7kDeeD8twjUTzm3oP6/3lr8kr+zYT/iq/mu8Bu+GJ5rvztwAvO9e/cgfP/+ffUZtuA51mE93gf3dAxUfzD9DTFALTL4MROhfwG/1JXprcUv/e6XqMGIrTNvrJyBgCMaO2vcTERK8BmCZ4ZLeBe6dC434RBqkXMdwvwJ/JKX7q3FLzOHHf0DPjH+h8+A3fhf80ZxA34HRvgcovGT/g67SMdA1SiTyyaP0RPM37SQx+CQxo/Zn6SeXGktdlzCOTfJm5uoC6g7rvjjjN9wxhV+kwsPw49aav4mpzmk8AsXUD9z2oIfl9TdfPARMTYcaqnmuOKO4Q9+1zng4I+pQ879zMwU4BDwg8OY3XJyckLail/4E4GeomtQs/pj8hf+NzUHPLFyxuQy/K9rkMP/ll7WjD/G/6j/8L/gD2grful9y9FLUIN0DEjHgCw2qPqjbWCdBwqzrj0t1h+DX+evwm9mUnOuQf8F/2X+/HVb8Uvt/S1yCHG19jFXtcjau3QfcIi1h2G9qx6G+dbUH+s8ivlT6s99saHN/+eG5E576QGxou8u+GnmTzNTONUlFQuT1y3ND3qeUzXB8nd1MwdZzwTq7xOC/7bUkmZ/q23LJfjdRbddbLDLXnbZ0y5728UGu9hgFzx2wWUXfHbBaRe8TQS/4RnWYC3ewbvQIT5RegW/HXsIfrvsZxf/2yX2duH/z/4b7P8LF+srA1/cmJdb77bmd5urda29t3twz2jLvQNzxX9y78p8tS13jwf32625T3twv9ea+zL+0YH84Po3QBphKnicE/JILEpRcMkszo43sTCx0MtMzmcYBSMH7FOF0OV82OWfyvIsYWACAJxZCPm1bjyeAQAAAAIAAAAuAAAAdw4AAAAAAAABAAAAAAAAAAAAAAA
+
+[AuthorEncoded]
+Hard Disk_4848.ico=3785,5047
+Logo=Hard Disk_4848.ico
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+Call,UploadXQ
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+

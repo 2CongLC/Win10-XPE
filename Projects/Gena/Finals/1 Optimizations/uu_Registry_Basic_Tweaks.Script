@@ -1,0 +1,325 @@
+[Main]
+Title=Registry Tweaks (mini)
+Type=Plugin
+Author=Lancelot
+Description=Plugin to Test Core Registry. ADVANCED Users only.
+Credits=http://TheOven.org
+Version=006
+Download_Level=0
+Level=8
+Selected=None
+Mandatory=False
+NoWarning=False
+Contact=http://TheOven.org
+Date=2017.02.11
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Finals/1%20Optimizations/uu_Registry_Basic_Tweaks.Script
+Web2=http://yomi.cwcodes.net/Yomi/Final_Y/uu_Registry_Basic_Tweaks.Script
+CertifiedBy=
+Certification=
+HistoryNotes01=Tested only with Saydin77 Core - VVSmall - winlogon - cmd - XPx86SP3
+HistoryNotes02=Currently "Basic Project" Gena Dev uses this plugin
+History001=Lancelot 2016.09.25 Plugin created
+History002=Lancelot Added to servers - Date:2016.09.25
+History003=Lancelot fixed typo - Date:2016.09.25
+History004=Lancelot Added Test Button - Date:2016.09.25
+History005=Lancelot Improved and added note to interface - Date:2016.09.26
+History006=Lancelot Add Compare button - Date:2017.02.11
+
+[TODO]
+--
+Currently all language related keys also deleted
+maybe a checkbox to keep language related keys.
+--
+find dependency to delete
+Tmp_Software\Microsoft\Windows NT\CurrentVersion\IniFileMapping
+--
+See notes inside plugin
+//You get weird title on cmd screen after deleting one of Font...
+--
+
+[Interface]
+WebLabel_Plugin="Plugin Page",1,10,338,4,55,18,http://TheOven.org/index.php?board=9
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+pButton1=Test,1,8,218,30,80,25,Process_Test,0,False,False,_Process_Test_,False
+pTextLabel1="NOrmal Users:#$xDeleting registry entries does not effect size of final image#$xBetter do not use this plugin for your final build.#$x#$xThis plugin is only for test purposes to learn more about registry.",1,1,62,80,325,73,8,Normal
+
+[Variables]
+
+[Process_Test]
+Run,%ScriptFile%,Process_Main
+
+[Process]
+Echo,"There is no spoon"
+
+[Process_Main]
+//Run plugin just after core plugin ex: 2 - saydin77_Core before any other plugin adds registry.
+//Using this plugin will break many things
+//---
+//RegHiveLoad,Tmp_Software,%target_sys%\config\software
+//RegHiveLoad,Tmp_InsSoftware,%ProjectTemp%\saydin77_Backup\Hives\SOFTWARE
+//[Process2]
+Echo,"Registry Tweaks (mini) - Start"
+Set,%s%,%ScriptFile%
+Set,%D%,DeleteRegistryP
+//-
+RegHiveLoad,Tmp_Default,%target_sys%\config\default
+RegHiveLoad,Tmp_Software,%target_sys%\config\software
+RegHiveLoad,Tmp_System,%RegSystem%
+//-
+Run,%ScriptFile%,Process_D
+//-
+RegHiveUnLoad,Tmp_Software
+RegHiveUnLoad,Tmp_Default
+RegHiveUnLoad,Tmp_System
+Echo,"Registry Tweaks (mini) - Finish"
+
+[Process_D]
+//no notes on a comment line (//) --> not tested
+//--
+Run,%s%,%D%,"Tmp_System\WPA"
+//Run,%s%,%D%,"Tmp_System\Select" --> vmware cause virtualpc cpu shutdown error - no boot.
+//Run,%s%,%D%,"Tmp_System\Select"
+//Run,%s%,%D%,"Tmp_System\ControlSet001\Control\Arbiters"
+//Run,%s%,%D%,"Tmp_System\ControlSet001\Control\Class"
+//Run,%s%,%D%,"Tmp_System\ControlSet001\Control\COM Name Arbiter"
+//Run,%s%,%D%,"Tmp_System\ControlSet001\Control\ComputerName"
+//Run,%s%,%D%,"Tmp_System\ControlSet001\Control\DeviceClasses"
+//Run,%s%,%D%,"Tmp_System\ControlSet001\Control\GroupOrderList"
+//Run,%s%,%D%,"Tmp_System\ControlSet001\Control\HAL"
+//Run,%s%,%D%,"Tmp_System\ControlSet001\Control\IDConfigDB"
+//-
+Run,%s%,%D%,"Tmp_System\ControlSet001\Control\Keyboard Layout"
+Run,%s%,%D%,"Tmp_System\ControlSet001\Control\Keyboard Layouts"
+Run,%s%,%D%,"Tmp_System\ControlSet001\Control\Lsa"
+//-
+//Run,%s%,%D%,"Tmp_System\ControlSet001\Control\Network"
+//Run,%s%,%D%,"Tmp_System\ControlSet001\Control\NetworkProvider"
+//-
+Run,%s%,%D%,"Tmp_System\ControlSet001\Control\Nls"
+//-
+//Run,%s%,%D%,"Tmp_System\ControlSet001\Control\Pnp"
+//Run,%s%,%D%,"Tmp_System\ControlSet001\Control\ProductOptions"
+//Run,%s%,%D%,"Tmp_System\ControlSet001\Control\ScsiPort"
+//Run,%s%,%D%,"Tmp_System\ControlSet001\Control\ServiceGroupOrder"
+//Run,%s%,%D%,"Tmp_System\ControlSet001\Control\Session Manager"
+//Run,%s%,%D%,"Tmp_System\ControlSet001\Control\SystemResources"
+//Run,%s%,%D%,"Tmp_System\ControlSet001\Control\UsbFlags"
+//Run,%s%,%D%,"Tmp_System\ControlSet001\Control\Video"
+//-
+Run,%s%,%D%,"Tmp_System\ControlSet001\Enum"
+Run,%s%,%D%,"Tmp_System\ControlSet001\Hardware Profiles"
+//-
+//Run,%s%,%D%,"Tmp_System\ControlSet001\Services" -> BSOD
+//-
+//-
+//-
+//-
+Run,%s%,%D%,"Tmp_Software\Classes"
+Run,%s%,%D%,"Tmp_Software\Clients"
+//Run,%s%,%D%,"Tmp_Software\Microsoft" -> Black Screen
+Run,%s%,%D%,"Tmp_Software\Policies"
+Run,%s%,%D%,"Tmp_Software\Program Groups"
+Run,%s%,%D%,"Tmp_Software\Secure"
+//-
+Run,%s%,%D%,"Tmp_Default\AppEvents"
+//-
+//need checkbox here
+//Run,%s%,%D%,"Tmp_Default\Console"
+Run,%s%,%D%,"Tmp_Default\Console"
+//-
+Run,%s%,%D%,"Tmp_Default\Control Panel"
+Run,%s%,%D%,"Tmp_Default\Environment"
+//-
+//need checkbox here
+//Run,%s%,%D%,"Tmp_Default\Keyboard Layout"
+//need checkbox here
+//Run,%s%,%D%,"Tmp_Default\Software"
+Run,%s%,%D%,"Tmp_Default\Keyboard Layout"
+Run,%s%,%D%,"Tmp_Default\Software"
+//-
+Run,%s%,%D%,"Tmp_Default\UNICODE Program Groups"
+//------------
+//------------
+//------------
+//Tmp_Software - Sub Adjustments - Start
+//-
+//Tested on XPsp3x86 - saydin77core VVsmall - Winlogon
+//Run,%s%,%D%,"Tmp_Software\Microsoft" -> Black Screen
+Run,%s%,%D%,"Tmp_Software\Microsoft"
+//RegHiveLoad,Tmp_InsSoftware,%ProjectTemp%\saydin77_Backup\Hives\SOFTWARE
+//System,FILEREDIRECT,OFF
+//ShellExecute,hide,reg.exe,"Copy #$qHKLM\Tmp_InsSoftware\Microsoft\Windows NT\CurrentVersion#$q #$qHKLM\Tmp_Software\Microsoft\Windows NT\CurrentVersion#$q /s /f"
+//ShellExecute,hide,reg.exe,"Copy #$qHKLM\Tmp_InsSoftware\Microsoft\Windows NT\CurrentVersion#$q #$qHKLM\Tmp_Software\Microsoft\Windows NT\CurrentVersion#$q /f"
+//System,FILEREDIRECT,ON
+//RegHiveUnLoad,Tmp_InsSoftware
+//-
+//Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\IniFileMapping" --> Black Screen
+//"Tmp_Software\Microsoft\Windows NT\CurrentVersion\IniFileMapping" --> Empty key required to boot fine
+//"Tmp_Software\Microsoft\Windows NT\CurrentVersion\IniFileMapping" --> can be deleted in future - depends on ?
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\IniFileMapping\DummyDummyDummy",Dummy,Dummy
+//-
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\IniFileMapping\DummyDummyDummy"
+//--
+//NOT Required
+//Run,%ScriptFile%,Process_D_Tmp_Software_OldSchool
+//--
+//Tmp_Software - Sub Adjustments - Finish
+
+[DeleteRegistryP]
+//If,ExistRegSection,HKLM,"#1",RegDelete,HKLM,#1
+//If,ExistRegSection,HKLM,"#1",ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\#1#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\#1#$q /f"
+
+[Process_D_Tmp_Software_OldSchool_CANCELLED]
+//Tested on XPsp3x86 - saydin77core VVsmall - Winlogon
+//Run,%s%,%D%,"Tmp_Software\Microsoft" -> Black Screen
+Run,%s%,%D%,"Tmp_Software\Microsoft\Active Setup"
+Run,%s%,%D%,"Tmp_Software\Microsoft\ADs"
+Run,%s%,%D%,"Tmp_Software\Microsoft\BidInterface"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Command Processor"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Cryptography"
+Run,%s%,%D%,"Tmp_Software\Microsoft\CTF"
+Run,%s%,%D%,"Tmp_Software\Microsoft\DataAccess"
+Run,%s%,%D%,"Tmp_Software\Microsoft\DeviceManager"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Direct3D"
+Run,%s%,%D%,"Tmp_Software\Microsoft\DirectDraw"
+Run,%s%,%D%,"Tmp_Software\Microsoft\DirectInput"
+Run,%s%,%D%,"Tmp_Software\Microsoft\DirectMusic"
+Run,%s%,%D%,"Tmp_Software\Microsoft\DirectPlay"
+Run,%s%,%D%,"Tmp_Software\Microsoft\DirectX"
+Run,%s%,%D%,"Tmp_Software\Microsoft\dot3svc"
+//You need Driver Signing to install drivers without question
+Run,%s%,%D%,"Tmp_Software\Microsoft\Driver Signing"
+Run,%s%,%D%,"Tmp_Software\Microsoft\DrWatson"
+Run,%s%,%D%,"Tmp_Software\Microsoft\EAPOL"
+Run,%s%,%D%,"Tmp_Software\Microsoft\EventSystem"
+Run,%s%,%D%,"Tmp_Software\Microsoft\HTMLHelp"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Internet Explorer"
+Run,%s%,%D%,"Tmp_Software\Microsoft\MMC"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Mobile"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Mr. Enigma"
+Run,%s%,%D%,"Tmp_Software\Microsoft\MSXML60"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Multimedia"
+Run,%s%,%D%,"Tmp_Software\Microsoft\NetDDE"
+Run,%s%,%D%,"Tmp_Software\Microsoft\NetSh"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Network Diagnostic"
+Run,%s%,%D%,"Tmp_Software\Microsoft\NetworkAccessProtection"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Non-Driver Signing"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Ole"
+Run,%s%,%D%,"Tmp_Software\Microsoft\PCHealth"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Rpc"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Secure"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Security Center"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Shared Tools"
+Run,%s%,%D%,"Tmp_Software\Microsoft\SystemCertificates"
+Run,%s%,%D%,"Tmp_Software\Microsoft\WBEM"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows Messaging Subsystem"
+//Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows Scripting Host"
+//--
+//Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT" --> Black Screen
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Accessibility"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\AeDebug"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Asr"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Classes"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Compatibility"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Compatibility32"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Console"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Drivers"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\drivers.desc"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Drivers32"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\EFS"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Embedding"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Event Viewer"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\File Manager"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Font Drivers"
+//[89]
+//You get weird title on cmd screen after deleting one of Font...
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontDPI"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontMapper"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Fonts"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes"
+//
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\GRE_Initialize"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\HotFix"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Image File Execution Options"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\IME Compatibility"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\IMM"
+//Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\IniFileMapping" --> Black Screen
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\LanguagePack"
+//-
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\MCI"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\MCI Extensions"
+//
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\MCI32"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Midimap"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\ModuleCompatibility"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Network"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Perflib"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Ports"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\ProfileList"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\related.desc"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Setup"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\SvcHost"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Terminal Server"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Time Zones"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Type 1 Installer"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Userinstallable.drivers"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Windows"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Winlogon"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\WOW"
+//---
+//Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\IniFileMapping" --> Black Screen
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\IniFileMapping\Clock.ini"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\IniFileMapping\control.ini"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\IniFileMapping\ImageFileExecutionOptions.ini"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\IniFileMapping\KeyboardLayout.ini"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\IniFileMapping\msacm.ini"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\IniFileMapping\Ntbackup.ini"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\IniFileMapping\ntnet.ini"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\IniFileMapping\regedt32.ini"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\IniFileMapping\schdpl32.ini"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\IniFileMapping\system.ini"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\IniFileMapping\win.ini"
+Run,%s%,%D%,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\IniFileMapping\winfile.ini"
+
+[AuthorEncoded]
+TheWorld4848.ico=5799,7732
+Logo=TheWorld4848.ico
+
+[EncodedFile-AuthorEncoded-TheWorld4848.ico]
+lines=1
+0=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
+1=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
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+Call,UploadXMultiQ
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+

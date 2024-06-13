@@ -1,0 +1,980 @@
+[Main]
+Title=Profile Create Folders
+Type=Plugin
+Author=Galapo, Lancelot, Gena People
+Description=Create Profile Folders + ProjectInfo [Paths] + PE Registry + Folder Desktop.ini
+Credits=JFX, Lancelot
+Version=012
+Download_Level=0
+Level=1
+Selected=True
+Mandatory=True
+NoWarning=False
+Contact=http://TheOven.org
+Date=2019.01.14
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Basic/Build/3%20-%20Profile%203%20Create%20Folders.Script
+CertifiedBy=
+Certification=
+HistoryNotes=Lancelot Additionally represantation of desktop.ini more customizable by using here HKCU\Software\Microsoft\Windows\Shell\LocalizedResourceName :>:>:>
+History003=Lancelot IniVariables RAMDriveLetter
+History004=Lancelot Start moving script.project with appdata ;)
+History005=JFX added ProfileImagePath (also added Saydin77 Core) - reply 30 http://theoven.org/index.php?topic=282.msg4949#msg4949
+History006=Lancelot Added [BasePath]-AUAppdata
+History007=Lancelot added cmd options to get cosmetically (not functional ;)) nice on "createiso" + "profile on systemdrive" --> "Add Cmd files" + CMDStartup_CheckBox http://theoven.org/index.php?topic=251.0
+History008=Lancelot fixed shortcut
+History009=Lancelot updated v009 - Date:2015.10.09
+History010=Lancelot Added Basic_PluginCache_Extract - Date:2016.10.30
+History011=Lancelot Update hiderun lines - Date:2017.09.23
+History012=Lancelot Add BuildClass - Date:2019.01.14
+
+[Interface]
+DesktopiniFolder_CheckBox="Add Folder Desktop.ini",1,3,24,23,132,18,True
+CMD_CheckBox="Add Cmd files",1,3,47,50,200,18,False
+KeepCMDProfile_CheckBox="Keep Cmd files at profile folder  (debug)",1,3,62,87,129,30,False
+CMDStartup_CheckBox="Add Startup attrib +s",1,3,61,72,200,18,True
+pWebLabel2="Plugin Page",1,10,338,4,55,18,http://TheOven.org/index.php?board=3
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[Variables]
+%sysdrive%=X:
+
+[Process]
+If,ExistFile,%ProjectTemp%\Basic_PluginCache_Extract.ini,Echo,"Basic PluginCache"
+If,Not,ExistFile,%ProjectTemp%\Basic_PluginCache_Extract.ini,Run,%ScriptFile%,Process_Normal
+
+[Process_Normal]
+Run,%ScriptFile%,Process%BuildClass%
+
+[Process1]
+If,Not,ExistFile,%ProjectInfo%,Exit,"ProjectInfo NOT found"
+Run,%ScriptFile%,Paths1
+//
+//for backward compatibility (hopefully temporary)
+Run,%ScriptFile%,TargetPaths1
+//
+Run,%ScriptFile%,process_Registry1
+If,Not,%SourceArch%,Equal,x86,Run,%ScriptFile%,process_Registry1_wow64
+//
+If,%DesktopiniFolder_CheckBox%,Equal,True,Run,%ScriptFile%,DesktopiniFolder1
+
+[Paths1]
+Echo,"Profile - Read String"
+IniRead,%ProjectInfo%,String,ProgramFiles,%ProgramFiles%
+IniRead,%ProjectInfo%,String,ProgramFiles(x86),%ProgramFiles(x86)%
+IniRead,%ProjectInfo%,String,CommonFiles,%CommonFiles%
+IniRead,%ProjectInfo%,String,CommonFiles(x86),%CommonFiles(x86)%
+IniRead,%ProjectInfo%,String,Media,%Media%
+IniRead,%ProjectInfo%,String,ProfileBase,%PB%
+IniRead,%ProjectInfo%,String,ApplicationData,%ApData%
+IniRead,%ProjectInfo%,String,CDBurningSubFolder,%CDBurningSubFolder%
+IniRead,%ProjectInfo%,String,AllUsers,%AU%
+IniRead,%ProjectInfo%,String,DefaultUser,%DU%
+IniRead,%ProjectInfo%,String,Cookies,%Cookies%
+IniRead,%ProjectInfo%,String,Desktop,%Desktop%
+IniRead,%ProjectInfo%,String,Favorites,%Favorites%
+IniRead,%ProjectInfo%,String,Links,%Links%
+IniRead,%ProjectInfo%,String,LocalSettings,%LocalSettings%
+IniRead,%ProjectInfo%,String,QuickLaunchSubFolder,%QuickLaunchSubFolder%
+IniRead,%ProjectInfo%,String,History,%History%
+IniRead,%ProjectInfo%,String,History.IE5,%History.IE5%
+IniRead,%ProjectInfo%,String,Temp,%Temp%
+IniRead,%ProjectInfo%,String,TemporaryInternetFiles,%TemporaryInternetFiles%
+IniRead,%ProjectInfo%,String,AllUsersDocuments,%AllUsersDocuments%
+IniRead,%ProjectInfo%,String,MyDocuments,%MyDocuments%
+IniRead,%ProjectInfo%,String,MyMusic,%MyMusic%
+IniRead,%ProjectInfo%,String,MyPictures,%MyPictures%
+IniRead,%ProjectInfo%,String,MyVideos,%MyVideos%
+IniRead,%ProjectInfo%,String,NetHood,%NetHood%
+IniRead,%ProjectInfo%,String,PrintHood,%PrintHood%
+IniRead,%ProjectInfo%,String,Recent,%Recent%
+IniRead,%ProjectInfo%,String,SendTo,%SendTo%
+IniRead,%ProjectInfo%,String,StartMenu,%StartMenu%
+IniRead,%ProjectInfo%,String,Programs,%Programs%
+IniRead,%ProjectInfo%,String,Accessories,%Accessories%
+IniRead,%ProjectInfo%,String,Accessibility,%Accessibility%
+IniRead,%ProjectInfo%,String,Communications,%Communications%
+IniRead,%ProjectInfo%,String,Entertainment,%Entertainment%
+IniRead,%ProjectInfo%,String,SystemTools,%SystemTools%
+IniRead,%ProjectInfo%,String,AdministrativeTools,%AdministrativeTools%
+IniRead,%ProjectInfo%,String,Games,%Games%
+IniRead,%ProjectInfo%,String,Startup,%Startup%
+IniRead,%ProjectInfo%,String,Templates,%Templates%
+//
+Echo,"Profile - Create Folders"
+//
+//At this point we need to iniread to show how things will be arranged ???? but practically only StartMenu values + minor other values needed
+//so "default" profile organisation made here
+//If required organisation can be altered by arranging following lines easly ;)
+//starting with nt6x values are more stricked and most (not all) multilanguage done by desktop.ini
+//
+//
+DirMake,%Target_Win%\%Media%
+DirMake,%Target_Win%\assembly
+//
+DirMake,%TargetProfilesBaseDir%\%PB%
+//
+DirMake,%TargetProfilesBaseDir%\%PB%\%AU%
+DirMake,%TargetProfilesBaseDir%\%PB%\%AU%\%ApData%
+DirMake,%TargetProfilesBaseDir%\%PB%\%AU%\%Desktop%
+DirMake,%TargetProfilesBaseDir%\%PB%\%AU%\%Favorites%\%Links%
+DirMake,%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%
+DirMake,%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\%MyMusic%
+DirMake,%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\%MyPictures%
+DirMake,%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\%MyVideos%
+//
+DirMake,%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%
+DirMake,%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%
+DirMake,%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\%Accessories%
+//DirMake,%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\%Accessories%\%Accessibility%
+//DirMake,%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\%Accessories%\%Communications%
+//DirMake,%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\%Accessories%\%Entertainment%
+//DirMake,%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\%Accessories%\%SystemTools%
+//DirMake,%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\%SystemTools%
+DirMake,%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\%AdministrativeTools%
+//DirMake,%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\%Games%
+DirMake,%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\%Startup%
+//
+DirMake,%TargetProfilesBaseDir%\%PB%\%AU%\%Templates%
+//
+//
+DirMake,%TargetProfilesBaseDir%\%PB%\%DU%
+DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%ApData%
+DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%ApData%\%QuickLaunchSubFolder%
+DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%CDBurningSubFolder%
+DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%ApData%\Microsoft\SystemCertificates\My\Certificates
+DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%ApData%\Microsoft\SystemCertificates\My\CRLs
+DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%ApData%\Microsoft\SystemCertificates\My\CTLs
+DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%Cookies%
+DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%Desktop%
+DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%Favorites%\%Links%
+DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%LocalSettings%
+DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%LocalSettings%\%ApData%
+DirMake,"%TargetProfilesBaseDir%\%PB%\%DU%\%LocalSettings%\%ApData%\Microsoft\Media Player"
+DirMake,"%TargetProfilesBaseDir%\%PB%\%DU%\%LocalSettings%\%ApData%\Windows Media\9.0"
+DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%LocalSettings%\%History%
+DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%LocalSettings%\%History%\%History.IE5%
+//DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%History%
+//DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%History%\%History.IE5%
+DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%LocalSettings%\%Temp%
+DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%LocalSettings%\%TemporaryInternetFiles%
+DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%
+DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\%MyMusic%
+DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\%MyPictures%
+DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\%MyVideos%
+DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%NetHood%
+DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%PrintHood%
+DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%Recent%
+DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%SendTo%
+//
+DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%
+DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%
+DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%
+//DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%Accessibility%
+//DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%Communications%
+//DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%Entertainment%
+//DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%SystemTools%
+//DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%SystemTools%
+DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%AdministrativeTools%
+//DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Games%
+DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Startup%
+//
+DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%Templates%
+//
+//
+Echo,"Profile - Write ProjectInfo [BasePath]"
+IniWrite,%ProjectInfo%,BasePath,ProgramFiles,%ProgramFiles%
+IniWrite,%ProjectInfo%,BasePath,ProgramFiles(x86),%ProgramFiles(x86)%
+IniWrite,%ProjectInfo%,BasePath,CommonFiles,%ProgramFiles%\%CommonFiles%
+IniWrite,%ProjectInfo%,BasePath,CommonFiles(x86),%ProgramFiles(x86)%\%CommonFiles(x86)%
+//-
+IniWrite,%ProjectInfo%,BasePath,ProfileBase,%PB%
+//-
+IniWrite,%ProjectInfo%,BasePath,AU,%PB%\%AU%
+IniWrite,%ProjectInfo%,BasePath,AUAppData,%PB%\%AU%\%ApData%
+IniWrite,%ProjectDir%\script.project,BasePath,AUAppdata,%PB%\%AU%\%ApData%
+IniWrite,%ProjectInfo%,BasePath,AUSMAdministrativeTools,%PB%\%AU%\%StartMenu%\%Programs%\%AdministrativeTools%
+//-
+IniWrite,%ProjectInfo%,BasePath,DU,%PB%\%DU%
+IniWrite,%ProjectInfo%,BasePath,Appdata,%PB%\%DU%\%ApData%
+IniWrite,%ProjectDir%\script.project,BasePath,Appdata,%PB%\%DU%\%ApData%
+IniWrite,%ProjectInfo%,BasePath,QuickLaunch,%PB%\%DU%\%ApData%\%QuickLaunchSubFolder%
+IniWrite,%ProjectInfo%,BasePath,Desktop,%PB%\%DU%\%Desktop%
+IniWrite,%ProjectInfo%,BasePath,Favorites,%PB%\%DU%\%Favorites%
+IniWrite,%ProjectInfo%,BasePath,Links,%PB%\%DU%\%Favorites%\%Links%
+IniWrite,%ProjectInfo%,BasePath,LocalSettings,%PB%\%DU%\%LocalSettings%
+IniWrite,%ProjectInfo%,BasePath,LocalSettingsAppdata,%PB%\%DU%\%LocalSettings%\%ApData%
+IniWrite,%ProjectInfo%,BasePath,Documents,%PB%\%DU%\%MyDocuments%
+IniWrite,%ProjectInfo%,BasePath,Music,%PB%\%DU%\%MyDocuments%\%MyMusic%
+IniWrite,%ProjectInfo%,BasePath,Pictures,%PB%\%DU%\%MyDocuments%\%MyPictures%
+IniWrite,%ProjectInfo%,BasePath,Videos,%PB%\%DU%\%MyDocuments%\%MyVideos%
+IniWrite,%ProjectInfo%,BasePath,Recent,%PB%\%DU%\%Recent%
+IniWrite,%ProjectInfo%,BasePath,SendTo,%PB%\%DU%\%SendTo%
+IniWrite,%ProjectInfo%,BasePath,StartMenuRoot,%PB%\%DU%\%StartMenu%
+IniWrite,%ProjectInfo%,BasePath,StartMenu,%PB%\%DU%\%StartMenu%\%Programs%
+IniWrite,%ProjectInfo%,BasePath,Accessories,%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%
+//IniWrite,%ProjectInfo%,BasePath,Accessibility,%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%Accessibility%
+//IniWrite,%ProjectInfo%,BasePath,Communications,%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%Communications%
+//IniWrite,%ProjectInfo%,BasePath,Entertainment,%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%Entertainment%
+IniWrite,%ProjectInfo%,BasePath,SystemTools,%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%SystemTools%
+IniWrite,%ProjectInfo%,BasePath,AdministrativeTools,%PB%\%dU%\%StartMenu%\%Programs%\%AdministrativeTools%
+IniWrite,%ProjectInfo%,BasePath,Startup,%PB%\%DU%\%StartMenu%\%Programs%\%Startup%
+IniWrite,%ProjectInfo%,BasePath,Templates,%PB%\%DU%\%Templates%
+//--
+
+[cancel]
+//Can be required later ;)
+IniWrite,%ProjectInfo%,BasePath,AUDoc,%PB%\%AU%\%AllUsersDocuments%
+IniWrite,%ProjectInfo%,BasePath,AUDocMusic,%PB%\%AU%\%AllUsersDocuments%\%MyMusic%
+IniWrite,%ProjectInfo%,BasePath,AUDocPictures,%PB%\%AU%\%AllUsersDocuments%\%MyPictures%
+IniWrite,%ProjectInfo%,BasePath,AUDocVideos,%PB%\%AU%\%AllUsersDocuments%\%MyVideos%
+IniWrite,%ProjectInfo%,BasePath,AUSM,%PB%\%AU%\%StartMenu%
+IniWrite,%ProjectInfo%,BasePath,AUSMPrograms,%PB%\%AU%\%StartMenu%\%Programs%
+IniWrite,%ProjectInfo%,BasePath,AUSMAccessories,%PB%\%AU%\%StartMenu%\%Programs%\%Accessories%
+IniWrite,%ProjectInfo%,BasePath,AUSMAccessibility,%PB%\%AU%\%StartMenu%\%Programs%\%Accessories%\%Accessibility%
+IniWrite,%ProjectInfo%,BasePath,AUSMCommunications,%PB%\%AU%\%StartMenu%\%Programs%\%Accessories%\%Communications%
+IniWrite,%ProjectInfo%,BasePath,AUSMEntertainment,%PB%\%AU%\%StartMenu%\%Programs%\%Accessories%\%Entertainment%
+IniWrite,%ProjectInfo%,BasePath,AUSMSystemTools,%PB%\%AU%\%StartMenu%\%Programs%\%Accessories%\%SystemTools%
+IniWrite,%ProjectInfo%,BasePath,AUSMStartup,%PB%\%AU%\%StartMenu%\%Programs%\%Startup%
+IniWrite,%ProjectInfo%,BasePath,AUTemplates,%PB%\%AU%\%Templates%
+IniWrite,%ProjectInfo%,BasePath,User,%PB%\%DU%
+IniWrite,%ProjectInfo%,BasePath,UserAppdata,%PB%\%DU%\%ApData%
+IniWrite,%ProjectInfo%,BasePath,UserQuickLaunch,%PB%\%DU%\%ApData%\%QuickLaunchSubFolder%
+IniWrite,%ProjectInfo%,BasePath,UserDesktop,%PB%\%DU%\%Desktop%
+IniWrite,%ProjectInfo%,BasePath,UserFavorites,%PB%\%DU%\%Favorites%
+IniWrite,%ProjectInfo%,BasePath,UserFavoritesLinks,%PB%\%DU%\%Favorites%\%Links%
+IniWrite,%ProjectInfo%,BasePath,UserLocalSettings,%PB%\%DU%\%LocalSettings%
+IniWrite,%ProjectInfo%,BasePath,UserLocalSettingsAppdata,%PB%\%DU%\%LocalSettings%\%ApData%
+IniWrite,%ProjectInfo%,BasePath,UserDoc,%PB%\%DU%\%MyDocuments%
+IniWrite,%ProjectInfo%,BasePath,UserDocMusic,%PB%\%DU%\%MyDocuments%\%MyMusic%
+IniWrite,%ProjectInfo%,BasePath,UserDocPictures,%PB%\%DU%\%MyDocuments%\%MyPictures%
+IniWrite,%ProjectInfo%,BasePath,UserDocVideos,%PB%\%DU%\%MyDocuments%\%MyVideos%
+IniWrite,%ProjectInfo%,BasePath,UserRecent,%PB%\%DU%\%Recent%
+IniWrite,%ProjectInfo%,BasePath,UserSendTo,%PB%\%DU%\%SendTo%
+IniWrite,%ProjectInfo%,BasePath,UserSM,%PB%\%DU%\%StartMenu%
+IniWrite,%ProjectInfo%,BasePath,UserSMPrograms,%PB%\%DU%\%StartMenu%\%Programs%
+IniWrite,%ProjectInfo%,BasePath,UserSMAccessories,%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%
+IniWrite,%ProjectInfo%,BasePath,UserSMAccessibility,%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%Accessibility%
+IniWrite,%ProjectInfo%,BasePath,UserSMCommunications,%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%Communications%
+IniWrite,%ProjectInfo%,BasePath,UserSMEntertainment,%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%Entertainment%
+IniWrite,%ProjectInfo%,BasePath,UserSMSystemTools,%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%SystemTools%
+IniWrite,%ProjectInfo%,BasePath,UserSMAdministrativeTools,%PB%\%DU%\%StartMenu%\%Programs%\%AdministrativeTools%
+IniWrite,%ProjectInfo%,BasePath,UserSMStartup,%PB%\%DU%\%StartMenu%\%Programs%\%Startup%
+IniWrite,%ProjectInfo%,BasePath,UserTemplates,%PB%\%DU%\%Templates%
+
+[TargetPaths1]
+//for backward compatibility (hopefully temporary)
+IniWrite,%projectinfo%,TargetPaths,Target,%TargetDir%
+IniWrite,%ProjectInfo%,TargetPaths,Documents_and_Settings,%PB%
+IniWrite,%ProjectInfo%,TargetPaths,Default_User,%PB%\%DU%
+IniWrite,%ProjectInfo%,TargetPaths,All_Users,%PB%\%AU%
+IniWrite,%ProjectInfo%,TargetPaths,Application_Data,%PB%\%DU%\%ApData%
+IniWrite,%ProjectInfo%,TargetPaths,Common_Application_Data,%PB%\%AU%\%ApData%
+IniWrite,%ProjectInfo%,TargetPaths,Quick_Launch,%PB%\%DU%\%ApData%\%QuickLaunchSubFolder%
+IniWrite,%ProjectInfo%,TargetPaths,Desktop,%PB%\%DU%\%Desktop%
+IniWrite,%ProjectInfo%,TargetPaths,My_Documents,%PB%\%DU%\%MyDocuments%
+IniWrite,%ProjectInfo%,TargetPaths,RecycleBin,"%PB%\%DU%\%Desktop%\Recycle Bin"
+IniWrite,%ProjectInfo%,TargetPaths,Local_Settings,%PB%\%DU%\%LocalSettings%
+IniWrite,%ProjectInfo%,TargetPaths,Local_Application_Data,%PB%\%DU%\%LocalSettings%\%ApData%
+IniWrite,%ProjectInfo%,TargetPaths,SendTo,%PB%\%DU%\%SendTo%
+IniWrite,%ProjectInfo%,TargetPaths,Startmenu_Programs,%PB%\%DU%\%StartMenu%\%Programs%
+IniWrite,%ProjectInfo%,TargetPaths,Startmenu_Autostart,%PB%\%DU%\%StartMenu%\%Programs%\%Startup%
+IniWrite,%ProjectInfo%,TargetPaths,Administrative_Tools,%PB%\%DU%\%StartMenu%\%Programs%\%AdministrativeTools%
+IniWrite,%ProjectInfo%,TargetPaths,Startmenu_Accessories,%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%
+IniWrite,%ProjectInfo%,TargetPaths,System_Tools,%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%SystemTools%
+IniWrite,%ProjectInfo%,TargetPaths,Start_Menu,%PB%\%DU%\%StartMenu%
+IniWrite,%ProjectInfo%,TargetPaths,Program_Files,%ProgramFiles%
+IniWrite,%ProjectInfo%,TargetPaths,Common_Files,%ProgramFiles%\%CommonFiles%
+
+[process_Registry1]
+Echo,"Profile Registry"
+Set,%TmpDrive%,%SettingsDrive%
+IniRead,%projectdir%\script.project,IniVariables,RAMDriveLetter,%RAMDriveLetter%
+If,Not,%TmpDrive%,Equal,%RAMDriveLetter%,Set,%TmpDrive%,%sysdrive%
+//----
+RegHiveLoad,Tmp_Default,%target_sys%\config\default
+//-
+Set,%key%,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders"
+//-
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v AppData /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v Cache /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v Cookies /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v Desktop /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v Favorites /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v History /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qLocal AppData#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qLocal Settings#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qMy Music#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qMy Pictures#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qMy Video#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v NetHood /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v Personal /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v PrintHood /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v Programs /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v Recent /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v SendTo /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qStart Menu#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v Startup /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v Templates /f"
+//-
+RegWrite,HKLM,0x2,%key%,AppData,#$pUserProfile#$p\%ApData%
+RegWrite,HKLM,0x2,%key%,Cache,#$pUserProfile#$p\%LocalSettings%\%TemporaryInternetFiles%
+RegWrite,HKLM,0x2,%key%,Cookies,#$pUserProfile#$p\%Cookies%
+RegWrite,HKLM,0x2,%key%,Desktop,#$pUserProfile#$p\%Desktop%
+RegWrite,HKLM,0x2,%key%,Favorites,#$pUserProfile#$p\%Favorites%
+RegWrite,HKLM,0x2,%key%,History,#$pUSERPROFILE#$p\%LocalSettings%\%History%
+RegWrite,HKLM,0x2,%key%,"Local AppData",#$pUserProfile#$p\%LocalSettings%\%ApData%
+RegWrite,HKLM,0x2,%key%,"Local Settings",#$pUserProfile#$p\%LocalSettings%
+RegWrite,HKLM,0x2,%key%,"My Music",#$pUserProfile#$p\%MyDocuments%\%MyMusic%
+RegWrite,HKLM,0x2,%key%,"My Pictures",#$pUSERPROFILE#$p\%MyDocuments%\%MyPictures%
+RegWrite,HKLM,0x2,%key%,"My Video",#$pUserProfile#$p\%MyDocuments%\%MyVideos%
+RegWrite,HKLM,0x2,%key%,NetHood,#$pUserProfile#$p\%NetHood%
+RegWrite,HKLM,0x2,%key%,Personal,#$pUserProfile#$p\%MyDocuments%
+RegWrite,HKLM,0x2,%key%,PrintHood,#$pUserProfile#$p\%PrintHood%
+RegWrite,HKLM,0x2,%key%,Programs,#$pUserProfile#$p\%StartMenu%\%Programs%
+RegWrite,HKLM,0x2,%key%,Recent,#$pUserProfile#$p\%Recent%
+RegWrite,HKLM,0x2,%key%,SendTo,#$pUserProfile#$p\%SendTo%
+RegWrite,HKLM,0x2,%key%,"Start Menu",#$pUserProfile#$p\%StartMenu%
+RegWrite,HKLM,0x2,%key%,Startup,#$pUserProfile#$p\%StartMenu%\%Programs%\%Startup%
+RegWrite,HKLM,0x2,%key%,Templates,#$pUserProfile#$p\%Templates%
+//RegWrite,HKLM,0x2,%key%,RecycleBin,"#$pUSERPROFILE#$p\%Desktop%\Recycle#$sBin"
+//--
+//--
+Set,%key%,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders"
+//-
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v RecycleBin /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v AppData /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v Cache /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v Cookies /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v Desktop /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v Favorites /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v History /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qLocal AppData#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qLocal Settings#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qMy Music#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qMy Pictures#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qMy Video#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v NetHood /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v Personal /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v PrintHood /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v Programs /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v Recent /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v SendTo /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qStart Menu#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v Startup /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v Templates /f"
+//--
+RegWrite,HKLM,0x2,%key%,AppData,%TmpDrive%\%PB%\%DU%\%ApData%
+RegWrite,HKLM,0x2,%key%,Cache,%TmpDrive%\%PB%\%DU%\%LocalSettings%\%TemporaryInternetFiles%
+RegWrite,HKLM,0x2,%key%,Cookies,%TmpDrive%\%PB%\%DU%\%Cookies%
+RegWrite,HKLM,0x2,%key%,Desktop,%TmpDrive%\%PB%\%DU%\%Desktop%
+RegWrite,HKLM,0x2,%key%,Favorites,%TmpDrive%\%PB%\%DU%\%Favorites%
+RegWrite,HKLM,0x2,%key%,History,%TmpDrive%\%PB%\%DU%\%LocalSettings%\%History%
+RegWrite,HKLM,0x2,%key%,"Local AppData",%TmpDrive%\%PB%\%DU%\%LocalSettings%\%ApData%
+RegWrite,HKLM,0x2,%key%,"Local Settings",%TmpDrive%\%PB%\%DU%\%LocalSettings%
+RegWrite,HKLM,0x2,%key%,"My Music",%TmpDrive%\%PB%\%DU%\%MyDocuments%\%MyMusic%
+RegWrite,HKLM,0x2,%key%,"My Pictures",%TmpDrive%\%PB%\%DU%\%MyDocuments%\%MyPictures%
+RegWrite,HKLM,0x2,%key%,"My Video",%TmpDrive%\%PB%\%DU%\%MyDocuments%\%MyVideos%
+RegWrite,HKLM,0x2,%key%,NetHood,%TmpDrive%\%PB%\%DU%\%NetHood%
+RegWrite,HKLM,0x2,%key%,Personal,%TmpDrive%\%PB%\%DU%\%MyDocuments%
+RegWrite,HKLM,0x2,%key%,PrintHood,%TmpDrive%\%PB%\%DU%\%PrintHood%
+RegWrite,HKLM,0x2,%key%,Programs,%TmpDrive%\%PB%\%DU%\%StartMenu%\%Programs%
+RegWrite,HKLM,0x2,%key%,Recent,%TmpDrive%\%PB%\%DU%\%Recent%
+RegWrite,HKLM,0x2,%key%,SendTo,%TmpDrive%\%PB%\%DU%\%SendTo%
+RegWrite,HKLM,0x2,%key%,"Start Menu",%TmpDrive%\%PB%\%DU%\%StartMenu%
+RegWrite,HKLM,0x2,%key%,Startup,%TmpDrive%\%PB%\%DU%\%StartMenu%\%Programs%\%Startup%
+RegWrite,HKLM,0x2,%key%,Templates,%TmpDrive%\%PB%\%DU%\%Templates%
+//--
+//--
+//--
+//--
+//--
+RegWrite,HKLM,0x2,Tmp_Default\Volatile#$sEnvironment,HOMEDRIVE,%SettingsDrive%
+RegWrite,HKLM,0x2,Tmp_Default\Volatile#$sEnvironment,APPDATA,%SettingsDrive%\%PB%\%DU%\%ApData%
+//HOMEPATH not exists in normal registry ;)
+RegWrite,HKLM,0x2,Tmp_Default\Volatile#$sEnvironment,HOMEPATH,\%PB%\%DU%
+//--
+RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Internet Explorer\Toolbar",LinksFolderName,%Links%
+//--
+//--Temp Tmp created by a seperate script... :>.
+//RegWrite,HKLM,0x2,Tmp_Default\Environment,Temp,#$pUSERPROFILE#$p\%LocalSettings%\Temp
+//RegWrite,HKLM,0x2,Tmp_Default\Environment,Tmp,#$pUSERPROFILE#$p\%LocalSettings%\Temp
+//--
+//--
+///------
+RegHiveUnLoad,Tmp_Default
+///------
+///------
+RegHiveLoad,Tmp_Software,%target_sys%\config\software
+//--
+RegWrite,HKLM,0x2,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\ProfileList\S-1-5-18",ProfileImagePath,#$pUserProfile#$p
+//-
+Set,%key%,"Tmp_Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders"
+//-
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommon Administrative Tools#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommon AppData#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommon Desktop#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommon Documents#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommon Favorites#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommon Programs#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommon Start Menu#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommon Startup#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommon Templates#$q /f"
+//-
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qDesktop#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommon NetHood#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommon PrintHood#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommon Recent#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommon SendTo#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommon Cookies#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommonMusic#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommonPictures#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommonVideo#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommon Local Settings#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommon Local AppData#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommon Cache#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommon History#$q /f"
+//-
+RegWrite,HKLM,0x2,%key%,"Common Administrative Tools",#$pALLUSERSPROFILE#$p\%StartMenu%\%Programs%\%AdministrativeTools%
+RegWrite,HKLM,0x2,%key%,"Common AppData",#$pALLUSERSPROFILE#$p\%ApData%
+RegWrite,HKLM,0x2,%key%,"Common Desktop",#$pALLUSERSPROFILE#$p\%Desktop%
+RegWrite,HKLM,0x2,%key%,"Common Documents",#$pALLUSERSPROFILE#$p\%AllUsersDocuments%
+RegWrite,HKLM,0x2,%key%,"Common Favorites",#$pALLUSERSPROFILE#$p\%Favorites%
+RegWrite,HKLM,0x2,%key%,"Common Programs",#$pALLUSERSPROFILE#$p\%StartMenu%\%Programs%
+RegWrite,HKLM,0x2,%key%,"Common Start Menu",#$pALLUSERSPROFILE#$p\%StartMenu%
+RegWrite,HKLM,0x2,%key%,"Common Startup",#$pALLUSERSPROFILE#$p\%StartMenu%\%Programs%\%Startup%
+RegWrite,HKLM,0x2,%key%,"Common Templates",#$pALLUSERSPROFILE#$p\%Templates%
+//-
+RegWrite,HKLM,0x2,%key%,"Common NetHood",#$pALLUSERSPROFILE#$p\%NetHood%
+RegWrite,HKLM,0x2,%key%,"Common PrintHood",#$pALLUSERSPROFILE#$p\%PrintHood%
+RegWrite,HKLM,0x2,%key%,"Common Recent",#$pALLUSERSPROFILE#$p\%Recent%
+RegWrite,HKLM,0x2,%key%,"Common SendTo",#$pALLUSERSPROFILE#$p\%SendTo%
+RegWrite,HKLM,0x2,%key%,"Common Cookies",#$pALLUSERSPROFILE#$p\%Cookies%
+RegWrite,HKLM,0x2,%key%,"CommonMusic",#$pALLUSERSPROFILE#$p\%AllUsersDocuments%\%MyMusic%
+RegWrite,HKLM,0x2,%key%,"CommonPictures",#$pALLUSERSPROFILE#$p\%AllUsersDocuments%\%MyPictures%
+RegWrite,HKLM,0x2,%key%,"CommonVideo",#$pALLUSERSPROFILE#$p\%AllUsersDocuments%\%MyVideos%
+RegWrite,HKLM,0x2,%key%,"Common Local Settings",#$pALLUSERSPROFILE#$p\%LocalSettings%
+RegWrite,HKLM,0x2,%key%,"Common Local AppData",#$pALLUSERSPROFILE#$p\%LocalSettings%\%ApData%
+RegWrite,HKLM,0x2,%key%,"Common Cache",#$pALLUSERSPROFILE#$p\%LocalSettings%\%TemporaryInternetFiles%
+RegWrite,HKLM,0x2,%key%,"Common History",#$pALLUSERSPROFILE#$p\%LocalSettings%\%History%
+//--
+//Writing Shell Folders of Tmp_Software (note: normally when explorer shell starts it writes "User Shell Folders" values to "Shell Folders" by converting 0x1 )
+Set,%key%,"Tmp_Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders"
+//-
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommon Administrative Tools#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommon AppData#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommon Desktop#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommon Documents#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommon Favorites#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommon Programs#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommon Start Menu#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommon Startup#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommon Templates#$q /f"
+//--
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qDesktop#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommon NetHood#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommon PrintHood#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommon Recent#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommon SendTo#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommon Cookies#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommonMusic#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommonPictures#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommonVideo#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommon Local Settings#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommon Local AppData#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommon Cache#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\%key%#$q /v #$qCommon History#$q /f"
+//----
+RegWrite,HKLM,0x1,%key%,"Common Administrative Tools",%TmpDrive%\%PB%\%AU%\%StartMenu%\%Programs%\%AdministrativeTools%
+RegWrite,HKLM,0x1,%key%,"Common AppData",%TmpDrive%\%PB%\%AU%\%ApData%
+RegWrite,HKLM,0x1,%key%,"Common Desktop",%TmpDrive%\%PB%\%AU%\%Desktop%
+RegWrite,HKLM,0x1,%key%,"Common Documents",%TmpDrive%\%PB%\%AU%\%AllUsersDocuments%
+RegWrite,HKLM,0x1,%key%,"Common Favorites",%TmpDrive%\%PB%\%AU%\%Favorites%
+RegWrite,HKLM,0x1,%key%,"Common Programs",%TmpDrive%\%PB%\%AU%\%StartMenu%\%Programs%
+RegWrite,HKLM,0x1,%key%,"Common Start Menu",%TmpDrive%\%PB%\%AU%\%StartMenu%
+RegWrite,HKLM,0x1,%key%,"Common Startup",%TmpDrive%\%PB%\%AU%\%StartMenu%\%Programs%\%Startup%
+RegWrite,HKLM,0x1,%key%,"Common Templates",%TmpDrive%\%PB%\%AU%\%Templates%
+//--
+RegWrite,HKLM,0x1,%key%,"Common NetHood",%TmpDrive%\%PB%\%AU%\%NetHood%
+RegWrite,HKLM,0x1,%key%,"Common PrintHood",%TmpDrive%\%PB%\%AU%\%PrintHood%
+RegWrite,HKLM,0x1,%key%,"Common Recent",%TmpDrive%\%PB%\%AU%\%Recent%
+RegWrite,HKLM,0x1,%key%,"Common SendTo",%TmpDrive%\%PB%\%AU%\%SendTo%
+RegWrite,HKLM,0x1,%key%,"Common Cookies",%TmpDrive%\%PB%\%AU%\%Cookies%
+RegWrite,HKLM,0x1,%key%,"CommonMusic",%TmpDrive%\%PB%\%AU%\%AllUsersDocuments%\%MyMusic%
+RegWrite,HKLM,0x1,%key%,"CommonPictures",%TmpDrive%\%PB%\%AU%\%AllUsersDocuments%\%MyPictures%
+RegWrite,HKLM,0x1,%key%,"CommonVideo",%TmpDrive%\%PB%\%AU%\%AllUsersDocuments%\%MyVideos%
+RegWrite,HKLM,0x1,%key%,"Common Local Settings",%TmpDrive%\%PB%\%AU%\%LocalSettings%
+RegWrite,HKLM,0x1,%key%,"Common Local AppData",%TmpDrive%\%PB%\%AU%\%LocalSettings%\%ApData%
+RegWrite,HKLM,0x1,%key%,"Common Cache",%TmpDrive%\%PB%\%AU%\%LocalSettings%\%TemporaryInternetFiles%
+RegWrite,HKLM,0x1,%key%,"Common History",%TmpDrive%\%PB%\%AU%\%LocalSettings%\%History%
+//----
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\Tmp_Software\Microsoft\Windows\CurrentVersion#$q /v #$qProgramFilesDir#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\Tmp_Software\Microsoft\Windows\CurrentVersion#$q /v #$qProgramFilesPath#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\Tmp_Software\Microsoft\Windows\CurrentVersion#$q /v #$qCommonFilesDir#$q /f"
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\Windows\CurrentVersion,ProgramFilesDir,#$pSystemDrive#$p\%ProgramFiles%
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\Windows\CurrentVersion,ProgramFilesPath,#$pSystemDrive#$p\%ProgramFiles%
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\Windows\CurrentVersion,CommonFilesDir,#$pSystemDrive#$p\%ProgramFiles%\%CommonFiles%
+//-----
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\Tmp_Software\Microsoft\Windows NT\CurrentVersion\ProfileList#$q /v #$qAllUsersProfile#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\Tmp_Software\Microsoft\Windows NT\CurrentVersion\ProfileList#$q /v #$qDefaultUserProfile#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\Tmp_Software\Microsoft\Windows NT\CurrentVersion\ProfileList#$q /v #$qProfilesDirectory#$q /f"
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\Windows NT\CurrentVersion\ProfileList,AllUsersProfile,%AU%
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\Windows NT\CurrentVersion\ProfileList,DefaultUserProfile,%DU%
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\Windows NT\CurrentVersion\ProfileList,ProfilesDirectory,%SettingsDrive%\%PB%
+RegHiveUnLoad,Tmp_Software
+//--
+RegHiveLoad,Tmp_System,%target_sys%\setupreg.hiv
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\Tmp_System\ControlSet001\Control\Session Manager\Environment#$q /v #$qAllUsersProfile#$q /f"
+ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\Tmp_System\ControlSet001\Control\Session Manager\Environment#$q /v #$qUserProfile#$q /f"
+RegWrite,HKLM,0x2,"Tmp_System\ControlSet001\Control\Session Manager\Environment",AllUsersProfile,%SettingsDrive%\%PB%\%AU%
+RegWrite,HKLM,0x2,"Tmp_System\ControlSet001\Control\Session Manager\Environment",UserProfile,%SettingsDrive%\%PB%\%DU%
+RegHiveUnLoad,Tmp_System
+
+[process_Registry1_wow64]
+RegHiveLoad,Tmp_Software,%target_sys%\config\software
+//-
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\Windows\CurrentVersion,"CommonFilesDir (x86)",#$pSystemDrive#$p\%ProgramFiles(x86)%\%CommonFiles(x86)%
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\Windows\CurrentVersion,"ProgramFilesDir (x86)",#$pSystemDrive#$p\%ProgramFiles(x86)%
+RegWrite,HKLM,0x2,Tmp_Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"CommonFilesDir",#$pSystemDrive#$p\%ProgramFiles(x86)%\%CommonFiles(x86)%
+RegWrite,HKLM,0x2,Tmp_Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"CommonFilesDir (x86)",#$pSystemDrive#$p\%ProgramFiles(x86)%\%CommonFiles(x86)%
+RegWrite,HKLM,0x2,Tmp_Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"DevicePath",#$pSystemRoot#$p\Inf
+RegWrite,HKLM,0x2,Tmp_Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"MediaPathUnExpanded",#$pSystemRoot#$p\%Media%
+RegWrite,HKLM,0x2,Tmp_Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"PF_AccessoriesName",%Accessories%
+RegWrite,HKLM,0x2,Tmp_Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"ProgramFilesDir",#$pSystemDrive#$p\%ProgramFiles(x86)%
+RegWrite,HKLM,0x2,Tmp_Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"ProgramFilesDir (x86)",#$pSystemDrive#$p\%ProgramFiles(x86)%
+RegWrite,HKLM,0x2,Tmp_Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"ProgramFilesPath",#$pprogramfiles#$p
+RegWrite,HKLM,0x2,Tmp_Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"SM_AccessoriesName",%Accessories%
+//Set Program Access and Defaults.lnk=@%SystemRoot%\system32\xpsp1res.dll,-10077 (but value also exists in 2k3x64 too)
+//RegWrite,HKLM,0x2,Tmp_Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"SM_ConfigureProgramsName","Set Program Access and Defaults"
+RegWrite,HKLM,0x2,Tmp_Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"SM_GamesName",%Games%
+//RegWrite,HKLM,0x2,Tmp_Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"WallPaperDir",#$pSystemRoot#$p\Web\WallPaper
+//-
+RegHiveUnLoad,Tmp_Software
+//IF required in future here are ready lines for JFX
+//RegAddBoot,HKLM,0x1,Software\Microsoft\Windows\CurrentVersion,"CommonFilesDir (x86)",#$pSystemDrive#$p\%ProgramFiles(x86)%\%CommonFiles(x86)%
+//RegAddBoot,HKLM,0x1,Software\Microsoft\Windows\CurrentVersion,"ProgramFilesDir (x86)",#$pSystemDrive#$p\%ProgramFiles(x86)%
+//RegAddBoot,HKLM,0x1,Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"CommonFilesDir",#$pSystemDrive#$p\%ProgramFiles(x86)%\%CommonFiles(x86)%
+//RegAddBoot,HKLM,0x1,Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"CommonFilesDir (x86)",#$pSystemDrive#$p\%ProgramFiles(x86)%\%CommonFiles(x86)%
+//RegAddBoot,HKLM,0x1,Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"DevicePath",#$pSystemRoot#$p\Inf
+//RegAddBoot,HKLM,0x1,Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"MediaPathUnExpanded",#$pSystemRoot#$p\%Media%
+//RegAddBoot,HKLM,0x1,Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"ProgramFilesDir",#$pSystemDrive#$p\%ProgramFiles(x86)%
+//RegAddBoot,HKLM,0x1,Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"ProgramFilesDir (x86)",#$pSystemDrive#$p\%ProgramFiles(x86)%
+
+[DesktopiniFolder1]
+Echo,"Profile Desktop.ini"
+//Macro NOT used to process as fast as possible ;)
+//
+//
+//OfflineWebPages_CLSID={d6277990-4c6a-11cf-8d87-00aa0060f5bf}
+//DownloadedProgramFiles_CLSID={88C6C381-2E85-11d0-94DE-444553540000}
+//SamplePlayLists_LocalizedResourceName=@%windir%\inf\unregmp2.exe,-162
+//NOT REQUIRED - AUTOMATICALLY CREATED - History_UICLSID={7BD29E00-76C1-11CF-9DD0-00A0C9034933}
+//NOT REQUIRED - AUTOMATICALLY CREATED - History_CLSID={FF393560-C2A7-11CF-BFF4-444553540000}
+//TemporaryInternetFiles_UICLSID={7BD29E00-76C1-11CF-9DD0-00A0C9034933}
+//Content.IE5_UICLSID={7BD29E00-76C1-11CF-9DD0-00A0C9034933}
+//RECYCLER_CLSID={645FF040-5081-101B-9F08-00AA002F954E}
+//--
+If,%CMD_CheckBox%,Equal,True,Begin
+Require,File,Attrib.exe
+//-- hardcoded Folder_Attribute_1.cmd used to create shortcut
+Set,%CMD_Att1N%,Folder_Attribute_1
+Set,%CMD_Att2N%,Folder_Attribute_2
+Set,%CMD_Att1%,%TargetProfilesBaseDir%\%PB%\%CMD_Att1N%.cmd
+Set,%CMD_Att2%,%TargetProfilesBaseDir%\%PB%\%CMD_Att2N%.cmd
+//-
+Set,%CMD_Att_Host1N%,Folder_Attribute_Host_1
+Set,%CMD_Att_Host2N%,Folder_Attribute_Host_2
+Set,%CMD_Att_Host1%,%TargetProfilesBaseDir%\%PB%\%CMD_Att_Host1N%.cmd
+Set,%CMD_Att_Host2%,%TargetProfilesBaseDir%\%PB%\%CMD_Att_Host2N%.cmd
+//-
+//If,ExistFile,%CMD_Att1%,FileDelete,%CMD_Att1%
+FileCreateBlank,%CMD_Att1%
+TxtAddLine,%CMD_Att1%,":: ...\GenaP\GenaU",Append
+TxtAddLine,%CMD_Att1%,"Echo #$pUserProfile#$p",Append
+TxtAddLine,%CMD_Att1%,":: ...\GenaP\All Users",Append
+TxtAddLine,%CMD_Att1%,"Echo #$pAllusersprofile#$p",Append
+TxtAddLine,%CMD_Att1%,":: X:\i386 X:\AMD64 X:\IA64",Append
+TxtAddLine,%CMD_Att1%,"Echo #$pSystemRoot#$p",Append
+TxtAddLine,%CMD_Att1%,"Echo #$pwindir#$p",Append
+TxtAddLine,%CMD_Att1%,"Set GSettingsDrive=%SettingsDrive%",Append
+TxtAddLine,%CMD_Att1%,"Set ProfileBase=%PB%",Append
+TxtAddLine,%CMD_Att1%,"Echo #$pGSettingsDrive#$p",Append
+TxtAddLine,%CMD_Att1%,"Echo #$pProfileBase#$p",Append
+End
+//--
+If,Not,ExistDir,%Target_Win%\assembly,DirMake,%Target_Win%\assembly
+If,ExistFile,%Target_Win%\assembly\desktop.ini,ShellExecute,Hide,attrib.exe,"-S -H #$q%Target_Win%\assembly\desktop.ini#$q"
+Else,FileCreateBlank,%Target_Win%\assembly\desktop.ini
+IniWrite,%Target_Win%\assembly\desktop.ini,.ShellClassInfo,CLSID,{1D2680C9-0E2A-469d-B787-065558BC7D43}
+IniWrite,%Target_Win%\assembly\desktop.ini,.ShellClassInfo,ConfirmFileOp,1
+IniWrite,%Target_Win%\assembly\desktop.ini,.ShellClassInfo,InfoTip,"Contains application stability information."
+ShellExecute,Hide,attrib.exe,"+S +H #$q%Target_Win%\assembly\desktop.ini#$q"
+ShellExecute,Hide,attrib.exe,"+S +R #$q%Target_Win%\assembly#$q"
+If,%CMD_CheckBox%,Equal,True,TxtAddLine,%CMD_Att1%,"attrib.exe +s #$q#$pSystemRoot#$p\assembly#$q",Append
+//--
+If,Not,ExistDir,%Target_Win%\Fonts,DirMake,%Target_Win%\Fonts
+If,ExistFile,%Target_Win%\Fonts\desktop.ini,ShellExecute,Hide,attrib.exe,"-S -H #$q%Target_Win%\Fonts\desktop.ini#$q"
+Else,FileCreateBlank,%Target_Win%\Fonts\desktop.ini
+IniWrite,%Target_Win%\Fonts\desktop.ini,.ShellClassInfo,UICLSID,{BD84B380-8CA2-1069-AB1D-08000948F534}
+ShellExecute,Hide,attrib.exe,"+S +H #$q%Target_Win%\Fonts\desktop.ini#$q"
+ShellExecute,Hide,attrib.exe,"+S +R #$q%Target_Win%\Fonts#$q"
+If,%CMD_CheckBox%,Equal,True,TxtAddLine,%CMD_Att1%,"attrib.exe +s #$q#$pSystemRoot#$p\Fonts#$q",Append
+//--
+If,Not,ExistDir,%TargetProfilesBaseDir%\%PB%\%AU%\%ApData%,DirMake,%TargetProfilesBaseDir%\%PB%\%AU%\%ApData%
+If,ExistFile,%TargetProfilesBaseDir%\%PB%\%AU%\%ApData%\desktop.ini,ShellExecute,Hide,attrib.exe,"-S -H #$q%TargetProfilesBaseDir%\%PB%\%AU%\%ApData%\desktop.ini#$q"
+Else,FileCreateBlank,%TargetProfilesBaseDir%\%PB%\%AU%\%ApData%\desktop.ini
+IniWrite,%TargetProfilesBaseDir%\%PB%\%AU%\%ApData%\Desktop.ini,.ShellClassInfo,LocalizedResourceName,@shell32.dll#$c-21765
+ShellExecute,Hide,attrib.exe,"+S +H #$q%TargetProfilesBaseDir%\%PB%\%AU%\%ApData%\desktop.ini#$q"
+ShellExecute,Hide,attrib.exe,"+S +R #$q%TargetProfilesBaseDir%\%PB%\%AU%\%ApData%#$q"
+If,%CMD_CheckBox%,Equal,True,TxtAddLine,%CMD_Att1%,"attrib.exe +s #$q#$pAllusersprofile#$p\%ApData%#$q",Append
+//--
+If,Not,ExistDir,%TargetProfilesBaseDir%\%PB%\%AU%\%Favorites%,DirMake,%TargetProfilesBaseDir%\%PB%\%AU%\%Favorites%
+If,ExistFile,%TargetProfilesBaseDir%\%PB%\%AU%\%Favorites%\desktop.ini,ShellExecute,Hide,attrib.exe,"-S -H #$q%TargetProfilesBaseDir%\%PB%\%AU%\%Favorites%\desktop.ini#$q"
+Else,FileCreateBlank,%TargetProfilesBaseDir%\%PB%\%AU%\%Favorites%\desktop.ini
+IniWrite,%TargetProfilesBaseDir%\%PB%\%AU%\%Favorites%\desktop.ini,.ShellClassInfo,LocalizedResourceName,@shell32.dll#$c-12693
+IniWrite,%TargetProfilesBaseDir%\%PB%\%AU%\%Favorites%\desktop.ini,.ShellClassInfo,IconFile,#$pSystemRoot#$p\system32\shell32.dll
+IniWrite,%TargetProfilesBaseDir%\%PB%\%AU%\%Favorites%\desktop.ini,.ShellClassInfo,IconIndex,-173
+ShellExecute,Hide,attrib.exe,"+S +H #$q%TargetProfilesBaseDir%\%PB%\%AU%\%Favorites%\desktop.ini#$q"
+ShellExecute,Hide,attrib.exe,"+S +R #$q%TargetProfilesBaseDir%\%PB%\%AU%\%Favorites%#$q"
+If,%CMD_CheckBox%,Equal,True,TxtAddLine,%CMD_Att1%,"attrib.exe +s #$q#$pAllusersprofile#$p\%Favorites%#$q",Append
+//--
+If,Not,ExistDir,%TargetProfilesBaseDir%\%PB%\%AU%\%Favorites%\%Links%,DirMake,%TargetProfilesBaseDir%\%PB%\%AU%\%Favorites%\%Links%
+If,ExistFile,%TargetProfilesBaseDir%\%PB%\%AU%\%Favorites%\%Links%\desktop.ini,ShellExecute,Hide,attrib.exe,"-S -H #$q%TargetProfilesBaseDir%\%PB%\%AU%\%Favorites%\%Links%\desktop.ini#$q"
+Else,FileCreateBlank,%TargetProfilesBaseDir%\%PB%\%AU%\%Favorites%\%Links%\desktop.ini
+//IniWrite,%TargetProfilesBaseDir%\%PB%\%AU%\%Favorites%\%Links%\desktop.ini,.ShellClassInfo,LocalizedResourceName,@#$pwindir#$p\System32\ieframe.dll.mui#$c-12385
+IniWrite,%TargetProfilesBaseDir%\%PB%\%AU%\%Favorites%\%Links%\desktop.ini,.ShellClassInfo,LocalizedResourceName,@shell32.dll#$c-34560
+ShellExecute,Hide,attrib.exe,"+S +H #$q%TargetProfilesBaseDir%\%PB%\%AU%\%Favorites%\%Links%\desktop.ini#$q"
+ShellExecute,Hide,attrib.exe,"+S +R #$q%TargetProfilesBaseDir%\%PB%\%AU%\%Favorites%\%Links%#$q"
+If,%CMD_CheckBox%,Equal,True,TxtAddLine,%CMD_Att1%,"attrib.exe +s #$q#$pAllusersprofile#$p\%Favorites%\%Links%#$q",Append
+//--
+If,Not,ExistDir,%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%,DirMake,%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%
+If,ExistFile,%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\desktop.ini,ShellExecute,Hide,attrib.exe,"-S -H #$q%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\desktop.ini#$q"
+Else,FileCreateBlank,%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\desktop.ini
+IniWrite,%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\desktop.ini,.ShellClassInfo,LocalizedResourceName,@shell32.dll#$c-21785
+ShellExecute,Hide,attrib.exe,"+S +H #$q%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\desktop.ini#$q"
+ShellExecute,Hide,attrib.exe,"+S +R #$q%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%#$q"
+If,%CMD_CheckBox%,Equal,True,TxtAddLine,%CMD_Att1%,"attrib.exe +s #$q#$pAllusersprofile#$p\%AllUsersDocuments%#$q",Append
+//--
+If,Not,ExistDir,%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\%MyMusic%,DirMake,%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\%MyMusic%
+If,ExistFile,%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\%MyMusic%\desktop.ini,ShellExecute,Hide,attrib.exe,"-S -H #$q%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\%MyMusic%\desktop.ini#$q"
+Else,FileCreateBlank,%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\%MyMusic%\desktop.ini
+IniWrite,%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\%MyMusic%\desktop.ini,.ShellClassInfo,LocalizedResourceName,@shell32.dll#$c-28995
+IniWrite,%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\%MyMusic%\desktop.ini,.ShellClassInfo,InfoTip,@shell32.dll#$c-12689
+IniWrite,%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\%MyMusic%\desktop.ini,.ShellClassInfo,IconFile,#$pSystemRoot#$p\system32\SHELL32.dll
+IniWrite,%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\%MyMusic%\desktop.ini,.ShellClassInfo,IconIndex,-237
+ShellExecute,Hide,attrib.exe,"+S +H #$q%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\%MyMusic%\desktop.ini#$q"
+ShellExecute,Hide,attrib.exe,"+S +R #$q%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\%MyMusic%#$q"
+If,%CMD_CheckBox%,Equal,True,TxtAddLine,%CMD_Att1%,"attrib.exe +s #$q#$pAllusersprofile#$p\%AllUsersDocuments%\%MyMusic%#$q",Append
+//--
+If,Not,ExistDir,%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\%MyPictures%,DirMake,%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\%MyPictures%
+If,ExistFile,%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\%MyPictures%\desktop.ini,ShellExecute,Hide,attrib.exe,"-S -H #$q%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\%MyPictures%\desktop.ini#$q"
+Else,FileCreateBlank,%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\%MyPictures%\desktop.ini
+IniWrite,%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\%MyPictures%\desktop.ini,.ShellClassInfo,LocalizedResourceName,@shell32.dll#$c-28997
+IniWrite,%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\%MyPictures%\desktop.ini,.ShellClassInfo,InfoTip,@shell32.dll#$c-12688
+IniWrite,%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\%MyPictures%\desktop.ini,.ShellClassInfo,IconFile,#$pSystemRoot#$p\system32\mydocs.dll
+IniWrite,%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\%MyPictures%\desktop.ini,.ShellClassInfo,IconIndex,-101
+ShellExecute,Hide,attrib.exe,"+S +H #$q%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\%MyPictures%\desktop.ini#$q"
+ShellExecute,Hide,attrib.exe,"+S +R #$q%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\%MyPictures%#$q"
+If,%CMD_CheckBox%,Equal,True,TxtAddLine,%CMD_Att1%,"attrib.exe +s #$q#$pAllusersprofile#$p\%AllUsersDocuments%\%MyPictures%#$q",Append
+//--
+If,Not,ExistDir,%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\%MyVideos%,DirMake,%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\%MyVideos%
+If,ExistFile,%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\%MyVideos%\desktop.ini,ShellExecute,Hide,attrib.exe,"-S -H #$q%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\%MyVideos%\desktop.ini#$q"
+Else,FileCreateBlank,%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\%MyVideos%\desktop.ini
+IniWrite,%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\%MyVideos%\desktop.ini,.ShellClassInfo,LocalizedResourceName,@shell32.dll#$c-28996
+IniWrite,%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\%MyVideos%\desktop.ini,.ShellClassInfo,InfoTip,@shell32.dll#$c-12690
+IniWrite,%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\%MyVideos%\desktop.ini,.ShellClassInfo,IconFile,#$pSystemRoot#$p\system32\SHELL32.dll
+IniWrite,%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\%MyVideos%\desktop.ini,.ShellClassInfo,IconIndex,-238
+ShellExecute,Hide,attrib.exe,"+S +H #$q%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\%MyVideos%\desktop.ini#$q"
+ShellExecute,Hide,attrib.exe,"+S +R #$q%TargetProfilesBaseDir%\%PB%\%AU%\%AllUsersDocuments%\%MyVideos%#$q"
+If,%CMD_CheckBox%,Equal,True,TxtAddLine,%CMD_Att1%,"attrib.exe +s #$q#$pAllusersprofile#$p\%AllUsersDocuments%\%MyVideos%#$q",Append
+//--
+If,Not,ExistDir,%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%,DirMake,%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%
+If,ExistFile,%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\desktop.ini,ShellExecute,Hide,attrib.exe,"-S -H #$q%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\desktop.ini#$q"
+Else,FileCreateBlank,%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\desktop.ini
+IniWrite,%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\desktop.ini,.ShellClassInfo,LocalizedResourceName,@shell32.dll#$c-21786
+ShellExecute,Hide,attrib.exe,"+S +H #$q%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\desktop.ini#$q"
+ShellExecute,Hide,attrib.exe,"+S +R #$q%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%#$q"
+If,%CMD_CheckBox%,Equal,True,TxtAddLine,%CMD_Att1%,"attrib.exe +s #$q#$pAllusersprofile#$p\%StartMenu%#$q",Append
+//--
+If,Not,ExistDir,%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%,DirMake,%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%
+If,ExistFile,%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\desktop.ini,ShellExecute,Hide,attrib.exe,"-S -H #$q%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\desktop.ini#$q"
+Else,FileCreateBlank,%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\desktop.ini
+IniWrite,%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\desktop.ini,.ShellClassInfo,LocalizedResourceName,@shell32.dll#$c-21782
+ShellExecute,Hide,attrib.exe,"+S +H #$q%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\desktop.ini#$q"
+ShellExecute,Hide,attrib.exe,"+S +R #$q%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%#$q"
+If,%CMD_CheckBox%,Equal,True,TxtAddLine,%CMD_Att1%,"attrib.exe +s #$q#$pAllusersprofile#$p\%StartMenu%\%Programs%#$q",Append
+//--
+If,Not,ExistDir,%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\%Accessories%,DirMake,%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\%Accessories%
+If,ExistFile,%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\%Accessories%\desktop.ini,ShellExecute,Hide,attrib.exe,"-S -H #$q%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\%Accessories%\desktop.ini#$q"
+Else,FileCreateBlank,%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\%Accessories%\desktop.ini
+IniWrite,%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\%Accessories%\desktop.ini,.ShellClassInfo,LocalizedResourceName,@shell32.dll#$c-21761
+ShellExecute,Hide,attrib.exe,"+S +H #$q%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\%Accessories%\desktop.ini#$q"
+ShellExecute,Hide,attrib.exe,"+S +R #$q%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\%Accessories%#$q"
+If,%CMD_CheckBox%,Equal,True,TxtAddLine,%CMD_Att1%,"attrib.exe +s #$q#$pAllusersprofile#$p\%StartMenu%\%Programs%\%Accessories%#$q",Append
+//--
+If,Not,ExistDir,%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\%AdministrativeTools%,DirMake,%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\%AdministrativeTools%
+If,ExistFile,%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\%AdministrativeTools%\desktop.ini,ShellExecute,Hide,attrib.exe,"-S -H #$q%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\%AdministrativeTools%\desktop.ini#$q"
+Else,FileCreateBlank,%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\%AdministrativeTools%\desktop.ini
+IniWrite,%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\%AdministrativeTools%\desktop.ini,.ShellClassInfo,LocalizedResourceName,@shell32.dll#$c-21762
+ShellExecute,Hide,attrib.exe,"+S +H #$q%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\%AdministrativeTools%\desktop.ini#$q"
+ShellExecute,Hide,attrib.exe,"+S +R #$q%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\%AdministrativeTools%#$q"
+If,%CMD_CheckBox%,Equal,True,TxtAddLine,%CMD_Att1%,"attrib.exe +s #$q#$pAllusersprofile#$p\%StartMenu%\%Programs%\%AdministrativeTools%#$q",Append
+//--
+If,Not,ExistDir,%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\%Startup%,DirMake,%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\%Startup%
+If,ExistFile,%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\%Startup%\desktop.ini,ShellExecute,Hide,attrib.exe,"-S -H #$q%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\%Startup%\desktop.ini#$q"
+Else,FileCreateBlank,%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\%Startup%\desktop.ini
+IniWrite,%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\%Startup%\desktop.ini,.ShellClassInfo,LocalizedResourceName,@shell32.dll#$c-21787
+ShellExecute,Hide,attrib.exe,"+S +H #$q%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\%Startup%\desktop.ini#$q"
+ShellExecute,Hide,attrib.exe,"+S +R #$q%TargetProfilesBaseDir%\%PB%\%AU%\%StartMenu%\%Programs%\%Startup%#$q"
+If,%CMD_CheckBox%,Equal,True,TxtAddLine,%CMD_Att1%,"attrib.exe +s #$q#$pAllusersprofile#$p\%StartMenu%\%Programs%\%Startup%#$q",Append
+//--
+If,Not,ExistDir,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%,DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%
+If,ExistFile,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\desktop.ini,ShellExecute,Hide,attrib.exe,"-S -H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\desktop.ini#$q"
+Else,FileCreateBlank,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\desktop.ini
+IniWrite,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\desktop.ini,.ShellClassInfo,LocalizedResourceName,@shell32.dll#$c-21786
+ShellExecute,Hide,attrib.exe,"+S +H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\desktop.ini#$q"
+ShellExecute,Hide,attrib.exe,"+S +R #$q%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%#$q"
+If,%CMD_CheckBox%,Equal,True,TxtAddLine,%CMD_Att1%,"attrib.exe +s #$q#$pUserProfile#$p\%StartMenu%#$q",Append
+//--
+If,Not,ExistDir,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%,DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%
+If,ExistFile,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\desktop.ini,ShellExecute,Hide,attrib.exe,"-S -H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\desktop.ini#$q"
+Else,FileCreateBlank,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\desktop.ini
+IniWrite,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\desktop.ini,.ShellClassInfo,LocalizedResourceName,@shell32.dll#$c-21782
+ShellExecute,Hide,attrib.exe,"+S +H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\desktop.ini#$q"
+ShellExecute,Hide,attrib.exe,"+S +R #$q%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%#$q"
+If,%CMD_CheckBox%,Equal,True,TxtAddLine,%CMD_Att1%,"attrib.exe +s #$q#$pUserProfile#$p\%StartMenu%\%Programs%#$q",Append
+//--
+If,Not,ExistDir,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%,DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%
+If,ExistFile,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\desktop.ini,ShellExecute,Hide,attrib.exe,"-S -H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\desktop.ini#$q"
+Else,FileCreateBlank,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\desktop.ini
+IniWrite,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\desktop.ini,.ShellClassInfo,LocalizedResourceName,@shell32.dll#$c-21761
+ShellExecute,Hide,attrib.exe,"+S +H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\desktop.ini#$q"
+ShellExecute,Hide,attrib.exe,"+S +R #$q%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%#$q"
+If,%CMD_CheckBox%,Equal,True,TxtAddLine,%CMD_Att1%,"attrib.exe +s #$q#$pUserProfile#$p\%StartMenu%\%Programs%\%Accessories%#$q",Append
+//--
+//If,Not,ExistDir,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%Accessibility%,DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%Accessibility%
+//If,ExistFile,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%Accessibility%\desktop.ini,ShellExecute,Hide,attrib.exe,"-S -H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%Accessibility%\desktop.ini#$q"
+//Else,FileCreateBlank,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%Accessibility%\desktop.ini
+//IniWrite,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%Accessibility%\desktop.ini,.ShellClassInfo,LocalizedResourceName,@shell32.dll#$c-21760
+//ShellExecute,Hide,attrib.exe,"+S +H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%Accessibility%\desktop.ini#$q"
+//ShellExecute,Hide,attrib.exe,"+S +R #$q%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%Accessibility%#$q"
+//--
+//If,Not,ExistDir,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%Communications%,DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%Communications%
+//If,ExistFile,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%Communications%\desktop.ini,ShellExecute,Hide,attrib.exe,"-S -H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%Communications%\desktop.ini#$q"
+//Else,FileCreateBlank,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%Communications%\desktop.ini
+//IniWrite,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%Communications%\desktop.ini,.ShellClassInfo,LocalizedResourceName,@shell32.dll#$c-118
+//ShellExecute,Hide,attrib.exe,"+S +H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%Communications%\desktop.ini#$q"
+//ShellExecute,Hide,attrib.exe,"+S +R #$q%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%Communications%#$q"
+//--
+//If,Not,ExistDir,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%Entertainment%,DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%Entertainment%
+//If,ExistFile,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%Entertainment%\desktop.ini,ShellExecute,Hide,attrib.exe,"-S -H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%Entertainment%\desktop.ini#$q"
+//Else,FileCreateBlank,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%Entertainment%\desktop.ini
+//IniWrite,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%Entertainment%\desktop.ini,.ShellClassInfo,LocalizedResourceName,@shell32.dll#$c-21772
+//ShellExecute,Hide,attrib.exe,"+S +H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%Entertainment%\desktop.ini#$q"
+//ShellExecute,Hide,attrib.exe,"+S +R #$q%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%Entertainment%#$q"
+//--
+//If,Not,ExistDir,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%SystemTools%,DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%SystemTools%
+//If,ExistFile,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%SystemTools%\desktop.ini,ShellExecute,Hide,attrib.exe,"-S -H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%SystemTools%\desktop.ini#$q"
+//Else,FileCreateBlank,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%SystemTools%\desktop.ini
+//IniWrite,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%SystemTools%\desktop.ini,.ShellClassInfo,LocalizedResourceName,@shell32.dll#$c-21788
+//ShellExecute,Hide,attrib.exe,"+S +H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%SystemTools%\desktop.ini#$q"
+//ShellExecute,Hide,attrib.exe,"+S +R #$q%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Accessories%\%SystemTools%#$q"
+//--
+If,Not,ExistDir,"%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\System Tools",DirMake,"%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\System Tools"
+If,ExistFile,"%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\System Tools\desktop.ini",ShellExecute,Hide,attrib.exe,"-S -H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\System Tools\desktop.ini#$q"
+Else,FileCreateBlank,"%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\System Tools\desktop.ini"
+IniWrite,"%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\System Tools\desktop.ini",.ShellClassInfo,LocalizedResourceName,@shell32.dll#$c-21788
+ShellExecute,Hide,attrib.exe,"+S +H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\System Tools\desktop.ini#$q"
+ShellExecute,Hide,attrib.exe,"+S +R #$q%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\System Tools#$q"
+If,%CMD_CheckBox%,Equal,True,TxtAddLine,%CMD_Att1%,"attrib.exe +s #$q#$pUserProfile#$p\%StartMenu%\%Programs%\System Tools#$q",Append
+//--
+If,Not,ExistDir,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%AdministrativeTools%,DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%AdministrativeTools%
+If,ExistFile,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%AdministrativeTools%\desktop.ini,ShellExecute,Hide,attrib.exe,"-S -H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%AdministrativeTools%\desktop.ini#$q"
+Else,FileCreateBlank,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%AdministrativeTools%\desktop.ini
+IniWrite,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%AdministrativeTools%\desktop.ini,.ShellClassInfo,LocalizedResourceName,@shell32.dll#$c-21762
+ShellExecute,Hide,attrib.exe,"+S +H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%AdministrativeTools%\desktop.ini#$q"
+ShellExecute,Hide,attrib.exe,"+S +R #$q%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%AdministrativeTools%#$q"
+If,%CMD_CheckBox%,Equal,True,TxtAddLine,%CMD_Att1%,"attrib.exe +s #$q#$pUserProfile#$p\%StartMenu%\%Programs%\%AdministrativeTools%#$q",Append
+//--
+//If,Not,ExistDir,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Games%,DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Games%
+//If,ExistFile,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Games%\desktop.ini,ShellExecute,Hide,attrib.exe,"-S -H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Games%\desktop.ini#$q"
+//Else,FileCreateBlank,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Games%\desktop.ini
+//IniWrite,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Games%\desktop.ini,.ShellClassInfo,LocalizedResourceName,@shell32.dll#$c-21773
+//ShellExecute,Hide,attrib.exe,"+S +H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Games%\desktop.ini#$q"
+//ShellExecute,Hide,attrib.exe,"+S +R #$q%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Games%#$q"
+//--
+If,Not,ExistDir,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Startup%,DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Startup%
+If,ExistFile,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Startup%\desktop.ini,ShellExecute,Hide,attrib.exe,"-S -H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Startup%\desktop.ini#$q"
+Else,FileCreateBlank,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Startup%\desktop.ini
+IniWrite,%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Startup%\desktop.ini,.ShellClassInfo,LocalizedResourceName,@shell32.dll#$c-21787
+ShellExecute,Hide,attrib.exe,"+S +H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Startup%\desktop.ini#$q"
+ShellExecute,Hide,attrib.exe,"+S +R #$q%TargetProfilesBaseDir%\%PB%\%DU%\%StartMenu%\%Programs%\%Startup%#$q"
+If,%CMD_CheckBox%,Equal,True,TxtAddLine,%CMD_Att1%,"attrib.exe +s #$q#$pUserProfile#$p\%StartMenu%\%Programs%\%Startup%#$q",Append
+//--
+If,Not,ExistDir,%TargetProfilesBaseDir%\%PB%\%DU%\%LocalSettings%,DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%LocalSettings%
+If,ExistFile,%TargetProfilesBaseDir%\%PB%\%DU%\%LocalSettings%\desktop.ini,ShellExecute,Hide,attrib.exe,"-S -H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%LocalSettings%\desktop.ini#$q"
+Else,FileCreateBlank,%TargetProfilesBaseDir%\%PB%\%DU%\%LocalSettings%\desktop.ini
+IniWrite,%TargetProfilesBaseDir%\%PB%\%DU%\%LocalSettings%\desktop.ini,.ShellClassInfo,LocalizedResourceName,@shell32.dll#$c-21774
+ShellExecute,Hide,attrib.exe,"+S +H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%LocalSettings%\desktop.ini#$q"
+ShellExecute,Hide,attrib.exe,"+S +R #$q%TargetProfilesBaseDir%\%PB%\%DU%\%LocalSettings%#$q"
+If,%CMD_CheckBox%,Equal,True,TxtAddLine,%CMD_Att1%,"attrib.exe +s #$q#$pUserProfile#$p\%LocalSettings%#$q",Append
+//--
+If,Not,ExistDir,%TargetProfilesBaseDir%\%PB%\%DU%\%Favorites%,DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%Favorites%
+If,ExistFile,%TargetProfilesBaseDir%\%PB%\%DU%\%Favorites%\desktop.ini,ShellExecute,Hide,attrib.exe,"-S -H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%Favorites%\desktop.ini#$q"
+Else,FileCreateBlank,%TargetProfilesBaseDir%\%PB%\%DU%\%Favorites%\desktop.ini
+IniWrite,%TargetProfilesBaseDir%\%PB%\%DU%\%Favorites%\desktop.ini,.ShellClassInfo,LocalizedResourceName,@shell32.dll#$c-12693
+IniWrite,%TargetProfilesBaseDir%\%PB%\%DU%\%Favorites%\desktop.ini,.ShellClassInfo,IconFile,#$pSystemRoot#$p\system32\shell32.dll
+IniWrite,%TargetProfilesBaseDir%\%PB%\%DU%\%Favorites%\desktop.ini,.ShellClassInfo,IconIndex,-173
+ShellExecute,Hide,attrib.exe,"+S +H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%Favorites%\desktop.ini#$q"
+ShellExecute,Hide,attrib.exe,"+S +R #$q%TargetProfilesBaseDir%\%PB%\%DU%\%Favorites%#$q"
+If,%CMD_CheckBox%,Equal,True,TxtAddLine,%CMD_Att1%,"attrib.exe +s #$q#$pUserProfile#$p\%Favorites%#$q",Append
+//--
+If,Not,ExistDir,%TargetProfilesBaseDir%\%PB%\%DU%\%Favorites%\%Links%,DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%Favorites%\%Links%
+If,ExistFile,%TargetProfilesBaseDir%\%PB%\%DU%\%Favorites%\%Links%\desktop.ini,ShellExecute,Hide,attrib.exe,"-S -H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%Favorites%\%Links%\desktop.ini#$q"
+Else,FileCreateBlank,%TargetProfilesBaseDir%\%PB%\%DU%\%Favorites%\%Links%\desktop.ini
+//IniWrite,%TargetProfilesBaseDir%\%PB%\%DU%\%Favorites%\%Links%\desktop.ini,.ShellClassInfo,LocalizedResourceName,@#$pwindir#$p\System32\ieframe.dll.mui#$c-12385
+IniWrite,%TargetProfilesBaseDir%\%PB%\%DU%\%Favorites%\%Links%\desktop.ini,.ShellClassInfo,LocalizedResourceName,@shell32.dll#$c-34560
+ShellExecute,Hide,attrib.exe,"+S +H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%Favorites%\%Links%\desktop.ini#$q"
+ShellExecute,Hide,attrib.exe,"+S +R #$q%TargetProfilesBaseDir%\%PB%\%DU%\%Favorites%\%Links%#$q"
+If,%CMD_CheckBox%,Equal,True,TxtAddLine,%CMD_Att1%,"attrib.exe +s #$q#$pUserProfile#$p\%Favorites%\%Links%#$q",Append
+//--
+//If,Not,ExistDir,%TargetProfilesBaseDir%\%PB%\%DU%\%ApData%\%QuickLaunchSubFolder%,DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%ApData%\%QuickLaunchSubFolder%
+//FileCreateBlank,%TargetProfilesBaseDir%\%PB%\%DU%\%ApData%\%QuickLaunchSubFolder%\desktop.ini
+//ShellExecute,Hide,attrib.exe,"+S +H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%ApData%\%QuickLaunchSubFolder%\desktop.ini#$q"
+//ShellExecute,Hide,attrib.exe,"+S +R #$q%TargetProfilesBaseDir%\%PB%\%DU%\%ApData%\%QuickLaunchSubFolder%#$q"
+//--
+If,Not,ExistDir,%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%,DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%
+If,ExistFile,%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\desktop.ini,ShellExecute,Hide,attrib.exe,"-S -H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\desktop.ini#$q"
+Else,FileCreateBlank,%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\desktop.ini
+IniWrite,%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\desktop.ini,.ShellClassInfo,IconFile,#$pSystemRoot#$p\system32\shell32.dll
+IniWrite,%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\desktop.ini,.ShellClassInfo,IconIndex,126
+ShellExecute,Hide,attrib.exe,"+S +H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\desktop.ini#$q"
+ShellExecute,Hide,attrib.exe,"+S +R #$q%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%#$q"
+If,%CMD_CheckBox%,Equal,True,TxtAddLine,%CMD_Att1%,"attrib.exe +s #$q#$pUserProfile#$p\%MyDocuments%#$q",Append
+//--
+If,Not,ExistDir,%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\%MyMusic%,DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\%MyMusic%
+If,ExistFile,%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\%MyMusic%\desktop.ini,ShellExecute,Hide,attrib.exe,"-S -H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\%MyMusic%\desktop.ini#$q"
+Else,FileCreateBlank,%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\%MyMusic%\desktop.ini
+//IniWrite,%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\%MyMusic%\desktop.ini,.ShellClassInfo,InfoTip,@shell32.dll#$c
+IniWrite,%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\%MyMusic%\desktop.ini,.ShellClassInfo,IconFile,#$pSystemRoot#$p\system32\mydocs.dll
+IniWrite,%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\%MyMusic%\desktop.ini,.ShellClassInfo,IconIndex,-101
+ShellExecute,Hide,attrib.exe,"+S +H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\%MyMusic%\desktop.ini#$q"
+ShellExecute,Hide,attrib.exe,"+S +R #$q%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\%MyMusic%#$q"
+If,%CMD_CheckBox%,Equal,True,TxtAddLine,%CMD_Att1%,"attrib.exe +s #$q#$pUserProfile#$p\%MyDocuments%\%MyMusic%#$q",Append
+//--
+If,Not,ExistDir,%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\%MyPictures%,DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\%MyPictures%
+If,ExistFile,%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\%MyPictures%\desktop.ini,ShellExecute,Hide,attrib.exe,"-S -H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\%MyPictures%\desktop.ini#$q"
+Else,FileCreateBlank,%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\%MyPictures%\desktop.ini
+IniWrite,%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\%MyPictures%\desktop.ini,.ShellClassInfo,InfoTip,@shell32.dll#$c-12688
+IniWrite,%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\%MyPictures%\desktop.ini,.ShellClassInfo,IconFile,#$pSystemRoot#$p\system32\shell32.dll
+IniWrite,%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\%MyPictures%\desktop.ini,.ShellClassInfo,IconIndex,127
+ShellExecute,Hide,attrib.exe,"+S +H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\%MyPictures%\desktop.ini#$q"
+ShellExecute,Hide,attrib.exe,"+S +R #$q%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\%MyPictures%#$q"
+If,%CMD_CheckBox%,Equal,True,TxtAddLine,%CMD_Att1%,"attrib.exe +s #$q#$pUserProfile#$p\%MyDocuments%\%MyPictures%#$q",Append
+//--
+If,Not,ExistDir,%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\%MyVideos%,DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\%MyVideos%
+If,ExistFile,%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\%MyVideos%\desktop.ini,ShellExecute,Hide,attrib.exe,"-S -H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\%MyVideos%\desktop.ini#$q"
+Else,FileCreateBlank,%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\%MyVideos%\desktop.ini
+IniWrite,%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\%MyVideos%\desktop.ini,.ShellClassInfo,IconFile,#$pSystemRoot#$p\system32\shell32.dll
+IniWrite,%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\%MyVideos%\desktop.ini,.ShellClassInfo,IconIndex,129
+ShellExecute,Hide,attrib.exe,"+S +H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\%MyVideos%\desktop.ini#$q"
+ShellExecute,Hide,attrib.exe,"+S +R #$q%TargetProfilesBaseDir%\%PB%\%DU%\%MyDocuments%\%MyVideos%#$q"
+If,%CMD_CheckBox%,Equal,True,TxtAddLine,%CMD_Att1%,"attrib.exe +s #$q#$pUserProfile#$p\%MyDocuments%\%MyVideos%#$q",Append
+//--
+If,Not,ExistDir,%TargetProfilesBaseDir%\%PB%\%DU%\%Recent%,DirMake,%TargetProfilesBaseDir%\%PB%\%DU%\%Recent%
+If,ExistFile,%TargetProfilesBaseDir%\%PB%\%DU%\%Recent%\desktop.ini,ShellExecute,Hide,attrib.exe,"-S -H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%Recent%\desktop.ini#$q"
+Else,FileCreateBlank,%TargetProfilesBaseDir%\%PB%\%DU%\%Recent%\desktop.ini
+IniWrite,%TargetProfilesBaseDir%\%PB%\%DU%\%Recent%\desktop.ini,.ShellClassInfo,LocalizedResourceName,@shell32.dll#$c-12691
+IniWrite,%TargetProfilesBaseDir%\%PB%\%DU%\%Recent%\desktop.ini,.ShellClassInfo,InfoTip,@shell32.dll#$c-12692
+IniWrite,%TargetProfilesBaseDir%\%PB%\%DU%\%Recent%\desktop.ini,.ShellClassInfo,IconFile,#$pSystemRoot#$p\system32\shell32.dll
+IniWrite,%TargetProfilesBaseDir%\%PB%\%DU%\%Recent%\desktop.ini,.ShellClassInfo,IconIndex,-21
+ShellExecute,Hide,attrib.exe,"+S +H #$q%TargetProfilesBaseDir%\%PB%\%DU%\%Recent%\desktop.ini#$q"
+ShellExecute,Hide,attrib.exe,"+S +R #$q%TargetProfilesBaseDir%\%PB%\%DU%\%Recent%#$q"
+If,%CMD_CheckBox%,Equal,True,TxtAddLine,%CMD_Att1%,"attrib.exe +s #$q#$pUserProfile#$p\%Recent%#$q",Append
+//--
+If,%CMD_CheckBox%,Equal,True,Begin
+TxtAddLine,%CMD_Att1%,"exit",Append
+TxtAddLine,%CMD_Att1%,"pause",Append
+TxtAddLine,%CMD_Att1%,"cmd",Append
+TxtReplace,%CMD_Att1%,"attrib.exe +s","attrib.exe +s +r"
+//-
+FileCopy,%CMD_Att1%,%CMD_Att2%
+TxtReplace,%CMD_Att2%,"attrib.exe +s +r","attrib.exe -s -r"
+//-
+FileCopy,%CMD_Att1%,%CMD_Att_Host1%
+TxtReplace,%CMD_Att_Host1%,"##$pUserProfile##$p",".\%DU%"
+TxtReplace,%CMD_Att_Host1%,"##$pAllusersprofile##$p",".\%AU%"
+TxtReplace,%CMD_Att_Host1%,"##$pSystemRoot##$p","%Target_Win%"
+//-
+FileCopy,%CMD_Att_Host1%,%CMD_Att_Host2%
+TxtReplace,%CMD_Att_Host2%,"attrib.exe +s +r","attrib.exe -s -r"
+//-
+If,%CMDStartup_CheckBox%,Equal,True,Begin
+FileCopy,%CMD_Att1%,%target_sys%
+//-
+IniRead,%projectdir%\script.project,IniVariables,PrepPEGenScript,%PrepPEGenScript%
+If,Not,ExistFile,%Target_Sys%\HideRun.exe,Require,File,HideRun.exe
+If,Not,ExistSection,%PrepPEGenScript%,ShortcutAdditions,TXTReplace,%PrepPEGenScript%,[Process],"[ShortcutAdditions]#$x#$x[Process]"
+IniWriteTextLine,%PrepPEGenScript%,ShortcutAdditions,"Add_Shortcut#$cAutoRun#$c#$c##$pSystemRoot##$p\system32\hiderun.exe#$c%CMD_Att1N%#$c#$q##$pSystemRoot##$p\system32#$q#$c#$q/w#$s##$q##$pSystemRoot##$p\system32\%CMD_Att1N%.cmd##$q#$q"
+//-
+//IniRead,%projectdir%\script.project,IniVariables,PrepPEGenScript,%PrepPEGenScript%
+//TXTAddLine,%PrepPEGenScript%,"Exec#$c%ScriptFile%#$cProcess1_Shortcut",APPEND
+//TXTAddLine,%PrepPEGenScript%,"Run#$c%ScriptFile%#$cProcess1_Shortcut",APPEND
+//Add_Shortcut,AutoRun,,#$pSystemRoot#$p\system32\hiderun.exe,%CMD_Att1N%,#$q#$pSystemRoot#$p\system32#$q,"/w #$q#$pSystemRoot#$p\system32\%CMD_Att1N%#$q"
+//[Process1_Shortcut]
+//Add_Shortcut,AutoRun,,#$pSystemRoot#$p\system32\hiderun.exe,Folder_Attribute_1,#$q#$pSystemRoot#$p\system32#$q,"/w #$q#$pSystemRoot#$p\system32\Folder_Attribute_1_.cmd#$q"
+End
+//-
+If,%KeepCMDProfile_CheckBox%,Equal,False,Begin
+ShellExecute,Hide,cmd.exe,"/C del /q /f #$q%CMD_Att1%#$q&del /q /f /A:R /A:H /A:S /A:A #$q%CMD_Att1%#$q"
+ShellExecute,Hide,cmd.exe,"/C del /q /f #$q%CMD_Att2%#$q&del /q /f /A:R /A:H /A:S /A:A #$q%CMD_Att2%#$q"
+ShellExecute,Hide,cmd.exe,"/C del /q /f #$q%CMD_Att_Host1%#$q&del /q /f /A:R /A:H /A:S /A:A #$q%CMD_Att_Host1%#$q"
+ShellExecute,Hide,cmd.exe,"/C del /q /f #$q%CMD_Att_Host2%#$q&del /q /f /A:R /A:H /A:S /A:A #$q%CMD_Att_Host2%#$q"
+End
+End
+
+[Process2]
+//Create Folders (Taken from Win7PE SE - JFX)
+DirMake,%TargetProfilesBaseDir%\Users
+DirMake,%TargetProfilesBaseDir%\ProgramData
+FileCopy,%BootSRC%\Users\*.*,%TargetProfilesBaseDir%\Users
+FileCopy,%BootSRC%\ProgramData\*.*,%TargetProfilesBaseDir%\ProgramData
+
+[EncodedFile-AuthorEncoded-NewFolder4848.ico]
+lines=1
+0=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
+1=Id53KEw1yZkzXlA1+JwXMgQGEIlmDWa72gk6dwVznNWc4kHCrTtrFw0kW+e6ns9KvxhpOv2d3LP8Hr8fGZ/rOSiyPeuWZM+gy92sSVaVvxjP4cOOhF9g7UsBP47tBoF/rghX77Qrs94OHPrfoAbivZz22lB4UPn9j8FJ/YYrHjm2Zjbq9aa4VPqyFAxUis/FYVLMGsK8B+yXVVucxZjtBvO1ekbVFcjEkb+Nzx17tLTv4m3HBi0Tf+DyjOc6Zduu8/x5899vpAWcInVJ60DnEbqCJ1MzTYhv23HeffCfguVJe3E+8ID5yzXajBC73wgY5+6MVePMP9RUsO+/QJEju67gkOW/ek0hdr4C1985MYFSsYglWXvxPPPRdwd8J+2Y7+i+abyZS8gcoT17FwKgh9qUkXPv/gvdyV/p7TbVO9p5/OP/JimyH2Yy6NXyMxqHs96tgIHTZzVfpW6LIdORxxtnagF67I7YYz54HntdSyGzp7Cx8O/nAWB638KexxNZY5WWsq9FK+ElNf4K4wBEu0MWc5sGhViVySU3KXJX7C2PcsnHIDnzGWhD/v+2381RnwnBqcFzTXXBz1PumjV3JJ7MdUGr+aBMOYvI7QD9SxCf3YgnPxOfrhgNzO2K87oJ8L+o++aN3wbxeO8V5C0V6LxdQYc7IGzjvFV2JwPp0UhmAJZmXaJvD+jIxJ61ROaEjgTfqYlawDp9z9P9WWhv/a+Tv5e0z20Qb/Ql90ZgXpoj5gfcxHOPOrqCxhLZcnfkrG5PXo6Uay1LCVzJk4G9kOJDxqcp1Z6qgFN0tfwNNiojFZzEX5wFdioLmDwhAs9Bd7FZonryfJVZawhiW3IfYjxaUYnAoCZqaVhj+3/rv4p/v92NUU/VZFNd4XNXjn4XuU67Q+6j1u+YbYp97v8p6Xb9oWQzDOozzH5Xl+BN+meLYbw2BHlXWImb64PVZr5aHKt7VMvmdDFEaL4a5vB+SQXPWW96/iIFzkfVR2cmG+KeKVld/FP87ryafTQ5Z15p1aTQWRn7I2agOdjd5I52I2c2HcViqK38bFCdtJl+RI+mRnMqS4cEmqK5Wm7aSydDcuy3CnsgwPKs/0ZBjuu+4ae8qa8ilNd5MYxLoAYwcLlmACm5GDJJfklNzaqM8Ul7xTqygv/M0S/cklj34Xf7WHgpZNSg97R5N1/CNNzsnVmtxTazV5EZ9q8iPXawrObNBoozZqzsZs1pyL3aopjNumKUrYrilOcNAUJzpqdElOGl2ys0afvEOjT7nHZA5r4iO+xYkOKrYwfpvCEkxt9CaVQ3JJTsktHLKPf6zJPvaBJu/4inF/i/v96/51/7p/3b/uX/ev/5uLv+9VZGNjj1u3BI1h9pS7LfMIyt91t71z9/zf3O3v3Iv+kfuYO/fu/+E+LPdJ31ut7339NxBExkp4nBP0Sy13y89JSS0ysTCx0MtMzmcYBSMI7FOF0NoC2OW1r9x+xsAEAJJ3CbmmydB/AQAAAAIAAAAtAAAAKxAAAAAAAAABAAAAAAAAAAAAAAA
+
+[AuthorEncoded]
+NewFolder4848.ico=4220,5627
+Logo=NewFolder4848.ico
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+Call,UploadXQ
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+

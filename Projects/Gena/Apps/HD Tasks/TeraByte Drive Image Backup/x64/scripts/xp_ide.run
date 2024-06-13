@@ -1,0 +1,262 @@
+;TBOSDT script to install all IDE drivers included with Windows XP SP2/SP3
+
+;EDITING REQUIRED in 2 places below before script will run
+
+;1. Edit and uncomment the mount command below to specify the correct drive/partition
+;Example 1: drive=HD0, partition ID=1 -> mount 0: 0 1
+;Example 2: drive=HD1, partition ID=2 -> mount 0: 1 2
+;Use the command 'LIST HD hdnum' to list partitions and IDs on each drive 
+;mount 0: 0 1
+
+;2. Comment out or delete the exit command below
+exit
+
+;driver.cab is the original cab file
+extract "0:\windows\driver cache\i386\driver.cab" atapi.sys 0:\windows\system32\drivers
+extract "0:\windows\driver cache\i386\driver.cab" intelide.sys 0:\windows\system32\drivers
+extract "0:\windows\driver cache\i386\driver.cab" pciide.sys 0:\windows\system32\drivers
+extract "0:\windows\driver cache\i386\driver.cab" pciidex.sys 0:\windows\system32\drivers
+
+; NOTE: Uncomment the three extract lines below if you are using service pack 2
+
+;sp2.cab may contain newer versions - this ensures the newest versions are used
+;extract "0:\windows\driver cache\i386\sp2.cab" atapi.sys 0:\windows\system32\drivers
+;extract "0:\windows\driver cache\i386\sp2.cab" intelide.sys 0:\windows\system32\drivers
+;extract "0:\windows\driver cache\i386\sp2.cab" pciidex.sys 0:\windows\system32\drivers
+
+; NOTE: Comment out the three extract lines below if you are not using service pack 3
+
+;sp3.cab may contain newer versions - this ensures the newest versions are used.
+extract "0:\windows\driver cache\i386\sp3.cab" atapi.sys 0:\windows\system32\drivers
+extract "0:\windows\driver cache\i386\sp3.cab" intelide.sys 0:\windows\system32\drivers
+extract "0:\windows\driver cache\i386\sp3.cab" pciidex.sys 0:\windows\system32\drivers
+
+
+;open system hive, open keyccs as 0, Control\CriticalDeviceDatabase as 1
+open reg 0 0:\windows\system32\config\system
+open keyccs 0 0
+open key 1 Control\CriticalDeviceDatabase 0 /k
+
+;1
+open key 2 primary_ide_channel 1 /k /c
+close key 2
+set value 1 primary_ide_channel ClassGUID sz "{4D36E96A-E325-11CE-BFC1-08002BE10318}"
+set value 1 primary_ide_channel Service sz "atapi"
+
+;2
+open key 2 secondary_ide_channel 1 /k /c
+close key 2
+set value 1 secondary_ide_channel ClassGUID sz "{4D36E96A-E325-11CE-BFC1-08002BE10318}"
+set value 1 secondary_ide_channel Service sz "atapi"
+
+;3
+open key 2 *pnp0600 1 /k /c
+close key 2
+set value 1 *pnp0600 ClassGUID sz "{4D36E96A-E325-11CE-BFC1-08002BE10318}"
+set value 1 *pnp0600 Service sz "atapi"
+
+;4
+open key 2 *azt0502 1 /k /c
+close key 2
+set value 1 *azt0502 ClassGUID sz "{4D36E96A-E325-11CE-BFC1-08002BE10318}"
+set value 1 *azt0502 Service sz "atapi"
+
+;5
+open key 2 gendisk 1 /k /c
+close key 2
+set value 1 gendisk ClassGUID sz "{4D36E967-E325-11CE-BFC1-08002BE10318}"
+set value 1 gendisk Service sz "disk"
+
+;6
+open key 2 pci#cc_0101 1 /k /c
+close key 2
+set value 1 pci#cc_0101 ClassGUID sz "{4D36E96A-E325-11CE-BFC1-08002BE10318}"
+set value 1 pci#cc_0101 Service sz "pciide"
+
+;7
+open key 2 pci#ven_0e11&dev_ae33 1 /k /c
+close key 2
+set value 1 pci#ven_0e11&dev_ae33 ClassGUID sz "{4D36E96A-E325-11CE-BFC1-08002BE10318}"
+set value 1 pci#ven_0e11&dev_ae33 Service sz "pciide"
+
+;8
+open key 2 pci#ven_1039&dev_0601 1 /k /c
+close key 2
+set value 1 pci#ven_1039&dev_0601 ClassGUID sz "{4D36E96A-E325-11CE-BFC1-08002BE10318}"
+set value 1 pci#ven_1039&dev_0601 Service sz "pciide"
+
+;9
+open key 2 pci#ven_1039&dev_5513 1 /k /c
+close key 2
+set value 1 pci#ven_1039&dev_5513 ClassGUID sz "{4D36E96A-E325-11CE-BFC1-08002BE10318}"
+set value 1 pci#ven_1039&dev_5513 Service sz "pciide"
+
+;10
+open key 2 pci#ven_1042&dev_1000 1 /k /c
+close key 2
+set value 1 pci#ven_1042&dev_1000 ClassGUID sz "{4D36E96A-E325-11CE-BFC1-08002BE10318}"
+set value 1 pci#ven_1042&dev_1000 Service sz "pciide"
+
+;11
+open key 2 pci#ven_105a&dev_4d33 1 /k /c
+close key 2
+set value 1 pci#ven_105a&dev_4d33 ClassGUID sz "{4D36E96A-E325-11CE-BFC1-08002BE10318}"
+set value 1 pci#ven_105a&dev_4d33 Service sz "pciide"
+
+;12
+open key 2 pci#ven_1095&dev_0640 1 /k /c
+close key 2
+set value 1 pci#ven_1095&dev_0640 ClassGUID sz "{4D36E96A-E325-11CE-BFC1-08002BE10318}"
+set value 1 pci#ven_1095&dev_0640 Service sz "pciide"
+
+;13
+open key 2 pci#ven_1095&dev_0646 1 /k /c
+close key 2
+set value 1 pci#ven_1095&dev_0646 ClassGUID sz "{4D36E96A-E325-11CE-BFC1-08002BE10318}"
+set value 1 pci#ven_1095&dev_0646 Service sz "pciide"
+
+;14
+open key 2 pci#ven_1095&dev_0646&REV_05 1 /k /c
+close key 2
+set value 1 pci#ven_1095&dev_0646&REV_05 ClassGUID sz "{4D36E96A-E325-11CE-BFC1-08002BE10318}"
+set value 1 pci#ven_1095&dev_0646&REV_05 Service sz "pciide"
+
+;15
+open key 2 pci#ven_1095&dev_0646&REV_07 1 /k /c
+close key 2
+set value 1 pci#ven_1095&dev_0646&REV_07 ClassGUID sz "{4D36E96A-E325-11CE-BFC1-08002BE10318}"
+set value 1 pci#ven_1095&dev_0646&REV_07 Service sz "pciide"
+
+;16
+open key 2 pci#ven_1095&dev_0648 1 /k /c
+close key 2
+set value 1 pci#ven_1095&dev_0648 ClassGUID sz "{4D36E96A-E325-11CE-BFC1-08002BE10318}"
+set value 1 pci#ven_1095&dev_0648 Service sz "pciide"
+
+;17
+open key 2 pci#ven_1095&dev_0649 1 /k /c
+close key 2
+set value 1 pci#ven_1095&dev_0649 ClassGUID sz "{4D36E96A-E325-11CE-BFC1-08002BE10318}"
+set value 1 pci#ven_1095&dev_0649 Service sz "pciide"
+
+;18
+open key 2 pci#ven_1097&dev_0038 1 /k /c
+close key 2
+set value 1 pci#ven_1097&dev_0038 ClassGUID sz "{4D36E96A-E325-11CE-BFC1-08002BE10318}"
+set value 1 pci#ven_1097&dev_0038 Service sz "pciide"
+
+;19
+open key 2 pci#ven_10ad&dev_0001 1 /k /c
+close key 2
+set value 1 pci#ven_10ad&dev_0001 ClassGUID sz "{4D36E96A-E325-11CE-BFC1-08002BE10318}"
+set value 1 pci#ven_10ad&dev_0001 Service sz "pciide"
+
+;20
+open key 2 pci#ven_10ad&dev_0150 1 /k /c
+close key 2
+set value 1 pci#ven_10ad&dev_0150 ClassGUID sz "{4D36E96A-E325-11CE-BFC1-08002BE10318}"
+set value 1 pci#ven_10ad&dev_0150 Service sz "pciide"
+
+;21
+open key 2 pci#ven_10b9&dev_5215 1 /k /c
+close key 2
+set value 1 pci#ven_10b9&dev_5215 ClassGUID sz "{4D36E96A-E325-11CE-BFC1-08002BE10318}"
+set value 1 pci#ven_10b9&dev_5215 Service sz "pciide"
+
+;22
+open key 2 pci#ven_10b9&dev_5219 1 /k /c
+close key 2
+set value 1 pci#ven_10b9&dev_5219 ClassGUID sz "{4D36E96A-E325-11CE-BFC1-08002BE10318}"
+set value 1 pci#ven_10b9&dev_5219 Service sz "pciide"
+
+;23
+open key 2 pci#ven_10b9&dev_5229 1 /k /c
+close key 2
+set value 1 pci#ven_10b9&dev_5229 ClassGUID sz "{4D36E96A-E325-11CE-BFC1-08002BE10318}"
+set value 1 pci#ven_10b9&dev_5229 Service sz "pciide"
+
+;24
+open key 2 pci#ven_1106&dev_0571 1 /k /c
+close key 2
+set value 1 pci#ven_1106&dev_0571 ClassGUID sz "{4D36E96A-E325-11CE-BFC1-08002BE10318}"
+set value 1 pci#ven_1106&dev_0571 Service sz "pciide"
+
+;25
+open key 2 pci#ven_8086&dev_1222 1 /k /c
+close key 2
+set value 1 pci#ven_8086&dev_1222 ClassGUID sz "{4D36E96A-E325-11CE-BFC1-08002BE10318}"
+set value 1 pci#ven_8086&dev_1222 Service sz "intelide"
+
+;26
+open key 2 pci#ven_8086&dev_1230 1 /k /c
+close key 2
+set value 1 pci#ven_8086&dev_1230 ClassGUID sz "{4D36E96A-E325-11CE-BFC1-08002BE10318}"
+set value 1 pci#ven_8086&dev_1230 Service sz "intelide"
+
+;27
+open key 2 pci#ven_8086&dev_2411 1 /k /c
+close key 2
+set value 1 pci#ven_8086&dev_2411 ClassGUID sz "{4D36E96A-E325-11CE-BFC1-08002BE10318}"
+set value 1 pci#ven_8086&dev_2411 Service sz "intelide"
+
+;28
+open key 2 pci#ven_8086&dev_2421 1 /k /c
+close key 2
+set value 1 pci#ven_8086&dev_2421 ClassGUID sz "{4D36E96A-E325-11CE-BFC1-08002BE10318}"
+set value 1 pci#ven_8086&dev_2421 Service sz "intelide"
+
+;29
+open key 2 pci#ven_8086&dev_7010 1 /k /c
+close key 2
+set value 1 pci#ven_8086&dev_7010 ClassGUID sz "{4D36E96A-E325-11CE-BFC1-08002BE10318}"
+set value 1 pci#ven_8086&dev_7010 Service sz "intelide"
+
+;30
+open key 2 pci#ven_8086&dev_7111 1 /k /c
+close key 2
+set value 1 pci#ven_8086&dev_7111 ClassGUID sz "{4D36E96A-E325-11CE-BFC1-08002BE10318}"
+set value 1 pci#ven_8086&dev_7111 Service sz "intelide"
+
+;31
+open key 2 pci#ven_8086&dev_7199 1 /k /c
+close key 2
+set value 1 pci#ven_8086&dev_7199 ClassGUID sz "{4D36E96A-E325-11CE-BFC1-08002BE10318}"
+set value 1 pci#ven_8086&dev_7199 Service sz "intelide"
+
+;close Control\CriticalDeviceDatabase
+close key 1
+
+;Add driver for Atapi (requires Atapi.sys in Drivers directory)
+open key 1 Services\atapi 0 /k /c
+set value 0 Services\atapi ErrorControl dword 0x1
+set value 0 Services\atapi Group sz "SCSI miniport"
+set value 0 Services\atapi Start dword 0x0
+set value 0 Services\atapi Tag dword 0x19
+set value 0 Services\atapi Type dword 0x1
+set value 0 Services\atapi DisplayName sz "Standard IDE/ESDI Hard Disk Controller"
+set value 0 Services\atapi ImagePath expandsz "system32\DRIVERS\atapi.sys"
+close key 1
+
+;Add driver for intelide (requires intelide.sys in drivers directory)
+open key 1 Services\IntelIde 0 /k /c
+set value 0 Services\IntelIde ErrorControl dword 0x1
+set value 0 Services\IntelIde Group sz "System Bus Extender"
+set value 0 Services\IntelIde Start dword 0x0
+set value 0 Services\IntelIde Tag dword 0x4
+set value 0 Services\IntelIde Type dword 0x1
+set value 0 Services\IntelIde ImagePath expandsz "system32\DRIVERS\intelide.sys"
+close key 1
+
+;Add driver for Pciide (requires Pciide.sys and Pciidex.sys in Drivers directory)
+open key 1 Services\PCIIde 0 /k /c
+set value 0 Services\PCIIde ErrorControl dword 0x1
+set value 0 Services\PCIIde Group sz "System Bus Extender"
+set value 0 Services\PCIIde Start dword 0x0
+set value 0 Services\PCIIde Tag dword 0x3
+set value 0 Services\PCIIde Type dword 0x1
+set value 0 Services\PCIIde ImagePath expandsz "system32\DRIVERS\pciide.sys"
+close key 1
+
+;close registry hive and unmount the Windows partition
+close reg 0
+umount 0:

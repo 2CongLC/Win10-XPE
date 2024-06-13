@@ -1,0 +1,179 @@
+[Main]
+Title=Base Smart Card
+Type=Plugin
+Author=Lancelot
+Description=(Date Published: 11/29/2005) KB955704 - Base Smart Card Cryptographic Service Provider Package
+Credits=http://Theoven.org
+Version=011
+Download_Level=1
+Level=3
+Selected=False
+Mandatory=False
+NoWarning=False
+Contact=http://Theoven.org
+Date=2018.11.28
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Components/Core/2%20Update/20051129_Base_Smart_Card.script
+CertifiedBy=
+Certification=
+HistoryNotes=Lancelot with RF "Cryptographic Services" already exists "||regsvr32 /s basecsp.dll" (you are great fxscrpt)// not tested on a hardware
+History001=Lancelot yet another winbuilder bug workaround
+History007=Lancelot read localize infos - Date:2011.07.05
+History009=Lancelot Added Components_PluginCache_Extract x 2 - Date:2016.11.09 - Date:2016.11.10
+History010=Lancelot Update empty Home Page WebLabel to https://Write_Homepage_Here - PEBakery - ied206 Reply 3 http://TheOven.org/index.php?topic=2329.msg25119#msg25119 - Date:2017.12.18
+History011=Lancelot no need https://Write_Homepage_Here anymore for a PEBakery workaround - PEBakery should behave same as with Image with WebLink = Do nothing if WebLabel is empty - Date:2018.11.28
+
+[Cache_SCD_Info_Additional_Plugin]
+IniRead,%ScriptFile%,Main,Selected,%t%
+If,%t%,Equal,True,Begin
+Run,%api%,Cache_SCD_Info_Additional_Plugin_ML,#1,#2,#3,#4,#5,#6,#7,#8,#9
+//-
+Call,RetrieveFolderUniqueID,%sourcepath%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,%Plugin_FName_Sub%_|_sourcepath_RetrieveFolderUniqueID,%RetrieveFolderUniqueID%
+If,%RetrieveFolderUniqueID%,Equal,1,IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,%Plugin_FName_Sub%_|_sourcepath_RetrieveFolderUniqueID,"%RetrieveFolderUniqueID% : Directory Not Exists"
+If,%RetrieveFolderUniqueID%,Equal,2,IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,%Plugin_FName_Sub%_|_sourcepath_RetrieveFolderUniqueID,"%RetrieveFolderUniqueID% : Directory exists but empty"
+//-
+Echo,"Cache_SCD_Info_Additional_Plugin - Finish - %Plugin_FName%"
+End
+
+[Interface]
+OpenSourceFilesbutton="Location of your localized (or ENU) Windows-KB909520-v1.000-XXX-XXX.exe",1,8,10,43,384,24,OpenSourceFilesDir,_OpenSourceFilesDir_,False
+pWebLabel1="Info Page (follow to download page(s))",1,10,13,189,47,18,http://support.microsoft.com/kb/909520
+pTextLabel1=Example:#$xWindows-KB909520-v1.000-x86-ENU.exe#$xWindows-KB909520-v1.000-x86-TRK.exe#$xWindows-KB909520-v1.000-x64-ENU.exe,1,1,143,80,241,56,8,Normal
+pTextLabel2="Requires 'Cryptographic Services' enabled",1,1,14,237,208,18,8,Normal
+pWebLabel2=x86,1,10,208,189,200,18,http://www.microsoft.com/downloads/details.aspx?FamilyID=e8095fd5-c7e5-4bee-9577-2ea6b45b41c6
+pWebLabel3=x64,1,10,236,189,200,18,http://www.microsoft.com/downloads/details.aspx?FamilyID=b94e189d-e766-489d-a3e9-b67e896d5ccc
+WebLabel_Homepg=HomePage,1,10,343,20,55,18,
+WebLabel_Plugin="Plugin Page",1,10,338,4,55,18,http://TheOven.org/index.php?board=9
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[Variables]
+%sourcepath%=%GlobalTemplates%\Hotfixes\KB909520
+%filebasename%=Windows-KB909520-v1.000
+%fileexistlocal%=
+%fileexistenu%=
+
+[Process]
+If,ExistFile,%ProjectTemp%\Components_PluginCache_Extract.ini,Echo,"Components PluginCache"
+If,Not,ExistFile,%ProjectTemp%\Components_PluginCache_Extract.ini,Run,%ScriptFile%,Process_Normal
+
+[Process_Normal]
+IniRead,%projectdir%\script.project,IniVariables,LocalizeExtUpdate,%LocalizeExtUpdate%
+If,Not,ExistFile,%sourcepath%\%filebasename%-%SourceArch%-%LocalizeExtUpdate%.exe,set,%fileexistlocal%,no
+If,Not,ExistFile,%sourcepath%\%filebasename%-%SourceArch%-ENU.exe,set,%fileexistenu%,no
+If,%fileexistlocal%%fileexistenu%,Equal,nono,Exit,"Base_Smart_Card.script No source files found - please download"
+If,ExistFile,%sourcepath%\%filebasename%-%SourceArch%-ENU.exe,set,%basenamebuild%,%filebasename%-%SourceArch%-ENU
+If,ExistFile,%sourcepath%\%filebasename%-%SourceArch%-%LocalizeExtUpdate%.exe,set,%basenamebuild%,%filebasename%-%SourceArch%-%LocalizeExtUpdate%
+If,Not,ExistDir,%sourcepath%\%basenamebuild%,ShellExecute,Hide,%Tools%\7z.exe,"x #$q%sourcepath%\%basenamebuild%.exe#$q -y -o#$q%sourcepath%\%basenamebuild%#$q"
+FileCopy,%sourcepath%\%basenamebuild%\Axaltocm.dll,%target_sys%
+FileCopy,%sourcepath%\%basenamebuild%\Basecsp.dll,%target_sys%
+FileCopy,%sourcepath%\%basenamebuild%\Bcsprsrc.dll,%target_sys%
+FileCopy,%sourcepath%\%basenamebuild%\Ifxcardm.dll,%target_sys%
+FileCopy,%sourcepath%\%basenamebuild%\Pintool.exe,%target_sys%
+RegHiveLoad,Tmp_Software,%target_sys%\config\software
+//--
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\Calais\SmartCards\Axalto Cryptoflex .NET",80000001,axaltocm.dll
+RegWrite,HKLM,0x3,"Tmp_Software\Microsoft\Cryptography\Calais\SmartCards\Axalto Cryptoflex .NET",ATR,3b,00,00,41,73,74,72,69,64
+RegWrite,HKLM,0x3,"Tmp_Software\Microsoft\Cryptography\Calais\SmartCards\Axalto Cryptoflex .NET",ATRMask,ff,00,00,ff,ff,ff,ff,ff,ff
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\Calais\SmartCards\Axalto Cryptoflex .NET","Crypto Provider","Microsoft#$sBase#$sSmart#$sCard#$sCrypto#$sProvider"
+//--
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\Calais\SmartCards\Infineon SICRYPT CardModule Card",80000001,ifxcardm.dll
+RegWrite,HKLM,0x3,"Tmp_Software\Microsoft\Cryptography\Calais\SmartCards\Infineon SICRYPT CardModule Card",ATR,3b,80,00,00,00,00,00,00,00,5c,49,43,4d,80,00,00,d2,76,00,00,38,00,00,00
+RegWrite,HKLM,0x3,"Tmp_Software\Microsoft\Cryptography\Calais\SmartCards\Infineon SICRYPT CardModule Card",ATRMask,ff,80,00,00,00,00,00,00,ff,ff,ff,ff,ff,80,00,00,ff,ff,ff,ff,ff,00,00,00
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\Calais\SmartCards\Infineon SICRYPT CardModule Card","Crypto Provider","Microsoft#$sBase#$sSmart#$sCard#$sCrypto#$sProvider"
+RegWrite,HKLM,0x3,"Tmp_Software\Microsoft\Cryptography\Calais\SmartCards\Infineon SICRYPT CardModule Card","Primary Provider",01,11,0f,a8,f8,d1,d0,11,b5,c5,00,a0,24,29,7e,d9
+//--
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Cryptography\Defaults\Provider\Microsoft Base Smart Card Crypto Provider","Image Path",basecsp.dll
+RegWrite,HKLM,0x4,"Tmp_Software\Microsoft\Cryptography\Defaults\Provider\Microsoft Base Smart Card Crypto Provider",SigInFile,0
+RegWrite,HKLM,0x4,"Tmp_Software\Microsoft\Cryptography\Defaults\Provider\Microsoft Base Smart Card Crypto Provider",Type,1
+RegWrite,HKLM,0x4,"Tmp_Software\Microsoft\Cryptography\Defaults\Provider\Microsoft Base Smart Card Crypto Provider",DefaultPrivateKeyLenBits,1024
+RegWrite,HKLM,0x4,"Tmp_Software\Microsoft\Cryptography\Defaults\Provider\Microsoft Base Smart Card Crypto Provider",RequireOnCardPrivateKeyGen,0
+RegWrite,HKLM,0x4,"Tmp_Software\Microsoft\Cryptography\Defaults\Provider\Microsoft Base Smart Card Crypto Provider",TransactionTimeoutMilliseconds,1500
+RegWrite,HKLM,0x4,"Tmp_Software\Microsoft\Cryptography\Defaults\Provider\Microsoft Base Smart Card Crypto Provider",AllowPrivateSignatureKeyImport,0
+RegWrite,HKLM,0x4,"Tmp_Software\Microsoft\Cryptography\Defaults\Provider\Microsoft Base Smart Card Crypto Provider",AllowPrivateExchangeKeyImport,0
+//--
+RegHiveUnLoad,Tmp_Software
+//---------------
+If,NOT,%SourceArch%,Equal,%TargetWOW64%,Begin
+FileCopy,%sourcepath%\%basenamebuild%\wAxaltocm.dll,%target_win%\SysWOW64\Axaltocm.dll
+FileCopy,%sourcepath%\%basenamebuild%\wBasecsp.dll,%target_win%\SysWOW64\Basecsp.dll
+FileCopy,%sourcepath%\%basenamebuild%\wBcsprsrc.dll,%target_win%\SysWOW64\Bcsprsrc.dll
+FileCopy,%sourcepath%\%basenamebuild%\wIfxcardm.dll,%target_win%\SysWOW64\Ifxcardm.dll
+FileCopy,%sourcepath%\%basenamebuild%\wPintool.exe,%target_win%\SysWOW64\Pintool.exe
+RegHiveLoad,Tmp_Software,%target_sys%\config\software
+//--
+RegWrite,HKLM,0x1,"Tmp_Software\Wow6432Node\Microsoft\Cryptography\Calais\SmartCards\Axalto Cryptoflex .NET",80000001,axaltocm.dll
+RegWrite,HKLM,0x3,"Tmp_Software\Wow6432Node\Microsoft\Cryptography\Calais\SmartCards\Axalto Cryptoflex .NET",ATR,3b,00,00,41,73,74,72,69,64
+RegWrite,HKLM,0x3,"Tmp_Software\Wow6432Node\Microsoft\Cryptography\Calais\SmartCards\Axalto Cryptoflex .NET",ATRMask,ff,00,00,ff,ff,ff,ff,ff,ff
+RegWrite,HKLM,0x1,"Tmp_Software\Wow6432Node\Microsoft\Cryptography\Calais\SmartCards\Axalto Cryptoflex .NET","Crypto Provider","Microsoft#$sBase#$sSmart#$sCard#$sCrypto#$sProvider"
+//--
+RegWrite,HKLM,0x1,"Tmp_Software\Wow6432Node\Microsoft\Cryptography\Calais\SmartCards\Infineon SICRYPT CardModule Card",80000001,ifxcardm.dll
+RegWrite,HKLM,0x3,"Tmp_Software\Wow6432Node\Microsoft\Cryptography\Calais\SmartCards\Infineon SICRYPT CardModule Card",ATR,3b,80,00,00,00,00,00,00,00,5c,49,43,4d,80,00,00,d2,76,00,00,38,00,00,00
+RegWrite,HKLM,0x3,"Tmp_Software\Wow6432Node\Microsoft\Cryptography\Calais\SmartCards\Infineon SICRYPT CardModule Card",ATRMask,ff,80,00,00,00,00,00,00,ff,ff,ff,ff,ff,80,00,00,ff,ff,ff,ff,ff,00,00,00
+RegWrite,HKLM,0x1,"Tmp_Software\Wow6432Node\Microsoft\Cryptography\Calais\SmartCards\Infineon SICRYPT CardModule Card","Crypto Provider","Microsoft#$sBase#$sSmart#$sCard#$sCrypto#$sProvider"
+RegWrite,HKLM,0x3,"Tmp_Software\Wow6432Node\Microsoft\Cryptography\Calais\SmartCards\Infineon SICRYPT CardModule Card","Primary Provider",01,11,0f,a8,f8,d1,d0,11,b5,c5,00,a0,24,29,7e,d9
+//--
+RegWrite,HKLM,0x1,"Tmp_Software\Wow6432Node\Microsoft\Cryptography\Defaults\Provider\Microsoft Base Smart Card Crypto Provider","Image Path",basecsp.dll
+RegWrite,HKLM,0x4,"Tmp_Software\Wow6432Node\Microsoft\Cryptography\Defaults\Provider\Microsoft Base Smart Card Crypto Provider",SigInFile,0
+RegWrite,HKLM,0x4,"Tmp_Software\Wow6432Node\Microsoft\Cryptography\Defaults\Provider\Microsoft Base Smart Card Crypto Provider",Type,1
+RegWrite,HKLM,0x4,"Tmp_Software\Wow6432Node\Microsoft\Cryptography\Defaults\Provider\Microsoft Base Smart Card Crypto Provider",DefaultPrivateKeyLenBits,1024
+RegWrite,HKLM,0x4,"Tmp_Software\Wow6432Node\Microsoft\Cryptography\Defaults\Provider\Microsoft Base Smart Card Crypto Provider",RequireOnCardPrivateKeyGen,0
+RegWrite,HKLM,0x4,"Tmp_Software\Wow6432Node\Microsoft\Cryptography\Defaults\Provider\Microsoft Base Smart Card Crypto Provider",TransactionTimeoutMilliseconds,1500
+RegWrite,HKLM,0x4,"Tmp_Software\Wow6432Node\Microsoft\Cryptography\Defaults\Provider\Microsoft Base Smart Card Crypto Provider",AllowPrivateSignatureKeyImport,0
+RegWrite,HKLM,0x4,"Tmp_Software\Wow6432Node\Microsoft\Cryptography\Defaults\Provider\Microsoft Base Smart Card Crypto Provider",AllowPrivateExchangeKeyImport,0
+//--
+RegHiveUnLoad,Tmp_Software
+End
+
+[OpenSourceFilesDir]
+Call,OpenDir,%sourcepath%
+
+[EncodedFile-AuthorEncoded-Windows Update_4848.ico]
+lines=1
+0=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
+1=sOFMP5msrCR9u2WIt/Kb+1lfWIzVscUhL9NCHXTRibyk6R958t8KC5Dh801UBlTiQWHtKA6lgtKIvWgj3eTiiz8Sxci9KG9MO6OCfbDyhkz+1DArAZ5Ofl7IUZWT545lYRvH/TgwRg80VP5d+53cb9S9k5Y5a6w+IxplW/yW+IIr+XeXipog0rq69jSf4ZTNlvhDEBNrjVLRBnmF9AXoMa5F9di/GBllgZp43KGR44O3cPLr0UMiwzz+3GbQVxVEb88PbFsBRezmklay8yXH4x5RBeIb2CTq5V9chjUA/8hg3AWNuIgmsbgbGmEXlXN8CIVfXAQ5SANP16sHI9CHUnVqJ9qj3MuLAHll2NQLXCQ8BmSC93OQgXZftC1bUMKh98ePcSPr57iZQO9C+6H/7HYsNazeGyc4aQxqnjXAYk87qfQciECdMTkL3dNz9idRNIWVyG+kRdjE00hZmXA0Dl2iFcWRYDLGKH9KrFkTg7PxBK79Xjx3evgcn714P8h7cvYZerQ4ivl9vv/u6MoZZoNMKoBUXN7uCojW1fhWHSigLrWvFc5HosPaGPsvkBuKQ4Ao2rT3wVQ8Lsq0EYXJ+Lv7zvxc6WSnzV85DpmXzoReoaYg8fOO/hupM+fOpPg0/hiJjA2paPImbt8KPdfQocoH3z31t3AM3oLrj7BmJTigEY5rjD3OIw3FCXAmZ1qRTI1kF+Sdkh0C2OpnLCrWsnoCxzL/OzFJKdAtOSj17bamctNnziwYNf53KxwPoHMN2hi/AIP9euz+Z5190HBecarMtyg92nbWFWaSiaNKSAdWMGWDaeRuP6ZFhZcxy0a46hbu0JWNtwEqzIPOWlyw5g2+N2+IVcQ1N+KJYdWQ5VJ60hJmLfxa12ll98rhz2MdDIcuda24WzXJ6ijNuzrzLK+jEKm3dibUUBpiXa4JyqcFxZn4C69YkoWx2JS676o+FFTzS/4IamF9xR+5IPLioNw2W1cTi78iCG5gViRYwaVgSIYrm/6H8c9YR3b1svz/9ns1ODWzlRmnv909+m7uwGed8eJPRX6L/9L+fnwGXyFEPizkJL2QlQLArABRUHwDnXEfLSTLDltDG0nVlDgZS2njaA2vglmHhIBrafNETLFBOoCRKFDGfhFjNlflUXPcY3f889Qi2Tl3tVfcd3dj2wzP8VEvor9N9W2PMSaCbPUcejhLwmK0FI8iq8kqQDd04R0nSwNUUdbicshaZ4GbwZOQnqQiWgLkQMa0NEmXreS+yZg66gp53m4M/VvukatAriuc1eoJTLa1QJeINawW9QcwDzPHtRyPIl0kxf4Lgtj5nfM90IlcT6MLGvEyoGpxyFG1316c4WKgKj/8rcfUMpWZFmeKeLtuE1UAhZ9eL3W3th7PZeGL2lF3gtXiNnH7f+jTtO/idqGm8U9pT6i72vDxP9780DokBRHyr6a2Wg6NtsN+HW8E2CuS56dHcbdQEZhxV03r8ld/+hmkmnLctYRdMuPk7Tb/iZtu7Ja7LWH2km3e9oBs33aSsqTtPUzhqNWZXOp2MVwm1qqCZkbzBF0lyFMd1SlX8OYba5Mv9Ue00BcSddOq+XIf2f+z8cmle5aMvPMWiKCWI05RRhmlbhN30/+1cM7BuvRFhK42LKf8ntw5ym0Zg77pPXBEr9aKwC9sFAqS+znHnAx/46gXk4swFH71PK/0mv9VfuT+rXX7lYp+uvfn9EuQf35+jAPPcH5H3Fvo6P/ZVzfZzrZi0Xc13+y2rLVBH2+iixlbW8rGXE+6zV/h8ZjutZeJwTD8/MS8kvL1YILUhJLEmNN7EwsdDLTM5nGAUjAuxThdDmgtjlF/qEPWBgAgBaBgt2aGPUVQEAAAACAAAAMwAAADcRAAAAAAAAAQAAAAAAAAAAAAAA
+
+[AuthorEncoded]
+Windows Update_4848.ico=4494,5992
+Logo=Windows Update_4848.ico
+
+[EncodedFolders]
+Folder
+
+[EncodedFile-Folder-Windows Update_4848.ico]
+lines=1
+0=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
+1=sOFMP5msrCR9u2WIt/Kb+1lfWIzVscUhL9NCHXTRibyk6R958t8KC5Dh801UBlTiQWHtKA6lgtKIvWgj3eTiiz8Sxci9KG9MO6OCfbDyhkz+1DArAZ5Ofl7IUZWT545lYRvH/TgwRg80VP5d+53cb9S9k5Y5a6w+IxplW/yW+IIr+XeXipog0rq69jSf4ZTNlvhDEBNrjVLRBnmF9AXoMa5F9di/GBllgZp43KGR44O3cPLr0UMiwzz+3GbQVxVEb88PbFsBRezmklay8yXH4x5RBeIb2CTq5V9chjUA/8hg3AWNuIgmsbgbGmEXlXN8CIVfXAQ5SANP16sHI9CHUnVqJ9qj3MuLAHll2NQLXCQ8BmSC93OQgXZftC1bUMKh98ePcSPr57iZQO9C+6H/7HYsNazeGyc4aQxqnjXAYk87qfQciECdMTkL3dNz9idRNIWVyG+kRdjE00hZmXA0Dl2iFcWRYDLGKH9KrFkTg7PxBK79Xjx3evgcn714P8h7cvYZerQ4ivl9vv/u6MoZZoNMKoBUXN7uCojW1fhWHSigLrWvFc5HosPaGPsvkBuKQ4Ao2rT3wVQ8Lsq0EYXJ+Lv7zvxc6WSnzV85DpmXzoReoaYg8fOO/hupM+fOpPg0/hiJjA2paPImbt8KPdfQocoH3z31t3AM3oLrj7BmJTigEY5rjD3OIw3FCXAmZ1qRTI1kF+Sdkh0C2OpnLCrWsnoCxzL/OzFJKdAtOSj17bamctNnziwYNf53KxwPoHMN2hi/AIP9euz+Z5190HBecarMtyg92nbWFWaSiaNKSAdWMGWDaeRuP6ZFhZcxy0a46hbu0JWNtwEqzIPOWlyw5g2+N2+IVcQ1N+KJYdWQ5VJ60hJmLfxa12ll98rhz2MdDIcuda24WzXJ6ijNuzrzLK+jEKm3dibUUBpiXa4JyqcFxZn4C69YkoWx2JS676o+FFTzS/4IamF9xR+5IPLioNw2W1cTi78iCG5gViRYwaVgSIYrm/6H8c9YR3b1svz/9ns1ODWzlRmnv909+m7uwGed8eJPRX6L/9L+fnwGXyFEPizkJL2QlQLArABRUHwDnXEfLSTLDltDG0nVlDgZS2njaA2vglmHhIBrafNETLFBOoCRKFDGfhFjNlflUXPcY3f889Qi2Tl3tVfcd3dj2wzP8VEvor9N9W2PMSaCbPUcejhLwmK0FI8iq8kqQDd04R0nSwNUUdbicshaZ4GbwZOQnqQiWgLkQMa0NEmXreS+yZg66gp53m4M/VvukatAriuc1eoJTLa1QJeINawW9QcwDzPHtRyPIl0kxf4Lgtj5nfM90IlcT6MLGvEyoGpxyFG1316c4WKgKj/8rcfUMpWZFmeKeLtuE1UAhZ9eL3W3th7PZeGL2lF3gtXiNnH7f+jTtO/idqGm8U9pT6i72vDxP9780DokBRHyr6a2Wg6NtsN+HW8E2CuS56dHcbdQEZhxV03r8ld/+hmkmnLctYRdMuPk7Tb/iZtu7Ja7LWH2km3e9oBs33aSsqTtPUzhqNWZXOp2MVwm1qqCZkbzBF0lyFMd1SlX8OYba5Mv9Ue00BcSddOq+XIf2f+z8cmle5aMvPMWiKCWI05RRhmlbhN30/+1cM7BuvRFhK42LKf8ntw5ym0Zg77pPXBEr9aKwC9sFAqS+znHnAx/46gXk4swFH71PK/0mv9VfuT+rXX7lYp+uvfn9EuQf35+jAPPcH5H3Fvo6P/ZVzfZzrZi0Xc13+y2rLVBH2+iixlbW8rGXE+6zV/h8ZjutZeJwTD8/MS8kvL1YILUhJLEmNN7EwsdDLTM5nGAUjAuxThdDmgtjlF/qEPWBgAgBaBgt2aGPUVQEAAAACAAAAMwAAADcRAAAAAAAAAQAAAAAAAAAAAAAA
+
+[Folder]
+Windows Update_4848.ico=4494,5992
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+Call,UploadXQ
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+

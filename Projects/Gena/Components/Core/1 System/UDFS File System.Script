@@ -1,0 +1,137 @@
+[Main]
+Title=UDFS File System
+Type=Plugin
+Author=cdob
+Description=Universal Disk Format (UDF) is a file system like FAT32, NTFS or ISO9660. UDF supports file name length up to 255 bytes on CD/DVD (WB port of cdob's BartPE Plugin)
+Credits=Lancelot, Galapo, http://TheOven.org
+Version=008
+Download_Level=1
+Level=3
+Selected=True
+Mandatory=False
+NoWarning=False
+Contact=http://TheOven.org
+Date=2016.11.09
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Components/Core/1%20System/UDFS%20File%20System.Script
+CertifiedBy=
+Certification=
+HistoryNotes01=CdobNotes:read CD/DVD with UDF filesystem
+HistoryNotes02=CdobNotes:tested: PEBuilder v3.0.25, XPE 0.95, XP; mkisofs -udf CD, UDF 1.5 DVD-RAM
+History001=Lancelot - ported cdob's BartPE plugin
+History003=cdob added txtsetup.sif entries
+History004a=Lancelot minor arrangements
+History006=Lancelot NoWarnROW implemented
+History007=Lancelot Added DU Buttons - Date:2016.02.04
+History008=Lancelot Added Components_PluginCache_Extract - Date:2016.11.09
+
+[Interface]
+pBevel1=pBevel1,1,12,4,6,133,162
+pCheckBox1="Desktop shortcut",1,3,8,25,122,18,False
+pCheckBox2="Start menu shortcut",1,3,8,63,122,18,False
+pCheckBox3="Quicklaunch shortcut",1,3,8,44,122,18,False
+pRadioGroup1="Start Menu:",1,14,12,84,115,56,Accessories,"Folder Name",0
+pTextBox1=,1,0,12,138,115,21,.
+pScrollBox_StartType="Start UDFS service Automatically",1,4,141,3,188,21,"Start UDFS service Automatically","Start UDFS service Manually"
+pTextLabel1="Start UDFS service",1,1,9,8,97,18,8,Normal
+pWebLabel1="More Info about UDF - osta.org",1,10,241,29,152,18,http://www.osta.org/
+pCheckBox_TXTSETUP="Add TXTSETUP entries",1,3,16,186,136,18,True
+WebLabel_Plugin="Plugin Page",1,10,338,4,55,18,http://TheOven.org/index.php?board=9
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[Variables]
+%ProgramTitle%=UDFS Start
+%ProgramEXE%=Net.exe
+%ProgramFolder%=#$pSystemRoot#$p\System32
+
+[Process]
+If,ExistFile,%ProjectTemp%\Components_PluginCache_Extract.ini,Echo,"Components PluginCache"
+If,Not,ExistFile,%ProjectTemp%\Components_PluginCache_Extract.ini,Run,%ScriptFile%,Process_Normal
+
+[Process_Normal]
+If,Not,%OSFamily%,Equal,NT5,Exit,"%ScriptTitle% Plugin only for NT5x"
+IniRead,%ProjectDir%\script.project,IniVariables,NoWarnRegOverWrite,%NoWarnROW%
+If,%pCheckBox1%,Equal,True,Add_Shortcut,Desktop,,%ProgramFolder%\%ProgramEXE%,%ProgramTitle%,%ProgramFolder%,"start Udfs",%SystemRoot%\system32\shell32.dll#$c183
+If,%pCheckBox3%,Equal,True,Add_Shortcut,QuickLaunch,,%ProgramFolder%\%ProgramEXE%,%ProgramTitle%,%ProgramFolder%,"start Udfs",%SystemRoot%\system32\shell32.dll#$c183
+If,%pCheckBox2%,Equal,True,Begin
+If,%pRadioGroup1%,Equal,0,IniRead,%ProjectInfo%,String,Accessories,%Startmenu_Folder_Name%
+If,%pRadioGroup1%,Equal,1,Set,%Startmenu_Folder_Name%,%pTextBox1%
+Add_Shortcut,StartMenu,%Startmenu_Folder_Name%,%ProgramFolder%\%ProgramEXE%,%ProgramTitle%,%ProgramFolder%,"start Udfs",%SystemRoot%\system32\shell32.dll#$c183
+End
+Require,File,Net.exe
+If,Not,ExistFile,%Target_Sys%\drivers\udfs.sys,CopyOrExpand,%Source_Win%\udfs.sys,%Target_Sys%\drivers
+//---
+If,%pScrollBox_StartType%,Equal,"Start UDFS service Automatically",Set,%startvalue%,1
+If,%pScrollBox_StartType%,Equal,"Start UDFS service Manually",Set,%startvalue%,3
+//
+//---
+RegHiveLoad,Tmp_System,%Target_Sys%\setupreg.hiv
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\Udfs,ErrorControl,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Services\Udfs,Group,"File system"
+//RegWrite ! Overwrote existing key "1" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\Udfs,Start,%startvalue%
+//RegWrite ! Overwrote existing key "4" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\Udfs,Type,2
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Services\Udfs\Enum,0,Root\LEGACY_UDFS\0000
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\Udfs\Enum,Count,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\Udfs\Enum,NextInstance,1
+//--
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_UDFS,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_UDFS\0000,Service,Udfs
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_UDFS\0000,Legacy,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_UDFS\0000,ConfigFlags,0
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_UDFS\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_UDFS\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_UDFS\0000,DeviceDesc,Udfs
+RegHiveUnLoad,Tmp_System
+//---
+If,%pCheckBox_TXTSETUP%,Equal,True,Run,%scriptfile%,addtxtsetupentries
+
+[addtxtsetupentries]
+If,Not,ExistSection,%Target_Win%\TXTSETUP.SIF,SourceDisksFiles,IniAddSection,%Target_Win%\TXTSETUP.SIF,SourceDisksFiles
+If,Not,ExistSection,%Target_Win%\TXTSETUP.SIF,FileSystems.Load,IniAddSection,%Target_Win%\TXTSETUP.SIF,FileSystems.Load
+If,Not,ExistSection,%Target_Win%\TXTSETUP.SIF,FileSystems,IniAddSection,%Target_Win%\TXTSETUP.SIF,FileSystems
+IniWrite,%Target_Win%\TXTSETUP.SIF,SourceDisksFiles,UDFS.SYS,"100,,,,,,,4,0,0,,1,4"
+IniWrite,%Target_Win%\TXTSETUP.SIF,FileSystems.Load,udfs,udfs.sys
+IniWrite,%Target_Win%\TXTSETUP.SIF,FileSystems,udfs,"#$qUniversal Disk File System#$q"
+
+[AuthorEncoded]
+udfs4848.ico=5189,6919
+Logo=udfs4848.ico
+
+[EncodedFile-AuthorEncoded-udfs4848.ico]
+lines=1
+0=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
+1=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
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+Call,UploadXQ
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+

@@ -1,0 +1,23 @@
+;;Example/template script for Stage 2 of the Windows driver installation.
+
+;;Step 1 below is specific to the Intel 82801GR/GH SATA AHCI Controller
+;;Step 2 below should always be the same - commands are already uncommented
+
+;;Lines beginning with a single ";" need to edited with correct values for
+;;the driver being installed, and then uncommented. 
+
+;;This script is being executed by the Windows version of TBOSDT when the
+;;target partition is booted for the first time after running the Stage 1
+;;script.
+;;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+;;Step 1: use the add inf command to complete the driver installation
+;add inf c:\drivers\intel\iaahci.inf c:\drivers\intel
+
+;;Step 2: change 2 values in the Setup key back to normal values
+open winkey 0 System\Setup HKLM
+set winvalue 0 CmdLine sz ""
+set winvalue 0 SystemSetupInProgress dword 0x0
+close winkey 0
+
+;;Step 3: when script completes, the system reboots automatically

@@ -1,0 +1,361 @@
+[main]
+Title=7-Zip
+Description=(v19.00) 7-Zip is a file archiver with a high compression ratio.
+Selected=True
+Level=5
+Version=1
+Download_Level=0
+NoWarning=False
+Date=20.09.2020
+Author=2CongLC.Vn
+
+[variables]
+%ProgramTitle%=7-Zip
+%ProgramEXE%=7zFM.exe
+%ProgramExex64%=7zFM.exe
+%ProgramFolder%=7-Zip
+
+[Interface]
+pCheckBox1="Run from RAM (boot.wim) - Recommended",1,3,119,9,236,18,True
+pCheckBox2="Desktop Shortcut",1,3,118,31,113,18,True
+pCheckBox3=StartMenu,1,3,118,56,76,18,True
+pTextBox1="StartMenu Folder :",1,0,229,50,200,21,"File Tasks"
+pCheckBox4=.7z,1,3,18,83,37,18,True
+pCheckBox5=.arj,1,3,18,107,35,18,True
+pCheckBox6=.bz2,1,3,17,132,38,18,True
+pCheckBox7=.bzip2,1,3,16,157,51,18,True
+pCheckBox8=.cpio,1,3,16,187,45,18,True
+pCheckBox9=.deb,1,3,17,215,43,18,True
+pCheckBox10=.gzip,1,3,16,238,39,18,True
+pCheckBox11=.iso,1,3,16,263,59,18,False
+pCheckBox12=.lha,1,3,14,287,46,18,True
+pCheckBox13=.lzh,1,3,83,83,40,18,True
+pCheckBox14=.rar,1,3,82,108,43,18,True
+pCheckBox15=.split,1,3,184,139,56,18,True
+pCheckBox16=.swm,1,3,83,159,44,18,True
+pCheckBox17=.taz,1,3,83,186,41,18,True
+pCheckBox18=.tbz,1,3,83,212,41,18,True
+pCheckBox19=.tbz2,1,3,84,237,43,18,True
+pCheckBox20=.tpz,1,3,84,259,41,18,True
+pCheckBox21=.wim,1,3,85,285,41,18,True
+pCheckBox22=.cab,1,3,132,85,43,18,True
+pBevel1=pBevel1,1,12,8,80,303,233
+pCheckBox23=.gz,1,3,132,109,44,18,True
+pCheckBox24=.rpm,1,3,130,133,46,18,True
+pCheckBox25=.tar,1,3,131,160,47,18,True
+pCheckBox26=.gz,1,3,131,184,43,18,True
+pCheckBox27=.z,1,3,131,209,42,18,True
+pCheckBox28=.zip,1,3,131,234,37,18,True
+pCheckBox29=.dmg,1,3,130,257,44,18,False
+pCheckBox30=.hfs,1,3,131,284,40,18,True
+pCheckBox31=.lzma,1,3,180,87,46,18,True
+pCheckBox32=.xar,1,3,179,113,43,18,True
+pCheckBox33=.001,1,3,75,135,51,18,True
+pCheckBox34=.fat,1,3,178,163,42,18,True
+pCheckBox35=.ntfs,1,3,177,185,54,18,True
+pCheckBox36=.squashfs,1,3,172,213,71,18,True
+pCheckBox37=.txz,1,3,177,237,42,18,True
+pCheckBox38=.vhd,1,3,181,260,55,18,True
+pCheckBox39=.xz,1,3,185,284,49,18,True
+pCheckBox40=.gzip_igz,1,3,234,87,66,18,True
+
+[process]
+If,%pCheckBox1%,Equal,True,Begin
+DirMake,"%Target_Prog%\%ProgramFolder%\"
+If,%SourceArch%,Equal,x86,Begin
+DirCopy,"%ScriptDir%\x86\*.*","%Target_Prog%\%ProgramFolder%\"
+End
+If,%SourceArch%,Equal,x64,Begin
+DirCopy,"%ScriptDir%\x64\*.*","%Target_Prog%\%ProgramFolder%\"
+Set,%ProgramExe%,%ProgramExex64%
+End
+Run,%ScriptFile%,Add_Shortcuts
+Run,%ScriptFile%,Add_Registry
+End
+
+[Add_Shortcuts]
+If,%pCheckBox2%,Equal,True,Add_Shortcut,Desktop
+If,%pCheckBox22%,Equal,True,Add_Shortcut,StartMenu,%pTextBox1%
+
+[Add_Registry]
+//0x1=String, 0x2 = Expand String, 0x3 = Binary Data, 0x4 = Dword
+RegHiveLoad,Tmp_Default,%RegDefault%
+RegWrite,HKLM,0x4,Tmp_Default\Software\7-Zip\Options,CascadedMenu,1
+RegWrite,HKLM,0x4,Tmp_Default\Software\7-Zip\Options,MenuIcons,1
+RegHiveUnLoad,Tmp_Default
+//
+RegHiveLoad,Tmp_Software,%RegSoftware%
+RegWrite,HKLM,0x2,Tmp_Software\7-Zip,Path,%PE_Programs%\%ProgramFolder%
+RegWrite,HKLM,0x2,"Tmp_Software\Microsoft\Windows\CurrentVersion\App Paths\7zFM.exe",,%PE_Programs%\%ProgramFolder%\7zFM.exe
+RegWrite,HKLM,0x2,"Tmp_Software\Microsoft\Windows\CurrentVersion\App Paths\7zFM.exe",Path,%PE_Programs%\%ProgramFolder%
+RegWrite,HKLM,0x1,Tmp_Software\Classes\*\shellex\ContextMenuHandlers\7-Zip,,{23170F69-40C1-278A-1000-000100020000}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{23170F69-40C1-278A-1000-000100020000},,"7-Zip Shell Extension"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\CLSID\{23170F69-40C1-278A-1000-000100020000}\InprocServer32,,%PE_Programs%\%ProgramFolder%\7-zip.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{23170F69-40C1-278A-1000-000100020000}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\Directory\shellex\ContextMenuHandlers\7-Zip,,{23170F69-40C1-278A-1000-000100020000}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\Directory\shellex\DragDropHandlers\7-Zip,,{23170F69-40C1-278A-1000-000100020000}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\Drive\shellex\DragDropHandlers\7-Zip,,{23170F69-40C1-278A-1000-000100020000}
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Approved",{23170F69-40C1-278A-1000-000100020000},"7-Zip Shell Extension"
+//
+If,%pCheckBox4%,Equal,True,Run,%ScriptFile%,AssociationExtension7z
+If,%pCheckBox5%,Equal,True,Run,%ScriptFile%,AssociationExtensionarj
+If,%pCheckBox6%,Equal,True,Run,%ScriptFile%,AssociationExtensionbz2
+If,%pCheckBox7%,Equal,True,Run,%ScriptFile%,AssociationExtensionbzip2
+If,%pCheckBox8%,Equal,True,Run,%ScriptFile%,AssociationExtensioncpio
+If,%pCheckBox9%,Equal,True,Run,%ScriptFile%,AssociationExtensiondeb
+If,%pCheckBox10%,Equal,True,Run,%ScriptFile%,AssociationExtensiongzip
+If,%pCheckBox11%,Equal,True,Run,%ScriptFile%,AssociationExtensioniso
+If,%pCheckBox12%,Equal,True,Run,%ScriptFile%,AssociationExtensionlha
+If,%pCheckBox13%,Equal,True,Run,%ScriptFile%,AssociationExtensionlzh
+If,%pCheckBox14%,Equal,True,Run,%ScriptFile%,AssociationExtensionrar
+If,%pCheckBox15%,Equal,True,Run,%ScriptFile%,AssociationExtensionsplit
+If,%pCheckBox16%,Equal,True,Run,%ScriptFile%,AssociationExtensionswm
+If,%pCheckBox17%,Equal,True,Run,%ScriptFile%,AssociationExtensiontaz
+If,%pCheckBox18%,Equal,True,Run,%ScriptFile%,AssociationExtensiontbz
+If,%pCheckBox19%,Equal,True,Run,%ScriptFile%,AssociationExtensiontbz2
+If,%pCheckBox20%,Equal,True,Run,%ScriptFile%,AssociationExtensiontpz
+If,%pCheckBox21%,Equal,True,Run,%ScriptFile%,AssociationExtensionwim
+If,%pCheckBox22%,Equal,True,Run,%ScriptFile%,AssociationExtensioncab
+If,%pCheckBox23%,Equal,True,Run,%ScriptFile%,AssociationExtensiongz
+If,%pCheckBox24%,Equal,True,Run,%ScriptFile%,AssociationExtensionrpm
+If,%pCheckBox25%,Equal,True,Run,%ScriptFile%,AssociationExtensiontar
+If,%pCheckBox26%,Equal,True,Run,%ScriptFile%,AssociationExtensiontgz
+If,%pCheckBox27%,Equal,True,Run,%ScriptFile%,AssociationExtensionz
+If,%pCheckBox28%,Equal,True,Run,%ScriptFile%,AssociationExtensionzip
+If,%pCheckBox29%,Equal,True,Run,%ScriptFile%,AssociationExtensiondmg
+If,%pCheckBox30%,Equal,True,Run,%ScriptFile%,AssociationExtensionhfs
+If,%pCheckBox31%,Equal,True,Run,%ScriptFile%,AssociationExtensionlzma
+If,%pCheckBox32%,Equal,True,Run,%ScriptFile%,AssociationExtensionxar
+If,%pCheckBox33%,Equal,True,Run,%ScriptFile%,AssociationExtension001
+If,%pCheckBox34%,Equal,True,Run,%ScriptFile%,AssociationExtensionfat
+If,%pCheckBox35%,Equal,True,Run,%ScriptFile%,AssociationExtensionntfs
+If,%pCheckBox36%,Equal,True,Run,%ScriptFile%,AssociationExtensionsquashfs
+If,%pCheckBox37%,Equal,True,Run,%ScriptFile%,AssociationExtensiontxz
+If,%pCheckBox38%,Equal,True,Run,%ScriptFile%,AssociationExtensionvhd
+If,%pCheckBox39%,Equal,True,Run,%ScriptFile%,AssociationExtensionxz
+If,%pCheckBox40%,Equal,True,Run,%ScriptFile%,AssociationExtensiongzip_igz
+//
+RegHiveUnLoad,Tmp_Software
+
+[AssociationExtension001]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.001,,7-Zip.001
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.001\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,9"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.001\shell\open\Command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.001,,"001 Archive"
+
+[AssociationExtension7z]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.7z,,7-Zip.7z
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.7z\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,0"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.7z\shell\open\Command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.7z,,"7z Archive"
+
+[AssociationExtensionarj]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.arj,,7-Zip.arj
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.arj\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,4"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.arj\shell\open\command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.arj,,"arj Archive"
+
+[AssociationExtensionbz2]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.bz2,,7-Zip.bz2
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.bz2\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,2"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.bz2\shell\open\command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.bz2,,"bz2 Archive"
+
+[AssociationExtensionbzip2]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.bzip2,,7-Zip.bzip2
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.bzip2\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,2"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.bzip2\shell\open\command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.bzip2,,"bzip2 Archive"
+
+[AssociationExtensioncab]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.cab,,7-Zip.cab
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.cab\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,7"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.cab\shell\open\command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.cab,,"cab Archive"
+
+[AssociationExtensioncpio]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.cpio,,7-Zip.cpio
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.cpio\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,12"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.cpio\shell\open\command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.cpio,,"cpio Archive"
+
+[AssociationExtensiondeb]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.deb,,7-Zip.deb
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.deb\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,11"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.deb\shell\open\command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.deb,,"deb Archive"
+
+[AssociationExtensiondmg]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.dmg,,7-Zip.dmg
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.dmg\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,17"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.dmg\shell\open\command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.dmg,,"dmg Archive"
+
+[AssociationExtensionfat]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.fat,,7-Zip.fat
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.fat\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,21"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.fat\shell\open\Command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.fat,,"fat Archive"
+
+[AssociationExtensiongz]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.gz,,7-Zip.gz
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.gz\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,14"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.gz\shell\open\command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.gz,,"gz Archive"
+
+[AssociationExtensiongzip]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.gzip,,7-Zip.gzip
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.gzip\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,14"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.gzip\shell\open\command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.gzip,,"gzip Archive"
+
+[AssociationExtensionhfs]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.hfs,,7-Zip.hfs
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.hfs\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,18"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.hfs\shell\open\command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.hfs,,"hfs Archive"
+
+[AssociationExtensioniso]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.iso,,7-Zip.iso
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.iso\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,8"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.iso\shell\open\command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.iso,,"iso Archive"
+
+[AssociationExtensionlha]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.lha,,7-Zip.lha
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.lha\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,6"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.lha\shell\open\command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.lha,,"lha Archive"
+
+[AssociationExtensionlzh]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.lzh,,7-Zip.lzh
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.lzh\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,6"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.lzh\shell\open\command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.lzh,,"lzh Archive"
+
+[AssociationExtensionlzma]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.lzma,,7-Zip.lzma
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.lzma\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,16"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.lzma\shell\open\command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.lzma,,"lzma Archive"
+
+[AssociationExtensionntfs]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.ntfs,,7-Zip.ntfs
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.ntfs\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,22"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.ntfs\shell\open\Command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.ntfs,,"ntfs Archive"
+
+[AssociationExtensionrar]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.rar,,7-Zip.rar
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.rar\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,3"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.rar\shell\open\command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.rar,,"rar Archive"
+
+[AssociationExtensionrpm]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.rpm,,7-Zip.rpm
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.rpm\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,10"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.rpm\shell\open\command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.rpm,,"rpm Archive"
+
+[AssociationExtensionsplit]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.split,,7-Zip.split
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.split\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,9"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.split\shell\open\command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.split,,"split Archive"
+
+[AssociationExtensionsquashfs]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.squashfs,,7-Zip.squashfs
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.squashfs\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,24"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.squashfs\shell\open\Command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.squashfs,,"squashfs Archive"
+
+[AssociationExtensionswm]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.swm,,7-Zip.swm
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.swm\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,15"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.swm\shell\open\command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.swm,,"swm Archive"
+
+[AssociationExtensiontar]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.tar,,7-Zip.tar
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.tar\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,13"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.tar\shell\open\command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.tar,,"tar Archive"
+
+[AssociationExtensiontaz]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.taz,,7-Zip.taz
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.taz\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,5"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.taz\shell\open\command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.taz,,"taz Archive"
+
+[AssociationExtensiontbz]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.tbz,,7-Zip.tbz
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.tbz\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,2"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.tbz\shell\open\command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.tbz,,"tbz Archive"
+
+[AssociationExtensiontbz2]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.tbz2,,7-Zip.tbz2
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.tbz2\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,2"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.tbz2\shell\open\command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.tbz2,,"tbz2 Archive"
+
+[AssociationExtensiontgz]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.tgz,,7-Zip.tgz
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.tgz\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,14"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.tgz\shell\open\command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.tgz,,"tgz Archive"
+
+[AssociationExtensiontpz]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.tpz,,7-Zip.tpz
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.tpz\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,14"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.tpz\shell\open\command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.tpz,,"tpz Archive"
+
+[AssociationExtensiontxz]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.txz,,7-Zip.txz
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.txz\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,23"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.txz\shell\open\Command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.txz,,"txz Archive"
+
+[AssociationExtensionvhd]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.vhd,,7-Zip.vhd
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.vhd\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,20"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.vhd\shell\open\Command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.vhd,,"vhd Archive"
+
+[AssociationExtensionwim]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.wim,,7-Zip.wim
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.wim\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,15"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.wim\shell\open\command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.wim,,"wim Archive"
+
+[AssociationExtensionxar]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.xar,,7-Zip.xar
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.xar\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,19"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.xar\shell\open\command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.xar,,"xar Archive"
+
+[AssociationExtensionxz]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.xz,,7-Zip.xz
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.xz\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,23"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.xz\shell\open\Command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.xz,,"xz Archive"
+
+[AssociationExtensionz]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.z,,7-Zip.z
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.z\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,5"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.z\shell\open\command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.z,,"z Archive"
+
+[AssociationExtensionzip]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.zip,,7-Zip.zip
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.zip\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,1"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.zip\shell\open\command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.zip,,"zip Archive"
+
+[AssociationExtensiongzip_igz]
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.igz,,7-Zip.gzip_igz
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.gzip_igz\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\7z.dll,14"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\7-Zip.gzip_igz\shell\open\command,,"#$q%PE_Programs%\%ProgramFolder%\7zFM.exe#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\7-Zip.gzip_igz,,"gzip (igz) Archive"
+

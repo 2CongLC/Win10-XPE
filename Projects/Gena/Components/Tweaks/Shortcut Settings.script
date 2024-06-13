@@ -1,0 +1,168 @@
+[Main]
+Title=Shortcut Settings
+Type=Plugin
+Author=Lancelot
+Description=Some Shortcut Settings
+Credits=http://TheOven.org
+Version=007
+Download_Level=0
+Level=3
+Selected=False
+Mandatory=False
+NoWarning=False
+Contact=http://TheOven.org/index.php?topic=417.0
+Date=2017.12.18
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Components/Tweaks/Shortcut%20Settings.script
+Web2=http://yomi.cwcodes.net/Yomi/ComponentsY/Tweaks/Shortcut%20Settings.script
+CertifiedBy=
+Certification=
+HistoryNotes01=
+History005=Lancelot syntax updated - Date:2016.02.03
+History006=Lancelot Added Components_PluginCache_Extract - Date:2016.11.10
+History007=Lancelot Update empty Home Page WebLabel - PEBakery - ied206 Reply 3 http://TheOven.org/index.php?topic=2329.msg25119#msg25119 - Date:2017.12.18
+
+[Interface]
+pDoNotShowLnkExtensionsCheckBox="Do not show .lnk extentions",1,3,46,75,170,14,True
+pShortcutsWithoutArrowsCheckBox="Shortcut icons without arrows",1,3,46,59,170,14,False
+RegisterLnk_CheckBox="Register .lnk Extension",1,3,75,101,136,18,False
+WebLabel_Homepg=HomePage,1,10,343,20,55,18,http://TheOven.org/index.php?topic=417.0
+WebLabel_Plugin="Plugin Page",1,10,338,4,55,18,http://TheOven.org/index.php?topic=417.0
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[Variables]
+
+[Process]
+If,ExistFile,%ProjectTemp%\Components_PluginCache_Extract.ini,Echo,"Components PluginCache"
+If,Not,ExistFile,%ProjectTemp%\Components_PluginCache_Extract.ini,Run,%ScriptFile%,Process_Normal
+
+[Process_Normal]
+IniRead,%ProjectDir%\script.project,IniVariables,NoWarnRegOverWrite,%NoWarnROW%
+//--
+If,%RegisterLnk_CheckBox%,Equal,True,Run,%ScriptFile%,Lnk_Extension_%OSFamily%
+If,Not,%pDoNotShowLnkExtensionsCheckBox%%pShortcutsWithoutArrowsCheckBox%,Equal,FalseFalse,Run,%ScriptFile%,Lnk_Tweak_%OSFamily%
+
+[Lnk_Tweak_NT5]
+RegHiveLoad,Tmp_System,%RegSystem%
+If,%pShortcutsWithoutArrowsCheckBox%,Equal,True,Begin
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+If,ExistRegKey,HKLM,Tmp_Software\Classes\lnkfile,isShortcut,RegDelete,HKLM,Tmp_Software\Classes\lnkfile,isShortcut
+End
+Else,Begin
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x1,Tmp_Software\Classes\lnkfile,isShortcut,""
+End
+//--
+If,%NoWarnROW%,Equal,True,System,ERROROFF,2
+If,%pDoNotShowLnkExtensionsCheckBox%,Equal,True,RegWrite,HKLM,0x1,Tmp_Software\Classes\lnkfile,NeverShowExt,
+Else,Begin
+If,ExistRegKey,HKLM,Tmp_Software\Classes\lnkfile,NeverShowExt,RegDelete,HKLM,Tmp_Software\Classes\lnkfile,NeverShowExt
+End
+//If,%pDoNotShowLnkExtensionsCheckBox%,Equal,True,ShellExecute,Hide,Reg.exe,"Delete HKLM\Tmp_Software\Classes\lnkfile /v isShortcut /f"
+//--
+RegHiveUnLoad,Tmp_System
+
+[Lnk_Tweak_NT6]
+If,%pShortcutsWithoutArrowsCheckBox%,Equal,True,Begin
+RegHiveLoad,Tmp_Software,%RegSoftware%
+// GrAnd: Remove Arrows from Shortcuts preserving the Pins on the taskbar
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Icons",29,"#$pSystemRoot#$p\system32\shell32.dll,51"
+RegHiveUnLoad,Tmp_Software
+End
+//--
+RegHiveLoad,Tmp_System,%RegSystem%
+If,%pDoNotShowLnkExtensionsCheckBox%,Equal,True,RegWrite,HKLM,0x1,Tmp_Software\Classes\lnkfile,NeverShowExt,
+Else,Begin
+If,ExistRegKey,HKLM,Tmp_Software\Classes\lnkfile,NeverShowExt,RegDelete,HKLM,Tmp_Software\Classes\lnkfile,NeverShowExt
+End
+//If,%pDoNotShowLnkExtensionsCheckBox%,Equal,True,ShellExecute,Hide,Reg.exe,"Delete HKLM\Tmp_Software\Classes\lnkfile /v isShortcut /f"
+RegHiveUnLoad,Tmp_System
+
+[Lnk_Extension_NT5]
+RegHiveLoad,Tmp_Software,%RegSoftware%
+//Normally Not required since comes from core build
+//here inf2hive is yet another nice option but not definately required
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.lnk\ShellEx\{00021401-0000-0000-C000-000000000046},,{00021401-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.lnk\ShellEx\{000214F9-0000-0000-C000-000000000046},,{00021401-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.lnk\ShellEx\{00021500-0000-0000-C000-000000000046},,{00021401-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.lnk\ShellEx\{BB2E617C-0920-11d1-9A0B-00C04FC2D6C1},,{00021401-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\lnkfile\CLSID,,{00021401-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\lnkfile\shellex\ContextMenuHandlers\Offline Files",,{750fdf0e-2a26-11d1-a3ea-080036587f03}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\lnkfile\shellex\DropHandler,,{00021401-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\lnkfile\shellex\PropertySheetHandlers\ShimLayer Property Page",,{513D916F-2A8E-4F51-AEAB-0CBC76FB1AF8}
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\lnkfile\shellex\ContextMenuHandlers\Offline Files",,{750fdf0e-2a26-11d1-a3ea-080036587f03}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\lnkfile\shellex\ContextMenuHandlers\{00021401-0000-0000-C000-000000000046}\,,
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{00021401-0000-0000-C000-000000000046}\PersistentAddinsRegistered\{89BCB740-6119-101A-BCB7-00DD010655AF},,{00021401-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{00021401-0000-0000-C000-000000000046}\PersistentHandler,,{00021401-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{00021401-0000-0000-C000-000000000046}\ProgID,,lnkfile
+RegWrite,HKLM,0x1,Tmp_Software\Classes\CLSID\{00021401-0000-0000-C000-000000000046}\shellex\MayChangeDefaultMenu,,
+RegHiveUnLoad,Tmp_Software
+
+[Lnk_Extension_NT6]
+RegHiveLoad,Tmp_Software,%RegSoftware%
+RegWrite,HKLM,0x1,Tmp_Software\Classes\lnkfile,,Shortcut
+RegWrite,HKLM,0x4,Tmp_Software\Classes\lnkfile,EditFlags,1
+RegWrite,HKLM,0x1,Tmp_Software\Classes\lnkfile,FriendlyTypeName,"@shell32.dll,-4153"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\lnkfile,IsShortcut,
+RegWrite,HKLM,0x1,Tmp_Software\Classes\lnkfile,NeverShowExt,
+RegWrite,HKLM,0x1,Tmp_Software\Classes\lnkfile\CLSID,,{00021401-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\lnkfile\shellex\ContextMenuHandlers\Compatibility,,{1d27f844-3a1f-4410-85ac-14651078412d}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\lnkfile\shellex\ContextMenuHandlers\OpenContainingFolderMenu,,{37ea3a21-7493-4208-a011-7f9ea79ce9f5}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\lnkfile\shellex\ContextMenuHandlers\{00021401-0000-0000-C000-000000000046},,
+RegWrite,HKLM,0x1,Tmp_Software\Classes\lnkfile\shellex\DropHandler,,{00021401-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\lnkfile\shellex\IconHandler,,{00021401-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\lnkfile\shellex\PropertySheetHandlers\ShimLayer Property Page",,{513D916F-2A8E-4F51-AEAB-0CBC76FB1AF8}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.lnk,,lnkfile
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.lnk\ShellEx\{000214EE-0000-0000-C000-000000000046},,{00021401-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.lnk\ShellEx\{000214F9-0000-0000-C000-000000000046},,{00021401-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.lnk\ShellEx\{00021500-0000-0000-C000-000000000046},,{00021401-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.lnk\ShellEx\{BB2E617C-0920-11d1-9A0B-00C04FC2D6C1},,{00021401-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x2,Tmp_Software\Classes\.lnk\ShellNew,IconPath,"#$pSystemRoot#$p\system32\shell32.dll,-16769"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.lnk\ShellNew,ItemName,"@shell32.dll,-30397"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.lnk\ShellNew,MenuText,"@shell32.dll,-30318"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.lnk\ShellNew,NullFile,
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.lnk\ShellNew,Handler,{ceefea1b-3e29-4ef1-b34c-fec79c4f70af}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.lnk\ShellNew\Config,DontRename,
+RegHiveUnLoad,Tmp_Software
+
+[AuthorEncoded]
+Actions-configure-shortcuts4848.ico=3867,5156
+Logo=Actions-configure-shortcuts4848.ico
+
+[EncodedFile-AuthorEncoded-Actions-configure-shortcuts4848.ico]
+lines=1
+0=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
+1=j/8hrxh7Xr1yH3HLLAQKD5GL+na1xXOT+qjh6B+MQESMvMqEpIShxcsLLQqajkm40lG0sf0OeH7w9//x/NwZ9lyfJlC9ZTLfqyIJ9rC8ybP594n8OaizVwoaYGzpw9g1t/+gli4uPK45M0nXWfXVGQ33V+1gJ/f1mAVXPxz19ZOOSL3Ow66q1RGuCP5FM8X/+dFl4k8NlA5/iBBdlfdGgujk0J8dbPmJ25L3PubJTSLFpRWcl+x8s0u1y5eoU+X8C09HRZc/NsSlLS01Q0O2C8JoHivVo402h2hGvXr8Nx6jnlwcFmzc2xKaF5pr+7l2fd8vwvsfrMabx0+RLe4Bn+1i08TfFP/YR1c3NsStRRkfq+/tL93/+wGYg/XL5yGW/fuQ13amvhEs2S06ZP/2Lo0KHtm5tnUxIdFxtf+NVKkf8VrL17F+7dvw9Xr13juvSoc5cuB1u3bh1r3MHY/M3Onf/vbElMSTYNCAqs5X6B8hbv3b+HDx8+FL5DOU7XqOfB7LzcOg9vrxMfjh61vHefPp+PHDXqRf5f+qVLuFrlnJCoecT5y99/PnjwQPD/Kcpp6vFgG/XRm74rgwLaJ4q35Obm+zQJVYZNkQUFnvt+82ahfnIsnaTZ98DBg8B7sGjpkosRkWoXsrVZ5pjnEcpnIy8fHxd7h5kF7p4e2xVhoT8T57wItcpRk5z01LnxAf/1kUQSw1rnN1JusjaVSLbgFuE3P2Ki6YMB6Y/qdVvTev1We1G3Eq8biPfpiVpSr7dIogVdLflI0A8k7QX9WNJK0CAxqGaN9GAM6y2Sel0tiRb0TclHgn4sMRU0SNoLGiWt6nWMQb2u1qvXNyVbBP1A4I/0ANuD9AD/FgrpmPrr9fyQH9B7Qguu0dGPJeaijhY1Chp+o+t/juJ7UFwfY+rfh1tEXU18/guwAkNjeJxTdkwuyczPK9ZNzs9Ly0wvLUrVLc7ILypJLi0pNrEwsdDLTM5nGAXDFuxThdA7+LDLJ8Uu2MXABADYJhEFLCnNoAEAAAACAAAAPwAAALgOAAAAAAAAAQAAAAAAAAAAAAAA
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+Call,UploadXMultiQ
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+
+[EncodedFolders]
+Folder
+

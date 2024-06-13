@@ -1,0 +1,392 @@
+[Main]
+Title=Greek Language Group
+Type=Plugin
+Author=Lancelot, Galapo
+Description=(NT5x) Support to Greek Keyboards
+Credits=http://TheOven.org
+Version=004
+Download_Level=0
+Level=8
+Selected=False
+Mandatory=False
+NoWarning=False
+Contact=http://TheOven.org
+Date=2017.02.10_10:28.31 (GMT0: -3 Hours)
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Finals/1%20Optimizations/Lang_Greek.script
+CertifiedBy=
+Certification=
+HistoryNotes01=IMPORTANT:-------------------
+HistoryNotes02=IMPORTANT:If you change [Interface] , also change [Process_Pre] [Process_Auto]
+HistoryNotes03=IMPORTANT:-------------------
+HistoryNotes04=Language Group List can be found inside Intl.inf ( [LanguageGroups] ) - [KBD.LGFiles.Turkish] [Turkish_Fonts] [NLS.LGFiles.Install.Turkish]
+HistoryNotes05=note: LID not always 4 letter cut. ex: Spanish: LID = 0C0A // DefaultLayout = 0001040A
+History001=Lancelot - Plugin Initiated - Happy improvments :>
+History002=Lancelot NoWarnROW implemented
+History003=Lancelot For Lang_20_Auto added [Process_Pre] [Process_Auto] - Date:2015.01.27
+History004=Lancelot Add DUC Buttons - Date:2017.02.10
+
+[Interface]
+pTextLabel1="Keyboard 1:",1,1,9,27,60,18,8,Normal
+pTextLabel2="KeyBoard 2:",1,1,9,66,60,18,8,Normal
+pTextLabel3="Keyboard 3:",1,1,9,91,60,18,8,Normal
+pTextLabel4="Keyboard 4:",1,1,9,116,60,18,8,Normal
+pScrollBox_Keyboard_1="English (US)                                                                     00000409",1,4,71,25,110,21,"English (US)                                                                     00000409","Source                                                                     source00","Keep                                                                     Keep0000"
+pScrollBox_Keyboard_2="Greek                                                                     00000408",1,4,71,65,110,21,"Greek                                                                     00000408","Greek (220)                                                                     00010408","Greek (319)                                                                     00020408","Greek (220) Latin                                                                     00030408","Source                                                                     source00","None                                                                     None0000","Keep                                                                     Keep0000"
+pScrollBox_Keyboard_3="Source                                                                     source00",1,4,71,90,110,21,"Greek                                                                     00000408","Greek (220)                                                                     00010408","Greek (319)                                                                     00020408","Greek (220) Latin                                                                     00030408","Source                                                                     source00","None                                                                     None0000","Keep                                                                     Keep0000"
+pScrollBox_Keyboard_4="Keep                                                                     Keep0000",1,4,71,115,110,21,"Greek                                                                     00000408","Greek (220)                                                                     00010408","Greek (319)                                                                     00020408","Greek (220) Latin                                                                     00030408","Source                                                                     source00","None                                                                     None0000","Keep                                                                     Keep0000"
+MSDN_KBL_WebLabel="Windows Keyboard Layouts",1,10,261,21,133,18,http://msdn.microsoft.com/en-us/goglobal/bb964651
+WebLabel_Plugin="Plugin Page",1,10,338,4,55,18,http://TheOven.org/index.php?board=9
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[Variables]
+%Process_Auto%=0
+
+[Process_Auto]
+//Run from other plugin
+Set,%Process_Auto%,1
+//-
+Set,%pScrollBox_Keyboard_1V%,"English (US)                                                                     00000409"
+Set,%pScrollBox_Keyboard_2V%,#1
+Set,%pScrollBox_Keyboard_3V%,"Source                                                                     source00"
+Set,%pScrollBox_Keyboard_4V%,"Keep                                                                     Keep0000"
+//-
+Run,%ScriptFile%,Process
+
+[Process_Pre]
+Set,%pScrollBox_Keyboard_1V%,%pScrollBox_Keyboard_1%
+Set,%pScrollBox_Keyboard_2V%,%pScrollBox_Keyboard_2%
+Set,%pScrollBox_Keyboard_3V%,%pScrollBox_Keyboard_3%
+Set,%pScrollBox_Keyboard_4V%,%pScrollBox_Keyboard_4%
+
+[Process]
+If,Not,%OSFamily%,Equal,NT5,Exit,"%ScriptTitle% is only designed for NT5"
+If,Not,%Process_Pre%,Equal,1,Run,%ScriptFile%,Process_Pre
+//-
+IniRead,%ProjectDir%\script.project,IniVariables,NoWarnFileOverWrite,%NoWarnFOW%
+RegHiveLoad,Tmp_Default,%RegDefault%
+RegHiveLoad,Tmp_Software,%RegSoftware%
+RegHiveLoad,Tmp_System,%RegSystem%
+Run,%scriptfile%,Process_Common
+Run,%scriptfile%,Greek_Process
+RegHiveUnLoad,Tmp_Default
+RegHiveUnLoad,Tmp_System
+RegHiveUnLoad,Tmp_Software
+
+[Process_Common]
+If,Not,ExistDir,%ProjectTemp%,DirMake,%ProjectTemp%
+StrFormat,DATE,%myDate%,yyyymmddhhnn
+//Backup PreConfig For Reference-Tests....
+ShellExecute,hide,regedit.exe,"/e #$q%ProjectTemp%\Keyboard_Layout-Preload_%myDate%.reg.ini#$q #$qHKEY_LOCAL_MACHINE\Tmp_Default\Keyboard Layout\Preload#$q"
+//Better Not delete unless you have All Languages Plugin (with not deleting things can be arranged with seperate Plugins...)
+//If,ExistRegSection,HKLM,"Tmp_Default\Keyboard Layout\Preload",RegDelete,HKLM,"Tmp_Default\Keyboard Layout\Preload"
+
+[Greek_Process]
+Run,%scriptfile%,Greek_Common_Process
+//--
+StrFormat,Right,%pScrollBox_Keyboard_2V%,8,%DOSKEYBName_Selection%
+If,Not,%DOSKEYBName_Selection%,Equal,Keep0000,Run,%scriptfile%,MoreKeyBoard,2
+StrFormat,Right,%pScrollBox_Keyboard_3V%,8,%DOSKEYBName_Selection%
+If,Not,%DOSKEYBName_Selection%,Equal,Keep0000,Run,%scriptfile%,MoreKeyBoard,3
+StrFormat,Right,%pScrollBox_Keyboard_4V%,8,%DOSKEYBName_Selection%
+If,Not,%DOSKEYBName_Selection%,Equal,Keep0000,Run,%scriptfile%,MoreKeyBoard,4
+//--
+StrFormat,Right,%pScrollBox_Keyboard_1V%,8,%DOSKEYBName_Selection%
+Set,%GR_Process%,Yes
+If,%DOSKEYBName_Selection%,Equal,Keep0000,Set,%GR_Process%,No
+If,%DOSKEYBName_Selection%,Equal,source00,Begin
+Set,%GR_Process%,No
+Set,%DOSKEYBName_Selection%,source00
+Run,%scriptfile%,MoreKeyBoard,1
+End
+If,%GR_Process%,Equal,Yes,Run,%scriptfile%,MoreKeyBoard,1
+If,%GR_Process%,Equal,Yes,Run,%ScriptFile%,Greek_Power_Process
+
+[Greek_Power_Process]
+Run,%scriptfile%,Lang_%DOSKEYBName_Selection%
+//--
+//RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Windows\CurrentVersion\Nls\LocaleMapIDs,,"255,254"
+//--
+If,%NoWarnFOW%,Equal,True,System,ERROROFF,27
+RegWrite,HKLM,0x4,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontMapper",DEFAULT,161
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Fonts","Courier 10,12,15 (VGA res)",COUREG.FON
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Fonts","MS Sans Serif 8,10,12,14,18,24 (VGA res)",SSERIFEG.FON
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Fonts","MS Serif 8,10,12,14,18,24 (VGA res)",SERIFEG.FON
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Fonts","Small Fonts (VGA res)",SMALLEG.FON
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","Arial Greek,0","Arial,161"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","Courier New Greek,0","Courier New,161"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","Courier New Greek,161","Courier New,161"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes",Times,"Times New Roman"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","Times New Roman Greek,0","Times New Roman,161"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","Times New Roman Greek,161","Times New Roman,161"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","Tms Rmn","MS Serif"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","System,0","System,161"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","Fixedsys,0","Fixedsys,161"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","Small Fonts,0","Small Fonts,161"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","MS Serif,0","MS Serif,161"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","MS Sans Serif,0","MS Sans Serif,161"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","Courier,0","Courier New,161"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","Arial Greek,161","Arial,161"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","Courier New Greek,0","Courier New,161"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","Courier New Greek,161","Courier New,161"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","Times New Roman Greek,0","Times New Roman,161"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","Times New Roman Greek,161","Times New Roman,161"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","Helv","MS Sans Serif"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","Helv,0","MS Sans Serif,161"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","Tms Rmn,0","MS Serif,161"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","MS Shell Dlg","Microsoft Sans Serif"
+//--
+//RegWrite,HKLM,0x4,Tmp_Default\Software\Microsoft\CTF\TIP\{DCBD6FA8-032F-11D3-B5B1-00C04FC324A1}\LanguageProfile\0x041F\{09EA4E4B-46CE-4469-B450-0DE76A435BBB},Enable,0
+//RegWrite,HKLM,0x1,"Tmp_Default\Keyboard Layout\Preload",1,0000041F
+//RegWrite,HKLM,0x4,Tmp_Default\Software\Microsoft\CTF\TIP\{DCBD6FA8-032F-11D3-B5B1-00C04FC324A1}\LanguageProfile\0x%DOSKEYBNameLID%\{09EA4E4B-46CE-4469-B450-0DE76A435BBB},Enable,0
+//RegWrite,HKLM,0x1,"Tmp_Default\Keyboard Layout\Preload",1,%DOSKEYBName_Selection%
+//--
+If,%NoWarnFOW%,Equal,True,System,ERROROFF,4
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\CodePage,ACP,1253
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\CodePage,MACCP,10006
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\CodePage,OEMCP,737
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\CodePage,OEMHAL,vga737.fon
+//RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\Language,%DOSKEYBNameLID%,l_intl.nls
+//RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\Language,InstallLanguage,%DOSKEYBNameLID%
+//RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\Language,Default,%DOSKEYBNameLID%
+If,%NoWarnFOW%,Equal,True,System,ERROROFF,3
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\Language,0408,l_intl.nls
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\Language,InstallLanguage,0408
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\Language,Default,0408
+//--
+If,%NoWarnFOW%,Equal,True,System,ERROROFF,4
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Hardware Profiles\Current\Software\Fonts",FIXEDFON.FON,vgafixg.fon
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Hardware Profiles\Current\Software\Fonts",FONTS.FON,vgasysg.fon
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Hardware Profiles\Current\Software\Fonts",OEMFONT.FON,vga737.fon
+RegWrite,HKLM,0x4,"Tmp_System\ControlSet001\Hardware Profiles\Current\Software\Fonts",LogPixels,96
+//--
+Echo,"Writing txtsetup.sif"
+IniWrite,%target_win%\txtsetup.sif,nls,AnsiCodepage,"c_1253.nls,1253"
+IniWrite,%target_win%\txtsetup.sif,nls,OemCodepage,"c_737.nls,737,c_437.nls,437"
+IniWrite,%target_win%\txtsetup.sif,nls,MacCodepage,"c_10006.nls,10006"
+//IniWrite,%target_win%\txtsetup.sif,nls,UnicodeCasetable,"l_intl.nls,%DOSKEYBNameLID%"
+IniWrite,%target_win%\txtsetup.sif,nls,UnicodeCasetable,"l_intl.nls,0408"
+IniWrite,%target_win%\txtsetup.sif,nls,OemHalFont,vga737.fon
+//IniWrite,%target_win%\txtsetup.sif,nls,DefaultLayout,%DOSKEYBName_Selection%
+IniWrite,%target_win%\txtsetup.sif,nls,DefaultLayout,00000409
+IniWrite,%target_win%\txtsetup.sif,SourceDisksFiles,vgaoem.fon,"1,,,,,,,22,0,0,,1,2"
+IniWrite,%target_win%\txtsetup.sif,SourceDisksFiles,vga850.fon,"1,,,,,,,22,0,0,,1,2"
+IniWrite,%target_win%\txtsetup.sif,SourceDisksFiles,vga861.fon,"1,,,,,,,22,0,,,1,2"
+IniWrite,%target_win%\txtsetup.sif,SourceDisksFiles,vga737.fon,"1,,,,,,,22,0,0,,1,2"
+IniWrite,%target_win%\txtsetup.sif,SourceDisksFiles,c_737.nls,"1,,,,,,,22,0,0,,1,2"
+IniWrite,%target_win%\txtsetup.sif,SourceDisksFiles,c_869.nls,"1,,,,,,,22,0,0,,1,2"
+IniWrite,%target_win%\txtsetup.sif,SourceDisksFiles,c_875.nls,"1,,,,,,,22,0,0,,1,2"
+IniWrite,%target_win%\txtsetup.sif,SourceDisksFiles,c_1253.nls,"1,,,,,,,22,0,0,,1,2"
+IniWrite,%target_win%\txtsetup.sif,SourceDisksFiles,c_10006.nls,"1,,,,,,,22,0,0,,1,2"
+IniWrite,%target_win%\txtsetup.sif,SourceDisksFiles,C_28597.NLS,"1,,,,,,,22,0,0,,1,2"
+
+[Greek_Common_Process]
+If,Not,ExistFile,%target_sys%\vgaoem.fon,CopyOrExpand,%source_win%\vgaoem.fon,%target_sys%\vgaoem.fon
+If,Not,ExistFile,%target_sys%\vga850.fon,CopyOrExpand,%source_win%\vga850.fon,%target_sys%\vga850.fon
+If,Not,ExistFile,%target_sys%\vga737.fon,CopyOrExpand,%source_win%\vga737.fon,%target_sys%\vga737.fon
+//--
+If,Not,ExistFile,%target_win%\Fonts\vga737.fon,CopyOrExpand,%source_win%\vga737.fon,%target_win%\Fonts\vga737.fon
+If,Not,ExistFile,%target_win%\Fonts\vga869.fon,CopyOrExpand,%source_win%\vga869.fon,%target_win%\Fonts\vga869.fon
+If,Not,ExistFile,%target_win%\Fonts\vgafixg.fon,CopyOrExpand,%source_win%\vgafixg.fon,%target_win%\Fonts\vgafixg.fon
+If,Not,ExistFile,%target_win%\Fonts\vgasysg.fon,CopyOrExpand,%source_win%\vgasysg.fon,%target_win%\Fonts\vgasysg.fon
+//--
+If,Not,ExistFile,%target_win%\Fonts\coureg.fon,CopyOrExpand,%source_win%\coureg.fon,%target_win%\Fonts\coureg.fon
+If,Not,ExistFile,%target_win%\Fonts\serifeg.fon,CopyOrExpand,%source_win%\serifeg.fon,%target_win%\Fonts\serifeg.fon
+If,Not,ExistFile,%target_win%\Fonts\smalleg.fon,CopyOrExpand,%source_win%\smalleg.fon,%target_win%\Fonts\smalleg.fon
+If,Not,ExistFile,%target_win%\Fonts\sserifeg.fon,CopyOrExpand,%source_win%\sserifeg.fon,%target_win%\Fonts\sserifeg.fon
+//--
+If,ExistFile,%target_sys%\c_737.nl_,Call,FileDelete,%target_sys%\c_737.nl_
+If,ExistFile,%target_sys%\c_869.nl_,Call,FileDelete,%target_sys%\c_869.nl_
+If,ExistFile,%target_sys%\c_875.nl_,Call,FileDelete,%target_sys%\c_875.nl_
+If,ExistFile,%target_sys%\c_1252.nl_,Call,FileDelete,%target_sys%\c_1252.nl_
+If,ExistFile,%target_sys%\c_1253.nl_,Call,FileDelete,%target_sys%\c_1253.nl_
+If,ExistFile,%target_sys%\c_10006.nl_,Call,FileDelete,%target_sys%\c_10006.nl_
+If,Not,ExistFile,%target_sys%\c_737.nls,CopyOrExpand,%source_sys%\c_737.nls,%target_sys%
+If,Not,ExistFile,%target_sys%\c_869.nls,CopyOrExpand,%source_sys%\c_869.nls,%target_sys%
+If,Not,ExistFile,%target_sys%\c_875.nls,CopyOrExpand,%source_sys%\c_875.nls,%target_sys%
+If,Not,ExistFile,%target_sys%\c_1252.nls,CopyOrExpand,%source_sys%\c_1252.nls,%target_sys%
+If,Not,ExistFile,%target_sys%\c_1253.nls,CopyOrExpand,%source_sys%\c_1253.nls,%target_sys%
+If,Not,ExistFile,%target_sys%\c_10006.nls,CopyOrExpand,%source_sys%\c_10006.nls,%target_sys%
+//--
+//--
+If,%NoWarnFOW%,Equal,True,System,ERROROFF,11
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\CodePage,737,c_737.nls
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\CodePage,869,c_869.nls
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\CodePage,875,c_875.nls
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\CodePage,1252,c_1252.nls
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\CodePage,1253,c_1253.nls
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\CodePage,10006,c_10006.nls
+//--
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Nls\Language Groups",1,1
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Nls\Language Groups",4,1
+//--
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Nls\Locale\Alternate Sorts",00010407,1
+
+[Greek_List]
+//List With Names
+Greek
+Greek (220)
+Greek (319)
+Greek (220) Latin
+Greek (319) Latin
+Greek Latin
+Greek Polytonic
+//List With KBDXXX.DLL
+kbdhe.dll
+kbdgkl.dll
+kbdhe220.dll
+kbdhe319.dll
+kbdhela2.dll
+kbdhela3.dll
+kbdhept.dll
+
+[MoreKeyBoard]
+If,%DOSKEYBName_Selection%,Equal,None0000,Run,%ScriptFile%,MoreKeyBoard_None,#1,#2,#3,#4,#5,#6,#7,#8,#9
+Else,Run,%ScriptFile%,MoreKeyBoard_PreLoad,#1,#2,#3,#4,#5,#6,#7,#8,#9
+
+[MoreKeyBoard_PreLoad]
+Run,%scriptfile%,Lang_%DOSKEYBName_Selection%
+If,%NoWarnFOW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x1,"Tmp_Default\Keyboard Layout\Preload",#1,%DOSKEYBName_Selection%
+
+[MoreKeyBoard_None]
+If,%NoWarnFOW%,Equal,True,System,ERROROFF
+If,ExistRegKey,HKLM,"Tmp_Default\Keyboard Layout\Preload",#1,RegDelete,HKLM,"Tmp_Default\Keyboard Layout\Preload",#1
+
+[Lang_source00]
+Set,%DOSKEYBName_Selection%,%DefaultLayout%
+
+[Lang_00000409]
+//US
+StrFormat,Right,%DOSKEYBName_Selection%,4,%DOSKEYBNameLID%
+If,Not,ExistFile,%target_sys%\KBDUS.DLL,CopyOrExpand,%source_win%\KBDUS.DLL,%target_sys%\KBDUS.DLL
+If,%NoWarnFOW%,Equal,True,System,ERROROFF,5
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\00000409","Layout File",KBDUS.DLL
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\00000409","Layout Text",US
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\00000409","Layout Display Name","@#$pSystemRoot#$p\system32\input.dll,-5000"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\Locale,00000409,1
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Windows\CurrentVersion\Nls\LocaleMapIDs,00000409,"12,13"
+//----
+If,ExistFile,%target_sys%\c_1252.nl_,Call,FileDelete,%target_sys%\c_1252.nl_
+If,Not,ExistFile,%target_sys%\c_1252.nls,CopyOrExpand,%source_sys%\c_1252.nls,%target_sys%
+
+[Lang_00000408]
+StrFormat,Right,%DOSKEYBName_Selection%,4,%DOSKEYBNameLID%
+If,Not,ExistFile,%target_sys%\KBDHE.DLL,CopyOrExpand,%source_win%\KBDHE.DLL,%target_sys%\KBDHE.DLL
+If,%NoWarnFOW%,Equal,True,System,ERROROFF,5
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\00000408","Layout Text",Greek
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\00000408","Layout Display Name","@#$pSystemRoot#$p\system32\input.dll,-5046"
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\00000408","Layout File",KBDHE.DLL
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\Locale,00000408,4
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Windows\CurrentVersion\Nls\LocaleMapIDs,00000408,"56,57"
+
+[Lang_00010408]
+StrFormat,Right,%DOSKEYBName_Selection%,4,%DOSKEYBNameLID%
+If,Not,ExistFile,%target_sys%\KBDHE220.DLL,CopyOrExpand,%source_win%\KBDHE220.DLL,%target_sys%\KBDHE220.DLL
+If,%NoWarnFOW%,Equal,True,System,ERROROFF,6
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\00010408","Layout Text","Greek (220)"
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\00010408","Layout Display Name","@#$pSystemRoot#$p\system32\input.dll,-5048"
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\00010408","Layout File",KBDHE220.DLL
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\00010408","Layout Id",0016
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\Locale,00000408,4
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Windows\CurrentVersion\Nls\LocaleMapIDs,00000408,"56,57"
+
+[Lang_00020408]
+StrFormat,Right,%DOSKEYBName_Selection%,4,%DOSKEYBNameLID%
+If,Not,ExistFile,%target_sys%\KBDHE319.DLL,CopyOrExpand,%source_win%\KBDHE319.DLL,%target_sys%\KBDHE319.DLL
+If,%NoWarnFOW%,Equal,True,System,ERROROFF,6
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\00020408","Layout Text","Greek (319)"
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\00020408","Layout Display Name","@#$pSystemRoot#$p\system32\input.dll,-5049"
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\00020408","Layout File",KBDHE319.DLL
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\00020408","Layout Id",0018
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\Locale,00000408,4
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Windows\CurrentVersion\Nls\LocaleMapIDs,00000408,"56,57"
+
+[Lang_00030408]
+If,Not,ExistFile,%target_sys%\KBDHELA2.DLL,CopyOrExpand,%source_win%\KBDHELA2.DLL,%target_sys%\KBDHELA2.DLL
+If,%NoWarnFOW%,Equal,True,System,ERROROFF,6
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\00030408","Layout Text","Greek (220) Latin"
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\00030408","Layout Display Name","@#$pSystemRoot#$p\system32\input.dll,-5050"
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\00030408","Layout File",KBDHELA2.DLL
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\00030408","Layout Id",0017
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\Locale,00000408,4
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Windows\CurrentVersion\Nls\LocaleMapIDs,00000408,"56,57"
+
+[Lang_00040408]
+If,Not,ExistFile,%target_sys%\KBDHELA3.DLL,CopyOrExpand,%source_win%\KBDHELA3.DLL,%target_sys%\KBDHELA3.DLL
+If,%NoWarnFOW%,Equal,True,System,ERROROFF,6
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\00040408","Layout Text","Greek (319) Latin"
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\00040408","Layout Display Name","@#$pSystemRoot#$p\system32\input.dll,-5051"
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\00040408","Layout File",KBDHELA3.DLL
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\00040408","Layout Id",0011
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\Locale,00000408,4
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Windows\CurrentVersion\Nls\LocaleMapIDs,00000408,"56,57"
+
+[Lang_00050408]
+If,Not,ExistFile,%target_sys%\KBDGKL.DLL,CopyOrExpand,%source_win%\KBDGKL.DLL,%target_sys%\KBDGKL.DLL
+If,%NoWarnFOW%,Equal,True,System,ERROROFF,6
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\00050408","Layout Text","Greek Latin"
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\00050408","Layout Display Name","@#$pSystemRoot#$p\system32\input.dll,-5047"
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\00050408","Layout File",KBDGKL.DLL
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\00050408","Layout Id",0019
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\Locale,00000408,4
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Windows\CurrentVersion\Nls\LocaleMapIDs,00000408,"56,57"
+
+[Lang_00060408]
+If,Not,ExistFile,%target_sys%\KBDHEPT.DLL,CopyOrExpand,%source_win%\KBDHEPT.DLL,%target_sys%\KBDHEPT.DLL
+If,%NoWarnFOW%,Equal,True,System,ERROROFF,4
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\00060408","Layout Text","Greek Polytonic"
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\00060408","Layout Display Name","@#$pSystemRoot#$p\system32\input.dll,-5122"
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\00060408","Layout File",KBDHEPT.DLL
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\00060408","Layout Id",001F
+
+[AuthorEncoded]
+Greek.jpg=6199,8266
+Logo=Greek.jpg
+
+[EncodedFolders]
+Folder
+
+[EncodedFile-Folder-KBDTUQC1.7z]
+lines=1
+0=N3q8ryccAAOiQ3N1PxAAAAAAAAAjAAAAAAAAAMERp7kAJpaOcAAX9+wFu+r0/5QBL0TvfOb1xZnABMvR6HvW2ZjwY2zdC0tOufykFwzwVFM7sK4ccIYPG66iIgebt2dXmpcEAuibqX4I/Kd+ipqT029GfjuE0qJ9N+WCUPaNooKaYb4ToA+l0uPoUYldbB681CC4peHQqAbB+UJ+pVH0rFVEOkRDItdoTgoA3PeFwNb3c8jsRcTgop7cBQltdidiXKc+LG03bvvI7pqE6oxvFtFqxcw4/0uxjzylee4z2cX78wcRi9s+anvluuc92wNRklJoXrg9BM6lyCM4yGz+KWl/hJWne15MvW6tN2T4+t6p790S5h7/MYisF6WFNQBtQSCxvfsugM2iY/p3itk9d//73fkRl0HF4u44Ils6vhq0wvrxMLLjfBK6FYf/076X12Aa8HwC072953nqPo7ovZKNY7925y+fjEKZgiKzIL3F36EGl0fpb/+YIDgRzdF7NC3cLx8rInFc5LLkdhBVYzKHGNleC9eTJ2YYlSurKQ/SvGYIZUXTicEA/G5+Gvd7urMPaqsdniy8MAoFzDIIv9zGk8SQHSvo/PVG+M20jRtrJTZxZmr8WIprrhEWZY0yq/tvk4Ku/qCAk60rGsy5sRCclTRAT05hUJ93g3ZZembGd0Gr/oxqolGKX2PA58/+HdeVWu+Lq1v1P0g7av4n/KywLNL70j4pyf3dbTcJLrCIFKox6o9zgXMTrgbAwlTo9TzWww3oAI3MRXTzb6gG8mmMW9LjMSHi6fKZ/zyxEqFFT+8T1Zs7yE/vtHg1uR6rOPfie/TJasPchXKjIH6wOCIG1AnuETDp0/EKjcms/hwYl/bUbYuaUJIYVUXihhfpLG13zhJmxLp6U3dA4qUavicKDRFg31mYCtpLNeuueQfR8sZqXm4h4GxkxliBzOTM0xkLzOB3brVpyZDaar+8/X4iOINTOpcEtzFNDu4DYmmzVpwVMv7jy5cybf700nUcyR0gm8mQNlvVCEE2vhkKLE+JVDHlAH6QPaXCxOqi3oWfdJ9dL7A1JPLNIQ3wC5ZEM7fA4PdQxzA2ZwBxe4bC4PhvXfHsf0neilcd4eG/EPK5qbLWDuDyXStJJGsjkjshiwUd6YvyhWovTnVe07Z0G6ulwFGB9YNwGU9pNscf5Q1vMEh2e/hWn4tOhdhWzJWCuCTS78o540JnE+jOtKpAP0Djx8OakHYe0Gr7uhb4Vg+CJYJ1gfVQX7RYMk5gjGaSi3YhKugmMqmnG1ULEJhW+F64Dr6ogxyndpJJuH11gDEEHIW2LAyUkmUmtvuB8lxNGkjfADz99PmMWc0puh6nH8Gke4RDx3hkmmwIfEPjSMOV6DVEb9ValMCK52fzqx0vMs2LDjdqmFeRItPF7a4KtxsaBFDEEU3Eft5mu1WGBl7GW6d+QjhivIDUMPDH4uiAAcMdusaO1CBEk9DQMMeIJiIeHMRw0DUKSqvDhhW/NgcKDOaaSCK7Cj2D+jpZaUMOitX3sEYLuwG+84AJ8iY9SFJEryRSYwhfz/TXoRMSdPyFuhRqG5nQuV//r8d374HY7NWRibGNxhWTYpPBBeOXY16Y8BmNn4Sc/LCesj9lO1eoL07lkT1KWThV8Op09xKzOvdlQ3CpKD3UaPgtSSUcLMpXuJbrsePimU97Vct4/MF3U9IShXurzsMOEohdjGMJv2Nkp7LpJJWKR4aAkbPkMt5uPM7mLbdvdEsQRHRIB/i34H8A32M1I0PJX188ig6B11+5syXDqi0yMp96Zk1nevqIvAJdzzBvg/T8JdUFIfEsAc1I3jYvWf9J5jhuCkdb71BqNPe8e5DLEqbMmBWh8lvEtz3w02Vf+g3hfywFBQJC8D4zNXeXz1yu7VN2vJz0AjuL5alvDovx+nBMh2WL7y+8BNr303u3Y/QMpIgmz9I4iCNoGHV8JT8ktDgTV5aWGZqpiXhgg/AUtq3gQmzzOM2WVG8lSK2w/MbmfASpI2LcnZDedUGTZOuL44ovbcZLin29LogxGOOwhU0LL0S3jGPPlnfvOD35iHaRFLtLOSswILsjbZtnX4T0/F9d7Z/9JbjrbLZ8+8gfky8QpHCaQtWIopG7DeOw3k2CS9CvHLOk4aZNAnKtoDDoMsd9Uq/QXetiFGAEurCc1DL43b6Lsmjx/jXQ3Lkq+Th/zH9JtQDN1iN9jUHSmO7b+L1ZXaLfPanzYv+0lyjxB6t4032O1hJeyvhvJq+c1wWtSx9HbQlr2PHfWl25y1aPH2wagHRoNe2lPKjHYmOCQGCusIN25Vmk1nZmIyJ0js8v8ryFJxsQHULm4zUukD/k0G6Y3+D1gtkqM7wAyE/hGt3IqPLYOObhXIn4zecyupg/u5GKzizz7vfpc6NoKCM2HOsEpzhRYX5diiCAwAGxk/sPCCmMHtE1Ogc7ztAHH5Wl8xFYegAw3vPd8doEo3Jk7TkHf9Qzj8i3z8R4rL3FbqY1FGnZ+i1IdGzDQlRcICEyaNsZuYL2xP+ZBzqpVeES3n1BPPPQhugatPGv/AWpJ4dWbLeKDdiJQROASYhxSVuecYzVOdg+GciLXt9oc7pD89NROfJnCC4dg6ziUzJJwG2rV/+vw5aOAyhPNJhhEoY31xWXwHbT+VLAfU92Sz8frXmgUe0H4p9/ZlIPFitFSDQx1UZ3ZezoxursMNKV2Hk/nlZYVgPEUX4oxIeLwKGrin7vaDI4++rUHK1LcXE9OL4O8a4rMGeePpIJtmPHuD9yy1vkKn8BeYtksWeb5Uejv2n/z5hSxGUeIQDviM1exmGaCUcZdsejGgjaovOmr7cqE3MRKiXoytcm+IqloJLDmnvELnNiCJxm0sDgApy/pAbrzJ3WmOZtFcQ3omD73GWm3w84yfCr4p10Ed47oMdRfX0eScAK241uYn6GeJgLOi0t7h3XgnMe9RpvnKnFzuXAlnrOXkvGpC/Us3QFP8DDFfSFt0gtA9P4A3PE63gvnp38DgunvGp1zym/ZzhOFFySkdH0dxX3f9LO5/8iuxk/yZ3xoun1G7yKtzEoLpy3NOnutpInAAsRi7ZshC6ab34f+CaIe/8R7FoHEJHZscDBas93YGwQHgruk1tEIjZiaJb++5GMWHHVGxo632DOB3qMejfMEqV5Yk0ojtZXD2AnpHvz7NzsIItvXUkWI6iF/oFq1gDuCHS107ClKn7HeJyMX+KSf++5jSXqTHYF+jerq5SdbxBdLISEhssztn9SOM8mNTzdXbrxV3UA/NCe63SjB/DqbeIyM9mVt9Nu4SOn2eNx+93HRaQp3zjZXLX5ffRZJtldOOPUJgR3p6l/E8a0rIZVqgG5pnaTl0QyJlCIaZ+5q0Ep0dvDQU9GDFOE++A6qiaHVQltGkjydKVwZxcf/Z7/OJwA3n0vPAOU7UkIK/UvMxdhiOTdU64bLVi3iqSOJw4yCF3wDC3x3gzgwcD3qwoPalDkVbnTPC7r6HtFy3/LnaUje06mYVLIRo7vRoX3/Gc1pLZ+oDD8ajpw6RdNbGlkW45WIFLOmms6Si0cNl7rdYnYwf5EP8w6X9mKnTMkZgOVOWoLZm58n++5RxBtLvOsv+58s8zHB4JEqJdU0L+9DBZYs1wfJur35qIbpzUT9K6REwTDP9tXp+Y9IxKQbpvIiFR/4r97m1esDAzVWP1vJUjGqUXdHantjeYjq6bpwDLVcugzsicP1t5qAjKaAyHsEQ/X/4sFRE5tYsVhYrmY+ERCNCDHjdZBE1MHdKJOGXl3JTb+xyXhd3x9etUM+RYx3caB4ogg9DvXPJyw5GC98o6bxLwxGDyWbWgjcO2LFSe3lupOIdMCiK8n44Swb0mMsYCdnlqZewoHn45dm3IllGaUHLpVlM56cRNA/8pq21D3NDPnJteotTSTVsB8cgQ1cRW3nt3i90r+O7eN7myaivVB/7+E3tFPBnNUX5E3fAffmyuQhSDCxxJM8G5vd2WleaLzivptzJZg96FDfPja8a+0eyFGGG5YHLGuromhW5tnhww8SkV0mrUMOagnbTwAKd/76Ft4TsM/ZXFlVa
+1=MX0OKgOXWEmJ6Nd6ExAyWtq+PTq44Dpdzc543TlWAi0Vw1EyWrIGSXUzL0VkZR8usOhpU1jank4KsSCEziV6UjPEcTYD+CNA+LnjGB1RtfsXRQgfXJ0Kj/XnX4qkupicYrKEkzbaD9rV4MObB26c9vcaPUqx0AiI8f2WWk0/VpmP6QudEGTUcJmKn3547W01ECQcQjTSEgj0M5BDoCUuSbCFBoslY34ZoKmUSotMjDtaghgXcIUkx52HdJvZamja4FOu3ZMq7lHVBmX0P+adS3CHfJ4SRrnzOtdr7le5tkBVF2QqZTFhfWrr33L+EPU1iwnG1KOGpvdzUGST7YJqreZLpQZxEX5uPdx/I2ZA8tt5Ainq5nH/iyx7wSESw+GCYkb/IjOXERspRnhzw52bSWpTLrDRRejEtx7adMn6TtkRX1SUBrc8gW0Cf66MfpqsJOBcgpuS4KttCfzZ19UtLhB2PKz+p6CREVSOSeDyIi2CzwZmy5I059oiqJROCdGlwR3T4bGzoAY/gvfxhSe7C+5tmdN6CBKwJLWe8cGQYbj0QXDgatY7yzLxJriqn+G7+KOSm7mdSbv7NX5APLq1E5bu1B7F+NVVaoLFwXGQGDGc4QFq6ArZ060MOe+fuwVe1Z2rr5PPTqLTbdLJuCTUdDy2/rC6Rr+TVISM7PEcFqVkBuEIoHIkqvnmj1UvkHm/9TVrS1SSliuIJNKXw4VCD2SNzuj8p2dc9VF9naAbgplUwiNmIAChvQ1JVSi4NxGTgBhvBIvoIgrxgI4HvaiekGnk46/YjkoeequyWYg9UH5R/8fTng84Y9xKJWxz8UdMckMMoyAkTKl4hnhF9W8a/LLeivsnDgnOn1KeG/BUsE8i4CaB/OLCxey0LBF/5tkcOSus/vd/SFNOms8MJo32eqQRcIy4ciAB6jKq2eu0lPpDAVd3XIFDwR22TxfiJ0scXTfxd7OMQt28wN3qct5+k9tfL5l00+rP7CSKOxZ7xuNDrt6LHuDr+jjjsXH2P/bDOG28BbqSPaLOqgtXsBPi6sjZNgUuMa5kC+Oy5t/DrQVKl0elIjEvULy2y9ieMUouo5IvaKY8aPkQ8HST9zBo3gTA6O0r3RhRfpA09ZPjzVYnWW3qyzozO1ky4sgsOe6uW3EmHWImaB9mrLZa/btomFeh92ViZZwWXkBB0IWnRuFTN3ZyB6FgAAAAAAAAAAAAAAAAAAAAAAAAAAgTMHrm3GEjcarTcM5IQgTZHsQ8p+IPOJPqJY4ex5ZAhO4RN3lACzTVMEyAxQSVVC3JlGIA814Zzl2EDIrrJQySxWAYWcN7HdxJyQqE0t273/z3G9iVwaR+RjSf7Xu8GjpY2szjZUvYPSyKZolVk97/eGGUmsB7KOPND6kDRMfWyhZtpjim58mvrnlN3/zp/Pc3iB8xJ7FGf5aBmkl/jHDm2vPKpBld3OJssUpe84RqvE6bZaV/uTZ4nMvS4vkL7e1aPFl0cdXQAAFwaPdAEJgMsABwsBAAEjAwEBBV0AEAAADIGbCgEs9nx4AAB4nOP2dnIJCQ10NtQzr2IYBSMONAngl+cMUXjDyAAA1HkFJuRA90UBAAAAAgAAACMAAACCEAAAAAAAAAEAAAAAAAAAAAAAAA
+
+[Folder]
+KBDTUQC1.7z=4297,5730
+
+[EncodedFile-AuthorEncoded-Greek.jpg]
+lines=2
+0=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
+1=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
+2=yypIZxgFIxBUS0Dod+LY5Y94Ff9jYAIAfaAHgKJsKmYBAAAAAgAAACUAAADuFwAAAAAAAAEAAAAAAAAAAAAAAA
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+Call,UploadXQ
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+

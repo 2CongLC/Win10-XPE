@@ -1,0 +1,403 @@
+[Main]
+Title=Essential Fonts and Codepages
+Type=Plugin
+Author=beakmyn, ChrisR
+Description=Adds common font and codepage files
+Credits=List of essential fonts found here  - http://graphicssoft.about.com/od/aboutgraphics/a/fontoverload_3.htm
+Version=024
+Download_Level=1
+Level=3
+Selected=True
+Mandatory=False
+NoWarning=False
+Contact=http://TheOven.org
+Date=2016.11.10
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Components/Tweaks/Fonts%20Codepages%20Essential.script
+Web2=http://yomi.cwcodes.net/Yomi/ComponentsY/Tweaks/Fonts%20Codepages%20Essential.script
+CertifiedBy=
+Certification=
+HistoryNotes01=
+History004=Galapo updated variables
+History005=Galapo added Microsoft Sans Serif
+History006=Galapo added Tahoma fonts and required reg entries from dera's suggestion
+History007=Galapo added Tahoma font fix as per Dera's tests
+History008=Lancelot Lucida Console font support added - FixTahoma font issue unchecked
+History010a=Lancelot Process-log removed & some quotes removed
+History010b=Lancelot Small codepage support adding (10c and 10d) till we have codepage Plugin operational ;>
+History010c=Lancelot c_932.nls added to list to have Japanese codepage support (more japanese apps getting popular ;))
+History010d=http://jp-bridge.com/en/dlltoys/ - pcsview.exe - from cdob - Pcsview.exe resource --- object MainForm: TMainForm --- Font.Charset=SHIFTJIS_CHARSET
+History010e=http://en.wikipedia.org/wiki/Shift-JIS
+History010f=Lancelot c_1251.nls added to list to have Russian codepage support for applications (more Russian apps getting popular ;))
+History010g=Example Avz from http://z-oleg.com/secur/avz/
+History011=Lancelot [Interface] CheckBox_Fix_Tahoma_Font hidden from curious eyes ;)
+History012a=Lancelot c_1252.nls added to list to have English (western) codepage support when source cd not english (western). When AnsiCodepage value not c_1252nls, c_1252.nls not copied by core build, causing font issues on some utilities (ex: Ultra ISO - HDD Tune(benchmark))
+History012b=Lancelot if not exist routine
+History015=Lancelot typo fix
+History016=Lancelot made compatible to pe2/3 // added some registry write lines for fonts
+History017=Lancelot support for Wow6432Node added
+History018=Lancelot FontReg lines commented out (kept as reference) (Reason: reg font entries have localized names ex: check arialbd.ttf with hexeditor you will find unicode entries....) http://theoven.org/index.php?topic=206
+History019=Lancelot more fonts added following ChrisR  http://theoven.org/index.php?topic=206.0
+History019=Lancelot Plugin name changed to organise better
+History020=Lancelot Compatibility with pe2/3 fixed // regwrite line fixed
+History021=Lancelot POSReady 2009 - Not Exists: MODERN.FON ROMAN.FON SCRIPT.FON
+History022=Lancelot Added DU Buttons - Date:2016.01.28
+History023=Lancelot Added ALL file options - Date:2016.09.13
+History024=Lancelot Added Components_PluginCache_Extract - Date:2016.11.10
+
+[Variables]
+%check%=0
+
+[Interface]
+pTextLabel1="Select Fonts to include in the PE build:",1,1,6,4,218,18,8,Bold
+pBevel1=pBevel1,1,12,3,21,513,195
+pBevel2=pBevel2,1,12,4,22,511,193
+pCheckBox1="MS Serif",1,3,12,25,130,14,True
+pCheckBox2="MS Sans Serif",1,3,12,39,130,14,True
+pCheckBox3="Arial Bold",1,3,12,53,130,14,True
+pCheckBox4="Arial Bold Italic",1,3,12,67,130,14,True
+pCheckBox5="Arial Italic",1,3,12,81,130,14,True
+pCheckBox6=Courier,1,3,12,95,130,14,True
+pCheckBox7="Courier New",1,3,12,109,130,14,True
+pCheckBox8="Courier New Bold",1,3,12,123,130,14,True
+pCheckBox9="Courier New Bold Italic",1,3,12,137,130,14,True
+pCheckBox10="Courier New Italic",1,3,12,151,130,14,True
+pCheckBox11=Modern,1,3,159,26,160,14,True
+pCheckBox12=Roman,1,3,159,40,160,14,True
+pCheckBox13=Script,1,3,159,53,160,14,True
+pCheckBox14="Small fonts",1,3,159,67,160,14,True
+pCheckBox15="Times New Roman",1,3,159,109,160,14,True
+pCheckBox16="Times New Roman Bold",1,3,158,123,160,14,True
+pCheckBox17="Times New Roman Bold Italic",1,3,158,137,160,14,True
+pCheckBox18="Times New Roman Italic",1,3,158,151,160,14,True
+pCheckBox19=Wingdings,1,3,158,165,160,14,True
+pCheckBox20="Microsoft Sans Serif",1,3,12,165,130,14,True
+pCheckBox21=Tahoma,1,3,159,81,160,14,True
+pCheckBox22="Tahoma Bold",1,3,159,95,160,14,True
+pCheckBox24="Add Lucida Console font (only font for unicode console applications)",1,3,12,194,357,14,True
+CheckBox_Fix_Tahoma_Font="Fix Tahoma font issue",0,3,35,305,127,18,False
+pTextLabel2="Select CodePages in the PE build:",1,1,6,222,192,18,8,Bold
+pCheckBox_c_932_nls="c_932.nls (Support Japanese codepage)",1,3,13,242,226,18,True
+pCheckBox_c_1251_nls="c_1251.nls (Support Russian codepage)",1,3,13,260,226,18,True
+pCheckBox_c_1252_nls="c_1252.nls (Support Western (Enu) codepage)",1,3,13,278,245,18,True
+pBevel3=pBevel3,1,12,4,240,272,61
+pCheckBox25=Verdana,1,3,339,26,64,14,False
+pCheckBox26=B,1,3,420,26,28,14,False,"__Verdana Bold"
+pCheckBox27=BI,1,3,449,26,30,14,False,"__Verdana Bold Italic"
+pCheckBox28=I,1,3,481,26,28,14,False,"__Verdana Italic"
+pCheckBox29=Trebuchet,1,3,339,40,78,14,False
+pCheckBox30=B,1,3,420,40,28,14,False,"__Trebuchet Bold"
+pCheckBox31=BI,1,3,449,40,30,14,False,"__Trebuchet Bold Italic"
+pCheckBox32=I,1,3,481,41,28,14,False,"__Trebuchet Italic"
+pCheckBox33="Comic Sans",1,3,339,54,78,14,False
+pCheckBox34=B,1,3,420,54,28,14,False,"__Comic Sans Bold"
+pCheckBox35=Georgia,1,3,339,68,61,14,False
+pCheckBox36=B,1,3,420,68,28,14,False,"__Georgia Bold"
+pCheckBox37=BI,1,3,449,68,30,14,False,"__Georgia Bold Italic"
+pCheckBox38=I,1,3,481,68,28,14,False,"__Georgia Italic"
+pCheckBox39=Impact,1,3,339,82,74,14,False
+pCheckBox40=Wingdings,1,3,339,96,74,14,False
+Add_ALL_CheckBox="Add ALL Files (Only Files):",1,3,294,224,144,18,False
+Add_ALL_NLS_CheckBox="Add ALL .nls",1,3,301,244,84,18,True
+Add_ALL_TTF_CheckBox="Add ALL .ttf",1,3,301,262,80,18,True
+Add_ALL_FON_CheckBox="Add ALL .fon",1,3,301,279,87,18,True
+Add_ALL_Bevel=pBevel4,1,12,297,242,98,60
+WebLabel_Plugin="Plugin Page",1,10,319,4,55,18,http://TheOven.org/index.php?board=9
+Button_Download=,1,8,380,-1,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[Process]
+If,ExistFile,%ProjectTemp%\Components_PluginCache_Extract.ini,Echo,"Components PluginCache"
+If,Not,ExistFile,%ProjectTemp%\Components_PluginCache_Extract.ini,Run,%ScriptFile%,Process_Normal
+
+[Process_Normal]
+Echo,"Adding Essential Fonts Files"
+If,%OSFamily%,Equal,NT6,Set,%sourcefontsfolder%,Fonts\
+Else,Set,%sourcefontsfolder%,""
+//-
+If,%pCheckBox1%,Equal,True,Begin
+If,Not,ExistFile,%Target_Win%\Fonts\SERIFE.FON,CopyOrExpand,%Source_Win%\%sourcefontsfolder%SERIFE.FON,%Target_Win%\Fonts
+End
+If,%pCheckBox2%,Equal,True,Begin
+If,Not,ExistFile,%Target_Win%\Fonts\SSERIFE.FON,CopyOrExpand,%Source_Win%\%sourcefontsfolder%SSERIFE.FON,%Target_Win%\Fonts
+End
+If,%pCheckBox3%,Equal,True,Begin
+If,Not,ExistFile,%Target_Win%\Fonts\ARIALBD.TTF,CopyOrExpand,%Source_Win%\%sourcefontsfolder%ARIALBD.TTF,%Target_Win%\Fonts
+End
+If,%pCheckBox4%,Equal,True,Begin
+If,Not,ExistFile,%Target_Win%\Fonts\ARIALBI.TTF,CopyOrExpand,%Source_Win%\%sourcefontsfolder%ARIALBI.TTF,%Target_Win%\Fonts
+End
+If,%pCheckBox5%,Equal,True,Begin
+If,Not,ExistFile,%Target_Win%\Fonts\ARIALI.TTF,CopyOrExpand,%Source_Win%\%sourcefontsfolder%ARIALI.TTF,%Target_Win%\Fonts
+End
+If,%pCheckBox6%,Equal,True,Begin
+If,Not,ExistFile,%Target_Win%\Fonts\COURE.FON,CopyOrExpand,%Source_Win%\%sourcefontsfolder%COURE.FON,%Target_Win%\Fonts
+End
+If,%pCheckBox7%,Equal,True,Begin
+If,Not,ExistFile,%Target_Win%\Fonts\COUR.TTF,CopyOrExpand,%Source_Win%\%sourcefontsfolder%COUR.TTF,%Target_Win%\Fonts
+End
+If,%pCheckBox8%,Equal,True,Begin
+If,Not,ExistFile,%Target_Win%\Fonts\COURBD.TTF,CopyOrExpand,%Source_Win%\%sourcefontsfolder%COURBD.TTF,%Target_Win%\Fonts
+End
+If,%pCheckBox9%,Equal,True,Begin
+If,Not,ExistFile,%Target_Win%\Fonts\COURBI.TTF,CopyOrExpand,%Source_Win%\%sourcefontsfolder%COURBI.TTF,%Target_Win%\Fonts
+End
+If,%pCheckBox10%,Equal,True,Begin
+If,Not,ExistFile,%Target_Win%\Fonts\COURI.TTF,CopyOrExpand,%Source_Win%\%sourcefontsfolder%COURI.TTF,%Target_Win%\Fonts
+End
+//POSReady 2009 - MODERN.FON ROMAN.FON SCRIPT.FON missing -- to get warning Require,Font used
+If,%pCheckBox11%,Equal,True,Require,Font,MODERN.FON
+If,%pCheckBox12%,Equal,True,Require,Font,ROMAN.FON
+If,%pCheckBox13%,Equal,True,Require,Font,SCRIPT.FON
+If,%pCheckBox14%,Equal,True,Begin
+If,Not,ExistFile,%Target_Win%\Fonts\SMALLE.FON,CopyOrExpand,%Source_Win%\%sourcefontsfolder%SMALLE.FON,%Target_Win%\Fonts
+End
+If,%pCheckBox15%,Equal,True,Begin
+If,Not,ExistFile,%Target_Win%\Fonts\TIMES.TTF,CopyOrExpand,%Source_Win%\%sourcefontsfolder%TIMES.TTF,%Target_Win%\Fonts
+End
+If,%pCheckBox16%,Equal,True,Begin
+If,Not,ExistFile,%Target_Win%\Fonts\TIMESBD.TTF,CopyOrExpand,%Source_Win%\%sourcefontsfolder%TIMESBD.TTF,%Target_Win%\Fonts
+End
+If,%pCheckBox17%,Equal,True,Begin
+If,Not,ExistFile,%Target_Win%\Fonts\TIMESBI.TTF,CopyOrExpand,%Source_Win%\%sourcefontsfolder%TIMESBI.TTF,%Target_Win%\Fonts
+End
+If,%pCheckBox18%,Equal,True,Begin
+If,Not,ExistFile,%Target_Win%\Fonts\TIMESI.TTF,CopyOrExpand,%Source_Win%\%sourcefontsfolder%TIMESI.TTF,%Target_Win%\Fonts
+End
+If,%pCheckBox19%,Equal,True,Begin
+If,Not,ExistFile,%Target_Win%\Fonts\WINGDING.TTF,CopyOrExpand,%Source_Win%\%sourcefontsfolder%WINGDING.TTF,%Target_Win%\Fonts
+End
+If,%pCheckBox20%,Equal,True,Begin
+If,Not,ExistFile,%Target_Win%\Fonts\micross.ttf,CopyOrExpand,%Source_Win%\%sourcefontsfolder%micross.ttf,%Target_Win%\Fonts
+End
+If,%pCheckBox21%,Equal,True,Begin
+If,Not,ExistFile,%Target_Win%\Fonts\TAHOMA.TTF,CopyOrExpand,%Source_Win%\%sourcefontsfolder%TAHOMA.TTF,%Target_Win%\Fonts
+End
+If,%pCheckBox22%,Equal,True,Begin
+If,Not,ExistFile,%Target_Win%\Fonts\TAHOMABD.TTF,CopyOrExpand,%Source_Win%\%sourcefontsfolder%TAHOMABD.TTF,%Target_Win%\Fonts
+End
+If,%pCheckBox24%,Equal,True,Begin
+If,Not,ExistFile,%Target_Win%\Fonts\lucon.ttf,CopyOrExpand,%Source_Win%\%sourcefontsfolder%lucon.ttf,%Target_Win%\Fonts
+End
+//--
+If,%pCheckBox25%,Equal,True,Begin
+If,Not,ExistFile,%Target_Win%\Fonts\verdana.ttf,CopyOrExpand,%Source_Win%\%sourcefontsfolder%verdana.ttf,%Target_Win%\Fonts
+End
+If,%pCheckBox26%,Equal,True,Begin
+If,Not,ExistFile,%Target_Win%\Fonts\verdanab.ttf,CopyOrExpand,%Source_Win%\%sourcefontsfolder%verdanab.ttf,%Target_Win%\Fonts
+End
+If,%pCheckBox27%,Equal,True,Begin
+If,Not,ExistFile,%Target_Win%\Fonts\verdanaz.ttf,CopyOrExpand,%Source_Win%\%sourcefontsfolder%verdanaz.ttf,%Target_Win%\Fonts
+End
+If,%pCheckBox28%,Equal,True,Begin
+If,Not,ExistFile,%Target_Win%\Fonts\verdanai.ttf,CopyOrExpand,%Source_Win%\%sourcefontsfolder%verdanai.ttf,%Target_Win%\Fonts
+End
+If,%pCheckBox29%,Equal,True,Begin
+If,Not,ExistFile,%Target_Win%\Fonts\trebuc.ttf,CopyOrExpand,%Source_Win%\%sourcefontsfolder%trebuc.ttf,%Target_Win%\Fonts
+End
+If,%pCheckBox30%,Equal,True,Begin
+If,Not,ExistFile,%Target_Win%\Fonts\trebucbd.ttf,CopyOrExpand,%Source_Win%\%sourcefontsfolder%trebucbd.ttf,%Target_Win%\Fonts
+End
+If,%pCheckBox31%,Equal,True,Begin
+If,Not,ExistFile,%Target_Win%\Fonts\trebucbi.ttf,CopyOrExpand,%Source_Win%\%sourcefontsfolder%trebucbi.ttf,%Target_Win%\Fonts
+End
+If,%pCheckBox32%,Equal,True,Begin
+If,Not,ExistFile,%Target_Win%\Fonts\trebucit.ttf,CopyOrExpand,%Source_Win%\%sourcefontsfolder%trebucit.ttf,%Target_Win%\Fonts
+End
+If,%pCheckBox33%,Equal,True,Begin
+If,Not,ExistFile,%Target_Win%\Fonts\comic.ttf,CopyOrExpand,%Source_Win%\%sourcefontsfolder%comic.ttf,%Target_Win%\Fonts
+End
+If,%pCheckBox34%,Equal,True,Begin
+If,Not,ExistFile,%Target_Win%\Fonts\comicbd.ttf,CopyOrExpand,%Source_Win%\%sourcefontsfolder%comicbd.ttf,%Target_Win%\Fonts
+End
+If,%pCheckBox35%,Equal,True,Begin
+If,Not,ExistFile,%Target_Win%\Fonts\georgia.ttf,CopyOrExpand,%Source_Win%\%sourcefontsfolder%georgia.ttf,%Target_Win%\Fonts
+End
+If,%pCheckBox36%,Equal,True,Begin
+If,Not,ExistFile,%Target_Win%\Fonts\georgiab.ttf,CopyOrExpand,%Source_Win%\%sourcefontsfolder%georgiab.ttf,%Target_Win%\Fonts
+End
+If,%pCheckBox37%,Equal,True,Begin
+If,Not,ExistFile,%Target_Win%\Fonts\georgiaz.ttf,CopyOrExpand,%Source_Win%\%sourcefontsfolder%georgiaz.ttf,%Target_Win%\Fonts
+End
+If,%pCheckBox38%,Equal,True,Begin
+If,Not,ExistFile,%Target_Win%\Fonts\georgiai.ttf,CopyOrExpand,%Source_Win%\%sourcefontsfolder%georgiai.ttf,%Target_Win%\Fonts
+End
+If,%pCheckBox39%,Equal,True,Begin
+If,Not,ExistFile,%Target_Win%\Fonts\impact.ttf,CopyOrExpand,%Source_Win%\%sourcefontsfolder%impact.ttf,%Target_Win%\Fonts
+End
+If,%pCheckBox40%,Equal,True,Begin
+If,Not,ExistFile,%Target_Win%\Fonts\wingding.ttf,CopyOrExpand,%Source_Win%\%sourcefontsfolder%wingding.ttf,%Target_Win%\Fonts
+End
+//--
+//----RegHiveLoad,Tmp_Software,%RegSoftware%
+//----//SERIFE.FON-SSERIFE.FON-COURE.FON-SMALLE.FON Language specific fonts (ex: String: MS Sans Serif 8,10,12,14,18,24 (VGA res) - SSERIFET.FON)
+//----Echo,"Adding Essential Fonts Registry"
+//----Set,%registrysub%,""
+//----Run,%ScriptFile%,FontReg
+//----If,Not,%SourceArch%,Equal,x86,Begi-n
+//----If,%TargetWOW64%,Equal,x86,Begi-n
+//----Echo,"Adding Essential Fonts Registry Wow6432Node"
+//----Set,%registrysub%,Wow6432Node\
+//----Run,%ScriptFile%,FontReg
+//----En-d
+//----En-d
+//----RegHiveUnLoad,Tmp_Software
+//--
+//RegHiveLoad,Tmp_Software,%Target_Sys%\config\software
+//RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Windows NT\CurrentVersion\Fonts,"Lucida Console (TrueType)",lucon.ttf
+//RegHiveUnLoad,Tmp_Software
+//If,%pCheckBox21%,Equal,True,If,%check%,Equal,0,Run,%ScriptFile%,Process-reg
+//If,%pCheckBox22%,Equal,True,If,%check%,Equal,0,Run,%ScriptFile%,Process-reg
+//hive_load,HKLM
+//reg_add,0x1,%reg%\ControlSet001\Control\Nls\CodePage,932,c_932.nls
+//hive_unload
+//--
+//Tip %CheckBox_Fix_Tahoma_Font% not used by current script anymore (hidden interface) - only here for reference.... (for PE1)
+If,%CheckBox_Fix_Tahoma_Font%,Equal,True,Run,%ScriptFile%,Process-reg
+//--
+Echo,"Adding Nls CodePage"
+RegHiveLoad,Tmp_System,%RegSystem%
+If,%pCheckBox_c_932_nls%,Equal,True,Begin
+If,Not,ExistFile,%Target_Sys%\c_932.nls,CopyOrExpand,%source_sys%\c_932.nls,%Target_Sys%
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\NLS\CodePage,932,c_932.nls
+End
+If,%pCheckBox_c_1251_nls%,Equal,True,Begin
+If,Not,ExistFile,%Target_Sys%\c_1251.nls,CopyOrExpand,%source_sys%\c_1251.nls,%Target_Sys%
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\NLS\CodePage,1251,c_1251.nls
+End
+If,%pCheckBox_c_1252_nls%,Equal,True,Begin
+If,Not,ExistFile,%Target_Sys%\c_1252.nls,CopyOrExpand,%source_sys%\c_1252.nls,%Target_Sys%
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\NLS\CodePage,1252,c_1252.nls
+End
+RegHiveUnLoad,Tmp_System
+//--
+If,%Add_ALL_CheckBox%,Equal,True,Run,%ScriptFile%,Add_ALL
+//--
+Echo,"All done."
+
+[Add_ALL]
+Call,DirDeleteMake,%ProjectTemp%\FontsFromSource
+StrFormat,SHORTPATH,%Source_Win%,%Source_WinFolderShortpath%
+//--
+If,%Add_ALL_NLS_CheckBox%,Equal,True,Run,%ScriptFile%,Add_ALL_NLS
+If,%Add_ALL_TTF_CheckBox%,Equal,True,Run,%ScriptFile%,Add_ALL_TTF
+If,%Add_ALL_FON_CheckBox%,Equal,True,Run,%ScriptFile%,Add_ALL_FON
+
+[Add_ALL_NLS]
+If,%OSFamily%,Equal,NT5,Run,%ScriptFile%,Add_ALL_NLS_NT5
+Else,Begin
+FileCopy,%Source_Win%\*.nls,%Target_Sys%
+End
+
+[Add_ALL_NLS_NT5]
+Call,DirDeleteMake,%ProjectTemp%\NLSFromSource
+ShellExecute,hide,expand," -r %Source_WinFolderShortpath%\*.nl_ #$q%ProjectTemp%\NLSFromSource#$q"
+FileCopy,%ProjectTemp%\NLSFromSource\*.nls,%Target_Sys%
+FileCopy,%Source_Win%\*.nls,%Target_Sys%
+
+[Add_ALL_TTF]
+If,%OSFamily%,Equal,NT5,Run,%ScriptFile%,Add_ALL_TTF_NT5
+Else,Begin
+FileCopy,%Source_Win%\Fonts\*.ttf,%Target_Win%\Fonts
+End
+
+[Add_ALL_TTF_NT5]
+ShellExecute,hide,expand," -r %Source_WinFolderShortpath%\*.tt_ #$q%ProjectTemp%\FontsFromSource#$q"
+FileCopy,%ProjectTemp%\FontsFromSource\*.ttf,%Target_Win%\Fonts
+FileCopy,%Source_Win%\*.ttf,%Target_Win%\Fonts
+
+[Add_ALL_FON]
+If,%OSFamily%,Equal,NT5,Run,%ScriptFile%,Add_ALL_FON_NT5
+Else,Begin
+FileCopy,%Source_Win%\Fonts\*.fon,%Target_Win%\Fonts
+End
+
+[Add_ALL_FON_NT5]
+ShellExecute,hide,expand," -r %Source_WinFolderShortpath%\*.fo_ #$q%ProjectTemp%\FontsFromSource#$q"
+FileCopy,%ProjectTemp%\FontsFromSource\*.fon,%Target_Win%\Fonts
+FileCopy,%Source_Win%\*.fon,%Target_Win%\Fonts
+
+[FontReg]
+//Below Experimental - DO NOT USE - Font names have localized registry names ex: enu: Arial Bold (TrueType) tr: Arial Kalýn (TrueType)
+If,%pCheckBox3%,Equal,True,RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Windows NT\CurrentVersion\Fonts","Arial Bold (TrueType)",ARIALBD.TTF
+If,%pCheckBox4%,Equal,True,RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Windows NT\CurrentVersion\Fonts","Arial Bold Italic (TrueType)",ARIALBI.TTF
+If,%pCheckBox5%,Equal,True,RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Windows NT\CurrentVersion\Fonts","Arial Italic (TrueType)",ARIALI.TTF
+If,%pCheckBox7%,Equal,True,RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Windows NT\CurrentVersion\Fonts","Courier New (TrueType)",COUR.TTF
+If,%pCheckBox8%,Equal,True,RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Windows NT\CurrentVersion\Fonts","Courier New Bold (TrueType)",COURBD.TTF
+If,%pCheckBox9%,Equal,True,RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Windows NT\CurrentVersion\Fonts","Courier New Bold Italic (TrueType)",COURBI.TTF
+If,%pCheckBox10%,Equal,True,RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Windows NT\CurrentVersion\Fonts","Courier New Italic (TrueType)",COURI.TTF
+If,%pCheckBox11%,Equal,True,RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Windows NT\CurrentVersion\Fonts","Modern (All res)",MODERN.FON
+If,%pCheckBox12%,Equal,True,RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Windows NT\CurrentVersion\Fonts","Roman (All res)",ROMAN.FON
+If,%pCheckBox13%,Equal,True,RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Windows NT\CurrentVersion\Fonts","Script (All res)",SCRIPT.FON
+If,%pCheckBox15%,Equal,True,RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Windows NT\CurrentVersion\Fonts","Times New Roman (TrueType)",TIMES.TTF
+If,%pCheckBox16%,Equal,True,RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Windows NT\CurrentVersion\Fonts","Times New Roman Bold (TrueType)",TIMESBD.TTF
+If,%pCheckBox17%,Equal,True,RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Windows NT\CurrentVersion\Fonts","Times New Roman Bold Italic (TrueType)",TIMESBI.TTF
+If,%pCheckBox18%,Equal,True,RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Windows NT\CurrentVersion\Fonts","Times New Roman Italic (TrueType)",TIMESI.TTF
+If,%pCheckBox19%,Equal,True,RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Windows NT\CurrentVersion\Fonts","WingDings (TrueType)",WINGDING.TTF
+If,%pCheckBox20%,Equal,True,RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Windows NT\CurrentVersion\Fonts","Microsoft Sans Serif (TrueType)",MICROSS.TTF
+If,%pCheckBox21%,Equal,True,RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Windows NT\CurrentVersion\Fonts","Tahoma (TrueType)",TAHOMA.TTF
+If,%pCheckBox22%,Equal,True,RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Windows NT\CurrentVersion\Fonts","Tahoma Bold (TrueType)",TAHOMABD.TTF
+If,%pCheckBox23%,Equal,True,RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Windows NT\CurrentVersion\Fonts","Lucida Console (TrueType)",LUCON.TTF
+
+[Process-reg]
+//Tip %CheckBox_Fix_Tahoma_Font% not used by current script anymore (hidden interface) - only here for reference.... (for PE1)
+Set,%check%,1
+RegHiveLoad,Tmp_Software,%Target_Sys%\config\software
+ShellExecute,Hide,reg.exe,"DELETE #$qHKLM\Tmp_Software\Microsoft\Windows NT\CurrentVersion\Fonts#$q /v #$qTahoma (TrueType)#$q /f"
+ShellExecute,Hide,reg.exe,"DELETE #$qHKLM\Tmp_Software\Microsoft\Windows NT\CurrentVersion\Fonts#$q /v #$qMicrosoft Sans Serif (TrueType)#$q /f"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Fonts","Tahoma (TrueType)",TAHOMA.TTF
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Fonts","Microsoft Sans Serif (TrueType)",MICROSS.TTF
+RegHiveUnLoad,Tmp_Software
+
+[EncodedFile-AuthorEncoded-authorlogo.jpg]
+lines=0
+0=eJz7f+P/AwYBLzdPNwZGRgYGRiBk+H+bwZlBmJdPkI9HWJBfUFREWFzWQF5WSkrWSktH2cDV1tPdxdbZ0ScsN9YnMCPI0Tm+KSGjsLS6ptorpm1Ca3l/bkV1GcgQRhFRUVlJWQt5eYsyf2f/MpLB/wMMghwMxgz6zIxKDEyCjMyCjP+PMEgxMDAxg1yLAMxMLKxsIDkdAQYmRhCPhRmqgJGJmYFFkFVIWNEwUMmxceHGxMKJF0WMkx4CVUswMqAZxADSDJSRE2RgZmBiYkaSBBokKKTIouRo+P8WAw9QhkmQWZDBnuFtxgpvfZ4VXJEzPjE/W3hktswi//D/DFPbi3YlX3ilaXjX5eO7NI7iJokHzc53XVZ55N7Pq/vy89Qv9Qu7X/94szi9cMJi9blG557q604qYdHuefBV9ET297U2ewSKGE///R3uu5An0+zxnysbo7fdVu5X3naar7Do5ifX4yvtF8a9E5m9eNuDeS/s/N8t5pKcsrMs9BxDTPGf62ZxbxevVV3bp9M93UL2bMjefy6vt0mcMzyx8xbn19U6E13MBSLbfc/4bw07s50npXeKUgpTze8rL18v+6bOda2n0oQtLVj1SEbho1eels+y830KuaUFnD+IVBxY8/K5lmfaOdaMFxumbHlsb6luffLH6oorL/dKViyW+vrLO1A10uOZlwx/4O+VTYoOM580s/y5YqopJqkwzaFMr7hx3pHqrmV669T/dXtK2+U/FEmdVfalyzsm7Ogr8QcVzsk27RfKV+ernTbQnV6Ve0DhZ/kStdmV2uKJ+Yy2Xuse/1zNvVhZ5o6/yfGNOfxZR35c+8/g9s4nUixyqaFOzrvD1iHNp1/His3YrDol0yonReL4pZm56fnZ81i8Wr4qr1weHiejLfSi1y70BAf7irMigWECga4iDEDM+P8mAPe2Ixh4nONLLC3JyC/KyU/P18sqSGcYBSMLMDFD6ANM2OWnfX42jYEJAFrRCZA2kkSFAQAAAAIAAAAqAAAAwAIAAAAAAAABAAAAAAAAAAAAAAA
+
+[AuthorEncoded]
+authorlogo.jpg=782,1043
+font.gif=3821,5095
+Logo=font.gif
+
+[EncodedFile-AuthorEncoded-font.gif]
+lines=1
+0=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
+1=y1dgQziEUqpkAFKTxHs/zZCKJ5/mAFNykAxCgJAH8gEIImhMEcPs8GNPjRj3kcKEQbIMESyJDUMmyPCfWtAKBQQX3X9icjESIAy4UDhVcCuEdJPgUAVmEiL1UFZxAN1GAN16AP/OAP+MAqQKIAFhACI7AE3GMFSVACG8AgCSADDkUFVJAEGbAR5iUhBdAAofAKOeBUjlJlHzYSErIgJDAF95RP+0BZaYB0EaaDJLB3t/M7BzAfnKALscAobhIkQ1IQGxADtpAKS+AFTXQWuYcSfTIA/KEB8pdYbIBUxIFZ8zEfEGABEDAfSPg7GBBGONVuI/JXCCABm5ALsdAFiEVH4FcTEpKEx8EE98EExhEk2bdZ/hPxV8n1OwxgLhdjCjjQARsQARLwApwQRLqACmQgLHhxcwkYES2YXAyAeBXQQRuBiKi4WVTxO4WUJs4GC65gZmjmTY+DaY+XE6FoQf4RAAjRggaxiga1hKp2McIANmukbTZRZV2ogOLFFkfDHy51A6mQUM22C8RwdTY0JThnGhFhL/xRAAZ1Az2wCrfgVWtyC6xwDPbQD/gwP3gBacjIjSfhjQkgIgngAUtABVzwC77Qb/92D/dgVD6ygkfTS9xIj0HSHUxAOvHwDqkiD/GiPa51gH0ojyWhi+4DIfzxUkxAKMFif8NiHEizjRZZUEOSiG1oUCSQBEkABH+GWR5EmSWwZpECUQATghG/44YuZQHy8TvRUWWd84mm4ScQohBCslkQQBUQMiQpMZM0SRD1aJQTYRabNSQEdotPORJ+IgDgqBJ/iISb9WaQ4pRPOQAL8F45CZYYIZYFmZUlsZUGcZLeSBNXeRNkmZWhaC96GV51eRO+5JYmoWsK0Sct4So3qREJ4ZUdkZh7uZYAmIqo+Ie7dYoI4REBAQA7eJzjSMvPK9FLz0xjGAUjEazkwy9fLjH1OCMDANT+BcdfHsTHAQAAAAIAAAAgAAAAqQ4AAAAAAAABAAAAAAAAAAAAAAA
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+Call,UploadXMultiQ
+
+[Settings_Default]
+IniWrite,%ScriptFile%,Main,Selected,False
+Set,%Add_ALL_CheckBox%,False,Permanent
+
+[Settings_Default_Gena]
+IniWrite,%ScriptFile%,Main,Selected,True
+
+[Settings_Default_Yomi]
+IniWrite,%ScriptFile%,Main,Selected,False
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+

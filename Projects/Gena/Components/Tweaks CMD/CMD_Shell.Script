@@ -1,0 +1,295 @@
+[Main]
+Title=CMD Shell
+Type=Plugin
+Author=Lancelot
+Description=EXPERIMENTAL Plugin to test CMD Shell - ADVANCED Users Only
+Credits=http://TheOven.org
+Version=009
+Download_Level=2
+Level=3
+Selected=False
+Mandatory=False
+NoWarning=False
+Contact=http://TheOven.org
+Date=2017.09.23
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Components/Tweaks%20CMD/CMD_Shell.Script
+Web2=http://yomi.cwcodes.net/Yomi/ComponentsY/Tweaks%20CMD/CMD_Shell.Script
+CertifiedBy=
+Certification=
+HistoryNotes01=Not tested on SE yet
+HistoryNotes51='Plugin Creator' http://TheOven.org/index.php?topic=178
+History001=Lancelot 2012.04.27 Plugin created
+History002=Lancelot Added to servers - Date:2016.09.27
+History004=Lancelot Added Add_Line // Edit_CmdShell_Button etc. - Date:2016.09.27
+History005=Lancelot Added Add_Link_Plugin_Button - Date:2016.09.27
+History006=Lancelot Added SavePlugin_Button - Date:2016.09.27 - Date:2016.09.28
+History007=Lancelot Replaced CmdLine_Shell_XPELogon_CheckBox - Date:2016.09.28
+History008=Lancelot Added Components_PluginCache_Extract - Date:2016.11.10
+History009=Lancelot Update hiderun lines - Date:2017.09.23
+
+[InterFace]
+SavePlugin_Button="Save Settings",1,8,242,7,80,25,SavePluginInterface,0,False,False,_SavePluginInterface_,False
+CmdLine_TextLabel=CmdLine:,1,1,20,20,52,18,8,Normal
+CmdLine_Cmd_CheckBox=Cmd.exe,1,3,44,37,66,18,True
+CmdLine_CmdRestart_CheckBox=CmdRestart.cmd,1,3,44,70,98,18,False,"__Keep Shell Alive"
+CmdLine_CmdRestart_hiderun_CheckBox=hiderun,1,3,148,69,64,18,False
+CmdLine_CmdShell_CheckBox=CmdShell.cmd,1,3,44,53,90,18,True
+CmdLine_Shell_XPELogon_CheckBox="\Basic\Shells\FineTune\'Shell XPELogon'",1,3,229,49,216,18,True,"__Overcome ram limitation"
+//-
+Edit_CmdShell_Button=CmdShell,1,8,367,117,83,25,Edit_CmdShell_B,Oxygen-Icons_0_016016..bmp,False,False,_Edit_CmdShell_B_,False
+//-
+CmdStartup_CheckBox="Startup (CmdStartup.cmd)",1,3,91,169,158,18,False
+CmdShell_TextLabel="CmdShell.cmd settings:",1,1,44,103,124,18,8,Normal
+packuser_CheckBox="packuser B:",1,3,91,135,79,18,False
+RunOnce_CheckBox="RunOnce (+ Services.exe + lsass.exe)",1,3,91,118,212,18,False
+Add_Line_CheckBox="Add Line:",1,3,91,187,69,18,False
+Add_Line_TextBox="Add Line:",1,0,256,187,132,21,"Start explorer.exe"
+CLS_CheckBox="ClearScreen CLS",1,3,91,204,112,18,False
+Desktop_CheckBox="Md B:\Desktop + Registry",1,3,91,152,200,18,False
+//-
+Explorer_NoShell_CheckBox="Explorer.exe not shell",1,3,21,240,130,18,False
+Add_PackUserexe_CheckBox="Add packuser.exe (\'3 - Profile 4 Handle and Settings',ProfileH)",1,3,21,261,323,18,False
+Add_Link_Plugin_Button="Add Link ProjectDir",1,8,324,279,107,25,Add_Link_Plugin_B,0,False,False
+WebLabel_Plugin="Plugin Page",1,10,338,4,55,18,http://TheOven.org/index.php?board=9
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[Add_Link_Plugin_B]
+//To test things easily during development
+Call,CreateLink,,%ProjectDir%
+
+[Edit_CmdShell_B]
+If,Not,ExistFile,%Target_Sys%\CmdShell.cmd,Call,Echo,"%Target_Sys%\CmdShell.cmd File NOT FOUND",Warn,,Message,,Exit
+Call,StartDocNotePad,%Target_Sys%\CmdShell.cmd
+
+[Variables]
+
+[Process]
+If,ExistFile,%ProjectTemp%\Components_PluginCache_Extract.ini,Echo,"Components PluginCache"
+If,Not,ExistFile,%ProjectTemp%\Components_PluginCache_Extract.ini,Run,%ScriptFile%,Process_Normal
+
+[Process_Normal]
+Echo,"Processing %ScriptTitle%..."
+//-
+Call,FileDelete,%Target_Sys%\CmdShell.cmd
+Call,FileDelete,%Target_Sys%\CmdRestart.cmd
+Call,FileDelete,%Target_Sys%\CmdStartup.cmd
+//---------------
+Set,%CMDLine%,Cmd.exe
+Set,%StartShell%,Cmd.exe
+Require,File,Cmd.exe
+//---------------
+If,%CmdLine_Cmd_CheckBox%,Equal,True,Begin
+Set,%CMDLine%,Cmd.exe
+Set,%StartShell%,Cmd.exe
+End
+//---------------
+If,%CmdLine_CmdShell_CheckBox%,Equal,True,Begin
+Set,%CMDLine%,"cmd.exe /k CmdShell.cmd"
+Set,%StartShell%,"cmd.exe /k CmdShell.cmd"
+Run,%ScriptFile%,Process_CmdShell
+End
+//---------------
+If,%CmdLine_CmdRestart_CheckBox%,Equal,True,Begin
+Set,%CMDLine%,"cmd.exe /k CmdRestart.cmd"
+//-----
+If,%CmdLine_CmdRestart_hiderun_CheckBox%,Equal,True,Begin
+Set,%CMDLine%,"hiderun.exe /w cmd.exe /k CmdRestart.cmd"
+//-
+If,Not,ExistFile,%Target_Sys%\HideRun.exe,Require,File,HideRun.exe
+End
+//-----
+Run,%ScriptFile%,Process_CmdRestart,%StartShell%
+End
+//---------------
+RegHiveLoad,Tmp_System,%RegSystem%
+RegWrite,HKLM,0x1,Tmp_System\Setup,CmdLine,%CMDLine%
+RegHiveUnLoad,Tmp_System
+//---------------
+//to overcome ram limitation better use XPLogon
+If,%CmdLine_Shell_XPELogon_CheckBox%,Equal,True,Run,%ScriptFile%,Exec_Simple_Macro_Par,"%ProjectDir%\Basic\Shells\FineTune\Shell_XPELogon.Script",,|Select_RadioGroup|2,|Custom_TextBox|%CMDLine%
+//---------------
+Echo,"Pre-Processing:ProfileHandling"
+//packuser.exe (7zsfx) and 7z.exe requires oleaut32.dll and ole32.dll
+If,%Add_PackUserexe_CheckBox%,Equal,True,Call,ExecCall,"%ProjectDir%\Basic\Build\3 - Profile 4 Handle and Settings.Script",ProfileH
+//---------------
+RegHiveLoad,Tmp_Software,%RegSoftware%
+If,%Explorer_NoShell_CheckBox%,Equal,True,Begin
+//Better No to start explorer.exe as shell on a cmd shell
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Winlogon",Shell,""
+End
+Else,Begin
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Winlogon",Shell,Explorer.exe
+End
+RegHiveUnLoad,Tmp_Software
+
+[Process_CmdShell]
+Set,%w%,%Target_Sys%\CmdShell.cmd
+FileCreateBlank,%w%
+//TxtAddLine,%w%,"",Append
+TxtAddLine,%w%,"Title %ProjectName% CMDShell",Append
+//-
+If,%RunOnce_CheckBox%,Equal,True,Begin
+//To get RunOnce entries operational at startup
+//Reminding + Services.exe + lsass.exe also added
+Require,File,RunOnceDep
+TxtAddLine,%w%,"rundll32.exe iernonce.dll,RunOnceExProcess",Append
+End
+//-
+If,%packuser_CheckBox%,Equal,True,Begin
+//packuser.exe to 1) Create all User Profiles 2) To add Startup shortucts
+//If Exist "%systemroot%\packuser.exe" "%systemroot%\packuser.exe" -oB: -y
+//TxtAddLine,%w%,"If Exist #$q#$psystemroot#$p\packuser.exe#$q #$q#$psystemroot#$p\packuser.exe#$q -oB: -y",Append
+//minimize cmd is faster (no cmd-gui refresh ;))
+TxtAddLine,%w%,"If Exist #$q#$psystemroot#$p\packuser.exe#$q Start #$qPackUser#$q /wait /Min cmd.exe /C #$q#$psystemroot#$p\packuser.exe#$q -oB: -y",Append
+End
+//-
+If,%Desktop_CheckBox%,Equal,True,Begin
+//to test things without packuser.exe
+Run,%ScriptFile%,Desktop_Reg
+TxtAddLine,%w%,"MD B:\Desktop",Append
+End
+//-
+If,%CmdStartup_CheckBox%,Equal,True,Begin
+//Naturally First we need startup lnk files (profile) ready - mostly with ramdrive
+ExtractFile,%ScriptFile%,Folder,CmdStartup.cmd,%Target_Sys%
+TxtAddLine,%w%,"Start /wait /Min cmd.exe /c CmdStartup.cmd",Append
+//minimize cmd is faster (no cmd-gui refresh ;))
+//TxtAddLine,%w%,"Start /wait cmd.exe /c CmdStartup.cmd",Append
+End
+//-
+If,%Add_Line_CheckBox%,Equal,True,TxtAddLine,%w%,%Add_Line_TextBox%,Append
+//-
+//Clean screen for a fresh start
+If,%CLS_CheckBox%,Equal,True,TxtAddLine,%w%,cls,Append
+
+[Desktop_Reg]
+//'Open File' box of many applications, FileManagers, as well as Explorer requires a valid desktop folder no vitally but cosmetically ;)
+RegHiveLoad,Tmp_Default,%RegDefault%
+//RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders",Desktop,"B:\Desktop"
+RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders",Desktop,"B:\Desktop"
+RegHiveUnLoad,Tmp_Default
+
+[Process_CmdRestart]
+//when shell close (cmd.exe) PE shutdown
+//to keep shell alive here is a workaround -> cause double cmd.exe ram at startup
+//not perfect - using X (close) button results with question "Terminate Job" at CmdRestart.cmd which maybe hidden !
+//reminding - 3rd party shell loaders also help no shutdown (XPELogon - PELoader - PECCMD)
+//remminding - XPELogon keep shell alive but requires taskmanager to restart shell
+Set,%w%,%Target_Sys%\CmdRestart.cmd
+FileCreateBlank,%w%
+TxtAddLine,%w%,":restart",Append
+//start /wait %1 -> used by PELoader.exe restartshell.cmd option
+If,#1-,Equal,-,TxtAddLine,%w%,"start /wait #$p1",Append
+If,Not,#1-,Equal,-,TxtAddLine,%w%,"start /wait #1",Append
+//TxtAddLine,%w%,"pause",Append
+TxtAddLine,%w%,"goto restart",Append
+
+[Exec_Simple_Macro_Par]
+//max 3 values to change with this macro for now (expandable if required)
+//#1 plugin name //#2 Process Section // #3 Interface|Entry|Value // #4 Interface|Entry|Value
+If,#2-,Equal,-,Set,#2,Process
+If,#3-,Equal,-,Begin
+If,ExistFile,#1,Call,ExecCall,#1,#2
+Else,Echo,"#1 Plugin NOT FOUND",Warn
+End
+Else,Begin
+If,ExistFile,#1,Run,%ScriptFile%,Exec_Simple_Macro_Par_B,#1,#2,#3,#4,#5,#6,#7,#8,#9
+Else,Echo,"#1 Plugin NOT FOUND",Warn
+End
+
+[Exec_Simple_Macro_Par_B]
+Strformat,Split,#3,|,1,%t3_Interface%
+If,%t3_Interface%-,Equal,-,Set,%t3_Interface%,Interface
+Strformat,Split,#3,|,2,%t3_Entry%
+Strformat,Split,#3,|,3,%t3_Value%
+//--
+ChangeInterface,Read,Value,#1,%t3_Interface%,%t3_Entry%,t3_Entry_Backup
+ChangeInterface,Write,Value,#1,%t3_Interface%,%t3_Entry%,%t3_Value%
+//--
+If,Not,#4-,Equal,-,Begin
+Strformat,Split,#4,|,1,%t4_Interface%
+If,%t4_Interface%-,Equal,-,Set,%t4_Interface%,Interface
+Strformat,Split,#4,|,2,%t4_Entry%
+Strformat,Split,#4,|,3,%t4_Value%
+//-
+ChangeInterface,Read,Value,#1,%t4_Interface%,%t4_Entry%,t4_Entry_Backup
+ChangeInterface,Write,Value,#1,%t4_Interface%,%t4_Entry%,%t4_Value%
+End
+//--
+If,Not,#5-,Equal,-,Begin
+Strformat,Split,#5,|,1,%t5_Interface%
+If,%t5_Interface%-,Equal,-,Set,%t5_Interface%,Interface
+Strformat,Split,#5,|,2,%t5_Entry%
+Strformat,Split,#5,|,3,%t5_Value%
+//-
+ChangeInterface,Read,Value,#1,%t5_Interface%,%t5_Entry%,t5_Entry_Backup
+ChangeInterface,Write,Value,#1,%t5_Interface%,%t5_Entry%,%t5_Value%
+End
+//--
+Call,ExecCall,#1,#2
+//-
+ChangeInterface,Write,Value,#1,%t3_Interface%,%t3_Entry%,%t3_Entry_Backup%
+If,Not,#4-,Equal,-,ChangeInterface,Write,Value,#1,%t4_Interface%,%t4_Entry%,%t4_Entry_Backup%
+If,Not,#5-,Equal,-,ChangeInterface,Write,Value,#1,%t5_Interface%,%t5_Entry%,%t5_Entry_Backup%
+
+[SavePluginInterface]
+// Workaround to easily change settings - save and test from other builder ;).
+// Tip: Changing settings on interface not written untill plugin selection changed (boring) or processed or etc. -> Save button to make things quick
+Echo,"Save Settings - Save Plugin Interface"
+
+[AuthorEncoded]
+cmdICON4848.ico=1699,2266
+Logo=cmdICON4848.ico
+
+[EncodedFile-AuthorEncoded-cmdICON4848.ico]
+lines=0
+0=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
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+Oxygen-Icons_0_016016..bmp=711,948
+
+[EncodedFolders]
+Folder
+
+[Folder]
+CmdStartup.cmd=439,586
+
+[EncodedFile-Folder-CmdStartup.cmd]
+lines=0
+0=eJytkU1PwkAQhu9N+h8mmzSAiTbqjYQDslSMIgaCXhpMaae0se3g7paPf++CStWCjcHjfsy8zzzje0kCzZHyhMrnpoGrWJlGce76EYEiEHkG9e1tA2REQvm5kuAp+PgJQSzQVyRilKbhDIZgh8AUvWAmW+enFycMLGsKse4CNRA4O8MVwmuOYg2sd9sZuyMK1dIT6PZjX5DUJ/cpzgJaSreTC4GZekQhY8rc7mqekEDhjiLU8A4lgX5hYC92NDVoQEAgcQf44KmIj1uWFezBu6zAu+v/Dx7rUJpS9snEDnC2N5xoGnEIeh9SAbO+vVoM/K9raydJLnXGoQpequAYbipMY0aKmt2BU+y8aLbV5Ow0bR1dw8091Gt62/YUJj+5JqzWAD54nwWYnpmX0ZnuwkwjDUpjPfc8eYWYDfOMHROf0gLBXpf6u5vkitSykJ2rPwLxah/8Fx/8SB+8wgff66OUWvh4AyvdUzB4nONzzk0JLkksKikt0EvOTWEYBSMLaLFA6CxGHPLflp5nYAIAtaIIpxRVsAABAAAAAgAAACkAAABqAQAAAAAAAAEAAAAAAAAAAAAAAA
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+Call,UploadXMultiQ
+
+[Settings_Default]
+IniWrite,%ScriptFile%,Main,Selected,False
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-Oxygen-Icons_0_016016..bmp]
+lines=0
+0=eJylk11IU2Ecxi3qJkIyjGA3qTMmdtEgUvAiygSFsAsJQRIE6y68iMRid+lNF2H2QRcFslhhJiTOQVp0tpJtoUiNyuNQK2Jfbu187Xzs++m8b062cBD0wsM5vOf9Pef5///ntHYO7amgq0lXg64Duqp07aqoofunt54XLwD/rUwmg0gkUlaxWAz5fB7leHImnU5TZbNZqlwuRxmy52e/wG63l/UgfCqVAru6CpvtKRRFLeX9q3A5nWU9CryiKOgeGkbfpAvPFpbhX9uAKIoIBoOYn5uDlEjs6EH4ZDJJNeP7hr6pBZiHH8M0s4Fbd+7C4XDA5/PBybzFB68Xs7OlHsX8900O/VYHjEYjDl0dg/nFR9weHQXDMLSXJEsw8BPRaLSE1zRNlwpZ1XCDldF+bRh1xnpUjUzg7IQHVqsVKysrILMivSFMMa+qKq0/mdSwKScx4pfRcXkAtaYGVI7N4+JzF609FArtyBNWlmXqQ+sQNVi+Cmi90IMjx45j/yMvrr90wu12057+zRNWkqQSD19cxcBSBC1t7TCYm1H55BPuv1oAy7IIBAIlfCIh6b4CvRY8SE/ehGT0Muswn2zGwaYzODzJYtqzTHtRmAHhJUkEz3PU40+OBK2J+IxviOiYWoSpsRH7Tp3H0el1ON+9pxkLvCDwiMd/UQ9BEKhfIYuiyLB85nDigR01tbXYe64fLeMMwuHwNs9xcf0/iVIPcs/z/FYWkeYRdfUsxlFveQiDwYDdnTfR3W/b5snZnbiE/s2SWkiOmCihzcOhrvceqqtfo6trifJknmQm/6IfgTAuXWExOLimv0/Db8YwheR4nJPyr6hMT83T9UzOzyuON4g3MDQDIj29pNwChlEw/EEZC4TOZ8IuvyvLy4eBCQDrugscOArsvgEAAAACAAAANAAAAG8CAAAAAAAAAQAAAAAAAAAAAAAA
+

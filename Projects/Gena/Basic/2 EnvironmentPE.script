@@ -1,0 +1,356 @@
+[Main]
+Title=EnvironmentPE
+Type=Plugin
+Author=Galapo
+Description=EnvironmentPE provides options for User Profiles configuration and sets %temp% environment variable accordingly.
+Credits=http://TheOven.org
+Version=023
+Download_Level=0
+Level=1
+Selected=True
+Mandatory=True
+NoWarning=False
+Contact=http://TheOven.org/index.php?board=2.0
+Date=2018.11.18
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Basic/2%20EnvironmentPE.script
+CertifiedBy=
+Certification=
+Interface=InterfaceBasic
+InterfaceList=Interface,InterfaceBasic
+HistoryNotes01=BugTempG: Trying to make the environment update through RunOnceEx would fail.
+HistoryNotes02=BugTempG:  an environment change broadcast made at RunOnceEx is not registered by the system.
+HistoryNotes03=BugTempG:   It is too early in the boot process. That is why I have set the broadcast to be made at the Run entry,
+HistoryNotes04=BugTempG:    because this is later and the system recognises it.
+HistoryNotes05=BugTempG: The documentation for the load order here: http://support.microsoft.com/kb/179365 . Also check discussion here: http://www.tomshardware.com/forum/36203-45-starp-sequence
+HistoryNotes06=BugTempL: at StartUp Shortcut .cmd batches %Temp% env variable does not work in short form -> 'Startup Batch (.cmd) with %Temp%' bug
+HistoryNotes07=BugTempL:  BroadcastEnvVar can not fix with neither Tmp_Default,Run nor Tmp_Software,Run
+HistoryNotes08=BugTempL:   Remind: there is timing problem when testing, sometimes success, sometimes fails
+HistoryNotes09=BugTempL:    Custom-SettingsDrive-Temp set as default to workaround :> (also good for Gavotte ;) )
+History002a=Lancelot more TempPE settings added
+History002b=Galapo made changes corrected setting of temp location
+History003=Galapo added new BroadcastEnvChange.exe versions
+History004=Lancelot IniVariables RegTyp PrepPEGenScript
+History005=Lancelot IniVariables RAMDriveLetter
+History006=Lancelot Custom setting default Temp
+History008=Lancelot Custom-SettingsDrive-Temp set as default to workaround HistoryNotes=BugTempL:  :>
+History009=Lancelot Some DirMake Temp lines added ;) // More Info ...
+History009=Galapo ProfileBase\Temp option added and set to default ( I've never really liked setting the root folder of %temp% as 'temp' :> )
+History010=Lancelot Advanced-Basic Screen option added (To keep nice tidy interface as Galapo desired)
+History011=Lancelot fixed [TempPE]
+History012=Lancelot Gena do not assign %cddrive% variable which already exists at EnvVariables !!! to fix pBroadcastEnvChangeCheckBox set default True - anshad http://theoven.org/index.php?topic=468
+History014=Lancelot Multiinterface process a new winbuilder bug fixed
+History015=Lancelot advanced interface as default until PluginManager fixed
+History016=Galapo made a couple of adjustments for new PluginManager
+History019=Lancelot Added Basic_PluginCache_Extract - Date:2016.10.30
+History020=Lancelot Update hiderun lines - Date:2017.09.23
+History021=Lancelot x64\broadcastenvchange.exe following Galapo broadcastenvchange recompile Reply28 http://TheOven.org/index.php?topic=2278.msg29092#msg29092 - Date:2018.11.12
+History022=Lancelot x86\broadcastenvchange.exe following Galapo broadcastenvchange recompile Reply35 http://theoven.org/index.php?topic=2278.msg29103#msg29103 - Date:2018.11.12
+History023=Lancelot moved broadcastenvchange files to "\Utils\BroadcastEnvChange.exe by Galapo" -> Require,File,BroadcastEnvChange.exe - Date:2018.11.18
+
+[Variables]
+%profilesetting%=%ProjectDir%\Basic\Build\3 - Profile 4 Handle and Settings.Script
+
+[InterfaceBasic]
+pBevel1=pBevel1,1,12,0,27,275,42
+pUserProfileTextLabel="[ User profile config ]",1,1,8,4,165,18,11,Bold
+pUserProfileLocTextLabel=Location:,1,1,10,38,58,18,8,Bold,"__ProfileBase Location"
+pUserProfileScrollBox="RAM Drive",1,4,71,36,195,21,"RAM Drive","System Drive (with packuser.exe)","System Drive (no packuser.exe)"
+pWebLabel1=HomePage,1,10,322,12,200,18,http://TheOven.org/index.php?board=2.0
+InterfaceAdvanced_Button="Advanced Settings",1,8,284,272,137,25,PrInterfaceAdvanced,,True,False,_PrInterfaceAdvanced_,True
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+
+[Interface]
+pBevel1=pBevel1,1,12,0,27,275,69
+pUserProfileTextLabel="[ User profile config ]",1,1,8,4,165,18,11,Bold
+pUserProfileLocTextLabel=Location:,1,1,10,38,58,18,8,Bold,"__ProfileBase Location"
+pUserProfileScrollBox="RAM Drive",1,4,71,36,195,21,"RAM Drive","System Drive (with packuser.exe)","System Drive (no packuser.exe)"
+pBroadcastEnvChangeCheckBox="Run BroadcastEnvChange.exe at boot to initialise environment variables correctly",1,3,10,59,262,29,True
+Temp_Settings_Hide_Button=,1,8,8,138,20,20,Advanced_First_Gui,unchecked.bmp,True,False,_Advanced_First_Gui_,True
+Temp_Settings_Show_Button=,0,8,8,138,20,20,Advanced_Second_Gui,checked.bmp,True,False,_Advanced_Second_Gui_,True
+Temp_Default_TextLabel="Default 'Temp' Settings",1,1,29,139,119,18,8,Normal
+Temp_Custom_pBevel=pBevel2,1,12,0,163,385,84
+Temp_Custom_TextLabel="Custom 'Temp' Settings:",1,1,28,169,122,18,8,Normal
+Temp_Custom_CheckBox=,0,3,12,169,16,18,True
+Temp_Custom_RadioButtonPT=ProfileBase\Temp,1,11,24,191,104,20,True
+Temp_Custom_RadioButtonCS=,1,11,24,220,18,18,False
+Temp_Custom_Drive_TextLabel=Drive:,1,1,42,220,32,18,8,Normal
+Temp_Custom_Drive_ScrollBox=SettingsDrive,1,4,76,219,108,21,SettingsDrive,"RAM Drive","System Drive",B:,C:,D:,E:,F:,G:,H:,I:,J:,K:,L:,M:,N:,O:,P:,Q:,R:,S:,T:,U:,V:,W:,Y:,Z:
+Temp_Custom_Folder_TextLabel=Sub-folder:,1,1,185,221,54,18,8,Normal
+Temp_Custom_Folder_TextBox=,1,0,241,219,108,21,Temp
+pTextLabel1="[ Temp folder config ]",1,1,7,109,175,18,11,Bold
+pBevel2=pBevel2,1,12,0,130,274,35
+Button_Info=,0,8,183,135,26,26,Open_Information,Exclamation.bmp,False,False,_Open_Information_,False,__Information
+Button_InfoPBaF=,1,8,133,189,26,26,Open_InformationPBaF,Exclamation.bmp,False,False,_Open_InformationPBaF_,False,__Information
+Button_InfoSubF=,1,8,352,215,26,26,Open_InformationSubF,Exclamation.bmp,False,False,_Open_InformationSubF_,False,__Information
+pWebLabel1=HomePage,1,10,322,12,200,18,http://TheOven.org/index.php?board=2.0
+InterfaceBasic_Button="Basic Settings",1,8,284,272,137,25,PrInterfaceBasic,,True,False,_PrInterfaceBasic_,True
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[PrInterfaceAdvanced]
+IniWrite,%ScriptFile%,Variables_Interface,#$ppUserProfileScrollBox#$p,%pUserProfileScrollBox%
+//--
+Set,%t%,%pUserProfileScrollBox%
+IniWrite,%ScriptFile%,Main,Interface,Interface
+ChangeInterface,Write,Value,,Interface,pUserProfileScrollBox,%t%
+//Set,%pUserProfileScrollBox%,%t%,Permanent
+System,RefreshInterface
+
+[PrInterfaceBasic]
+IniWrite,%ScriptFile%,Variables_Interface,#$ppUserProfileScrollBox#$p,%pUserProfileScrollBox%
+IniWrite,%ScriptFile%,Variables_Interface,#$ppBroadcastEnvChangeCheckBox#$p,%pBroadcastEnvChangeCheckBox%
+IniWrite,%ScriptFile%,Variables_Interface,#$pTemp_Custom_CheckBox#$p,%Temp_Custom_CheckBox%
+IniWrite,%ScriptFile%,Variables_Interface,#$pTemp_Custom_RadioButtonPT#$p,%Temp_Custom_RadioButtonPT%
+IniWrite,%ScriptFile%,Variables_Interface,#$pTemp_Custom_RadioButtonCS#$p,%Temp_Custom_RadioButtonCS%
+IniWrite,%ScriptFile%,Variables_Interface,#$pTemp_Custom_Drive_ScrollBox#$p,%Temp_Custom_Drive_ScrollBox%
+IniWrite,%ScriptFile%,Variables_Interface,#$pTemp_Custom_Folder_TextBox#$p,%Temp_Custom_Folder_TextBox%
+//--
+Set,%t%,%pUserProfileScrollBox%
+IniWrite,%ScriptFile%,Main,Interface,InterfaceBasic
+ChangeInterface,Write,Value,,InterfaceBasic,pUserProfileScrollBox,%t%
+//Set,%pUserProfileScrollBox%,%t%,Permanent
+System,RefreshInterface
+
+[Variables_Interface]
+%pUserProfileScrollBox%=RAM Drive
+%pBroadcastEnvChangeCheckBox%=True
+%Temp_Custom_CheckBox%=True
+%Temp_Custom_RadioButtonPT%=True
+%Temp_Custom_RadioButtonCS%=False
+%Temp_Custom_Drive_ScrollBox%=SettingsDrive
+%Temp_Custom_Folder_TextBox%=Temp
+
+[Advanced_Second_Gui]
+System,CURSOR,Wait
+Run,%ScriptFile%,Advanced_Show-Hide-First_Gui,False
+Run,%ScriptFile%,Advanced_Show-Hide-Second_Gui,True
+System,RefreshInterface
+System,CURSOR,Normal
+
+[Advanced_First_Gui]
+System,CURSOR,Wait
+Run,%ScriptFile%,Advanced_Show-Hide-Second_Gui,False
+Run,%ScriptFile%,Advanced_Show-Hide-First_Gui,True
+System,RefreshInterface
+System,CURSOR,Normal
+
+[Advanced_Show-Hide-Second_Gui]
+Set,%Temp_Custom_CheckBox%,True,Permanent
+//--
+Visible,%Button_InfoPBaF%,#1,PERMANENT
+Visible,%Button_InfoSubF%,#1,PERMANENT
+Visible,%Temp_Custom_RadioButtonPT%,#1,PERMANENT
+Visible,%Temp_Custom_RadioButtonCS%,#1,PERMANENT
+Visible,%Temp_Custom_Drive_TextLabel%,#1,PERMANENT
+Visible,%Temp_Custom_Drive_ScrollBox%,#1,PERMANENT
+Visible,%Temp_Custom_Folder_TextLabel%,#1,PERMANENT
+Visible,%Temp_Custom_Folder_TextBox%,#1,PERMANENT
+Visible,%Temp_Custom_pBevel%,#1,PERMANENT
+Visible,%Temp_Custom_TextLabel%,#1,PERMANENT
+//--
+Visible,%Temp_Settings_Hide_Button%,#1,PERMANENT
+
+[Advanced_Show-Hide-First_Gui]
+Set,%Temp_Custom_CheckBox%,False,Permanent
+//--
+Set,%pBroadcastEnvChangeCheckBox%,#1,Permanent
+//--
+Visible,%Button_Info%,#1,PERMANENT
+//--
+Visible,%Temp_Settings_Show_Button%,#1,PERMANENT
+
+[Process]
+If,ExistFile,%ProjectTemp%\Basic_PluginCache_Extract.ini,Echo,"Basic PluginCache"
+If,Not,ExistFile,%ProjectTemp%\Basic_PluginCache_Extract.ini,Run,%ScriptFile%,Process_Normal
+
+[Process_Normal]
+Echo,"EnvironmentPE: Setting User Profile options..."
+//--
+//- winbuilder bug Set,%UserProfileSelect%,%pUserProfileScrollBox%
+//- IniRead,%ScriptFile%,Main,Interface,%t%
+//- If,%t%,Equal,InterfaceBasic,Begi-n
+//  IniWrite,%ScriptFile%,Variables_Interface,#$ppUserProfileScrollBox#$p,%UserProfileSelect%
+//  AddVariables,%ScriptFile%,Variables_Interface
+//En-d
+//--
+IniRead,%ScriptFile%,Main,Interface,%t%
+ChangeInterface,Read,Value,,%t%,pUserProfileScrollBox,%UserProfileSelect%
+IniWrite,%ScriptFile%,Variables_Interface,#$ppUserProfileScrollBox#$p,%UserProfileSelect%
+AddVariables,%ScriptFile%,Variables_Interface
+//--
+IniRead,%ProjectDir%\script.project,IniVariables,PrepPEGenScript,%PrepPEGenScript%
+//Set,%RAMDriveLetter%,--,PERMANENT
+Set,%RAMDriveLetter%,--
+IniWrite,%ProjectDir%\script.project,IniVariables,RegTyp,0x1
+If,%UserProfileSelect%,Equal,"System Drive (with packuser.exe)",IniWrite,%ProjectDir%\script.project,IniVariables,RegTyp,0x2
+If,%UserProfileSelect%,Equal,"System Drive (no packuser.exe)",IniWrite,%ProjectDir%\script.project,IniVariables,RegTyp,0x2
+If,%UserProfileSelect%,Equal,"System Drive (with packuser.exe)",Begin
+Set,%SettingsDrive%,##$pSystemDrive##$p,PERMANENT
+If,ExistFile,%profilesetting%,Begin
+IniRead,%profilesetting%,Interface,ProfilePack_CheckBox,"%ProfilePack_CheckBox%"
+StrFormat,REPLACE,"%ProfilePack_CheckBox%",False,True,"%ProfilePack_CheckBox%"
+IniWrite,%profilesetting%,Interface,ProfilePack_CheckBox,"%ProfilePack_CheckBox%"
+End
+End
+If,%UserProfileSelect%,Equal,"System Drive (no packuser.exe)",Begin
+Set,%SettingsDrive%,##$pSystemDrive##$p,PERMANENT
+//Set,%RAMDriveLetter%,##$pSystemDrive##$p,PERMANENT
+Set,%RAMDriveLetter%,##$pSystemDrive##$p
+If,ExistFile,%profilesetting%,Begin
+IniRead,%profilesetting%,Interface,ProfilePack_CheckBox,"%ProfilePack_CheckBox%"
+StrFormat,REPLACE,"%ProfilePack_CheckBox%",True,False,"%ProfilePack_CheckBox%"
+IniWrite,%profilesetting%,Interface,ProfilePack_CheckBox,"%ProfilePack_CheckBox%"
+End
+End
+If,%UserProfileSelect%,Equal,"RAM Drive",Set,%SettingsDrive%,"RAMDrive",PERMANENT
+If,%Temp_Custom_CheckBox%,Equal,True,Begin
+If,%Temp_Custom_RadioButtonPT%,Equal,True,Begin
+End
+If,%Temp_Custom_RadioButtonCS%,Equal,True,Begin
+StrFormat,REPLACE,%Temp_Custom_Drive_ScrollBox%," ","",%Temp_Custom_Drive%
+//Set,%RAMDriveLetter%,%Temp_Custom_Drive%,PERMANENT
+Set,%RAMDriveLetter%,%Temp_Custom_Drive%
+End
+End
+IniWrite,%ProjectInfo%,RamDrive,Settings,%SettingsDrive%
+IniWrite,%ProjectDir%\script.project,IniVariables,RAMDriveLetter,%RAMDriveLetter%
+//Run,%ScriptFile%,TempPE
+TXTAddLine,%PrepPEGenScript%,"Exec#$c%ScriptFile%#$cTempPE",APPEND
+
+[TempPE]
+Echo,"EnvironmentPE: Setting temp environment variable options..."
+//--
+Set,%UserProfileSelect%,%pUserProfileScrollBox%
+IniRead,%ScriptFile%,Main,Interface,%t%
+If,%t%,Equal,InterfaceBasic,AddVariables,%ScriptFile%,Variables_Interface
+//If,%t%,Equal,InterfaceBasic,Call,AddInterface,%ScriptFile%,Interface
+//--
+If,Not,%Temp_Custom_CheckBox%,Equal,True,Begin
+If,%UserProfileSelect%,Equal,"System Drive (with packuser.exe)",Set,%TD%,#$pSystemDrive#$p
+If,%UserProfileSelect%,Equal,"System Drive (no packuser.exe)",Set,%TD%,#$pSystemDrive#$p
+If,%UserProfileSelect%,Equal,"RAM Drive",Set,%TD%,%SettingsDrive%
+IniRead,%ProjectInfo%,String,ProfileBase,%docs%
+IniRead,%ProjectInfo%,String,DefaultUser,%user%
+IniRead,%ProjectInfo%,String,LocalSettings,%settings%
+IniRead,%ProjectInfo%,String,Temp,%sttmp%
+Set,%TempFolder%,%docs%\%user%\%settings%\%sttmp%
+DirMake,%TargetProfilesBaseDir%\%TempFolder%
+Set,%tmp%,%TD%\%TempFolder%
+Set,%tmp%,#$pUSERPROFILE#$p\%settings%\Temp
+End
+Else,Begin
+If,%Temp_Custom_RadioButtonCS%,Equal,True,Begin
+StrFormat,LEFT,%Temp_Custom_Drive_ScrollBox%,2,%Var%
+StrFormat,LTrim,%Var%,1,%Var%
+If,Not,%Var%,Equal,:,Begin
+If,%Temp_Custom_Drive_ScrollBox%,Equal,SettingsDrive,Set,%TD%,%SettingsDrive%
+If,%Temp_Custom_Drive_ScrollBox%,Equal,"RAM Drive",Begin
+IniWrite,%ProjectDir%\script.project,IniVariables,RAMDriveLetter,%RAMDriveLetter%
+Set,%TD%,%RAMDriveLetter%
+End
+If,%Temp_Custom_Drive_ScrollBox%,Equal,"System Drive",Set,%TD%,##$pSystemDrive##$p
+DirMake,%TargetProfilesBaseDir%\%Temp_Custom_Folder_TextBox%
+End
+Else,Set,%TD%,%Temp_Custom_Drive_ScrollBox%
+Set,%tmp%,%TD%\%Temp_Custom_Folder_TextBox%
+End
+If,%Temp_Custom_RadioButtonPT%,Equal,True,Begin
+Echo,%UserProfileSelect%
+If,%UserProfileSelect%,Equal,"System Drive (with packuser.exe)",Set,%TD%,#$pSystemDrive#$p
+If,%UserProfileSelect%,Equal,"System Drive (no packuser.exe)",Set,%TD%,#$pSystemDrive#$p
+If,%UserProfileSelect%,Equal,"RAM Drive",Set,%TD%,%SettingsDrive%
+IniRead,%ProjectInfo%,String,ProfileBase,%docs%
+Set,%TempFolder%,%docs%\Temp
+DirMake,%TargetProfilesBaseDir%\%TempFolder%
+Set,%tmp%,%TD%\%TempFolder%
+End
+End
+//--
+If,Not,ExistFile,%Target_Sys%\HideRun.exe,Require,File,HideRun.exe
+RegHiveLoad,Tmp_Default,%RegDefault%
+RegHiveLoad,Tmp_Software,%Target_Sys%\config\software
+If,Not,%UserProfileSelect%,Equal,"System Drive",RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\000,imdisktmp,"hiderun.exe /w cmd.exe /c md #$q%tmp%#$q"
+If,%pBroadcastEnvChangeCheckBox%,Equal,True,RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Windows\CurrentVersion\Run,BroadcastEnvChange,"hiderun.exe /w BroadcastEnvChange.exe /broadcast"
+//If,%pBroadcastEnvChangeCheckBox%,Equal,True,RegWrite,HKLM,0x1,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Run,BroadcastEnvChange,"hiderun.exe /w BroadcastEnvChange.exe /broadcast"
+Require,File,BroadcastEnvChange.exe
+RegHiveUnLoad,Tmp_Software
+RegHiveUnLoad,Tmp_Default
+RegHiveLoad,Tmp_System,%Target_Sys%\setupreg.hiv
+RegWrite,HKLM,0x2,"Tmp_System\ControlSet001\Control\Session Manager\Environment",Temp,%tmp%
+RegWrite,HKLM,0x2,"Tmp_System\ControlSet001\Control\Session Manager\Environment",Tmp,%tmp%
+RegHiveUnLoad,Tmp_System
+RegHiveLoad,Tmp_Default,%Target_Sys%\config\default
+If,ExistRegKey,HKLM,Tmp_Default\Environment,Temp,RegDelete,HKLM,Tmp_Default\Environment,Temp
+If,ExistRegKey,HKLM,Tmp_Default\Environment,Tmp,RegDelete,HKLM,Tmp_Default\Environment,Tmp
+RegWrite,HKLM,0x2,Tmp_Default\Environment,Temp,%tmp%
+RegWrite,HKLM,0x2,Tmp_Default\Environment,Tmp,%tmp%
+RegHiveUnLoad,Tmp_Default
+
+[Open_Information]
+Echo,"Information on Message Box"
+Message,"Using Default Settings would cause#$x 'Startup Batch (.cmd) with %Temp%' bug.#$x#$x#$xIf you decide to use 'Default Settings'#$x Enable 'Run BroadcastEnvChange.exe at boot..' option.#$x  (This will not fix 'Startup Batch (.cmd) with %Temp%' bug#$x   but will fix rest)#$x#$x#$x:>",Information
+
+[Open_InformationSubF]
+Echo,"Information on Message Box"
+Message,"Use Short None-Spaced 'Sub-folder' to avoid#$x  'Startup Batch with %Temp%' bug.#$x#$x#$x:>",Information
+
+[Open_InformationPBaF]
+Echo,"Information on Message Box"
+Message,"Use Short None-Spaced 'ProfileBase' folder to avoid#$x  'Startup Batch with %Temp%' bug.#$x#$xTip:#$x'ProflieBase' folder settings is at#$x Gena\Basic\Build\'Profile Prepare'#$x  and as Default Short None-Spaced.#$x#$x#$x:>",Information
+
+[AuthorEncoded]
+EnvironmentPE.gif=3470,4627
+Logo=EnvironmentPE.gif
+
+[EncodedFile-AuthorEncoded-EnvironmentPE.gif]
+lines=1
+0=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
+1=70oES+3AIe1nCHBcieH9jH/TzmUYLulyARttDG/y364cIHPQOlEPlAOnyQDke6wD2CigaPgfAGYwQiEAEIwAaqUAV7OMABu4ABClMUkSUVXLB5/XB+EtEOUIACKCAHHaIF1kAOqDFmkFVahgIEsuE+c8AF4qAAXMRFcCFB46WAEuEB7YAGRzIQHlBJ40AdMiADJhREpkBCNnhCKARBCAgN6OdSdkAUvZQCQsgydHIi08EEMXgFIbBF0eCBD+A+QBCFhpKAPehSUHMFMvA6WyQOTAEG93APUkgwKzGGpVWAONAPPOiDAwEFY8gSFxhZZ8gHcqgGdDgCMlNX0EANesgO1uMEVZgZXzACdXiHUpCHe2g916MPHEIOjKgFwSY3fO0QiTFWEwjQIbjUCQiQicUXicbnPyuohhFRGJMIiqRYigsREAA7eJwTdM0ryyzKz8tNzSsJcNVLz0xjGAUjCDjy4pffc+xQDyMDABuvCb9ky1f6AQAAAAIAAAApAAAAQQ0AAAAAAAABAAAAAAAAAAAAAAA
+
+[InterfaceEncoded]
+checked.bmp=165,220
+unchecked.bmp=137,183
+Exclamation.bmp=452,603
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+Call,UploadXQ
+
+[Settings_Default]
+IniWrite,%ScriptFile%,Main,Interface,InterfaceBasic
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-checked.bmp]
+lines=0
+0=eJxz8n3GyAAGZkCsAcQ8UMzIIAEW3wCUP8IHwTDQ0NBw4sIV/AioxsHB4T9ugKkGaDJ+NXAH4FLDgArwqME0DU0NsqvgyvD4ixg1cJNJCh88AKKGIAAAX5gbUnic407OSE3OTk3RS8otYBgFIw48Y4TQ0TjkuS4o2DAwAQA7aQa6Hu7DCgEAAAACAAAAJgAAAFsAAAAAAAAAAQAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-unchecked.bmp]
+lines=0
+0=eJxz8n3GyAAGZkCsAcQ8UMzIIAEW3wCUP8IHwTDQ0NBw4sIV/AioxsHB4T9uMKqGSDV4AEQNQQAAw2NaE3ic4y3NS85ITc5OTdFLyi1gGAUjDDxjhNC2OOQ7ygLuMjABAB4dCHaMBl0uAQAAAAIAAAAoAAAAPQAAAAAAAAABAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-Exclamation.bmp]
+lines=0
+0=eJxz8hViYgADMyDWAGJOIBYEYkYGCQYYOMwHwTDwHwx+/PixZMmSgoKCtLS0wsLClStXAkX+//v3b/Wpx4FrryusOK8y65hF9dTIiKjo6OhTp079X3f5Dc+JHzyX/sORRfHUmJiYM2fO/O95+R9ZAoicJ2zbuHHj79+//9/98d/g0l+oxPm/hpufPHj0+j8c/P3778G3v7s+/d9y8PT+gwcvX732Hxm8fvX++o1nCSnFYeGx2bnZ34GOhHrgzz/5aeeALuI/8sU/Ki0uPubWrVtQuaPv/iAcktMcExm9adNGqFzLY4Scdv+2qIiozs5OqJz77X9wOfEtj0KjwjMzMz9//vz/3a9/wuf/Ivx38Z9fXG5sbOyVK1f+b3/zG83vtgWdUVFRq1at+l957xeanMaUPVFR0U2NTf/Nrv9DkxM+9C4qIr6vt/+/wml0fTLrH+3Yvufr16//d7z67XjjH/95kG7+078cj77feeoh1AMA+kpMA3ic43etSM5JzE0syczP00vKLWAYBSMKCDFB6FJG7PLT0jXWMDABALBlCE/6kIw0AQAAAAIAAAArAAAAdQEAAAAAAAABAAAAAAAAAAAAAAA
+

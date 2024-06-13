@@ -1,0 +1,374 @@
+[Main]
+Title=IE Settings
+Type=Plugin
+Author=saydin77, Lancelot
+Description=Microsoft Internet Explorer Settings
+Credits=dera, fxscrpt, http://TheOven.org
+Version=039
+Download_Level=1
+Level=3
+Selected=False
+Mandatory=False
+NoWarning=False
+Contact=http://TheOven.org
+Date=2020.01.30
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Components/Core/1%20System/IE_Settings.script
+CertifiedBy=
+Certification=
+HistoryNotes01="FormSuggest PW Ask" value does not exists on 2k3x64-IE08
+HistoryNotes02=ieframe does not exits on IE06, following can not be used (maybe in future ;)) RegWrite,HKLM,0x1,"Tmp_Software\Classes\InternetShortcut\shell\Internet Explorer New\command",,"rundll32.exe ieframe.dll,OpenURL #$pl" , check info here http://windowsxp.mvps.org/ie/urlopennew.htm
+HistoryNotes03=Some references: http://support.microsoft.com/kb/823057/en-us http://www.pctools.com/guides/registry/detail/442/ http://www.pctools.com/guides/registry/detail/537/ http://www.pctools.com/guides/registry/id/612/
+History022=Lancelot disable download checkbox added
+History023=registry addings added for other type of builds (RF - IE08)
+History024a=Lancelot double entry for PrivacyAdvanced fixed.
+History024=Thanks to Rui Paz bugy fixed
+History028=Lancelot RegFactory ProcessEnd integrated
+History030=Lancelot more setting added // interface cosmetics
+History033=Lancelot NoWarnROW implemented x 2
+History034=Galapo changed url4 from galapo.net to cwcodes.net
+History035=Galapo added option to hide Go Button
+History036=Lancelot Added DU Buttons - Date:2015.10.29
+History037=Lancelot Added Components_PluginCache_Extract - Date:2016.11.08
+History038=Lancelot Update empty Home Page WebLabel - PEBakery - ied206 Reply 3 http://TheOven.org/index.php?topic=2329.msg25119#msg25119 - Date:2017.12.18
+History039=Lancelot Add Warn_cert_mimatch_CheckBox - gazi06 Reply 15 http://TheOven.org/index.php?topic=3041.msg36492#msg36492 - Date:2020.01.30
+
+[Interface]
+pTextLabel1="Cache Limit:",1,1,14,81,61,18,8,Normal
+pScrollBox1="  2 mb",1,4,79,79,54,21,"  1 mb","  2 mb","  4 mb","  8 mb","16 mb","32 mb","64 mb"
+TextLabel_maxconnection="Max Connnections:",1,1,161,80,97,18,8,Normal
+NumberBox_maxconnection=pNumberBox1,1,2,259,78,40,18,16,10,64,
+pCheckBox_Desktop_Shortcut="Desktop Shortcut",1,3,13,6,112,15,True
+pTextBox_StartPage="Start Page:",1,0,15,42,154,21,http://www.google.com
+pCheckBox_StartPage_blank=about:blank,1,3,77,28,87,12,False
+pTextBox_Default_Page="Default Page:",1,0,172,42,153,21,
+pCheckBox_DefaultPage_blank=about:blank,1,3,239,27,87,12,False
+pCheckBox_Clear_CacheFiles_Exit="Clear Temporary IE cache Files at exit",1,3,14,116,204,12,True
+pCheckBox_Enable_PopUp_Blocker="Enable PopUp Blocker",1,3,14,129,200,12,False
+pCheckBox_Notify_Download_Complete="Notify Download Complete",1,3,14,142,200,12,True
+pCheckBox_AutoComplete_Url="AutoComplete Url",1,3,14,155,200,12,True
+pCheckBox_AutoShow_url_dropdown_list="Auto Show url drop down list",1,3,14,168,200,12,False
+pCheckBox_Use_Form_Suggest="Use Form Suggest (Suggest typed inputs)",1,3,14,181,240,12,False
+pCheckBox_FormSuggestPasswords="Use FormSuggest Passwords (Suggest typed passwords)",1,3,14,194,293,12,False
+pCheckBox_WarnOnPost="Warn on post",1,3,14,207,95,12,False
+pCheckBox_PasswordInUrl="Enable User/Password in url",1,3,14,220,156,12,True
+pCheckBox_AutoImageResize=AutoImageResize,1,3,14,233,109,12,False
+pCheckBox_No_header_footer="PageSetup: NO Header and NO Footer",1,3,14,246,214,12,True
+pCheckBox6="Upx compress xpsp2res.dll",1,3,306,273,151,17,False
+pCheckBox7="Upx compress mshtml.dll",1,3,306,291,151,18,False
+pCheckBox_Custom_settings="Use Custom Settings",1,3,14,260,120,12,True
+pButton_Custom_settings="Click me to view",1,8,137,259,83,15,View_Custom_settings
+pCheckBox_AllowWindowReuse="Open In New Window (AllowWindowReuse 0)",1,3,14,274,241,12,True
+pCheckBox_Disable_Download="Disable Download",1,3,14,302,113,12,False
+Warn_cert_mimatch_CheckBox="Warn about certificate address mismatch",1,3,14,316,225,12,False
+pCheckBox_Ass_Adds="Association Adds",1,3,14,288,105,12,True
+pButton_AssAdds="Ass. Adds",1,8,123,287,55,15,MiniRegAdds_Button
+pCheckBox_ClearBrowsingHistoryOnExit="Clear Browsing History On Exit",1,3,249,115,173,13,False
+pCheckBox_HideExplorerGoButton="Hide Explorer Go Button",1,3,249,129,173,13,False
+WebLabel_Homepg=HomePage,1,10,343,20,55,18,http://TheOven.org/index.php?board=9
+WebLabel_Plugin="Plugin Page",1,10,338,4,55,18,http://TheOven.org/index.php?board=9
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[Variables]
+%ProgramTitle%=Internet Explorer
+%ProgramEXE%=iexplore.exe
+%ProgramFolder%=Internet Explorer
+%IeRegsTmp%=%ProjectTemp%\ie6
+%NoWarnROW%=
+
+[Process]
+If,ExistFile,%ProjectTemp%\Components_PluginCache_Extract.ini,Echo,"Components PluginCache"
+If,Not,ExistFile,%ProjectTemp%\Components_PluginCache_Extract.ini,Run,%ScriptFile%,Process_Normal
+
+[Process_Normal]
+IniRead,%ProjectDir%\script.project,IniVariables,RegFactoryState,%RegFactoryState%
+If,%RegFactoryState%,Equal,Enabled,Begin
+IniRead,%ProjectDir%\script.project,IniVariables,PostApiRegScript,%PostApiRegScript%
+IniWriteTextLine,%PostApiRegScript%,ProcessEnd,"Exec,#$q%ScriptFile%#$q,Process_Main"
+End
+Run,%ScriptFile%,Process_Main
+
+[MiniRegAdds_Button]
+If,Not,ExistFile,%target_sys%\Config\Software,Exit,"Button can only be used after build"
+RegHiveLoad,Tmp_Software,%target_sys%\Config\Software
+Run,%scriptfile%,Mini-Registry-Adds
+RegHiveUnLoad,Tmp_Software
+
+[Mini-Registry-Adds]
+Echo,"Installing Mini Registry Adds"
+//Default: resetting back to default settings IF changed ;)
+If,%NoWarnROW%,Equal,True,System,ErrorOff,2
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.htm,,htmlfile
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.html,,htmlfile
+//--
+If,%NoWarnROW%,Equal,True,System,ErrorOff,7
+RegWrite,HKLM,0x2,Tmp_Software\Classes\ftp\shell\open\command,,"#$q%PE_Programs%\%ProgramFolder%\%ProgramEXE%#$q #$p1"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\http\shell\open\command,,"#$q%PE_Programs%\%ProgramFolder%\%ProgramEXE%#$q -nohome"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\https\shell\open\command,,"#$q%PE_Programs%\%ProgramFolder%\%ProgramEXE%#$q -nohome"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\htmlfile\shell\open\command,,"#$q%PE_Programs%\%ProgramFolder%\%ProgramEXE%#$q -nohome"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\htmlfile\shell\opennew\command,,"#$q%PE_Programs%\%ProgramFolder%\%ProgramEXE%#$q #$p1"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\InternetShortcut\shell\open\command,,"rundll32.exe shdocvw.dll,OpenURL #$pl"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\xmlfile\shell\open\command,,"#$q%PE_Programs%\%ProgramFolder%\%ProgramEXE%#$q -nohome"
+//--
+If,%NoWarnROW%,Equal,True,System,ErrorOff,3
+RegWrite,HKLM,0x2,Tmp_Software\Classes\htmlfile\DefaultIcon,,"%PE_Programs%\%ProgramFolder%\%ProgramEXE%,1"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\InternetShortcut\DefaultIcon,,"#$psystemroot#$p\system32\url.dll,0"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\xmlfile\DefaultIcon,,"#$psystemroot#$p\system32\msxml3.dll,0"
+//Shell Open: default shell may change by external utilities ;)
+If,%NoWarnROW%,Equal,True,System,ErrorOff,5
+RegWrite,HKLM,0x1,Tmp_Software\Classes\ftp\shell,,open
+RegWrite,HKLM,0x1,Tmp_Software\Classes\http\shell,,open
+RegWrite,HKLM,0x1,Tmp_Software\Classes\https\shell,,open
+RegWrite,HKLM,0x1,Tmp_Software\Classes\InternetShortcut\shell,,open
+RegWrite,HKLM,0x1,Tmp_Software\Classes\xmlfile\shell,,open
+//Additional -- for right click when other applications associates
+If,%NoWarnROW%,Equal,True,System,ErrorOff,4
+RegWrite,HKLM,0x2,"Tmp_Software\Classes\htmlfile\shell\Internet Explorer\command",,"#$q%PE_Programs%\%ProgramFolder%\%ProgramEXE%#$q -nohome"
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\InternetShortcut\shell\Internet Explorer\command",,"rundll32.exe shdocvw.dll,OpenURL #$pl"
+RegWrite,HKLM,0x2,"Tmp_Software\Classes\xbmfile\shell\Internet Explorer\command",,"#$q%PE_Programs%\%ProgramFolder%\%ProgramEXE%#$q -nohome"
+RegWrite,HKLM,0x2,"Tmp_Software\Classes\xmlfile\shell\Internet Explorer\command",,"#$q%PE_Programs%\%ProgramFolder%\%ProgramEXE%#$q -nohome"
+
+[Process_Main]
+IniRead,%ProjectDir%\script.project,IniVariables,NoWarnRegOverWrite,%NoWarnROW%
+Echo,"IE Settings..."
+Run,%ScriptFile%,load-registry
+Run,%ScriptFile%,replace_settings
+Run,%ScriptFile%,unload-registry
+
+[load-registry]
+RegHiveLoad,Tmp_Default,%target_sys%\Config\Default
+RegHiveLoad,Tmp_Software,%target_sys%\Config\Software
+
+[unload-registry]
+RegHiveUnLoad,Tmp_Default
+RegHiveUnLoad,Tmp_Software
+
+[replace_settings]
+If,%pCheckBox_Ass_Adds%,Equal,True,Run,%ScriptFile%,Mini-Registry-Adds
+Echo,"Replacing settings"
+If,%pScrollBox1%,Equal,"  1 mb",Set,%ie6cachelimit%,1024
+If,%pScrollBox1%,Equal,"  2 mb",Set,%ie6cachelimit%,2048
+If,%pScrollBox1%,Equal,"  4 mb",Set,%ie6cachelimit%,4096
+If,%pScrollBox1%,Equal,"  8 mb",Set,%ie6cachelimit%,8192
+If,%pScrollBox1%,Equal,"16 mb",Set,%ie6cachelimit%,16384
+If,%pScrollBox1%,Equal,"32 mb",Set,%ie6cachelimit%,32768
+If,%pScrollBox1%,Equal,"64 mb",Set,%ie6cachelimit%,65536
+If,%NoWarnROW%,Equal,True,System,ErrorOff,4
+If,%pCheckBox_Desktop_Shortcut%,Equal,True,RegWrite,HKLM,0x4,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel,{871C5380-42A0-1069-A2EA-08002B30309D},0
+If,%pCheckBox_Desktop_Shortcut%,Equal,True,RegWrite,HKLM,0x4,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\ClassicStartMenu,{871C5380-42A0-1069-A2EA-08002B30309D},0
+If,%pCheckBox_Desktop_Shortcut%,Equal,False,RegWrite,HKLM,0x4,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel,{871C5380-42A0-1069-A2EA-08002B30309D},1
+If,%pCheckBox_Desktop_Shortcut%,Equal,False,RegWrite,HKLM,0x4,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\ClassicStartMenu,{871C5380-42A0-1069-A2EA-08002B30309D},1
+If,%pCheckBox_StartPage_blank%,Equal,True,Set,%StartPageValue%,about:blank
+Else,Set,%StartPageValue%,%pTextBox_StartPage%
+If,%pCheckBox_DefaultPage_blank%,Equal,True,Set,%DefaultPageValue%,about:blank
+Else,Set,%DefaultPageValue%,%pTextBox_Default_Page%
+If,%pCheckBox_Clear_CacheFiles_Exit%,Equal,True,Set,%ClearCacheExitValue%,0
+Else,Set,%ClearCacheExitValue%,1
+If,%pCheckBox_Enable_PopUp_Blocker%,Equal,True,Set,%PopupMgrValue%,yes
+Else,Set,%PopupMgrValue%,no
+If,%pCheckBox_Notify_Download_Complete%,Equal,True,Set,%NotifyDownloadCompleteValue%,yes
+Else,Set,%NotifyDownloadCompleteValue%,no
+If,%pCheckBox_AutoComplete_Url%,Equal,True,Set,%AutoCompleteURLValue%,yes
+Else,Set,%AutoCompleteURLValue%,no
+If,%pCheckBox_AutoShow_url_dropdown_list%,Equal,True,Set,%AutoSuggestValue%,yes
+Else,Set,%AutoSuggestValue%,no
+If,%pCheckBox_Use_Form_Suggest%,Equal,True,Set,%UseFormSuggestValue%,yes
+Else,Set,%UseFormSuggestValue%,no
+If,%pCheckBox_FormSuggestPasswords%,Equal,True,Set,%FormSuggestPasswordsValue%,yes
+Else,Set,%FormSuggestPasswordsValue%,no
+If,%pCheckBox_WarnOnPost%,Equal,True,Set,%WarnOnPost_mini_Value%,01
+Else,Set,%WarnOnPost_mini_Value%,00
+If,%pCheckBox_PasswordInUrl%,Equal,True,Set,%PasswordInUrl_Value%,0
+Else,Set,%WarnOnPost_mini_Value%,1
+If,%pCheckBox_AutoImageResize%,Equal,True,Set,%AutoImageResizeValue%,yes
+Else,Set,%AutoImageResizeValue%,no
+If,%pCheckBox_AllowWindowReuse%,Equal,True,Set,%AllowWindowReuseValue%,0
+Else,Set,%AllowWindowReuseValue%,1
+If,%pCheckBox_Disable_Download%,Equal,True,Set,%Disable_Download%,3
+Else,Set,%Disable_Download%,0
+If,%pCheckBox_ClearBrowsingHistoryOnExit%,Equal,True,Set,%ClearBrowsingHistoryOnExitV%,1
+Else,Set,%ClearBrowsingHistoryOnExitV%,0
+If,%NoWarnROW%,Equal,True,System,ErrorOff,7
+RegWrite,HKLM,0x1,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Explorer\AutoComplete,"Append Completion",%AutoCompleteURLValue%
+RegWrite,HKLM,0x1,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Explorer\AutoComplete,AutoSuggest,%AutoSuggestValue%
+RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings",MimeExclusionListForCache,"multipart/mixed multipart/x-mixed-replace multipart/x-byteranges "
+RegWrite,HKLM,0x3,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings",WarnOnPost,%WarnOnPost_mini_Value%,00,00,00
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings",EnableHttp1_1,1
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings",EnableNegotiate,0
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings",ProxyEnable,0
+// Internet Explorer - Warning Privacy-Cookie--Disabled - annoyin popup sayin there is privacy icon for some reasons
+If,%NoWarnROW%,Equal,True,System,ErrorOff,3
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings",PrivDiscUiShown,1
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings",EnableAutodial,0
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings",WarnonBadCertRecving,0
+// IE asks question when goin in mail addresses
+If,%NoWarnROW%,Equal,True,System,ErrorOff,23
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings",WarnonZoneCrossing,0
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings",SecureProtocols,40
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings",CertificateRevocation,0
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings",DisableCachingOfSSLPages,1
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings",WarnOnPostRedirect,0
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings",PrivacyAdvanced,1
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings",ProxyHttp1.1,0
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings",UrlEncoding,0
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings",SyncMode5,0
+RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings",MinorVersion,;SP1;
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings",MaxConnectionsPerServer,%NumberBox_maxconnection%
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings",MaxConnectionsPer1_0Server,%NumberBox_maxconnection%
+RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings\5.0\Cache,Signature","Client UrlCache MMF Ver 5.2"
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings\5.0\Cache\Content",PerUserItem,1
+RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings\5.0\Cache\Content",CachePrefix,
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings\5.0\Cache\Content",CacheLimit,%ie6cachelimit%
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings\5.0\Cache\Cookies",PerUserItem,1
+RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings\5.0\Cache\Cookies",CachePrefix,Cookie:
+RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings\5.0\Cache\Extensible Cache"
+RegWrite,HKLM,0x4,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings\5.0\Cache\History",PerUserItem,1
+RegWrite,HKLM,0x1,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings\5.0\Cache\History",CachePrefix,Visited:
+RegWrite,HKLM,0x4,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Content",CacheLimit,%ie6cachelimit%
+RegWrite,HKLM,0x4,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings\Cache",Persistent,%ClearCacheExitValue%
+//Internet Explorer - Don't ask when sending unsecure text...
+If,%NoWarnROW%,Equal,True,System,ErrorOff,8
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3",1601,0
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3",1803,%Disable_Download%
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3",1809,3
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3",1A10,1
+RegWrite,HKLM,0x4,Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Webcheck,NoScheduledUpdates,1
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\WinTrust\Trust Providers\Software Publishing",State,512
+RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Internet Explorer\Download",CheckExeSignatures,no
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Internet Explorer\Download",RunInvalidSignatures,1
+// Internet Explorer - Information Bar - Do not show this message again - warning gui dont come but dont worry warnin on page remains
+If,%NoWarnROW%,Equal,True,System,ErrorOff
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Internet Explorer\InformationBar",FirstTime,0
+// Internet Explorer - Don't ask when sending post data..
+If,%NoWarnROW%,Equal,True,System,ErrorOff,4
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Internet Explorer\IntelliForms",AskUser,0
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Internet Explorer\International",AutoDetect,1
+RegWrite,HKLM,0x3,"Tmp_Default\Software\Microsoft\Internet Explorer\International",Default_CodePage,e8,04,00,00
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Internet Explorer\International",CNum_CpCache,0
+// Check Association - NO
+If,%NoWarnROW%,Equal,True,System,ErrorOff
+RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Internet Explorer\Main",Check_Associations,No
+// Default Browser Question - NO
+If,%NoWarnROW%,Equal,True,System,ErrorOff
+RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Internet Explorer\Main",IgnoreDefCheck,Yes
+// to avoid asking install language packages (like in chinese or turkish sites)
+If,%NoWarnROW%,Equal,True,System,ErrorOff,5
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Internet Explorer\International",W2KLpk,0
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Internet Explorer\Main",AllowWindowReuse,%AllowWindowReuseValue%
+RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Internet Explorer\Main",ShowGoButton,yes
+RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Internet Explorer\Main","Default_Page_URL",%DefaultPageValue%
+RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Internet Explorer\Main","Enable AutoImageResize",%AutoImageResizeValue%
+// Internet Explorer - disable intellimenus in Favorites of ie so no hide of old
+If,%NoWarnROW%,Equal,True,System,ErrorOff,9
+RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Internet Explorer\Main",FavIntelliMenus,No
+RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Internet Explorer\Main","FormSuggest Passwords",%FormSuggestPasswordsValue%
+RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Internet Explorer\Main","FormSuggest PW Ask",no
+RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Internet Explorer\Main",NotifyDownloadComplete,%NotifyDownloadCompleteValue%
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Internet Explorer\Main",NoUpdateCheck,1
+RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Internet Explorer\Main","Start Page",%StartPageValue%
+RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Internet Explorer\Main","Use FormSuggest",%UseFormSuggestValue%
+RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Internet Explorer\Main","Window Title","Gena Heyoooooooooooo"
+RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Internet Explorer\New Windows,PopupMgr",%PopupMgrValue%
+If,%pCheckBox_No_header_footer%,Equal,True,Begin
+// Internet Explorer - File-Page Setup---Header & Footer - cleaner prints on page (pdf etc.)
+// Internet Explorer - File-Page Setup-Header-NO - Default value: &w&bPage &p of &P
+If,%NoWarnROW%,Equal,True,System,ErrorOff
+RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Internet Explorer\PageSetup",header,""
+// Internet Explorer - File-Page Setup-Footer-NO - Default value: &u&b&d
+If,%NoWarnROW%,Equal,True,System,ErrorOff
+RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Internet Explorer\PageSetup",footer,""
+End
+//--
+If,%NoWarnROW%,Equal,True,System,ErrorOff
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Internet Explorer\Privacy",ClearBrowsingHistoryOnExit,%ClearBrowsingHistoryOnExitV%
+//--
+// Internet Explorer - Security Setting
+If,%NoWarnROW%,Equal,True,System,ErrorOff
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Internet Explorer\Security\P3Global",Enabled,1
+If,%pCheckBox_Custom_settings%,Equal,True,Begin
+If,%NoWarnROW%,Equal,True,System,ErrorOff
+RegWrite,HKLM,0x4,"Tmp_Default\Software\Microsoft\Internet Explorer\Toolbar",Locked,1
+//{1E796980-9CC5-11D1-A83F-00C04FC99D61} customize buttons
+If,%NoWarnROW%,Equal,True,System,ErrorOff
+RegWrite,HKLM,0x3,"Tmp_Default\Software\Microsoft\Internet Explorer\Toolbar",{1E796980-9CC5-11D1-A83F-00C04FC99D61},07,00,00,00,f2,03,00,00,7e,69,79,1e,c5,9c,d1,11,a8,3f,00,c0,4f,c9,9d,61,20,01,00,00,00,00,00,00,f3,03,00,00,7e,69,79,1e,c5,9c,d1,11,a8,3f,00,c0,4f,c9,9d,61,21,01,00,00,00,00,00,00,f4,03,00,00,7e,69,79,1e,c5,9c,d1,11,a8,3f,00,c0,4f,c9,9d,61,24,01,00,00,04,00,00,00,f5,03,00,00,7e,69,79,1e,c5,9c,d1,11,a8,3f,00,c0,4f,c9,9d,61,25,01,00,00,04,00,00,00,f6,03,00,00,7e,69,79,1e,c5,9c,d1,11,a8,3f,00,c0,4f,c9,9d,61,22,01,00,00,04,00,00,00,ff,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,f8,03,00,00,7e,69,79,1e,c5,9c,d1,11,a8,3f,00,c0,4f,c9,9d,61,26,01,00,00,04,00,00,00,f9,03,00,00,7e,69,79,1e,c5,9c,d1,11,a8,3f,00,c0,4f,c9,9d,61,2e,01,00,00,04,00,00,00
+//ITBarLayout : position of bars + text options
+If,%NoWarnROW%,Equal,True,System,ErrorOff
+RegWrite,HKLM,0x3,"Tmp_Default\Software\Microsoft\Internet Explorer\Toolbar\WebBrowser",ITBarLayout,11,00,00,00,4c,00,00,00,00,00,00,00,32,00,00,00,1f,00,00,00,53,00,00,00,02,00,00,00,20,07,00,00,0b,01,00,00,01,00,00,00,20,07,00,00,17,01,00,00,05,00,00,00,62,05,00,00,26,00,00,00,03,00,00,00,21,03,00,00,13,02,00,00,04,00,00,00,21,01,00,00,37,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+End
+If,%NoWarnROW%,Equal,True,System,ErrorOff,11
+RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Internet Explorer\TypedURLs",url1,"http://www.google.com"
+RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Internet Explorer\TypedURLs",url2,"http://www.google.com/intl/en/"
+RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Internet Explorer\TypedURLs",url3,"http://TheOven.org"
+RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Internet Explorer\TypedURLs",url4,"http://CwCodes.net"
+RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Internet Explorer\TypedURLs",url5,""
+RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Internet Explorer\TypedURLs",url6,""
+RegWrite,HKLM,0x4,"Tmp_Software\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_HTTP_USERNAME_PASSWORD_DISABLE",explorer.exe,%PasswordInUrl_Value%
+RegWrite,HKLM,0x4,"Tmp_Software\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_HTTP_USERNAME_PASSWORD_DISABLE",iexplore.exe,%PasswordInUrl_Value%
+If,%pCheckBox6%,Equal,True,ShellExecute,Hide,%Tools%\upx.exe," -9 #$q%target_sys%\xpsp2res.dll#$q"
+If,%pCheckBox7%,Equal,True,ShellExecute,Hide,%Tools%\upx.exe," -9 #$q%target_sys%\mshtml.dll#$q"
+If,%pCheckBox_HideExplorerGoButton%,Equal,True,RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Internet Explorer\Main",ShowGoButton,No
+If,%pCheckBox_HideExplorerGoButton%,Equal,False,RegWrite,HKLM,0x1,"Tmp_Default\Software\Microsoft\Internet Explorer\Main",ShowGoButton,Yes
+//-
+//Disable Securify
+//IE Tools (Control Panel) -> Internet Options-Advanced-"Warn about certificate address mismatch" - False
+If,%Warn_cert_mimatch_CheckBox%,Equal,False,Begin
+If,%NoWarnROW%,Equal,True,System,ErrorOff,1
+RegWrite,HKLM,0x3,"Tmp_Default\Software\Microsoft\Windows\CurrentVersion\Internet Settings\Connections",SavedLegacySettings,3C,00,00,00,0F,00,00,00,01,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,04,00,00,00,00,00,00,00,40,64,6B,AC,CA,2A,CA,01,01,00,00,00,C0,A8,01,23,00,00,00,00,00,00,00,00
+End
+
+[View_Custom_settings]
+If,Not,ExistDir,%BaseDir%\Temp,DirMake,%BaseDir%\Temp
+ExtractFile,%ScriptFile%,Preview,IE_Toolbar.png,%BaseDir%\Temp
+Call,StartDoc,%BaseDir%\Temp\IE_Toolbar.png
+
+[AuthorEncoded]
+Internet-ShortcutSZ_4848.ico=5731,7642
+Logo=Internet-ShortcutSZ_4848.ico
+
+[EncodedFile-AuthorEncoded-Internet-ShortcutSZ_4848.ico]
+lines=1
+0=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
+1=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
+
+[EncodedFolders]
+Preview
+
+[EncodedFile-Preview-IE_Toolbar.png]
+lines=3
+0=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
+1=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
+2=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
+3=CExIxm/eOO9mVwj5vCiB6J5hJJ097xQekO5OOc1MgBSZLt3drL0PD3dPnShtOvpY6Lx1M8NtBzIpF28vw4q2+K+BkLEcW0YVg7XoEH8rump7rUQj+AGaktJHeMrE4YnH+gqqhIhi/a2VFH7x6Ygi+s3w7pe3vAZLU4FfTJrXB2+4eRDksDROVyBOSX0tDEshb1xOqNFQr1WBbVkXWxxUmhdha8S7o89n4BiUW+HK/ianq6QzxE1+fVe+E433kPZ8GVb7pts8iS77pesKsNlpEG9w2jyRPpt3eAwsA0VT+jFV2LRoksDWwSakBKjgi3sZ+UvbTbRG0nk8rXSNJPq7I40taWnl5jbjSusFk6wvdnPjOVvewFcymjLddWTJcWU+EGGsw5zsw9R5Py8z+vagpcnJ/gifIdBLnF/44DVAWy54o2PrLCOSvroQPg6j8cbz2WTuoXTz5sL8arKIUIkxAkmrGEI4S+C7l+sE87XfECOFauHKpHf1UdeMEyI3+5AEKWPdoDR+UL6eo5+LO/c3FNXFxozz6LdyMPK72V3R5BftCzqr5kbVUXEvkpzfla1Qph36WRthMwJlSvtb3RwK33ZHH6MYJw7C9dDseHSlpaKn1N9A+TfQlFxExzwnQFAgudR6YmmodIFv8Ww1kY7vHjWiWqOunQChkbjYtjGRLwRGC2h0K10ReiRi3/RKuxYovIGu0zi38qVhoVQ1N9pViqlOKx5msUFRRhpgHj0LDWnyd6BraxU7Yg2slNc94ssbFl9J7u5rO0kkzRtj1A6GdbMchWHwwUZI2Q1NDI5QvbMFZYRZP+nORSnSaaxxyIej0WdqZNkoqPQDoxzPRsoSIAAnfzfirzMCjO203L8G4StunKhj2dOve/y0jpWwao6CeAqhqi7Lhlw3zFOWpYMNY7L50sH46PCt8gLdiOzttGmOfv0wN7NRJLmmEbD35+16xVa15oZX3g+nqtqjfB5CTTYSdoTbi17+7eOv2dwaYD+7/AtZ9VbCZec+m6v/vR5gQb6HnZV5K1R2a3wEKfwe1KCq37we/txlT/0aWYkLM04u6JRRpv6GXvXB+mdmEvlOEFjCjKOL71IyKwN+3pjYbwicJWiYmII+CIVrIOSJWJP6KsCqQU49X6OjRZZdK+MInfm4OLooptOUn/zr2u3dyoxSp0uDcJUeZug6bd0dQtMPf7HZT4F9JQ3cVsRX2lsC/HUPbNzg0Bto427scyu+ZdTqdrE+l65HdxNsZqW8n6AEnr7SlkRcP1s9ULUIrtWBD3/Hw4mOeFbugmVmQ9Anx64sBfHEIMj84qBOqnihvRuM6MhPYZXylUFQcjm8+vsFBc6ENlMU9a539kbjtlGm17YPsfD0dnkxSDe/9jaGLeHITyudNf9uCGrvRXhky01tG3znkICRWR7JwlS5cAvCzy0ipSVRKmYf8HhUwpuHic4/N0jQ/Jz89JSizSK8hLZxgFIwvka0BoAw3s8q7GF5MYmABLjAfewT5ekgEAAAACAAAAKQAAADAoAAAAAAAAAQAAAAAAAAAAAAAA
+
+[Preview]
+IE_Toolbar.png=10365,13820
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+Call,UploadXQ
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+

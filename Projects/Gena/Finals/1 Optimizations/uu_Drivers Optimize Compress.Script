@@ -1,0 +1,1101 @@
+[Main]
+Title=Optimize Drivers
+Type=Plugin
+Author=Lancelot
+Description=.sys - Delete - Compress - Extract
+Credits=http://TheOven.org
+Version=011
+Download_Level=2
+Level=8
+Selected=False
+Mandatory=False
+NoWarning=False
+Contact=http://TheOven.org
+Date=2016.10.07_15:47.54 (GMT0: -2 Hours)
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Finals/1%20Optimizations/uu_Drivers%20Optimize%20Compress.Script
+Web2=http://yomi.cwcodes.net/Yomi/Final_Y/uu_Drivers%20Optimize%20Compress.Script
+CertifiedBy=
+Certification=
+HistoryNotes01=Make Each Section StandAlone (To get easily used by "Basic Project")
+HistoryNotes02=Default Settings to get minimum possible ("Basic Project")
+HistoryNotes03=Currently optimize only driver list from Saydin77 Small Core
+History001=Lancelot 2016.09.22 Plugin created
+History002=Lancelot UnCompress ALL default selected False - Date:2016.09.23
+History003=Lancelot Added to Yomi - Date:2016.09.23
+History004=Lancelot Added CheckBox_Delete_Drivers to test deleting "small core" drivers easily - Date:2016.09.25
+History005=Lancelot Default get KeyBoard & Mouse Work // added Driver button // Added more info - Date:2016.09.26
+History006=Lancelot Added SavePlugin_Button - Date:2016.09.26
+History007=Lancelot Added various info - Date:2016.09.28
+History008=Lancelot Added Settings_Default - Date:2016.09.28
+History009=Lancelot Added info ComboRemovableDevices - HIDUSB.SYS - Date:2016.09.29
+History010=Lancelot Added info FASTFAT.SYS -> FAT system  -> no ramdisk \TEMP\ missing  -> DLL Register Fails - Date:2016.10.02
+History011=Lancelot Added info DiskDump.sys and storport.sys - Date:2016.10.07
+
+[Info]
+CheckBox_Delete_MOUHID --> Disables Mouse=> Than you can delete CheckBox_Delete_MOUCLASS too
+//-
+Keyboard Work=+ ISAPNP.SYS + I8042PRT.SYS -+ KBDHID.SYS -+ HIDPARSE.SYS
+Mouse Work=+ ISAPNP.SYS + I8042PRT.SYS + MOUCLASS.SYS -+ MOUHID.SYS
+-+=you can delete that file
+//-
+Disable Mouse: only removing MOUCLASS.SYS is enough
+Disable KeyBoard: - I8042PRT.SYS will result also disabled mouse !!
+//-
+FASTFAT.SYS -> FAT system  -> no ramdisk \TEMP\ missing  -> DLL Register Fails
+//-
+KeyBoard Related:
+KBDHID.SYS depends HIDPARSE.SYS ( - HIDPARSE.SYS + KBDHID.SYS --> BS kbdhid.sys could not be found.)
+//-
+MOUNTMGR.SYS responsible to boot X: (without boot to D: ;) )
+//-
++ ACPIEC.SYS - OPRGHDLR.SYS --> OPRGHDLR.SYS: BS Black Screen acpiec.sys could not be found.
+ACPIEC.SYS requires OPRGHDLR.SYS
+- OPRGHDLR.SYS + ACPIEC.SYS --> acpiec.sys could not be found.
+- OPRGHDLR.SYS - ACPIEC.SYS --> boots ok probably without ACPIEC.SYS OPRGHDLR.SYS never tried to be started
+//-
+- HIDPARSE.SYS + KBDHID.SYS -> HIDPARSE.SYS: BLACK Screen: kbdhid.sys could not be found
+KBDHID.SYS requires HIDPARSE.SYS
+//-
+VIAIDE.SYS Requires PCIIDE.SYS
+PCIIDE.SYS Requires PCIIDEX.SYS
+//-
+SETUPDD.SYS Requires SPDDLANG.SYS
+//-
+ACPI.SYS requires WMILIB.SYS
+NTFS.SYS requires KSECDD.SYS
+//-
++ ComboRemovableDevices
+- HIDPARSE.SYS + hidusb.sys could not be found.
+HIDUSB.SYS requires HIDPARSE.SYS
+HIDPARSE.SYS compressible
+- HIDCLASS.SYS + hidusb.sys could not be found
+HIDUSB.SYS requires HIDCLASS.SYS
+HIDCLASS.SYS compressible
+==>
+HIDUSB.SYS (ComboRemovableDevices) requires HIDPARSE.SYS + HIDCLASS.SYS
++ ComboRemovableDevices
+//-
+DiskDump.sys and storport.sys probably CABCompressable since they were cab compressed in past by Mass Storage Saydin77 au3 and storport.sys ComboRemovableDevices
+
+[TO_DO]
++
+startup batch to test if drivers working ok
++
+check list of drivers working ok or not
++
+Add/Remove option
++
+maybe a feature to check txtsetup.sif and compress accordingly later
++
+compressibility verification
+// NEED TO TEST COMPRESS MORE:
+//Drivers Loading from txtsetup.sif can be COMPRESSED where available :)
+//Other drivers that are compressed simply do not effect boot up but they do not work
+//You need to test to be sure - when you add ADD/REMOVE drivers you can figure out more - check Gena Under Construction driver notes
+//NOTE: Later can be a startup batch to check services with sc too
+// NEED TO TEST COMPRESS MORE:
+
+[InterFace]
+SavePlugin_Button="Save Settings",1,8,248,36,80,25,SavePluginInterface,0,False,False
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+Exp_Driver_Button=Drivers,1,8,247,9,81,25,Open_Folder_Drivers,explorer.bmp,False,False,_Open_Folder_Drivers_,False
+UnCompress_ALL_CheckBox="UnCompress All (.sy_ -> .sys)",1,3,48,46,171,18,False
+Compress_SmallCore_CheckBox="Compress 'Small Core' Drivers",1,3,55,68,164,18,False
+CheckBox_Delete_Drivers="Remove 'Small Core' Drivers",1,3,42,26,165,18,True
+CheckBox_Delete_ACPI="ACPI.SYS +",1,3,73,135,100,18,False
+CheckBox_Delete_ACPIEC="ACPIEC.SYS 1 +",1,3,74,159,100,18,True
+CheckBox_Delete_ALIIDE="ALIIDE.SYS 1",1,3,72,183,100,18,True
+CheckBox_Delete_ATAPI=ATAPI.SYS,1,3,81,210,100,18,False
+CheckBox_Delete_CDFS=CDFS.SYS,1,3,77,231,100,18,False
+CheckBox_Delete_CDROM=CDROM.SYS,1,3,82,257,100,18,False
+CheckBox_Delete_CLASSPNP=CLASSPNP.SYS,1,3,83,282,100,18,False
+CheckBox_Delete_CMDIDE="CMDIDE.SYS 1",1,3,88,299,100,18,True
+CheckBox_Delete_DISK="DISK.SYS 1",1,3,82,322,100,18,True
+CheckBox_Delete_DMBOOT="DMBOOT.SYS 1",1,3,76,342,100,18,True
+CheckBox_Delete_DMIO="DMIO.SYS 1",1,3,83,360,100,18,True
+CheckBox_Delete_DMLOAD="DMLOAD.SYS 1",1,3,82,383,100,18,True
+CheckBox_Delete_DXAPI=DXAPI.SYS,1,3,87,405,100,18,False
+CheckBox_Delete_DXG=DXG.SYS,1,3,86,427,100,18,False
+CheckBox_Delete_DXGTHK=DXGTHK.SYS,1,3,85,447,100,18,False
+CheckBox_Delete_FASTFAT="FASTFAT.SYS 1 *",1,3,243,146,100,18,False
+CheckBox_Delete_FDC="FDC.SYS 1",1,3,246,164,100,18,True
+CheckBox_Delete_FLPYDISK=FLPYDISK.SYS,1,3,246,183,100,18,False
+CheckBox_Delete_FS_REC="FS_REC.SYS 1",1,3,256,201,100,18,True
+CheckBox_Delete_FTDISK="FTDISK.SYS 1",1,3,254,222,100,18,True
+CheckBox_Delete_HIDCLASS="HIDCLASS.SYS 1 +",1,3,244,239,107,18,True
+CheckBox_Delete_HIDPARSE="HIDPARSE.SYS 2 +",1,3,236,262,112,18,True
+CheckBox_Delete_I8042PRT="I8042PRT.SYS 2 *",1,3,245,290,106,18,False
+CheckBox_Delete_INTELIDE="INTELIDE.SYS 1",1,3,244,316,100,18,True
+CheckBox_Delete_ISAPNP="ISAPNP.SYS 1 *",1,3,244,337,100,18,False
+CheckBox_Delete_KBDCLASS=KBDCLASS.SYS,1,3,237,355,100,18,False
+CheckBox_Delete_KBDHID="KBDHID.SYS 1 +",1,3,235,373,100,18,True
+CheckBox_Delete_KSECDD="KSECDD.SYS +",1,3,234,397,100,18,False
+CheckBox_Delete_MCD="MCD.SYS 3",1,3,238,416,100,18,True
+CheckBox_Delete_MOUCLASS="MOUCLASS.SYS 1 *",1,3,232,439,114,18,False
+CheckBox_Delete_MOUHID="MOUHID.SYS 1",1,3,224,459,100,18,True
+CheckBox_Delete_MOUNTMGR="MOUNTMGR.SYS 1 *",1,3,383,146,118,18,False
+CheckBox_Delete_MUP=MUP.SYS,1,3,382,164,100,18,False
+CheckBox_Delete_NDIS=NDIS.SYS,1,3,381,184,100,18,False
+CheckBox_Delete_NTFS="NTFS.SYS +",1,3,384,204,100,18,False
+CheckBox_Delete_NULL="NULL.SYS 1",1,3,382,224,100,18,True
+CheckBox_Delete_OPRGHDLR="OPRGHDLR.SYS 1 +",1,3,380,244,122,18,True
+CheckBox_Delete_PARTMGR="PARTMGR.SYS 1",1,3,383,269,100,18,True
+CheckBox_Delete_PCI=PCI.SYS,1,3,381,292,100,18,False
+CheckBox_Delete_PCIIDE="PCIIDE.SYS +",1,3,379,311,100,18,False
+CheckBox_Delete_PCIIDEX="PCIIDEX.SYS +",1,3,381,338,100,18,False
+CheckBox_Delete_SETUPDD="SETUPDD.SYS +",1,3,380,362,100,18,False
+CheckBox_Delete_SPDDLANG="SPDDLANG.SYS +",1,3,378,385,108,18,False
+CheckBox_Delete_VGA=VGA.SYS,1,3,387,408,100,18,False
+CheckBox_Delete_VIAIDE="VIAIDE.SYS +",1,3,375,428,100,18,False
+CheckBox_Delete_VIDEOPRT=VIDEOPRT.SYS,1,3,371,450,100,18,False
+CheckBox_Delete_WMILIB="WMILIB.SYS +",1,3,377,476,100,18,False
+pTextLabel1="Remove 'Small Core' Drivers:",1,1,56,107,146,18,8,Normal
+pTextLabel2="Disable Mouse = Remove MOUCLASS.SYS",1,1,245,126,215,18,8,Normal
+pTextLabel3="* Keyboard Work = + ISAPNP.SYS + I8042PRT.SYS",1,1,213,91,258,18,8,Normal
+pTextLabel4="* Mouse Work = + ISAPNP.SYS + I8042PRT.SYS + MOUCLASS.SYS",1,1,212,108,329,18,8,Normal
+pTextLabel5="ACPIEC.SYS requires OPRGHDLR.SYS",1,1,9,501,190,18,8,Normal
+pTextLabel6="* MOUNTMGR.SYS to boot X:",1,1,238,73,143,18,8,Normal
+pTextLabel7="KBDHID.SYS requires HIDPARSE.SYS",1,1,9,517,230,18,8,Normal
+pTextLabel8="VIAIDE.SYS req PCIIDE.SYS req PCIIDEX.SYS",1,1,7,537,230,18,8,Normal
+pTextLabel9="SETUPDD.SYS requires SPDDLANG.SYS",1,1,6,554,197,18,8,Normal
+pTextLabel10="ACPI.SYS requires WMILIB.SYS",1,1,8,571,176,18,8,Normal
+pTextLabel11="NTFS.SYS requires KSECDD.SYS",1,1,7,589,162,18,8,Normal
+pTextLabel12="HIDUSB.SYS (ComboRemovableDevices) requires HIDPARSE.SYS + HIDCLASS.SYS",1,1,271,579,230,28,8,Normal
+pTextLabel13="* FASTFAT.SYS FAT system#$x -> no ramdisk \TEMP\ missing#$x  -> DLL Register Fails",1,1,273,505,173,41,8,Normal
+
+[InterFace_SAVE_SETTINGS]
+//First test results with driver delete - testeed with XPSP3x86
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+UnCompress_ALL_CheckBox="UnCompress All (.sy_ -> .sys)",1,3,58,26,171,18,False
+Compress_SmallCore_CheckBox="Compress 'Small Core' Drivers",1,3,58,49,160,18,False
+CheckBox_Delete_Drivers="Remove 'Small Core' Drivers:",1,3,58,103,200,18,True
+CheckBox_Delete_ACPI=ACPI.SYS,1,3,73,135,100,18,False
+CheckBox_Delete_ACPIEC=ACPIEC.SYS,1,3,74,159,100,18,True
+CheckBox_Delete_ALIIDE=ALIIDE.SYS,1,3,72,183,100,18,True
+CheckBox_Delete_ATAPI=ATAPI.SYS,1,3,81,210,100,18,False
+CheckBox_Delete_CDFS=CDFS.SYS,1,3,77,231,100,18,False
+CheckBox_Delete_CDROM=CDROM.SYS,1,3,82,257,100,18,False
+CheckBox_Delete_CLASSPNP=CLASSPNP.SYS,1,3,83,282,100,18,False
+CheckBox_Delete_CMDIDE=CMDIDE.SYS,1,3,88,299,100,18,True
+CheckBox_Delete_DISK=DISK.SYS,1,3,82,322,100,18,True
+CheckBox_Delete_DMBOOT=DMBOOT.SYS,1,3,76,342,100,18,True
+CheckBox_Delete_DMIO=DMIO.SYS,1,3,83,360,100,18,True
+CheckBox_Delete_DMLOAD=DMLOAD.SYS,1,3,82,383,100,18,True
+CheckBox_Delete_DXAPI=DXAPI.SYS,1,3,87,405,100,18,False
+CheckBox_Delete_DXG=DXG.SYS,1,3,86,427,100,18,False
+CheckBox_Delete_DXGTHK=DXGTHK.SYS,1,3,85,447,100,18,False
+CheckBox_Delete_FASTFAT=FASTFAT.SYS,1,3,243,132,100,18,True
+CheckBox_Delete_FDC=FDC.SYS,1,3,246,154,100,18,True
+CheckBox_Delete_FLPYDISK=FLPYDISK.SYS,1,3,246,175,100,18,False
+CheckBox_Delete_FS_REC=FS_REC.SYS,1,3,256,201,100,18,True
+CheckBox_Delete_FTDISK=FTDISK.SYS,1,3,254,222,100,18,True
+CheckBox_Delete_HIDCLASS=HIDCLASS.SYS,1,3,244,239,100,18,True
+CheckBox_Delete_HIDPARSE=HIDPARSE.SYS,1,3,236,262,100,18,False
+CheckBox_Delete_I8042PRT=I8042PRT.SYS,1,3,245,290,100,18,False
+CheckBox_Delete_INTELIDE=INTELIDE.SYS,1,3,244,316,100,18,True
+CheckBox_Delete_ISAPNP=ISAPNP.SYS,1,3,244,337,100,18,True
+CheckBox_Delete_KBDCLASS=KBDCLASS.SYS,1,3,237,355,100,18,False
+CheckBox_Delete_KBDHID=KBDHID.SYS,1,3,235,373,100,18,True
+CheckBox_Delete_KSECDD=KSECDD.SYS,1,3,234,397,100,18,False
+CheckBox_Delete_MCD=MCD.SYS,1,3,238,416,100,18,False
+CheckBox_Delete_MOUCLASS=MOUCLASS.SYS,1,3,232,439,100,18,True
+CheckBox_Delete_MOUHID=MOUHID.SYS,1,3,224,457,100,18,True
+CheckBox_Delete_MOUNTMGR=MOUNTMGR.SYS,1,3,383,128,100,18,True
+CheckBox_Delete_MUP=MUP.SYS,1,3,382,148,100,18,False
+CheckBox_Delete_NDIS=NDIS.SYS,1,3,381,172,100,18,False
+CheckBox_Delete_NTFS=NTFS.SYS,1,3,384,197,100,18,False
+CheckBox_Delete_NULL=NULL.SYS,1,3,382,220,100,18,True
+CheckBox_Delete_OPRGHDLR=OPRGHDLR.SYS,1,3,380,244,100,18,True
+CheckBox_Delete_PARTMGR=PARTMGR.SYS,1,3,383,269,100,18,True
+CheckBox_Delete_PCI=PCI.SYS,1,3,381,292,100,18,False
+CheckBox_Delete_PCIIDE=PCIIDE.SYS,1,3,379,311,100,18,False
+CheckBox_Delete_PCIIDEX=PCIIDEX.SYS,1,3,381,338,100,18,False
+CheckBox_Delete_SETUPDD=SETUPDD.SYS,1,3,380,362,100,18,False
+CheckBox_Delete_SPDDLANG=SPDDLANG.SYS,1,3,378,385,100,18,False
+CheckBox_Delete_VGA=VGA.SYS,1,3,387,408,100,18,False
+CheckBox_Delete_VIAIDE=VIAIDE.SYS,1,3,375,428,100,18,False
+CheckBox_Delete_VIDEOPRT=VIDEOPRT.SYS,1,3,371,450,100,18,False
+CheckBox_Delete_WMILIB=WMILIB.SYS,1,3,377,476,100,18,False
+
+[Variables]
+
+[Process]
+Call,AddInterface,%ScriptFile%,Interface
+//-
+If,%CheckBox_Delete_Drivers%,Equal,True,Run,%ScriptFile%,Delete_SYS
+//-
+If,%UnCompress_ALL_CheckBox%,Equal,True,Run,%ScriptFile%,Process_UnCompress_ALL
+If,%Compress_SmallCore_CheckBox%,Equal,True,Run,%ScriptFile%,Process_Compress_Saydin77Core_Small
+
+[Delete_SYS_M]
+//Par1: FileName / Par2: Registry Key / Par3: TxtSetup.sif Section / Par4: TxtSetup.sif Section Entry
+Call,FileDelete,%Target_Sys%\Drivers\#1.SYS
+Call,FileDelete,%Target_Sys%\Drivers\#1.SY_
+//-
+If,Not,#2-,Equal,-,Begin
+If,ExistRegSection,HKLM,Tmp_System\ControlSet001\Services\#2,RegDelete,HKLM,Tmp_System\ControlSet001\Services\#2
+If,ExistRegSection,HKLM,Tmp_System\ControlSet001\Services\Eventlog\System\#2,RegDelete,HKLM,Tmp_System\ControlSet001\Services\Eventlog\System\#2
+End
+//-
+If,Not,#3-,Equal,-,Begin
+If,ExistFile,%Target_Win%\TXTSETUP.SIF,IniDelete,%Target_Win%\TXTSETUP.SIF,#3,#4
+End
+
+[Delete_SYS]
+//[BootBusExtenders.Load]
+//pci=pci.sys
+//acpi=acpi.sys
+//isapnp=isapnp.sys
+//acpiec=acpiec.sys
+//-
+//[BusExtenders.Load]
+//pciide=pciide.sys
+//intelide=intelide.sys
+//viaide=viaide.sys
+//cmdide=cmdide.sys
+//aliide=aliide.sys
+//mountmgr=mountmgr.sys
+//ftdisk=ftdisk.sys
+//partmgr=partmgr.sys
+//dmload=dmload.sys
+//dmio=dmio.sys
+//-
+//[SCSI.Load]
+//atapi=atapi.sys,4
+//-
+//[MouseDrivers.Load]
+//mouclass=mouclass.sys
+//mouhid=mouhid.sys
+//-
+RegHiveLoad,Tmp_System,%RegSystem%
+//--
+//BSOD - ACPI.SYS - ACPI Driver for NT (DO NOT Remove with CD ROM boot ;))
+If,%CheckBox_Delete_ACPI%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,ACPI,acpi,BootBusExtenders.Load,acpi
+If,%CheckBox_Delete_ACPI%,Equal,True,Begin
+If,ExistFile,%Target_Win%\TXTSETUP.SIF,Begin
+//[HardwareIdsDatabase]
+//*PNP0C08="acpi"
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,*PNP0C08
+//[ACPIOptions]
+//ACPIEnable=1
+//ACPIBiosDate=01,01,1999
+//[Computer]
+//acpiapic_mp="ACPI Multiprocessor PC",files.none
+//acpiapic_up="ACPI Uniprocessor PC",files.none
+//acpipic_up="Advanced Configuration and Power Interface (ACPI) PC",files.none
+//syspro_mp="Compaq SystemPro Multiprocessor or 100% Compatible",files.none
+//mps_up="MPS Uniprocessor PC",files.none
+//mps_mp="MPS Multiprocessor PC",files.none
+//e_isa_up="Standard PC",files.none
+//486c_up="Standard PC with C-Step i486",files.none
+//-
+//[SourceDisksFiles]
+//hal.dll=1,,,,,,,,3,3,,1,2
+//halaacpi.dll=1,,,,,,,2,3,,,1,2
+//halacpi.dll=1,,,,,,,2,3,,,1,2
+//halapic.dll=1,,,,,,,2,3,,,1,2
+//halmacpi.dll=1,,,,,,,2,3,,,1,2
+//halmps.dll=1,,,,,,,2,3,,,1,2
+//halsp.dll=1,,,,,,,2,3,,,1,2
+//
+End
+End
+//-------------
+//ACPI Embedded Controller Driver
+If,%CheckBox_Delete_ACPIEC%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,ACPIEC,ACPIEC,BootBusExtenders.Load,acpiec
+If,%CheckBox_Delete_ACPIEC%,Equal,True,Begin
+If,ExistFile,%Target_Win%\TXTSETUP.SIF,Begin
+//[HardwareIdsDatabase]
+//*PNP0C09="acpiec"
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,*PNP0C09
+End
+End
+//-------------
+//ALi mini IDE Driver
+If,%CheckBox_Delete_ALIIDE%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,ALIIDE,ALIIDE,BusExtenders.Load,aliide
+//BSOD - ATAPI.SYS
+If,%CheckBox_Delete_ATAPI%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,ATAPI,ALIIDE,SCSI.Load,atapi
+If,%CheckBox_Delete_ATAPI%,Equal,True,Begin
+If,ExistFile,%Target_Win%\TXTSETUP.SIF,Begin
+//[HardwareIdsDatabase]
+// *PNP0600="atapi"
+// PCMCIA\KME-KXLC005-A99E="atapi"
+// PCMCIA\_-NinjaATA--3768="atapi"
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,*PNP0600
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCMCIA\KME-KXLC005-A99E
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCMCIA\_-NinjaATA--3768
+End
+End
+//-
+//[CdRomDrivers.Load]
+//cdfs=cdfs.sys
+//-
+//CDFS.SYS CD-ROM File System Driver (DO NOT Remove with CD ROM boot ;) -> BSOD )
+If,%CheckBox_Delete_CDFS%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,CDFS,Cdfs,CdRomDrivers.Load,cdfs
+//-
+//[ScsiClass.Load]
+//cdrom=cdrom.sys
+//disk=disk.sys
+//-
+//CDROM.SYS SCSI CD-ROM Driver (DO NOT Remove with CD ROM boot ;) -> BSOD )
+If,%CheckBox_Delete_CDROM%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,CDROM,cdrom,ScsiClass.Load,cdrom
+If,%CheckBox_Delete_CDROM%,Equal,True,Begin
+If,ExistFile,%Target_Win%\TXTSETUP.SIF,Begin
+//[HardwareIdsDatabase]
+//GenCdRom="CdRom"
+//SCSI\WormSONY____CD-R___CDU920S__="CdRom"
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,GenCdRom
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,SCSI\WormSONY____CD-R___CDU920S__
+//[SetupData]
+//OsLoadOptions="/fastdetect /minint"
+//ForceScsi=1
+//ForceDiskClass=1
+//ForceCDRom=1
+//Architecture=i386
+End
+End
+//-
+//-CLASSPNP.SYS Deleted -> BS CDROM.SYS not loaded
+//CLASSPNP.SYS not at TxtSetup.sif
+If,%CheckBox_Delete_CLASSPNP%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,CLASSPNP
+//-
+//CMD PCI IDE Bus Driver
+If,%CheckBox_Delete_CMDIDE%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,CMDIDE,CMDIDE,BusExtenders.Load,cmdide
+If,%CheckBox_Delete_CMDIDE%,Equal,True,Begin
+If,ExistFile,%Target_Win%\TXTSETUP.SIF,Begin
+//[HardwareIdsDatabase]
+//PCI\VEN_1095&DEV_0648="cmdide"
+//PCI\VEN_1095&DEV_0649="cmdide"
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1095&DEV_0648
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1095&DEV_0649
+End
+End
+//-
+//[ScsiClass.Load]
+//cdrom=cdrom.sys
+//disk=disk.sys
+//-
+//If,%CheckBox_Delete_DISK%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,DISK,,ScsiClass.Load,disk
+If,%CheckBox_Delete_DISK%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,DISK,disk,ScsiClass.Load,disk
+If,%CheckBox_Delete_DISK%,Equal,True,Begin
+If,ExistFile,%Target_Win%\TXTSETUP.SIF,Begin
+//[HardwareIdsDatabase]
+//GenDisk="Disk",{4D36E967-E325-11CE-BFC1-08002BE10318}
+//GenOptical="Disk"
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,GenDisk
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,GenOptical
+//[SetupData]
+//OsLoadOptions="/fastdetect /minint"
+//ForceScsi=1
+//ForceDiskClass=1
+//ForceCDRom=1
+//Architecture=i386
+End
+End
+//-
+//NT Disk Manager Startup Driver
+If,%CheckBox_Delete_DMBOOT%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,DMBOOT,dmboot,DiskDrivers.Load,dmboot
+//-
+//NT Disk Manager I/O Driver
+If,%CheckBox_Delete_DMIO%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,DMIO,dmio,BusExtenders.Load,dmio
+//-
+//NT Disk Manager Startup Driver
+If,%CheckBox_Delete_DMLOAD%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,DMLOAD,dmload,BusExtenders.Load,dmload
+//-
+//DXAPI.SYS - NT Disk Manager Startup Driver
+//DXAPI.SYS not at TxtSetup.sif
+//DXAPI.SYS - BSOD
+If,%CheckBox_Delete_DXAPI%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,DXAPI,dmload
+//-
+//DXG.SYS - DirectX API Driver
+//DXG.SYS not at TxtSetup.sif
+//DXG.SYS - BS Black Screen
+If,%CheckBox_Delete_DXG%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,DXG
+//-
+//DXGTHK.SYS - DirectX Graphics Driver Thunk
+//DXGTHK.SYS not at TxtSetup.sif
+//DXGTHK.SYS - BS Black Screen
+If,%CheckBox_Delete_DXGTHK%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,DXGTHK
+//-
+//-
+//[FileSystems.Load]
+//ksecdd=ksecdd.sys
+//fat=fastfat.sys
+//ntfs=ntfs.sys
+//-
+//FASTFAT.SYS - Fast FAT File System Driver (without it you can not see fat system (some cases ramdisk))
+//FASTFAT.SYS - without -> RunOnceEx\500,100,"shell32.dll|DllInstall|I" do not work=> since not \Temp\ Created dll register fails
+If,%CheckBox_Delete_FASTFAT%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,FASTFAT,Fastfat,FileSystems.Load,fat
+If,%CheckBox_Delete_FASTFAT%,Equal,True,Begin
+If,ExistRegSection,HKLM,Tmp_System\ControlSet001\Enum\Root\LEGACY_FASTFAT,RegDelete,HKLM,Tmp_System\ControlSet001\Enum\Root\LEGACY_FASTFAT
+End
+//-
+//[BusExtenders.Load]
+//pciide=pciide.sys
+//intelide=intelide.sys
+//viaide=viaide.sys
+//cmdide=cmdide.sys
+//aliide=aliide.sys
+//mountmgr=mountmgr.sys
+//ftdisk=ftdisk.sys
+//partmgr=partmgr.sys
+//dmload=dmload.sys
+//dmio=dmio.sys
+//-
+//FDC.SYS - Floppy Disk Controller Driver
+If,%CheckBox_Delete_FDC%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,FDC,FDC,BusExtenders.Load,fdc
+If,%CheckBox_Delete_FDC%,Equal,True,Begin
+If,ExistFile,%Target_Win%\TXTSETUP.SIF,Begin
+//[HardwareIdsDatabase]
+//*PNP0700="fdc"
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,*PNP0700
+End
+End
+//-
+//[FloppyDrivers.Load]
+//flpydisk=flpydisk.sys
+//fat=fastfat.sys
+//-
+//FLPYDISK.SYS - Floppy Driver (Tip: no fastfat.sys no fat ;) )
+//FLPYDISK.SYS - BS Black Screen flpydisk.sys could not be ffound
+If,%CheckBox_Delete_FLPYDISK%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,FLPYDISK,Flpydisk,FloppyDrivers.Load,flpydisk
+If,%CheckBox_Delete_FLPYDISK%,Equal,True,Begin
+If,ExistFile,%Target_Win%\TXTSETUP.SIF,Begin
+//[HardwareIdsDatabase]
+//GenFloppyDisk="flpydisk"
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,GenFloppyDisk
+//[FloppyDrivers.Load]
+//fat=fastfat.sys
+//IniDeleteSection,%target_win%\TXTSETUP.SIF,FloppyDrivers.Load
+End
+End
+//-
+//FS_REC.SYS - File System Recognizer Driver
+//FS_REC.SYS not at TxtSetup.sif
+If,%CheckBox_Delete_FS_REC%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,FS_REC
+//-
+//FT Disk Driver
+//ftdisk registry only at EventLog
+If,%CheckBox_Delete_FTDISK%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,FTDISK,ftdisk,BusExtenders.Load,ftdisk
+//-
+//Hid Class Library
+//HIDCLASS.SYS not at TxtSetup.sif
+//HIDCLASS.SYS not at Registry
+If,%CheckBox_Delete_HIDCLASS%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,HIDCLASS
+//-
+//Hid Parsing Library
+//HIDPARSE.SYS - BLACK Screen: kbdhid.sys could not be found
+//HIDPARSE.SYS - Second Test (First removing set of removable drivers) -> Boots OK
+//HIDPARSE.SYS not at TxtSetup.sif
+//HIDPARSE.SYS not at Registry
+If,%CheckBox_Delete_HIDPARSE%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,HIDPARSE
+//-
+//[Keyboard.Load]
+//STANDARD=i8042prt.sys
+//kbdhid=kbdhid.sys
+//-
+//I8042PRT.SYS
+//i8042 Port Driver
+//I8042PRT.SYS not at Registry
+//BS Black Screen i8042prt.sys not be found.
+//BS Black Screen kbdhid.sys not be found. (After you delete HardwareIdsDatabase i8042prt.sys)
+//I8042PRT.SYS - Second Test (First removing set of removable drivers) -> Boots OK
+//-
+If,%CheckBox_Delete_I8042PRT%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,I8042PRT
+If,%CheckBox_Delete_I8042PRT%,Equal,True,Begin
+If,ExistFile,%Target_Win%\TXTSETUP.SIF,Begin
+Set,%t%,-
+IniRead,%Target_Win%\TXTSETUP.SIF,Keyboard.Load,STANDARD,%t%
+If,%t%,Equal,i8042prt.sys,IniDelete,%Target_Win%\TXTSETUP.SIF,Keyboard.Load,STANDARD
+//-
+//[HardwareIdsDatabase]
+//*PNP0300="i8042prt",{4D36E96B-E325-11CE-BFC1-08002BE10318}
+//*PNP0301="i8042prt",{4D36E96B-E325-11CE-BFC1-08002BE10318}
+//*PNP0302="i8042prt",{4D36E96B-E325-11CE-BFC1-08002BE10318}
+//*PNP0303="i8042prt",{4D36E96B-E325-11CE-BFC1-08002BE10318}
+//*PNP0304="i8042prt",{4D36E96B-E325-11CE-BFC1-08002BE10318}
+//*PNP0305="i8042prt",{4D36E96B-E325-11CE-BFC1-08002BE10318}
+//*PNP0306="i8042prt",{4D36E96B-E325-11CE-BFC1-08002BE10318}
+//*PNP0309="i8042prt",{4D36E96B-E325-11CE-BFC1-08002BE10318}
+//*PNP030a="i8042prt",{4D36E96B-E325-11CE-BFC1-08002BE10318}
+//*PNP030b="i8042prt",{4D36E96B-E325-11CE-BFC1-08002BE10318}
+//*PNP0320="i8042prt",{4D36E96B-E325-11CE-BFC1-08002BE10318}
+//*CPQA0D7="i8042prt",{4D36E96B-E325-11CE-BFC1-08002BE10318}
+//PS2_KEYBOARD="i8042prt",{4D36E96B-E325-11CE-BFC1-08002BE10318}
+//-
+//*PNP0F03="i8042prt",{4D36E96F-E325-11CE-BFC1-08002BE10318}
+//*PNP0F0B="i8042prt",{4D36E96F-E325-11CE-BFC1-08002BE10318}
+//-
+//*PNP0F0E="i8042prt",{4D36E96F-E325-11CE-BFC1-08002BE10318}
+//*PNP0F12="i8042prt",{4D36E96F-E325-11CE-BFC1-08002BE10318}
+//*PNP0F13="i8042prt",{4D36E96F-E325-11CE-BFC1-08002BE10318}
+//PS2_MOUSE="i8042prt",{4D36E96F-E325-11CE-BFC1-08002BE10318}
+//----
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,*PNP0300
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,*PNP0301
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,*PNP0302
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,*PNP0303
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,*PNP0304
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,*PNP0305
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,*PNP0306
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,*PNP0309
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,*PNP030a
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,*PNP030b
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,*PNP0320
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,*CPQA0D7
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PS2_KEYBOARD
+//-
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,*PNP0F03
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,*PNP0F0B
+//-
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,*PNP0F0E
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,*PNP0F12
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,*PNP0F13
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PS2_MOUSE
+//----
+End
+End
+//-
+//INTELIDE.SYS - Intel PCI IDE Drive
+//INTELIDE.SYS - BSOD IF you do not delete [HardwareIdsDatabase]
+//INTELIDE.SYS - Boots when you delete [HardwareIdsDatabase]
+If,%CheckBox_Delete_INTELIDE%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,INTELIDE,IntelIde,BusExtenders.Load,intelide
+If,%CheckBox_Delete_INTELIDE%,Equal,True,Begin
+If,ExistFile,%Target_Win%\TXTSETUP.SIF,Begin
+//-
+//[HardwareIdsDatabase]
+//PCI\VEN_8086&DEV_1230="intelide"
+//PCI\VEN_8086&DEV_7010="intelide"
+//PCI\VEN_8086&DEV_7111="intelide"
+//PCI\VEN_8086&DEV_2411="intelide"
+//PCI\VEN_8086&DEV_2421="intelide"
+//PCI\VEN_8086&DEV_7199="intelide"
+//PCI\VEN_8086&DEV_244A="intelide"
+//PCI\VEN_8086&DEV_244B="intelide"
+//PCI\VEN_8086&DEV_248A="intelide"
+//PCI\VEN_8086&DEV_7601="intelide"
+//-
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_8086&DEV_1230
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_8086&DEV_7010
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_8086&DEV_7111
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_8086&DEV_2411
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_8086&DEV_2421
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_8086&DEV_7199
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_8086&DEV_244A
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_8086&DEV_244B
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_8086&DEV_248A
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_8086&DEV_7601
+//----
+End
+End
+//-
+//[BootBusExtenders.Load]
+//pci=pci.sys
+//acpi=acpi.sys
+//isapnp=isapnp.sys
+//-
+//ISAPNP.SYS PNP ISA Bus Driver
+//-
+If,%CheckBox_Delete_ISAPNP%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,ISAPNP,isapnp,BootBusExtenders.Load,isapnp
+If,%CheckBox_Delete_ISAPNP%,Equal,True,Begin
+//NOT Required  - Better to Delete as default
+//If,ExistFile,%Target_Win%\TXTSETUP-------CANCELLED--NOT REQUIRED--------------.SIF,Begi-n
+If,ExistFile,%Target_Win%\TXTSETUP.SIF,Begin
+//[HardwareIdsDatabase]
+//*PNP0A00="isapnp"
+//*PNP0A01="isapnp"
+//*PNP0A04="isapnp"
+//-
+//PCI\CC_0601="isapnp"
+//PCI\CC_0602="isapnp"
+//-
+//PCI\VEN_1025&DEV_1435="isapnp"
+//PCI\VEN_10B9&DEV_1445="isapnp"
+//PCI\VEN_10B9&DEV_1449="isapnp"
+//PCI\VEN_10B9&DEV_1489="isapnp"
+//PCI\VEN_10B9&DEV_1523="isapnp"
+//PCI\VEN_10B9&DEV_1533="isapnp"
+//PCI\VEN_0E11&DEV_0001="isapnp"
+//PCI\VEN_0E11&DEV_0002="isapnp"
+//PCI\VEN_0E11&DEV_AE29="isapnp"
+//PCI\VEN_0E11&DEV_AE2B="isapnp"
+//PCI\VEN_1080&DEV_0600="isapnp"
+//PCI\VEN_1014&DEV_000A="isapnp"
+//PCI\VEN_8086&DEV_0482="isapnp"
+//PCI\VEN_8086&DEV_0484="isapnp"
+//PCI\VEN_8086&DEV_0486="isapnp"
+//PCI\VEN_8086&DEV_122E="isapnp"
+//PCI\VEN_8086&DEV_123C="isapnp"
+//PCI\VEN_8086&DEV_7000="isapnp"
+//PCI\VEN_8086&DEV_7110="isapnp"
+//PCI\VEN_8086&DEV_7198="isapnp"
+//PCI\VEN_1066&DEV_8002="isapnp"
+//PCI\VEN_1066&DEV_0002="isapnp"
+//PCI\VEN_100B&DEV_0011="isapnp"
+//PCI\VEN_1045&DEV_C822="isapnp"
+//PCI\VEN_1045&DEV_C832="isapnp"
+//PCI\VEN_1045&DEV_C558="isapnp"
+//PCI\VEN_1045&DEV_C568="isapnp"
+//PCI\VEN_1045&DEV_C700="isapnp"
+//PCI\VEN_1039&DEV_0008="isapnp"
+//PCI\VEN_1039&DEV_0496="isapnp"
+//PCI\VEN_1179&DEV_0602="isapnp"
+//PCI\VEN_1060&DEV_8886="isapnp"
+//PCI\VEN_1060&DEV_886A="isapnp"
+//PCI\VEN_1060&DEV_E886="isapnp"
+//PCI\VEN_1106&DEV_0505="isapnp"
+//PCI\VEN_1106&DEV_0576="isapnp"
+//PCI\VEN_1107&DEV_0576="isapnp"
+//PCI\VEN_1107&DEV_8576="isapnp"
+//PCI\VEN_1004&DEV_0006="isapnp"
+//PCI\VEN_1004&DEV_0103="isapnp"
+//PCI\VEN_1179&DEV_0601="isapnp"
+//PCI\VEN_1179&DEV_0618="isapnp"
+//PCI\VEN_1004&DEV_0101="isapnp"
+//PCI\VEN_8086&DEV_1234="isapnp"
+//PCI\VEN_10AA&DEV_0000="isapnp"
+//----
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,*PNP0A00
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,*PNP0A01
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,*PNP0A04
+//-
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\CC_0601
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\CC_0602
+//-
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1025&DEV_1435
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_10B9&DEV_1445
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_10B9&DEV_1449
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_10B9&DEV_1489
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_10B9&DEV_1523
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_10B9&DEV_1533
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_0E11&DEV_0001
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_0E11&DEV_0002
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_0E11&DEV_AE29
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_0E11&DEV_AE2B
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1080&DEV_0600
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1014&DEV_000A
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_8086&DEV_0482
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_8086&DEV_0484
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_8086&DEV_0486
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_8086&DEV_122E
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_8086&DEV_123C
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_8086&DEV_7000
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_8086&DEV_7110
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_8086&DEV_7198
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1066&DEV_8002
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1066&DEV_0002
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_100B&DEV_0011
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1045&DEV_C822
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1045&DEV_C832
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1045&DEV_C558
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1045&DEV_C568
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1045&DEV_C700
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1039&DEV_0008
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1039&DEV_0496
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1179&DEV_0602
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1060&DEV_8886
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1060&DEV_886A
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1060&DEV_E886
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1106&DEV_0505
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1106&DEV_0576
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1107&DEV_0576
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1107&DEV_8576
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1004&DEV_0006
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1004&DEV_0103
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1179&DEV_0601
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1179&DEV_0618
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1004&DEV_0101
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_8086&DEV_1234
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_10AA&DEV_0000
+End
+End
+//-
+//KBDCLASS.SYS Keyboard Class Driver
+//KBDCLASS.SYS no txtsetup.sif value
+//KBDCLASS.SYS BS kbdclass.sys could not be found.
+If,%CheckBox_Delete_KBDCLASS%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,KBDCLASS,Kbdclass
+//-
+//[Keyboard.Load]
+//STANDARD=i8042prt.sys
+//kbdhid=kbdhid.sys
+//-
+//KBDHID.SYS - HID Mouse Filter Driver
+//KBDHID.SYS - no registry
+//KBDHID.SYS - mouse works on vmware after removal
+If,%CheckBox_Delete_KBDHID%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,KBDHID,,Keyboard.Load,kbdhid
+//[HardwareIdsDatabase]
+//HID_DEVICE_SYSTEM_KEYBOARD="kbdhid",{4D36E96B-E325-11CE-BFC1-08002BE10318}
+//-
+//[FileSystems.Load]
+//ksecdd=ksecdd.sys
+//fat=fastfat.sys
+//ntfs=ntfs.sys
+//-
+//KSECDD.SYS -Kernel Security Support Provider Interface
+//KSECDD.SYS - BS - file ntfs.sys could not be found.
+//KSECDD.SYS - no value on txtsetup.sif
+If,%CheckBox_Delete_KSECDD%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,KSECDD,KSecDD,FileSystems.Load,ksecdd
+//-
+//MCD.SYS - Medium changer class driver
+//MCD.SYS - BS - file ntfs.sys could not be found. - FALSE
+//MCD.SYS - BS - file kbdclass.sys could not be found. - FALSE -> Second Test (First removing set of removable drivers)
+If,%CheckBox_Delete_MCD%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,MCD
+//If,ExistRegSection,HKLM,Tmp_System\ControlSet001\Services\ViaIde,RegDelete,HKLM,Tmp_System\ControlSet001\Services\ViaIde
+//-
+//[MouseDrivers.Load]
+//mouclass=mouclass.sys
+//mouhid=mouhid.sys
+//-
+//MOUCLASS.SYS - HID Mouse Filter Driver
+//MOUCLASS.SYS - BS ntfs.sys could not be found. (Probably FALSE result) --> Enable %CheckBox_Delete_MOUHID%=> Boot OK
+//MOUCLASS - no [HardwareIdsDatabase]
+If,%CheckBox_Delete_MOUCLASS%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,MOUCLASS,mouclass,MouseDrivers.Load,mouclass
+//-
+If,%CheckBox_Delete_MOUHID%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,MOUHID,mouclass,MouseDrivers.Load,mouhid
+//HID_DEVICE_SYSTEM_MOUSE="mouhid",{4D36E96F-E325-11CE-BFC1-08002BE10318}
+//-
+//[BusExtenders.Load]
+//pciide=pciide.sys
+//intelide=intelide.sys
+//viaide=viaide.sys
+//cmdide=cmdide.sys
+//aliide=aliide.sys
+//mountmgr=mountmgr.sys
+//ftdisk=ftdisk.sys
+//partmgr=partmgr.sys
+//fdc=fdc.sys
+//dmload=dmload.sys
+//dmio=dmio.sys
+//-
+//Mount Manager
+If,%CheckBox_Delete_MOUNTMGR%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,MOUNTMGR,mountmgr,BusExtenders.Load,mountmgr
+//-
+//Multiple UNC Provider driver
+//MUP.SYS - Black Screen mup.sys could not be found
+//MUP - no entry at txtsetup.sif
+If,%CheckBox_Delete_MUP%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,MUP,Mup,BusExtenders.Load,mountmgr
+//-
+//NDIS.SYS -NDIS 5.1 wrapper driver
+//NDIS.SYS - Black Screen ndis.sys could not be found
+//NDIS - no entry at txtsetup.sif
+If,%CheckBox_Delete_NDIS%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,NDIS,Ndis,BusExtenders.Load,mountmgr
+//-
+//[FileSystems.Load]
+//ksecdd=ksecdd.sys
+//fat=fastfat.sys
+//ntfs=ntfs.sys
+//-
+//NTFS.SYS - ntfs - no other entry at txtsetup.sif
+//NTFS.SYS - BS Black Screen ntfs.sys could not be found.
+If,%CheckBox_Delete_NTFS%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,NTFS,Ntfs
+//-
+//NULL.SYS - NULL Driver
+If,%CheckBox_Delete_NULL%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,NULL,Null
+//-
+//OPRGHDLR.SYS - ACPI Operation Registration Driver
+//OPRGHDLR.SYS - no registry entries
+//OPRGHDLR - no txtsetup.sif
+//+ ACPIEC.SYS - OPRGHDLR.SYS --> BS Black Screen acpiec.sys could not be found.
+If,%CheckBox_Delete_OPRGHDLR%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,OPRGHDLR
+//-
+//[BusExtenders.Load]
+//pciide=pciide.sys
+//intelide=intelide.sys
+//viaide=viaide.sys
+//cmdide=cmdide.sys
+//aliide=aliide.sys
+//mountmgr=mountmgr.sys
+//ftdisk=ftdisk.sys
+//partmgr=partmgr.sys
+//fdc=fdc.sys
+//dmload=dmload.sys
+//dmio=dmio.sys
+//-
+//PARTMGR.SYS - Partition Manager
+//PARTMGR.SYS - partmgr no more txtsetup.sif entry
+If,%CheckBox_Delete_PARTMGR%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,PARTMGR,partmgr,BusExtenders.Load,partmgr
+//-
+//[BootBusExtenders.Load]
+//pci=pci.sys
+//acpi=acpi.sys
+//isapnp=isapnp.sys
+//acpiec=acpiec.sys
+//-
+//PCI.SYS - NT Plug and Play PCI Enumerator
+//PCI.SYS - BSOD ( + with deleting [HardwareIdsDatabase])
+If,%CheckBox_Delete_PCI%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,PCI,Pci,BootBusExtenders.Load,pci
+If,%CheckBox_Delete_PCI%,Equal,True,Begin
+If,ExistFile,%Target_Win%\TXTSETUP.SIF,Begin
+//--
+//[HardwareIdsDatabase]
+//*PNP0A03="pci"
+//PCI\CC_0604="pci"
+//--
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,*PNP0A03
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\CC_0604
+//--
+End
+End
+//-
+//[BusExtenders.Load]
+//pciide=pciide.sys
+//intelide=intelide.sys
+//viaide=viaide.sys
+//cmdide=cmdide.sys
+//aliide=aliide.sys
+//mountmgr=mountmgr.sys
+//ftdisk=ftdisk.sys
+//partmgr=partmgr.sys
+//fdc=fdc.sys
+//dmload=dmload.sys
+//dmio=dmio.sys
+//-
+//PCIIDE.SYS - Generic PCI IDE Bus Driver
+//PCIIDE.SYS - BSOD
+//-PCIIDEX.SYS - PCIIDE.SYS==> BS - viaide.sys could not be found
+If,%CheckBox_Delete_PCIIDE%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,PCIIDE,pciide,BusExtenders.Load,pciide
+If,%CheckBox_Delete_PCIIDE%,Equal,True,Begin
+If,ExistFile,%Target_Win%\TXTSETUP.SIF,Begin
+//--
+//[HardwareIdsDatabase]
+//PCI\VEN_105A&DEV_4D33="pciide"
+//PCI\VEN_105A&DEV_4D33="pciide"
+//PCI\CC_0101="pciide"
+//--
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_105A&DEV_4D33
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_105A&DEV_4D33
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\CC_0101
+//--
+End
+End
+//-
+//PCIIDEX.SYS - PCI IDE Bus Driver Extension
+//PCIIDEX.SYS - Black Screen - BS - pciide.sys could not be found
+If,%CheckBox_Delete_PCIIDEX%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,PCIIDEX
+//-
+//SETUPDD.SYS - Windows NT Setup (kernel mode portion of character-based phase)
+//SETUPDD.SYS - SETUPDD no txtsetup.sif
+//SETUPDD.SYS - Black Screen - BS - setupdd.sys could not be found
+If,%CheckBox_Delete_SETUPDD%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,SETUPDD,setupdd
+//-
+//SPDDLANG.SYS - Windows NT Setup kernel mode lanaguage helper for SingleByte locales
+//SPDDLANG.SYS - SPDDLANG no txtsetup.sif
+//SPDDLANG.SYS - Black Screen - BS - setupdd.sys could not be found
+If,%CheckBox_Delete_SPDDLANG%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,SPDDLANG
+//-
+//[Display.Load]
+//vga=vga.sys
+//-
+//VGA.SYS - VGA/Super VGA Video Driver
+//VGA.SYS - BS Black Screen - vga.sys could not be found.
+If,%CheckBox_Delete_VGA%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,VGA,VgaSave,Display.Load,vga
+//-
+//[BusExtenders.Load]
+//pciide=pciide.sys
+//intelide=intelide.sys
+//viaide=viaide.sys
+//cmdide=cmdide.sys
+//aliide=aliide.sys
+//mountmgr=mountmgr.sys
+//ftdisk=ftdisk.sys
+//partmgr=partmgr.sys
+//fdc=fdc.sys
+//dmload=dmload.sys
+//dmio=dmio.sys
+//-
+//VIAIDE.SYS - Generic PCI IDE Bus Driver
+//VIAIDE.SYS - BS Black Screen viaide.sys could not be found.
+If,%CheckBox_Delete_VIAIDE%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,VIAIDE,viaide
+If,%CheckBox_Delete_VIAIDE%,Equal,True,Begin
+If,ExistFile,%Target_Win%\TXTSETUP.SIF,Begin
+//--
+//[HardwareIdsDatabase]
+//PCI\VEN_1106&DEV_0571="viaide"
+//--
+IniDelete,%Target_Win%\TXTSETUP.SIF,HardwareIdsDatabase,PCI\VEN_1106&DEV_0571
+//--
+End
+End
+//-
+//VIDEOPRT.SYS - Video Port Driver
+//VIDEOPRT.SYS - VIDEOPRT no txtsetup.sif entries
+//VIDEOPRT.SYS - VIDEOPRT no registry
+//VIDEOPRT.SYS - BSOD - Fatal System Error
+If,%CheckBox_Delete_VIDEOPRT%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,VIDEOPRT
+//-
+//WMILIB.SYS - WMILIB WMI support library Dll
+//WMILIB.SYS - WMILIB no txtsetup.sif entries
+//WMILIB.SYS - WMILIB no registry
+//WMILIB.SYS - BS Black Screen - vga.sys could not be found. (could not reproduce maybe a false result)
+//WMILIB.SYS - BS Black Screen - acpi.sys could not be found. - Second Test (First removing set of removable drivers)
+If,%CheckBox_Delete_WMILIB%,Equal,True,Run,%ScriptFile%,Delete_SYS_M,WMILIB
+//-
+RegHiveUnLoad,Tmp_System
+
+[Process_UnCompress_ALL]
+Echo,"Drivers Extract - Start"
+ShellExecute,hide,7z.exe,"x #$q%Target_Sys%\Drivers\*.sy_#$q -y -o#$q%Target_Sys%\Drivers#$q"
+Shellexecute,Hide,cmd.exe,"/C del /q /f #$q%Target_Sys%\Drivers\*.SY_#$q"
+Echo,"Drivers Extract - Finish"
+
+[Process_Compress_Saydin77Core_Small]
+//-
+//Saydin77Core - Small Core Build ---------------------------------
+Echo,"Drivers Compress - Start"
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\ACPI
+//ACPIEC.SYS verified CABCompressable -> + ACPIEC.SY_ - OPRGHDLR.SYS failure -> means ACPIEC.SY_ tried to load
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\ACPIEC
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\ALIIDE
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\ATAPI
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\CDFS
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\CDROM
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\CLASSPNP
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\CMDIDE
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\DISK
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\DMBOOT
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\DMIO
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\DMLOAD
+//-DXAPI.SYS - ( NOCABCompressable ) BSOD - Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\DXAPI
+//-DXG.SYS - ( NOCABCompressable ) BS - Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\DXG
+//-DXGTHK.SYS - ( NOCABCompressable ) BS - Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\DXGTHK
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\FASTFAT
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\FDC
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\FLPYDISK
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\FS_REC
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\FTDISK
+//HIDCLASS.SYS verified CABCompressable -> ComboRemovableDevices -> + HIDUSB.SYS + HIDCLASS.SY_ -> OK //  + HIDUSB.SYS - HIDCLASS.SYS -> hidusb.sys could not be found.
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\HIDCLASS
+//HIDPARSE.SYS verified CABCompressable -> KBDHID.SYS + HIDPARSE.SY_ -> OK
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\HIDPARSE
+//I8042PRT.SYS verified CABCompressable -> Keyboard work ok
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\I8042PRT
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\INTELIDE
+//ISAPNP.SYS verified CABCompressable -> Keyboard work ok
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\ISAPNP
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\KBDCLASS
+//KBDHID.SYS verified CABCompressable -> + KBDHID.SY_ + HIDPARSE.SYS -> OK // + KBDHID.SY_ - HIDPARSE.SYS -> Fail (means KBDHID.SYS tried to load ;) )
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\KBDHID
+//KSECDD.SYS verified CABCompressable -> NTFS.SYS requires KSECDD.SYS
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\KSECDD
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\MCD
+//MOUCLASS.SYS verified CABCompressable - Mouse work ok
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\MOUCLASS
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\MOUHID
+//MOUNTMGR.SYS verified CABCompressable - boot to X: works
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\MOUNTMGR
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\MUP
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\NDIS
+//-NPFS.SYS - ( NOCABCompressable ) lsass.exe requires - lsass.exe gives System Error and restart after clicking OK - Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\NPFS
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\NTFS
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\NULL
+//OPRGHDLR.SYS verified CABCompressable - ACPI.SYS works
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\OPRGHDLR
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\PARTMGR
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\PCI
+//PCIIDE.SYS verified CABCompressable - VIAIDE.SYS Requires PCIIDE.SYS
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\PCIIDE
+//PCIIDEX.SYS verified CABCompressable - PCIIDE.SYS Requires PCIIDEX.SYS
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\PCIIDEX
+//SETUPDD.SYS verified CABCompressable - SETUPDD.SYS Requires SPDDLANG.SYS
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\SETUPDD
+//SPDDLANG.SYS verified CABCompressable - SETUPDD.SYS Requires SPDDLANG.SYS
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\SPDDLANG
+//-
+//-VGA.SYS - ( NOCABCompressable ) Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\VGA
+//-VIAIDE.SYS - ( NOCABCompressable ) Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\VIAIDE
+//-VIDEOPRT.SYS - ( NOCABCompressable ) Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\VIDEOPRT
+//-WATCHDOG.SYS - ( NOCABCompressable ) Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\WATCHDOG
+//-
+//WMILIB.SYS verified CABCompressable - ACPI.SYS requires WMILIB.SYS
+Run,%ScriptFile%,Compress_SYS,%Target_Sys%\Drivers\WMILIB
+Echo,"Drivers Compress - Finish"
+//Saydin77Core - Small Core Build ---------------------------------
+//--
+
+[Compress_SYS]
+If,ExistFile,#1,Sys,Echo,-,Warn
+Run,%ScriptFile%,Compress,#1,SYS,SY_
+
+[Compress]
+//#1 Folder\Filename #2 FileExtension #3 FileTargetExtension
+If,ExistFile,#1.#2,Begin
+//-
+If,ExistFile,#1.#3,ShellExecute,Hide,attrib.exe,"-R -S -A -H #$q#1.#3#$q"
+If,ExistFile,#1.#3,ShellExecute,Hide,cmd.exe,"/C del /q /f #$q#1.#3#$q&del /q /f /A:R /A:H /A:S /A:A #$q#1.#3#$q"
+If,ExistFile,#1.#3,Echo,"File NOT DELETED",WARN
+//-
+If,Not,ExistFile,#1.#3,Begin
+ShellExecute,Hide,attrib.exe,"-R -S -A -H #$q#1.#2#$q"
+ShellExecute,Hide,makecab.exe,"/D CompressionType=LZX /D CompressionMemory=21 /D Cabinet=ON /D Compress=ON /D FolderSizeThreshold=5000000 #$q#1.#2#$q #$q#1.#3#$q"
+If,ExistFile,#1.#3,Begin
+ShellExecute,Hide,cmd.exe,"/C del /q /f #$q#1.#2#$q&del /q /f /A:R /A:H /A:S /A:A #$q#1.#2#$q"
+If,ExistFile,#1.#2,Echo,"File NOT DELETED",WARN
+End
+Else,Echo,"#1.#2 NOT Compressed to #1.#3",WARN
+End
+Else,Echo,"#1.#3 File NOT DELETED - NO Compression Made",WARN
+End
+Else,Echo,"#1.#2 NOT FOUND"
+//E-lse,Echo,"#1.#2 NOT FOUND",WARN
+
+[Open_Folder_Drivers]
+Call,OpenDir,%Target_Sys%\DRIVERS
+
+[SavePluginInterface]
+// Workaround to easily change settings - save and test from other builder ;).
+// Tip: Changing settings on interface not written untill plugin selection changed (boring) or processed or etc. -> Save button to make things quick
+Echo,"Save Settings - Save Plugin Interface"
+
+[AuthorEncoded]
+Saki-NuoveXT-Apps-package-settings_4848.ico=4703,6271
+Logo=Saki-NuoveXT-Apps-package-settings_4848.ico
+
+[EncodedFile-AuthorEncoded-Saki-NuoveXT-Apps-package-settings_4848.ico]
+lines=1
+0=eJzNWQdYVNe2PhTLSzEqSd7NS0xMck3zXq839/PlvTRT9JqXZm+xERQLqCCC0ouACEhxaIJU6Y4U6XVmmGEYGKrADGXoYEFBsT5jzFpv7cPIFcX2yCvb72ctzhzP+ffe619r7YHjdOjf3Lkc/ZzJJc3iuJc5jnuPQJc4Q274OhvOs7j/d8PQI3SSU3zux8dl9T8Gixte/596z9t/maf7t0VL9Zi/2sHvuYD8qvf3xote2pMo1R3Pc+ct27QsVN5yxzqzDqKUnaoQedvbvw/j0WPKtOkLJ07+J7sXZ8xct+GAIHtXvOT2/pOKfq/8uqLQ0hZ3j9za72xSyl94mme+OuuDD6bPfPdQoLQZdqVUg3F8GRyVa5qOlDS//zvR1ud0dBYR7/U6unpHVprbamyFsl+3RRfDtz7p8J3vKWRg/rKALDRLlP3qlX9aLRA3hgRK1Osc0pVzLJLlE8Z68JRX3/wTGaPpb77nEyxvBbO0WtyaqMANkRLwKW7siavonjdO7jqErwkHCd66evpHDJ0OnxfJSiFHLMVVQTkj/Amj/B/8MvjPjaNFN2kO7YElaqF3Qd1eG6H0w68dQ140+PNHH3A6esac7oTtBm+973dU0Q4WGadxR3IFboougTWhBeCRV3c+vqbr43HwZ3toQ3AhuBN/b+J/rlqcDe15UbAhNB9+8M8chR/vx5F/YGlANpvPb8aBqf0z/m6k5hZt13D/Ydo+fdGWtrCKTrDMagBTYSX8fFwGa8KKYPGRLHDNqroQV9nx1dMS19fXf4nMLsI+gi3BUVdf393Q2eesu38wJCcl4IbAdFgsyEIttH42Aywhq8Uof6FXFj5rmYicXQBwDoHI2QbgNAtvDK/shv05KtyVWo1b4uWwLlyEywJz+L20TS2/GqtsX/yk3KdPn/4smTWEnQRzgiXBmvg7Ef++2KxiaG9rw+RTObDSV4hL6T0EYO/TgvxcHAb5QWQJSwS5MN23ErlgMXJWR4CzCUBunwCnm3thZHUP2OQ1oXk6rwHYECXBFcF5I3FpJSy7HqnQLLc8UabzKO7PP/+83oQJExaQazR37tzIqVOnOpC/m2BB/G2If29BlQrkcjlcGhyEwFghrAjMBnrXY/GBWzFwRYPACYqAsxYArT1w+wVgsMsTomvPgF1BC9MAkAZgU4wUVh0toJjM4PMEiyXLE/Lr/sUNKx/Ff/LkyS/q6Ogs09XV3ZCdlTX0zTffpNLlbQRTXf0JFj87+/aUNnVBRnYuMv4tzc34s28CsncRUIsH/C+8ClAvrQ+4wsvIhRQgZ0/cnYOQ2+OPBiaH8Pjpc+BYrEGrrAZkGjCKLcW1x4r4uGTrT/xxVXAu+BY1OD4ufmbPnv3Pr7zyillXZycEBwV16+npbaHLxsR/588uvt3ypm44eSoLL/T3w7mzZ9HMLxrXhBUyzeEw7vWLYGlgIU45pkJONASc/ApyEfnIHQgCzuIIcub++CLFT1xDPziL25HXANWBLfFluC5CxMflXf5rQvLgcOHpx/KfP3/+xJkzZ1qc6evDhvr62zNmzGD5ZxPx30r8O5PzJJCVnY30OXR1dqFtUCz+FF4MBNSC95kGCfBHPwVxp3WXEf/Gm8hF5yJxB85KgBQ/+JKpByaoLoBrSSfaDmsAtiWW48ZhDcD3lIsZ/58o31GttH8c/ylTprxrYGCwoaKi4rfBgQEQCATdpAXBsmXLMiKij9+or6+H7q4upmFQqVSwyycC1keKx8QXfmLg8i4AV3oFOPVN4n8DOK9UPu45M194Zrk9zF5tBUlNg+Au6wb7Qq0GTijBcEQDmXz8rw8rYPztHhP/z5H5hPCVt5eXivjzcaJpbeU59/b0YGdHB7S2tqJapYaqqmr0DwnHTcEZsDG6BLUAqkG4hPLMs0ntjDtyTbTutdeBkwwh5yVEPcODMGOJJc7bYIkfb7HG5OZLcEjei1oNwM6TVchrgOJvCZ+Ts3BjeCHjb/0I+iw3fUD4N8Kns2bNMisrK7t19swZ6OvtHV7z9namWWhsbISamhooLZWDSCQGZ59AMIwU8bWH4adjJWBwpBa4kqHhdVdcBU5MfkobTF3vDnPXWsLHRvvgE8Jn2+wgueUSeJWfARdxO6sDsDt1uBciDbC8DEuo9hlGFDH+Vo/g/y+EPxP+SmC9x7/PmTPHOikp6XKTWg0ajQabKd80NDRAdXU1KhTlLI+iVCrD4uJisPYKRKMoMcW/FF5zp5gvGETSK3DFFPuFl3ByQAW8t9YWP9m8Hz/dvB8+HbY4f4c9nmi5DIeV55BpwCa/CczT63BbUjlSHYAVIfl8XTGKLCb+tXsewp3VrLcI7xJmE/5C+Bvho2nTpi1duHBh2B4LizIv/4AbObl5UFlZiaQPKCtTIO0BmwNk5+Th3x2S8HlBA3D5xD3vEnKZg6CTcg7f8qvCRY6R8BnFihYj/lemjniidQj8qvrRvbQbmQb2ZtajyQklMg2sDi3E5VTLtkSJwDu/zvQRsfOcdg/+yA33PqP2Qm/ipC8ND/g37Q5MhKjYeFAqlVBeXk5zKAMZ9XS5hSXwclA91ajLwOVeAi5jAHSDNPCplwyMExSw3CMGPje2eQCLzA6AUDMER2ouwKGyXlYHwCqb1wCrA0B1AFaG5MPWGDEcLqgzfkT83B3sjPI84RXtXNg8PiT8q8HMd4zMQxLP7jmej55Bx0ChUCDNAeXyMkhNTcW1hzKRE54DLn0AdWJ68XNPGcslyLDSMxbmb7NFhi+22sIXZH+08sDwUjVGtVyDwNODSBpApgHrXDXuTq1B44QyWB8hZjUFt8dSX114ev0T8P/HptDQ09efNOmZZwwmTJr8pv7EiXNemvWn7XaJhbdM4iTgEXgMpTIZZmZmQibxry6vxNX+MtAN68SXHWS4NVYOppRLWD5Z7R0PX263Qy1gPtkwmQqjNTcwsvUGBDdcRp9hDYBtfjPuOcVrADZGleBPx4rRNF4K1D8sfRr+94+Pvl+l+8mqzbMsItIusTq5M0EGjj5BkJGaAq31p6GxUgmxUdFgEZAH3hGZYHM4GHYJlXw+WeuTCF/tsB/B/O32EF3VBYw7w1EVrwEgDYBWAyN1gPYAdieWQoCkccF4+LOxdK/ra5aRpwbN0mrAPKYAT6amY7taBQ1VlRgXE4OFhYVQUiJFsViCubn54OATjLsTZbjOLxkWmDggw9cmDvDlDgeMrurEKM1Nfv2PNV1DQe1FZBpwKm7DfdmNbN9gc5wc2R5YnCiDcIVmvGcyzvhg8AzLqFODe+JEIEzLwM6WZmysqYbDfgLiXsRrQUYxJZGUIKsNuXn5eCjgKK5zDYEFlGsWmjrhAlMn+MrEEaMqO0b4R7RcR60GwEXSgVoNkPbL0PC4FC1PVkBsddfs8fK3C0143VwQcykx5RT0drRDfXUVuIYlwJ4kGXgFh1NNK+XrGsupNAcoLhbxcPPwhBUbjeCbtUawwHgffG3qCFHKjpH40WoASAPgJuU1AKQB2E4a2BxXCvtTlRBX2/3OePl7HI3+NCFZePNsdzdUllegY/hJvuZb0X7vPalAb5oDq2s0D2R5taJCibW1tSgUCsHJyRmdCSYmprBgkylGKttH1p+Aoaor6FfdDwepDjgUtSLTgIlQyfIQ2mZUgZ+k5a3xcA8Kj54lTD6hOUf9hILyvm10BvW8jbg/V8XnPAYroRwEYZEsjoh3HTTUNyD1G5ielg4HDhxAV1dXdHdzh5377TGyom2EP7NaDYBnWS86iXgNwK6UKr4WO2TWgGt+wxv/Xe4RUdFvJiYkNAycP8/0CbZxebTHTWPCMuIUH0Osx2tSNwH1HZCVSedxV1dwcnQEDw8PsHJ2h4hyzaj4IQ2wOgDepIEDkg62JsDyxI4TFeCUXffU/EXFxRNcXFx+POjubp+aktJ6eeAipmdkDjlGpf7Kznv2BS2s3vM1X2t5/2BMKqrVaqQ+FVpaWrBYJEZnbwF8s8kEF202xw1bTcDa9RAS/1Hrz2KI10DlOXST0tmigNcA7hRWokvuaeLf+MT8KX51wsPDbVSNjbfVKhU2Uw+XnpbWah8QsdYhqei6Y1Erf+bTYpTvE5
+1=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
+
+[InterfaceEncoded]
+explorer.bmp=828,1104
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[EncodedFile-InterfaceEncoded-explorer.bmp]
+lines=0
+0=eJx9k1lPE1EYhjHea+KVP8Ff4A/w3o1ogmCCECDBmCjBGFFCIhqgRClGRBFjEVSgFCprSylQaG1p6QKlYzfoMjOdTtvpzHS2Thd6HCAIVzzJ+1295zvvd5Zr1/vPlx1yVdIVSRclXZJ0ruxy2TGmC0c6BhyyzedNKBVCkuBMhjUHNZkr/griQ250UK1fdbn9BBlkRTudXUCT2jBmhbE4SR/5zfBBNeLsO2/yPZR+PrTQNWuQrdg6zL5mR+TRVqTd5vtqhRZt20g4IjkxGmxRQr8ff7XHdu7Qd3uUVcOaeq29VgdVWCK3HehTS6DPGpg02p3WzRiKSktm4VR3NNMS4rq97K3eqRsjy3fmXFU6330zXL6JdnkTkzA97/J6tnf2wuF4HkzDKTnKtSHZrkDmZq+qfEhfOeOqXg3UWKNVrpgsmFBh9GIgHEZgLJVUaIEGTg/GxK54/i3M1o2uVCp0dbPOGqP/gS1S64m/DiZGY+mNeIpgGCmMAwc6hPyJFfqSxY+48HLNc0+hbZx3Npj9DXb08d9kpz81FU3BnHh0PjQLllFamdhXkGCEKrauuytGdA81rifW3SYH3u6jBvY4a1o4fQVGjFEThVEeqNj9DhNUPaJrWtp5thlu3UnId8nvKO2Umh4jbWNMML/JwqQItEJJ/gdq+LHUove0O6MdXuJLhBnHGTfN/feP6cFKKjNB5dQiMORKH8xQ/Zj+hQGSbSM9vvQwzKuTPJQ58QcpoCcySjo3K4ANsfTJ6mtUr7VZAnIP1hekRmPZaUKAGP6/n+GAiWBnyLyeBy6hNOwMNWtsMkdk0J/4hnDjcX6G5D3MSf+DJ5Ti5tMFPVty5UoKx+4bi/9zkJiIc+M4P0dkdYzgyZzMy5bAOsHNpAtzbFEZwQe2AgqEUhHZhUzWwOQtrGhiuD3uJA9CgU06qyVyyjitimJLBKsl+HVKsJC0m+YDrOAV+NNhaB6EmLyNEDe43JYgBoVcVCye/WX+ARBn2gB4nONJrSjIyS9KLdJLyi1gGAUjDUxjhtAfmLDLZ886osLABACupwhlkgPAWgEAAAACAAAAKAAAAPACAAAAAAAAAQAAAAAAAAAAAAAA
+
+[EncodedFolders]
+Folder
+
+[Folder]
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+Call,UploadXMultiQ
+
+[Settings_Default]
+IniWrite,%ScriptFile%,Main,Selected,False
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+

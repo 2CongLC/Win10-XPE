@@ -1,0 +1,383 @@
+[Main]
+Title=Additional Registry
+Type=Plugin
+Author=Lancelot
+Description=Personal Plugin for Additional Registry Tip: Use Utils\RegCPE
+Credits=http://TheOven.org
+Version=007
+Download_Level=1
+Level=8
+Selected=None
+Mandatory=False
+NoWarning=False
+Contact=http://TheOven.org
+Date=2017.11.10
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Finals/1%20Optimizations/YZ-Additional_Registry.Script
+Web2=http://yomi.cwcodes.net/Yomi/Final_Y/YZ-Additional_Registry.Script
+CertifiedBy=
+Certification=
+HistoryNotes01="Additional Requirements & Registry Info" - Start
+HistoryNotes02=-
+HistoryNotes03=\ComponentsY\Tweaks\"Additional Requirements"
+HistoryNotes04=\Downloads\ComponentsY\Tweaks\"Additional Requirements"
+HistoryNotes05=Gena\Components\Tweaks\"Additional Requirements"
+HistoryNotes06=-
+HistoryNotes07=\Final_Y\"Additional Registry"
+HistoryNotes08=\Downloads\Final_Y\"Additional Registry"
+HistoryNotes09=Gena\Finals\1 Optimizations/"Additional Registry"
+HistoryNotes10=-
+HistoryNotes11="Additional Requirements & Registry Info" - Finish
+HistoryNotes41=Tip: Use Utils\RegCPE
+HistoryNotes51='Plugin Creator' http://TheOven.org/index.php?topic=178
+History001=Lancelot 2016.01.04 Plugin created
+History003=Lancelot Improved [Dub_Personal] etc. - Date:2016.01.11
+History004=Lancelot Improved Duplicate Personal button. - Date:2016.02.14
+History005=Lancelot Add Compare Button - Date:2017.02.11
+History006=Lancelot Add HistoryNotes "Additional Requirements & Registry Info" - Date:2017.02.11
+History007=Lancelot Fixed IniDelete - Thanks to ied206 PEBakery Auto Syntax Checking Reply 3 http://TheOven.org/index.php?topic=2271.msg24582#msg24582 - Date:2017.11.10
+
+[Registry_Main]
+//Tip: Use Utils\RegCPE
+//-
+//-
+//-
+//-
+
+[Registry_SubKey]
+//To add Regisrty for only 32bit Settings (when 32bit available)
+//Tip: Use Utils\RegCPE
+//-
+//-
+//-
+//-
+
+[Registry_Main_SubKey]
+//To add Regisrty with both with SubKey and without SubKey (both 32bit and none 32bit) - 32bit processed when 32bit available
+//Ex: Registry setting of an application for both 32bit and 64bit versions
+//Tip: Use Utils\RegCPE
+//-
+//-
+//-
+//-
+
+[InterFace]
+Dub_Bevel=Dub_Bevel,1,12,346,46,80,52
+Dub_Button="Save Personal",1,8,348,48,76,25,Dub_Personal,,False,_Dub_Personal_,False
+Dub_TextBox=,1,0,350,73,72,21,,__Author
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Info_SavePersonal_TextLabel2="Plugin Designed to use 'Save Personal'#$x button at first.#$x#$x* Fill 'Author' box#$x* Click 'Save Personal' button#$x* 'New Plugin' will be available#$x below current plugin#$x* Follow 'New Plugin' instructions",1,1,7,4,267,123,9,Bold
+pWebLabel2="Plugin Page",1,10,338,4,55,18,http://TheOven.org/index.php?board=9
+Step1_TextLabel1=1,0,1,7,59,21,33,22,Bold
+Step1_TextLabel2="Click 'Edit' button",0,1,9,104,89,18,8,Normal
+Setp1_Image=Edit_2016-01-04_132708.gif,0,5,111,56,145,64,
+Step2_TextLabel1=2,0,1,8,141,25,32,20,Bold
+Step2_TextLabel2="Click 'Source' Button",0,1,8,179,98,18,8,Normal
+Step2_Image=Source_2016-01-03_142207.gif,0,5,111,143,149,48,
+Step3_TextLabel1=3,0,1,9,203,20,39,20,Bold
+Step3_TextLabel2="Write your Registry entries with#$xRegWrite,HKLM,...#$xto the end of#$x[Registry_Main]#$x[Registry_SubKey]#$x[Registry_Main_SubKey]#$xsections up to your needs.",0,1,118,199,165,96,8,Normal
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[Variables]
+
+[Process]
+//Examples Wow6432Node\
+//If,%NoWarnROW%,Equal,True,System,ERROROFF
+//RegWrite,HKLM,0x1,Tmp_Software\Classes\%SubKey%TypeLib\{3F4DACA7-160D-11D2-A8E9-00104B365C9F}\5.5,,"Microsoft VBScript Regular Expressions 5.5"
+//RegWrite,HKLM,0x1,Tmp_Software\Classes\%SubKey%CLSID\{0000002F-0000-0000-C000-000000000046}\InprocServer32,,oleaut32.dll
+//RegWrite,HKLM,0x1,Tmp_Software\Classes\%SubKey%.vbs,,VBSFile
+//RegWrite,HKLM,0x1,"Tmp_Software\Classes\%SubKey%Component Categories\{F0B7A1A1-9847-11CF-8F20-00805F2CD064}",409,"Active Scripting Engine"
+//RegWrite,HKLM,0x1,"Tmp_Software\%SubKey%Microsoft\Active Setup\Installed Components\{4f645220-306d-11d2-995d-00c04f98bbc9}",,"Microsoft Windows Script 5.6"
+//RegWrite,HKLM,0x1,Tmp_Software\%SubKey%Acronis\TrueImage,standard,"%serial%"
+//-
+IniRead,%ProjectDir%\script.project,IniVariables,NoWarnRegOverWrite,%NoWarnROW%
+//-
+RegHiveLoad,Tmp_Default,%RegDefault%
+RegHiveLoad,Tmp_Software,%RegSoftware%
+RegHiveLoad,Tmp_System,%RegSystem%
+//-
+Set,%SubKey%,
+Run,%ScriptFile%,Registry_Main
+//-
+Set,%SubKey%,
+If,%SourceArch%,Equal,x86,Run,%ScriptFile%,Registry_SubKey
+Else,Begin
+If,%TargetWOW64%,Equal,x86,Begin
+Set,%SubKey%,Wow6432Node\
+Run,%ScriptFile%,Registry_SubKey
+End
+End
+//-
+Set,%SubKey%,
+Run,%ScriptFile%,Registry_Main_SubKey
+If,%TargetWOW64%,Equal,x86,Begin
+Set,%SubKey%,Wow6432Node\
+Run,%ScriptFile%,Registry_Main_SubKey
+End
+//--
+RegHiveUnLoad,Tmp_Default
+RegHiveUnLoad,Tmp_Software
+RegHiveUnLoad,Tmp_System
+
+[Dub_Personal]
+Set,%t%,%ScriptFile%
+StrFormat,Replace,%t%,%ScriptDir%,"",%t%
+StrFormat,Ctrim,%t%,\,%t%
+StrFormat,RTrim,%t%,7,%FNWOext%
+//--
+Set,%t%,%ScriptDir%
+StrFormat,CTRIM,%t%,\,%t%
+StrFormat,Replace,%t%,%BaseDir%\Projects\,"",%t%
+StrFormat,Split,%t%,\,1,%t2%
+StrFormat,Replace,%t%,%t2%,"",%SubFolder%
+StrFormat,CTRIM,%SubFolder%,\,%SubFolder%
+Set,%SubFolder%,\%SubFolder%
+Set,%SubFolderTarget%,%SubFolder%
+//--
+//StrFormat,Split,%SubFolder%,\,0,%SubFoldersNo%
+StrFormat,Split,%SubFolder%,\,2,%SubFolderBase%
+//--
+//Path intentionally hardcoded with My ;)
+If,Not,%SubFolderBase%-,Equal,-,Begin
+StrFormat,Right,%SubFolderBase%,2,%t%
+If,Not,%t%,Equal,My,StrFormat,Replace,%SubFolderTarget%,%SubFolderBase%,%SubFolderBase%My,%SubFolderTarget%
+End
+Set,%TarFolder%,%BaseDir%\Projects\MyPlugins%SubFolderTarget%
+//--
+If,Not,ExistDir,%TarFolder%,DirMake,%TarFolder%
+//-
+Set,%Auth%,%Dub_TextBox%
+If,%Auth%-,Equal,-,Begin
+//-
+Set,%t%,""
+If,ExistFile,%GlobalTemplates%\Download_1Upload\9_Info.ini,IniRead,%GlobalTemplates%\Download_1Upload\9_Info.ini,Info,Author,%t%
+If,Not,%t%,Equal,"",Set,%Auth%,%t%
+//-
+If,%Auth%-,Equal,-,Begin
+Set,%Auth%,My
+Call,HostUserName
+Set,%t%,1
+If,%HostUserName%,Equal,Administrator,Set,%t%,0
+If,%HostUserName%,Equal,Guest,Set,%t%,0
+If,%HostUserName%,Equal,System,Set,%t%,0
+If,%t%,Equal,1,Set,%Auth%,%HostUserName%
+End
+End
+//-
+Set,%NFNWOext%,%FNWOext%_%Auth%
+//-
+Set,%rf%,1
+Set,%t1%,0
+Set,%t2%,0
+If,ExistFile,%ScriptDir%\%NFNWOext%.Link,Set,%t1%,1
+If,ExistFile,%TarFolder%\%NFNWOext%.Script,Set,%t2%,1
+If,%t1%%t2%,Equal,11,Set,%rf%,0
+//-
+Set,%Tar%,"%TarFolder%\%NFNWOext%.Script"
+//-
+Set,%Fcreate%,1
+If,ExistFile,%Tar%,Begin
+If,Question,"%Tar%#$x#$xExists#$x#$x#$xDo you want to overwrite ?#$x",Set,%answer%,Yes
+If,Not,%answer%,Equal,Yes,Begin
+Set,%Fcreate%,0
+End
+End
+If,%Fcreate%,Equal,0,Call,Echo,"Plugin do not overwrite - Nothing copied - Plugin Exiting now.",Warn,,Message,,Exit
+//-
+Echo,%SubFolder%
+Echo,%SubFolderTarget%
+Echo,%FNWOext%
+Echo,%TarFolder%
+Echo,%Auth%
+Echo,%NFNWOext%
+Echo,%rf%
+Echo,%Tar%
+//-----
+If,%Fcreate%,Equal,1,Begin
+If,ExistFile,%Tar%,Begin
+If,Not,ExistDir,%ProjectTemp%,DirMake,%ProjectTemp%
+StrFormat,DATE,%myDate%,yyyymmddhhnnss
+CopyOrExpand,%Tar%,%ProjectTemp%\%NFNWOext%_%myDate%.Script
+Call,Echo,"Old Plugin Backup at #$x %ProjectTemp%\%NFNWOext%_%myDate%.Script",Warn,,MessageInformation
+End
+//--
+CopyOrExpand,%ScriptFile%,%Tar%
+IniWrite,%Tar%,Main,Selected,True
+StrFormat,Date,%MyDate%,yyyy.mm.dd
+IniWrite,%Tar%,Main,Date,%MyDate%
+IniRead,%ScriptFile%,Main,Author,%t%
+If,Not,%t%,Equal,%Auth%,IniWrite,%Tar%,Main,Author,"%t%#$c %Auth%"
+IniRead,%ScriptFile%,Main,Title,%t%
+IniWrite,%Tar%,Main,Title,"%t% %Auth%"
+IniDelete,%Tar%,Interface,Dub_Bevel
+IniDelete,%Tar%,Interface,Dub_Button
+IniDelete,%Tar%,Interface,Dub_TextBox
+IniDeleteSection,%Tar%,Dub_Personal
+IniDeleteSection,%Tar%,Dub_Personal_HistoryDelete_Loop
+IniDeleteSection,%Tar%,Dub_Personal_HistoryNotesDelete_Loop
+IniDelete,%Tar%,Interface,Button_Download
+IniDelete,%Tar%,Interface,Button_Upload
+IniDelete,%Tar%,Interface,Button_CompareEdit
+IniDelete,%Tar%,Main,Web1
+IniDelete,%Tar%,Main,Web2
+IniDelete,%Tar%,InterfaceEncoded,DoubleJDesignRavenna3dArrowDown0016016.bmp
+IniDelete,%Tar%,InterfaceEncoded,BokehliciaCaptivaSoftwareupload0016016.bmp
+IniDelete,%Tar%,InterfaceEncoded,AmperossQetto2Move0016016.bmp
+IniDeleteSection,%Tar%,EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp
+IniDeleteSection,%Tar%,EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp
+IniDeleteSection,%Tar%,EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp
+IniDeleteSection,%Tar%,DownloadXXX
+IniDeleteSection,%Tar%,UploadXXX
+IniDeleteSection,%Tar%,CompareEditXXX
+IniDeleteSection,%Tar%,Upload_Default
+IniDeleteSection,%Tar%,Upload_Default_SE
+IniDeleteSection,%Tar%,Upload_Default_Gena
+IniDeleteSection,%Tar%,Upload_Default_Yomi
+IniDeleteSection,%Tar%,Upload_Default_Win10PESE
+IniDeleteSection,%Tar%,Upload_Default_Win8.1SE
+IniDeleteSection,%Tar%,Upload_Default_Win8PESE
+IniDeleteSection,%Tar%,Upload_Default_Win7PESE
+IniDeleteSection,%Tar%,Settings_Default
+IniDeleteSection,%Tar%,Settings_Default_SE
+IniDeleteSection,%Tar%,Settings_Default_Gena
+IniDeleteSection,%Tar%,Settings_Default_Yomi
+IniDeleteSection,%Tar%,Settings_Default_Win10PESE
+IniDeleteSection,%Tar%,Settings_Default_Win8.1SE
+IniDeleteSection,%Tar%,Settings_Default_Win8PESE
+IniDeleteSection,%Tar%,Settings_Default_Win7PESE
+//--
+//Extra-Start
+//--
+IniDelete,%Tar%,Interface,Info_SavePersonal_TextLabel2
+ChangeInterface,Write,State,%Tar%,,Step1_TextLabel1,1
+ChangeInterface,Write,State,%Tar%,,Step1_TextLabel2,1
+ChangeInterface,Write,State,%Tar%,,Setp1_Image,1
+ChangeInterface,Write,State,%Tar%,,Step2_TextLabel1,1
+ChangeInterface,Write,State,%Tar%,,Step2_TextLabel2,1
+ChangeInterface,Write,State,%Tar%,,Step2_Image,1
+ChangeInterface,Write,State,%Tar%,,Step3_TextLabel1,1
+ChangeInterface,Write,State,%Tar%,,Step3_TextLabel2,1
+//--
+//Extra-Finish
+//--
+IniRead,%Tar%,Main,Version,%tVer%
+Set,%tVerP%,%tVer%
+StrFormat,INC,%tVerP%,1
+If,%t%,Bigger,1,Loop,%ScriptFile%,Dub_Personal_HistoryDelete_Loop,2,%tVerP%
+If,%t%,Bigger,1,Loop,%ScriptFile%,Dub_Personal_HistoryNotesDelete_Loop,1,%tVer%
+IniWrite,%Tar%,Main,History%tVer%,"%Auth% %MyDate% Plugin created"
+End
+//-
+Call,LinkType,,%ScriptFile%,%ProjectDir%
+Echo,%LinkType%,Warn
+//PluginFile LinkFile
+If,%LinkType%,Equal,LinkFile,Begin
+StrFormat,Split,%ScriptDir%,\,1,%t%
+If,%t%,Equal,Projects,Begin
+StrFormat,Split,%ProjectDir%,\,0,%ProjectDirNo%
+StrFormat,Split,%ProjectDir%,\,%ProjectDirNo%,%ProjectFolderName%
+//-
+StrFormat,Split,%ScriptDir%,\,2,%t%
+StrFormat,Replace,%ScriptDir%,\%t%,\%ProjectFolderName%,%LinkDir%
+//-
+If,ExistFile,%Tar%,Begin
+If,Not,ExistFile,%LinkDir%\%NFNWOext%.Link,Set,%rf%,1
+Call,CreateLink,%Tar%,%LinkDir%,%NFNWOext%.Link
+End
+//Better keep a link at ScriptDir
+If,ExistFile,%Tar%,Call,CreateLink,%Tar%,%ScriptDir%,%NFNWOext%.Link
+End
+//not a regular link file - fallback: create default link
+If,ExistFile,%Tar%,Call,CreateLink,%Tar%,%ScriptDir%,%NFNWOext%.Link
+End
+Else,Begin
+If,ExistFile,%Tar%,Call,CreateLink,%Tar%,%ScriptDir%,%NFNWOext%.Link
+End
+//-To easily Manually Copy Link files when required save a copy side by side with plugin
+If,ExistFile,%Tar%,Call,CreateLink,%Tar%,%TarFolder%,%NFNWOext%.Link
+//-
+If,%rf%,Equal,1,System,ReScanScripts
+
+[Dub_Personal_HistoryDelete_Loop]
+Set,%t%,#c
+If,#c,Smaller,1000,Set,%t%,#c
+If,#c,Smaller,100,Set,%t%,0#c
+If,#c,Smaller,10,Set,%t%,00#c
+IniDelete,%Tar%,Main,History%t%
+IniDelete,%Tar%,Main,History%t%a
+IniDelete,%Tar%,Main,History%t%b
+IniDelete,%Tar%,Main,History%t%c
+IniDelete,%Tar%,Main,History%t%d
+IniDelete,%Tar%,Main,History%t%e
+IniDelete,%Tar%,Main,History%t%f
+IniDelete,%Tar%,Main,History%t%g
+IniDelete,%Tar%,Main,History%t%h
+
+[Dub_Personal_HistoryNotesDelete_Loop]
+Set,%t%,#c
+If,#c,Smaller,100,Set,%t%,#c
+If,#c,Smaller,10,Set,%t%,0#c
+If,%t%,Bigger,1,Begin
+IniDelete,%Tar%,Main,HistoryNotes%t%
+IniDelete,%Tar%,Main,HistoryNotes%t%a
+IniDelete,%Tar%,Main,HistoryNotes%t%b
+IniDelete,%Tar%,Main,HistoryNotes%t%c
+IniDelete,%Tar%,Main,HistoryNotes%t%d
+IniDelete,%Tar%,Main,HistoryNotes%t%e
+IniDelete,%Tar%,Main,HistoryNotes%t%f
+IniDelete,%Tar%,Main,HistoryNotes%t%g
+IniDelete,%Tar%,Main,HistoryNotes%t%h
+End
+If,%t%,Equal,1,IniWrite,%Tar%,Main,HistoryNotes01,""
+
+[AuthorEncoded]
+Icons8-Windows-8-Logos-Registry-Editor_0_048048.ico=796,1062
+Logo=Icons8-Windows-8-Logos-Registry-Editor_0_048048.ico
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+Edit_2016-01-04_132708.gif=2579,3439
+Source_2016-01-03_142207.gif=2921,3895
+AmperossQetto2Move0016016.bmp=893,1191
+
+[EncodedFolders]
+Folder
+
+[Folder]
+
+[EncodedFile-AuthorEncoded-Icons8-Windows-8-Logos-Registry-Editor_0_048048.ico]
+lines=0
+0=eJztWj2L1FAUvavorKIMWiwo6iiyjCDKwhYLNmNjJ4KsghaKhaUgiB/gB8T/sIUIu9qIu4WCjfX4AYKNNmprIdiIE/FrijHx3Lw3bGbIS96VvEmCc5azJxPeve/szX1vkzBEE/iZmSH83k3L00RTRLQPxCk6R+o8w5umJISagcVxU9N2fKDnmEsZM/y5k+jSjKr7DwTs+5fExP3b8H+rf9X9j/tn3D/j/qlu/avuvyngek1JDGNSMD75LqdY/y4xiv5xiVHsPy5R9fpX3f+4f/Kr/7YK+98AfgPfgjfIfu8tS/8cT4h9A94E96bElaX+DzJyvQIvg40S+t8M/rTM+wdcjMWWoX9OC3Netcw7KjwiWR/sicXOCTjpwPsm8JfA/+uheGn/5I1TQg/XhuKl6zdvPLacm4957e4skf+t4G+B/+cJOYrsnx3gfVLPjDbzX0zIUXT/MNaBR8F7oG+YuwduL6n/ODaCJ8CH4PfY3C8M4137PwSe/Yc4Bv8t8+AKeN4wxlX/rwFvkbruvL8fkNu3gov687psD8W+Izf///L2fwz8YshzJ2fvjI6Aae+W+PljgbJ7cD7DTxHvl/aTem6yuY5fwV0puZoJMaZj2/vbNJwBfwjmZL4ktb7L4P8kqfsSyT7GvJ3iX5InD9wlWf35mPfVlsH/KOvP4LX7Xuifr9mVkvhnHKTVe8ksfgaPGPIU+X7sAmXX7CmprziYUFT9+3himLMLXiL+OkY6iva/BfxEg9f4AzhrGV+G96uHSe0vnH+J1DO6LYqufx/XSb3XkUJaf68WRnGuNAyF2tH6TGu7pbWm1Fu7qghSn+uIriVqQPUBDT2tfiPSVhBprxHNX+/Wlfpa27XogRCzKKWJQfVoUNv6/Ec93tfxfkNpt6W0F7L+BYsc2PR4nDP2TM7PK7bQDc/MS8kvL9a10PXJT88v1g1KTc8sLimq1HVNySzJL4o3iDcwsQAivczkfIZRMGzAPlUIvZoJu7z1R3VjBiYApnwU14m88LsBAAAAAgAAAE0AAACrAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+Call,UploadXMultiQ
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-Edit_2016-01-04_132708.gif]
+lines=0
+0=eJzdk/8/04kDx2e9Y5vlhplvS7jFfL0mRy0Vb6Nhh0rCqTNNOa1CS3I+HWvY5PKlRWmEG4lxMztJb86Xd76120mLcjuH3g9XfVb3qRvJZ7fHp/s3Pq8fXo/Xj6/X4/l47YsI37GTXYkKRpWgaAAa8B4ABHyBbFgDkYgyY5y4BRIciAPyANWkStkiFWdw4SW9tFgAT2slCli7rIdcKaxIFjAPcI5zuPQgaFSDvDNQ3Cg6U0AWzVLNICy+RtmjhFI5siqxpAeBDsRxqzXiKrG0SYpYEZWTOu0rfVx8HC+HB4EM7YwGmtT5B/jnt2iJVkTZqE7ZKdO/08vqJZIBJL9eA0WyBDk8mVEGB/h7G2W8bB40qTGgAdU8Ag9A0rx8ca1M1ibTvdIZjAgehy8rLYOdyGVtiGZao1nSyUrLoDmdtE/FDWfgjYC3r7feFODVaxEHcvLRZBhkKId14hyeikTUqFVwm0z1ygDN6KQKGFlC4j42P82Fh2HNjCa5VAMNQLLTXOXHIX06Xq1GRyIibwz5F/O189qgPUGQQqmslUgHEHhPkORj6IQN6wZvI6AcRSQ5PMAUEBQLlMMq2Ioo6YSl8ckqtQpqkaqWDYAxDjqarOQLVG4UKINLdiBzM7jent5QH5SclJyflx9ED/L38+ekcuBpPW9PkDKSBas1qj6Ic0WjmdeJ27RwJCs/m6fD4ZVqRPvGoJ3TKhVKmB6kx+HFefnSHhXrI5c5RFYtlvQh4mqxtEWKkIhQOANS6/SreunFfFmnTPdGh7fAl10pk10pg8MZyDICj8LKjxTqJQajIb9ey6vVSgd0ylEd6v9I3v/YP18wwxhRZ7Bkprxh6BLG2jN5XN44UkL4NFLC7Gp6cNlue4Z2vOv7sXLn0FJyhEI6cZV6sC15QtH8sMbRBFUQYS1V3cClzWgn3i6DdUGXjupvWN+eKv+yyvPIpPLlASG90FWcp3xebZ7QnfHbpI2Xc+v2O/N9ET1tofT0x77Q3I+nZn1SxhyuRcXLEi+lH+6ocgn9s03JwyvOReU+2dhr0exZf/J9Z7Byw3u1A3gB8/tPGWdM+lJyn8i8G0JLVrPbu+PhTbbmRHNeJzgoP/aw/otdqz6D7TisAzBn4/jZT/2snHP2r5fNb/quRTAv/+zT2Wo/c+p13zlQyzNk/K7uv//+z2crxnfXsrwY5X8dBDWllUWb3AOGTljWDC0IHGQPu3/YkXYZ/8Hl593nk1Ifhx3aHN25m1SPh++BWsIn4dQNAutI5mIR6XhCo1f1/oBE0n6Je+onO6VgKTpi0OyWbWimyZDbTW3VLa/bKgVo1qntiURzU9KesgESp6ECs3QoNodXdv5Z1b9o9w5fjd3j0Xz1uWjMtoSLN4GFyVWtaI+9uS5k22vULPRmLAYONwsdfxTiJcKLH8Q/sgmjHNlgec15s1dupshbEeeSblNoSqc2lrjmtTZe8vNs/b7cjZ5Orm+tiKg50nQgzP40j1ZqRdBRK2zrhFmTGKydy4i33/QNh5NG0+jbsQ7XZzL+3dG73Hay5l/UrkIrPwohweuisLLITmkXovU5a0E9ws/uWD547O4jmoj0LcQutt8CK+C7C8Veb3qR6pO+vTJ59pjNVqQW6+LgbQl8YhG3VEopT/Abw3EkIN/jIme2rTy4iSLnvNlaWbQF775QMkLY650FE2O4WQ8s90qC0UpBJdPMXJDgRdpHzrxEBiveFjhVrTmHUpkJi3wTkCtHX0AH3jxUR0kLZA+Tz5NHpxi2p/SPmO51/vbsirc07C3evTEnm2BwyAJtx8Zh6/7DDun31qTwPfti+RVbJK8lVknW6qV6u4i1rm0jvNlT73/L/aPjvXFESSGIhPZkE5H1VztAE7tdssbPZzn+QyPUHCa7CLutNxYH0o89OPvLN1kYSalE4Lv+Qlpzev1l831buvbi04pLpg0pCoyd8E8500k+HsInbBYsjqEc4/imZPHz7HAwfddJ+S8W2S8WCd0s0m799OGYv1cenzjTvzp1cK95Zmrmkpk9eB192fKCHW14BuRNm/g8UDSKrCIb9k/au041xC5vbBcgV/9KnBY3MZqpHUOkDeSGLThGdbxkiQgS0JJx1E8U6IQfq2AQ60QztShIcZn476Pl6Koa6MXWoIshi9i73w8fooBucZlFOXHMko1+sW5h7SlrglCX9VaXncabCWpwLRAco8I2xb1Y02kBgaaNdUvF3LJbet7w0FBkkmTP1/b0yn39uJhOP1cGY79tkJ2Ji1euK6pv340Pho3b0Tst2MsJDJoDB8CLBwn4YeznSW8FFR7jKctPbUY0j65siAAtT6+h/YjS8hiY5WyZfW1L83cp1yHpHOGDA77VEnWCjKGcWavwQQ17tDK2utuAhTHowcqmuOeebFfgcOdipULSHMWUj7v78cvvadKiYFSR4wDfvze/aduud/zj9L9ufLYgCInPwpjiFp15wqaAu/YDaauIKDWY6X50vy2uFTCZpwgdRkQVicoQUWEIFp1ZoC7kLdSvGVW397y/EXO2jfHddJwQhSoooUiszfRKd0vS5FQxXd+IPwdHzkwQkioaXHgEvivSUHlhT4jZig7F2Bd54NsWQZPtRKtr3oeHZc7BZjFrVHpY5HRtgEZKNUkPezFlsq+i21c2PB51bF1Ady5oCfjRIzqGPy1UDd8OFBRFmQdrsETUnQifO3i3xKoWELbp56Q4tiRpsEFsdF0KNdEJV1DUs9JITCi0Tbb8pXMPrcHqA9+h8mtLAGiyOF43CFSsxwtJMx2BrwGf4124Fv5V19uxx5wEuKfd0c4owdaXbFFmAq5XZI3QIqbSQ+amVzu6rCtDEsw16EbTVYXVuFEWOjuZqJ7nNBILwryq5E94r1ZE6pftKexvzIfne3qEYadPsF0AmmCmMxB/ZNsmq2fuxQpXDIGLojgTnrWt3J/s9zh74cvZStlj0SRDmHGLWXSZc/4+7gvf3JHLydp5yj63xD+o9q2EMPkMZqhfSO11/H3d7bCbGekHQhXK52aBdb+UxfQaR280WVj5dDRM/uWv6zPDGTvu/rwxOEXvT/raRuS6XvfG/6v97JwrQHtiEVVon7z0hNE+GtDJLH18s2J3PTBKy0n3SgNn+xYSaKSdP5R+hUact/NGkTvqOgdWg2PxmQnfrxVXRahUGjJOZdOY18/h1X+ThO5JOdkJNd9EpVr/IVLFF2/79jxYSP/1gzpX3V23KXB+HqwpPLzcFcuR8+2eoknCaGWT7XfpB3iD99wXgcC7EyIdq3b6+Fu8D72hIB7T+PjWFedWG+dX8VB5lxUWg9r1P7EGiiF4nJNyTcksiTcyMDTTNTDUNTCJNzQ2Mjew0EvPTGMYBcMf5HBB6J2c2OXXlGUxMTABAJxlCajdPw12AQAAAAIAAAA2AAAAuQkAAAAAAAABAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-Source_2016-01-03_142207.gif]
+lines=0
+0=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
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+

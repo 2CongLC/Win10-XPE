@@ -1,0 +1,165 @@
+[Main]
+Title=Win2k3_Ramdisk
+Type=Plugin
+Author=Lancelot, Galapo
+Description=(Gena x86 only) Add Win2k3 Ramdisk.Sys Disk Driver & Win2k3 setupldr.bin
+Credits=Galapo
+Version=012
+Download_Level=1
+Level=6
+Selected=False
+Mandatory=False
+NoWarning=False
+Contact=http://TheOven.org
+Date=2017.11.19
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Drivers/5%20Ramdisk/uWin2k3_RamdiskSys.Script
+CertifiedBy=
+Certification=
+HistoryNotes01=required files for Win2k3_RamdiskSys also exists in 2k3sp1 package ( WindowsServer2003-KB889101-SP1-x86-ENU.exe ) http://www.google.com/webhp?hl=en#sclient=psy&hl=en&biw=1024&bih=567&site=webhp&source=hp&q=win+2003+sp1&aq=f&aqi=g5&aql=&oq=&pbx=1&bav=on.2,or.r_gc.r_pw.&fp=f99e8c741a251b45
+History001=Transferring 2k3 addings from bootdi to current Plugin
+History002=Minor addings to interface
+History003=Galapo updated Interface variable names
+History004=Lancelot Interface edit with Oriensol reminding (Thanks)
+History005=Lancelot ramdisk.sys version check added // Plugin reorganised
+History009=Lancelot IniVariables OSServicePack
+History010=Lancelot IniVariables OS - Date:2011.07.19
+History030=Lancelot - Add DUC Buttons
+History011=Lancelot updated v011 - Date:2017.02.16
+History012=Galapo Replace line with Call,FileByteCheck - Date:2017.11.19
+
+[Interface]
+pBevel1=pBevel7,1,12,3,46,505,58
+pTextLabel1="This Plugin needs W2003 SP1 / R2 as source!",1,1,14,4,282,18,9,Bold
+pTextLabel2="(Or define the path to needed files below.)",1,1,84,24,208,18,8,Normal
+pCheckBox1="Always use provided Files",1,3,14,53,145,16,False
+pTextLabel3=" ramdisk.sys  setupldr.bin",1,1,114,70,60,30,8,Normal
+pTextLabel4="from              at",1,1,177,76,76,18,8,Normal
+pFileBox1=%GlobalTemplates%\BootDI,1,13,252,69,204,20,dir
+OpensourcebootDIdirbutton="Open Dir",1,8,454,70,48,25,OpensourcebootDIdir,_OpensourcebootDIdir_,False
+pWebLabel1="2k3 sp1",1,10,201,76,37,18,http://www.google.com/search?hl=en&q=2k3+sp1+download&aq=f&oq=&aqi=
+pTextLabel5="Notes:#$xYou have to use either FiraDisk/WinVBlock OR Win2k3_Ramdisk.sys to use BootDI#$x#$xBootDI + Win2k3_RamdiskSys= have size limit (512MB - practically: 470MB)#$xBootDI + Firadisk/WinVBlcok = NO size limit#$x#$xCommon: Using Firadisk with BootDI",1,1,11,123,409,97,8,Normal
+pTextLabel6="I provide the files",1,1,22,77,88,18,8,Normal
+WebLabel_Plugin="Plugin Page",1,10,338,4,55,18,http://TheOven.org/index.php?board=9
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[Process]
+Set,%OKAll%,""
+If,Not,%SourceArch%,Equal,x86,Exit,"Plugin only for PE1x86 builds for NOW"
+IniRead,%ProjectDir%\script.project,IniVariables,OSServicePack,%OSServicePack%
+// I need to recheck x64 files, but as far as I remember ramdisk.sys of x64 (both sp0 and sp2) works very nicely :).
+If,Not,%pCheckBox1%,Equal,True,Run,%ScriptFile%,FileCheckingAndReadying
+If,%pCheckBox1%,Equal,True,Run,%ScriptFile%,process-ProvidedFiles
+
+[FileCheckingAndReadying]
+IniRead,%projectdir%\script.project,IniVariables,OS,%OS%
+If,%OS%%OSServicePack%%SourceArch%,Equal,W2003SP1x86,Run,%ScriptFile%,process-SourceCD
+If,%OS%%OSServicePack%%SourceArch%%OKAll%,Equal,W2003SP1x860,Run,%ScriptFile%,process-ProvidedFiles
+If,Not,%OS%%OSServicePack%%SourceArch%,Equal,W2003SP1x86,Run,%ScriptFile%,process-ProvidedFiles
+
+[TargetFileDeleteIniWritetxtsetup]
+IniWrite,%Target_Win%\txtsetup.sif,ScsiClass.Load,ramdisk,ramdisk.sys
+ShellExecute,Hide,attrib.exe,"-R #$q%Target_Win%\SETUPLDR.BIN#$q"
+If,ExistFile,%Target_Sys%\drivers\ramdisk.sy_,FileDelete,%Target_Sys%\drivers\ramdisk.sy_
+If,ExistFile,%Target_Sys%\drivers\ramdisk.sys,FileDelete,%Target_Sys%\drivers\ramdisk.sys
+If,ExistFile,%Target_Win%\SETUPLDR.BIN,FileDelete,%Target_Win%\SETUPLDR.BIN
+
+[process-SourceCD]
+Run,%ScriptFile%,TargetFileDeleteIniWritetxtsetup
+CopyOrExpand,%source_win%\SETUPLDR.BIN,%Target_Win%
+CopyOrExpand,%source_win%\ramdisk.sys,%Target_Sys%\drivers
+If,%SourceArch%,Equal,x86,Run,%ScriptFile%,Check-process-SourceCDx86
+
+[Check-process-SourceCDx86]
+Set,%OKramdisksys%,0
+Retrieve,fileversion,%Target_Sys%\drivers\ramdisk.sys,%ramdisksysversioncheckinfo%
+If,Not,%ramdisksysversioncheckinfo%,equal,5.2.3790.1830,Echo,"Your 2k3sp1x86 CD Do NOT Contain Ramdisk.sys of W2003 SP1!",WARN
+Else,Set,%OKramdisksys%,1
+Run,%ScriptFile%,Check-Version,%Target_Win%\setupldr.bin,%ProjectTemp%\version.txt
+If,Not,%OK%,Equal,1,Echo,"Your 2k3sp1x86 CD Do NOT Contain setupldr.bin of W2003 SP1!",Warn
+Set,%OKAll%,0
+If,%OKramdisksys%%OK%,Equal,11,Set,%OKAll%,1
+
+[process-ProvidedFiles]
+If,Not,ExistFile,%pFileBox1%\ramdisk.sys,Run,%ScriptFile%,MsgWrn,"%ScriptTitle% ramdisk.sys file missing"
+If,Not,ExistFile,%pFileBox1%\ramdisk.sys,Exit,"ramdisk.sys file missing"
+Retrieve,FileVersion,%pFileBox1%\ramdisk.sys,%ramdisksysversioncheckinfo%
+If,Not,ExistFile,%pFileBox1%\ramdisk.sys,Run,%ScriptFile%,MsgWrn,"%ScriptTitle% You need Ramdisk.sys of W2003 SP1!"
+If,Not,%ramdisksysversioncheckinfo%,equal,5.2.3790.1830,Exit,"You need Ramdisk.sys of W2003 SP1!"
+If,Not,ExistFile,%pFileBox1%\setupldr.bin,Run,%ScriptFile%,MsgWrn,"%ScriptTitle% setupldr.bin file missing"
+If,Not,ExistFile,%pFileBox1%\setupldr.bin,Exit,"setupldr.bin file missing"
+Run,%ScriptFile%,Check-Version,%pFileBox1%\setupldr.bin,%ProjectTemp%\version.txt
+If,Not,%OK%,Equal,1,Run,%ScriptFile%,MsgWrn,"%ScriptTitle% You need setupldr.bin of W2003 SP1!"
+If,Not,%OK%,Equal,1,Exit,"You need setupldr.bin of W2003 SP1!"
+//--
+Run,%ScriptFile%,TargetFileDeleteIniWritetxtsetup
+CopyOrExpand,%pFileBox1%\SETUPLDR.BIN,%Target_Win%
+CopyOrExpand,%pFileBox1%\ramdisk.sys,%Target_Sys%\drivers
+
+[Check-Version]
+If,ExistFile,#2,FileDelete,#2
+//If,ExistFile,#1,FileByteExtract,#1,#2,"2800730072007600300033005F007300700031005F00720074006D002E003000350030003300320034002D00310034003400370029",53
+If,ExistFile,#1,Call,FileByteCheck,#1,#2,"2800730072007600300033005F007300700031005F00720074006D002E003000350030003300320034002D00310034003400370029",53
+If,ExistFile,#2,Set,%OK%,1
+If,Not,ExistFile,#2,Set,%OK%,0
+
+[OpensourcebootDIdir]
+If,%pFileBox1%,Equal,"",Exit,"No directory specified"
+If,Not,ExistDir,%pFileBox1%,DirMake,%pFileBox1%
+Call,OpenDir,%pFileBox1%
+
+[MsgWrn]
+Message,#1,Error,10
+Echo,#1,Warn
+Echo,#1,Warn
+Echo,#1,Warn
+Echo,#1,Warn
+Echo,#1,Warn
+Echo,#1,Warn
+Echo,#1,Warn
+Echo,#1,Warn
+Echo,#1,Warn
+Echo,#1,Warn
+
+[AuthorEncoded]
+w2k3ramdisk_icon.ico=573,764
+Logo=w2k3ramdisk_icon.ico
+
+[EncodedFile-AuthorEncoded-w2k3ramdisk_icon.ico]
+lines=0
+0=eJztlzFuwkAQRccBKWWo0gaJJjegJKfxFShBisQRkNxRpEjNCXwAeiokIl8gVGkQm/1OPhpGuxiEASEx0c8ax9735+86cUQS/9VuC77LZ0vkWURevfwpeZO/86hhS26+ms2muyZ7NBq5S3sAj7L8c3vB/Hmeu/F4XHL7/f6Wf+48yIbI4UhpP7ynLj7mtvxsNtvxofuvMw/OBfZqtSqPNTOWx6n7g/OwZ7AXi4Wbz+cuzbIyb823eZyyP3g9c8fxdDrd8in44HVVeRy6P9gz+yMfo+bPfL8QfDEPSuehvVXlYfcZPoMJ4bNlQ7g25INsy4/tDxT7hFDME3NodsiD1rF5WD6Kfds1t+wQH1kck4fmW3ZozW32PAZT80M+0jTdycPyi6KIsvVIdqh3jh+TydYDjumDHjjaNYg9b7ZvPZJr+6cHjBR8gB3i8/ngsw0PuH/fmuueQ/mHPGTw4FX1O4l5oH/6CGUfYoe4ZGcHsEN5HMKtkx3Lo2q9Q2zyT/27qPOI9Rxa7zrYtnQe+3KHzvl+pPO4JNuWzuPSbJbO45r/J9zrXrdS5YvPj1fh9T5w7qHnNtL16ri1NAbf8tBbinRzkc5QpPGvhPLnE//zZO3Pb0QeXS5Pbikv/mZM5CfEe92Xi9UvqUTg+nicEyk3yjYuSsxNySzOjs9Mzs/TAxIMo2CkgH0CEPoVI3b5e2fj3zAwAQCMcAxpflpghwEAAAACAAAALwAAAOoBAAAAAAAAAQAAAAAAAAAAAAAA
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+Call,UploadXQ
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+
+[EncodedFolders]
+Folder
+
+[Folder]
+

@@ -1,0 +1,125 @@
+[Main]
+Title=USB Mass Storage Dummy Filter Driver
+Type=Plugin
+Author=oriensol
+Description=(x86 only) Will add USB Mass Storage Filter Driver to convert USB memory sticks to fixed-disks
+Credits=http://www.codeproject.com/Members/Anton-Bassov;Dietmar;cdob;etc.
+Version=016
+Download_Level=1
+Level=6
+Selected=False
+Mandatory=False
+NoWarning=False
+Contact=http://TheOven.org
+Date=2017.02.16
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Drivers/4%20Storage/vUSBDummyDisk.Script
+Web2=http://yomi.cwcodes.net/Yomi/DriversY/vUSBDummyDisk.Script
+CertifiedBy=
+Certification=
+HistoryNotes01=Dummy filter must come AFTER ComboRemovableDevices.script
+History003=oriensol added check for MountStor, changed icon, changed interface text
+History003b=Lancelot (nothing much left :)), Changed name of Plugin (added USB to the name), and title (Dummy), added topic link to Contact= moving email to Author=
+History004a=Lancelot - mounstorpe removed from Depend + interface additions + Download_Level=1 + Verify section added first but cancelled later since it is not needed !
+History004b=oriensol - added back the Verify section, but for USBSupport.script; deleted dummy.reg from attachments (now inline);
+History005=oriensol - renamed to vUSBDummyDisk.script, so that it always runs after USBSupport.script
+History006=oriensol - changed depend and verify after change in name of USBSupport.script
+History007=oriensol - changed from InputDevicesLoad to SCSI.Load because of the change in approach in RemovableDevicesCombo
+History009b=Lancelot - verify cancelled (already in Depend)
+History010=Acus - heads up change Depend :>.
+History012=ChrisR - compatibility with PE2/3
+History014=Lancelot - Depend removed and added to interface ( compatibility with PE2/3 )
+History015=Lancelot - Added DU buttons - Date:2015.10.28
+History016=Lancelot - Add Compare button - Date:2017.02.16
+
+[Process]
+If,Not,%SourceArch%,Equal,x86,Exit,"'%ScriptTitle%' is compatible with only PEx86 builds"
+Echo,"Copying USB Mass Storage Filter Driver ..."
+ExtractFile,%ScriptFile%,Folder,dummy.sys,%target_win%\system32\drivers
+Echo,"Ensuring the service starts up at boot time ..."
+//If,ExistFile,%source_win%\TXTSETUP.SIF,IniWriteTextLine,%target_win%\TXTSETUP.SIF,InputDevicesSupport.Load,usbstor=dummy.sys
+//If,ExistFile,%source_win%\TXTSETUP.SIF,IniWriteTextLine,%target_win%\TXTSETUP.SIF,files.usbstor,"dummy.sys,4"
+If,ExistFile,%source_win%\TXTSETUP.SIF,IniWriteTextLine,%target_win%\TXTSETUP.SIF,SCSI.Load,"usbstor=dummy.sys,4"
+Echo,"Updating Registry for LEGACY_DUMMY and dummy service ..."
+RegHiveLoad,Tmp_System,%RegSystem%
+If,%version%,Smaller,80,RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Class\{8ECC055D-047F-11D1-A537-0000F8753ED1}\0000
+Else,RegWrite,HKLM,0x0,Tmp_System\ControlSet001\Control\Class\{8ECC055D-047F-11D1-A537-0000F8753ED1}\0000
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_DUMMY,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_DUMMY\0000,Service,dummy
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_DUMMY\0000,Legacy,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_DUMMY\0000,ConfigFlags,0
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_DUMMY\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_DUMMY\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_DUMMY\0000,DeviceDesc,USB#$sMass#$sStorage#$sFilter#$sDriver
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_DUMMY\0000,Capabilities,0
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_DUMMY\0000,Driver,{8ECC055D-047F-11D1-A537-0000F8753ED1}\0000
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_DUMMY\0000\Control,ActiveService,dummy
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\dummy,Type,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\dummy,Start,0
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\dummy,ErrorControl,1
+RegWrite,HKLM,0x2,Tmp_System\ControlSet001\Services\dummy,ImagePath,system32\DRIVERS\dummy.sys
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Services\dummy,DisplayName,USB#$sMass#$sStorage#$sFilter#$sDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Services\dummy,Group,System#$sReserved
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\dummy,Tag,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Services\dummy\Enum,0,Root\LEGACY_DUMMY\0000
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\dummy\Enum,Count,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\dummy\Enum,NextInstance,1
+RegHiveUnLoad,Tmp_System
+
+[EncodedFolders]
+Folder
+
+[Folder]
+dummy.sys=1703,2271
+
+[Interface]
+pTextLabel2=Notes:,1,1,11,9,50,25,12,Normal
+pTextLabel6="Gena: In case the USB key is plugged in AFTER booting Gena, MountStorPE can be used to mount the partitions.",1,1,17,208,343,28,8,Bold
+pTextLabel5="Dummy.sys is the renamed dummydisk.sys  from the zip from codeproject.com (needs signing up) - link which explains this : ",1,1,15,41,303,34,8,Normal
+pWebLabel1=soviet_direct_hooking/soviet_direct_hooking_src.zip,1,10,66,78,251,18,http://www.codeproject.com/KB/system/soviet_direct_hooking.aspx?msg=1771112
+pTextLabel7="Gena: Requires 'Removable Devices Combo' which MUST be selected for this to work",1,1,18,173,257,30,8,Bold
+WebLabel_Homepg=HomePage,1,10,343,20,55,18,http://www.codeproject.com/KB/system/soviet_direct_hooking.aspx?msg=1771112
+WebLabel_Plugin="Plugin Page",1,10,338,4,55,18,http://TheOven.org/index.php?board=9
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[AuthorEncoded]
+usb-hdd.ico=2531,3375
+Logo=usb-hdd.ico
+
+[EncodedFile-Folder-dummy.sys]
+lines=0
+0=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
+
+[EncodedFile-AuthorEncoded-usb-hdd.ico]
+lines=0
+0=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
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+Call,UploadXMultiQ
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+

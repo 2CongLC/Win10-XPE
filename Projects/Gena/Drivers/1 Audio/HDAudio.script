@@ -1,0 +1,276 @@
+[Main]
+Title=HD Audio
+Type=Plugin
+Author=cdob
+Description=(x86/x64) This Plugin adds HD Audio Bus Driver and some HD Audio device drivers
+Credits=http://TheOven.org
+Version=018
+Download_Level=1
+Level=6
+Selected=True
+Mandatory=False
+NoWarning=False
+Verification=True
+Contact=http://TheOven.org
+Date=2017.11.10
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Drivers/1%20Audio/HDAudio.script
+CertifiedBy=
+Certification=
+HistoryNotes01=
+History002=Galapo changed location of user-provided HDAudio drivers to '%GlobalTemplates%\drivers\HDAudio';
+History002a=changed HWPnp.exe start to RunOnceEx entry; repaired verification; added image;
+History002b=added option to grab files from host system
+History003=Galapo added 64-bit system check when gathering files from host system
+History004=Galapo modified RunOnceEx entry
+History005=Galapo corrected interface under new WB version; updated verification
+History006=Galapo removed /p from hwpnp RunOnceEx entry
+History007=Lancelot add pButton2 + fix typo (thanks to dera) "ImagePath","system32\Files\hdaudbus.sys" to "ImagePath","system32\DRIVERS\hdaudbus.sys"
+History009=Lancelot hiderun line fixed
+History010=Lancelot x64 modifications (update your device_drivers location--Plugin file attachment locations if you are using your own) // I believe Gena will only support 2k3/xp-x64-sp2 , for 2k3/xp-x64-sp0 there is an update WindowsServer2003.WindowsXP-KB901105-v3-x64-ENU.exe which I believe will not be required so not added to current Plugin http://www.microsoft.com/downloads/details.aspx?FamilyID=dab139f1-065c-41e8-a148-9d79bd9d24f9&displaylang=en
+History010b=Lancelot autocheck mechanisms added (I get tired changing settings when source xpsp3/xpsp2/x64 , time to have automagic ;))
+History010c=Galapo fixed hiderun
+History010d=Lancelot regwrite thingy // opendir buttons enhanced
+History011=Lancelot process halt replaced with 1) message warn 2) 10 x echo warnings 3) exit
+History012=Galapo updated [Verification-Gena] - Date:2011.05.11
+History015=Lancelot updated v015 - Date:2016.01.30
+History015=Lancelot Added DU buttons
+History016=Lancelot updated syntax - Date:2016.10.20 - Date:2016.10.21
+History017=Lancelot Update hiderun lines - Date:2017.09.23
+History018=Lancelot Update for PEBakery compatibility - Thanks to ied206 PEBakery Auto Syntax Checking Reply 3 http://TheOven.org/index.php?topic=2271.msg24582#msg24582 - Date:2017.11.10
+
+[Verification-Gena]
+Echo,"Verification: Performing verifications on %ScriptTitle%"
+IniRead,%VerificationInfo%,"%ScriptTitle%_Main",Selected,%ScriptSel%
+If,%ScriptSel%,Equal,True,Begin
+IniRead,%VerificationInfo%,"XPE - pnp multimedia_Main",Selected,%Sel%
+If,Not,%Sel%,Equal,True,Begin
+IniRead,%VerificationInfo%,"Driver Import PE_Main",Selected,%Sel%
+If,Not,%Sel%,Equal,True,Begin
+IniRead,%VerificationInfo%,"Driver Import PE AE_Main",Selected,%Sel%
+If,Not,%Sel%,Equal,True,Begin
+Message,"Verification error: HD Audio Plugin requires either 'XPE - pnp multimedia' or 'Driver Import PE' with audio selected",ERROR
+Halt,"Verification error: HD Audio Plugin requires either 'XPE - pnp multimedia' or 'Driver Import PE' with audio selected"
+End
+End
+Else,Begin
+IniRead,%VerificationInfo%,"Driver Import PE_Interface",pCheckBox_AudioSupport,%Int%
+If,Not,%Int%,Equal,True,Begin
+IniRead,%VerificationInfo%,"Driver Import PE AE_Interface",pCheckBox_AudioSupport,%Int%
+If,Not,%Int%,Equal,True,Begin
+Message,"Verification error: HD Audio Plugin requires audio option on 'Driver Import PE' to be selected, or alternatively enable 'XPE - pnp multimedia'",ERROR
+Halt,"Verification error: HD Audio Plugin requires audio option on 'Driver Import PE' to be selected, or alternatively enable 'XPE - pnp multimedia'"
+End
+End
+End
+End
+End
+
+[Interface]
+pTextLabel2="Bus driver: HDAudBus.inf HDAudBus.sys",1,1,9,6,249,18,10,Normal
+pFileBox1=%GlobalTemplates%\drivers\HDAudBus,1,13,15,154,250,20,dir
+pButton1="open device drivers directory",1,8,221,261,169,25,open_device_drivers
+pRadioButton1="use windows source files (XP SP3, 2003 SP1 source files, or KB888111 integrated OR XP/2k3-x64-sp2)",1,11,10,26,513,18,True
+pRadioButton2="or select directory",1,11,10,132,108,18,False
+pWebLabel1=KB888111,1,10,324,147,48,18,http://support.microsoft.com/kb/888111/
+pTextLabel3="Device Driver",1,1,12,197,87,18,10,Normal
+pCheckBox1="add available HDAudio.inf HDAudio.sys",1,3,11,219,223,19,True
+pCheckBox2="add Plugin integrated drivers",1,3,11,239,200,19,False
+pCheckBox3="add HDAudio drivers from '%GlobalTemplates%\drivers\HDAudio'",1,3,11,259,208,28,False
+pRadioButton3="take files from host OS",1,11,10,112,136,18,False
+pButton2="open dir",1,8,272,151,46,24,open_drivers_directorya
+pBevel1=pBevel1,1,12,7,97,534,91
+pTextLabel4="PEx86 Additional Settings (When source x64 'use windows source files' will be used overriding the settings here)",1,1,17,69,281,32,8,Normal
+checkbox_autocheck="AutoCheck 'select directory' if missing at source",1,3,260,44,258,18,True
+pBevel2=pBevel2,1,12,5,2,540,189
+pBevel3=pBevel3,1,12,5,193,393,100
+CheckBox_hwpnp="Add 'HWPnp.exe HdAudio' to runonce (Requires HWPnP Plugin enabled)",1,3,166,296,378,18,False
+pWebLabel2="Plugin Page",1,10,316,4,55,18,http://TheOven.org/index.php?board=9
+Button_Download=,1,8,380,-1,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[Process]
+If,%SourceArch%,Equal,IA64,Exit,"HDAudio Plugin IA64 support not exists"
+If,%SourceArch%,Equal,x64,Begin
+Set,%pRadioButton1%,True
+Set,%pRadioButton2%,False
+Set,%pRadioButton3%,False
+End
+If,%SourceArch%,Equal,x86,Begin
+If,%pRadioButton1%,EQUAL,True,If,%checkbox_autocheck%,Equal,True,Begin
+Set,%foundini%,0
+Set,%foundsys%,0
+If,ExistFile,%Source_Sys%\HDAudBus.in?,Set,%foundini%,1
+If,ExistFile,%Source_Sys%\HDAudBus.sy?,Set,%foundsys%,1
+If,Not,%foundini%%foundsys%,Equal,11,Begin
+Set,%foundini%,0
+Set,%foundsys%,0
+If,ExistFile,%pFileBox1%\HDAudBus.in?,Set,%foundini%,1
+If,ExistFile,%pFileBox1%\HDAudBus.sy?,Set,%foundsys%,1
+If,%foundini%%foundsys%,Equal,11,Set,%pRadioButton1%,False
+If,%foundini%%foundsys%,Equal,11,Set,%pRadioButton2%,True
+End
+End
+End
+If,%pRadioButton1%,Equal,True,Run,%ScriptFile%,Process_HD-Audio,"%Source_Sys%","%Source_Sys%","%Source_Sys%"
+If,%pRadioButton2%,Equal,True,Run,%ScriptFile%,Process_HD-Audio,"%pFileBox1%","%pFileBox1%","%pFileBox1%"
+If,%pRadioButton3%,Equal,True,Begin
+Call,HostOSArch
+If,Not,%HostOSArch%,Equal,x86,Begin
+Message,"Gathering of HDAudBus files is only supported under x86 architecture",ERROR,60
+Run,%scriptfile%,EchoWarn,"Gathering of HDAudBus files is only supported under x86 architecture"
+Exit,"Gathering of HDAudBus files is only supported under x86 architecture"
+End
+Else,Begin
+Call,HostWindowsDir
+Run,%ScriptFile%,Process_HD-Audio,%HostWindowsDir%\Inf,%HostWindowsDir%\system32\drivers,%HostWindowsDir%\system32
+End
+End
+
+[Process_HD-Audio]
+Echo,"Add HDAudio Bus driver"
+If,%SourceArch%,Equal,x86,Begin
+If,Not,ExistFile,#1\HDAudBus.in?,Message,"Error: file #$q#1\HDAudBus.in?#$q not found #$x Check Settings of %ScriptTitle% Plugin",Error,60
+If,Not,ExistFile,#1\HDAudBus.in?,Run,%scriptfile%,EchoWarn,"Error: file #$q#1\HDAudBus.in?#$q not found -  Check Settings of %ScriptTitle% Plugin"
+If,Not,ExistFile,#1\HDAudBus.in?,Exit,"Error: file #$q#1\HDAudBus.in?#$q not found"
+If,Not,ExistFile,#1\HDAudBus.sy?,Message,"Error: file #$q#1\HDAudBus.in?#$q not found #$x Check Settings of %ScriptTitle% Plugin",Error,60
+If,Not,ExistFile,#1\HDAudBus.sy?,Run,%scriptfile%,EchoWarn,"Error: file #$q#2\HDAudBus.sy?#$q not found - Check Settings of %ScriptTitle% Plugin"
+If,Not,ExistFile,#2\HDAudBus.sy?,Exit,"Error: file #$q#2\HDAudBus.sy?#$q not found"
+CopyOrExpand,#1\HDaudbus.inf,%Target_Win%\Inf
+CopyOrExpand,#2\hdaudbus.sys,%Target_Sys%\Drivers
+End
+If,%SourceArch%,Equal,x64,Begin
+CopyOrExpand,%source_win%\HDaudbus.inf,%Target_Win%\Inf
+//hdaudbus.sys,%Source_Sys%\%spcabfile%
+Require,HighVersion,hdaudbus.sys,TargetWin\System32\Drivers
+End
+//
+RegHiveLoad,Tmp_System,%Target_Sys%\setupreg.hiv
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\CriticalDeviceDatabase\PCI#CC_0403,ClassGUID,{4D36E97D-E325-11CE-BFC1-08002BE10318}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\CriticalDeviceDatabase\PCI#CC_0403,Service,HDAudBus
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\HDAudBus,Type,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\HDAudBus,Start,3
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Services\HDAudBus,Group,"Extended Base"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Services\HDAudBus,DisplayName,"Microsoft UAA Bus Driver for High Definition Audio"
+RegWrite,HKLM,0x2,Tmp_System\ControlSet001\Services\HDAudBus,ImagePath,system32\DRIVERS\hdaudbus.sys
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\HDAudBus,ErrorControl,0
+RegHiveUnLoad,Tmp_System
+//
+// additional files
+If,%SourceArch%,Equal,x86,Begin
+If,ExistFile,#3\hdaprop.dl?,CopyOrExpand,#3\hdaprop.dll,%Target_Sys%
+If,ExistFile,#3\hdashcut.ex?,CopyOrExpand,#3\hdashcut.exe,%Target_Sys%
+If,ExistFile,#3\hdaudres.dl?,CopyOrExpand,#3\hdaudres.dll,%Target_Sys%
+If,ExistFile,#2\portcls.sy?,CopyOrExpand,#2\portcls.sys,%Target_Sys%\drivers
+End
+If,%SourceArch%,Equal,x64,Begin
+//hdaprop.dll,%Source_Sys%\%drcabfile%
+//hdashcut.exe,%Source_Sys%\%drcabfile%
+//hdaudres.dll,%Source_Sys%\%drcabfile%
+//portcls.sys,%Source_Sys%\%spcabfile%
+Require,HighVersion,hdaprop.dll,TargetWin\System32
+Require,HighVersion,hdashcut.exe,TargetWin\System32
+Require,HighVersion,hdaudres.dll,TargetWin\System32
+Require,HighVersion,portcls.sys,TargetWin\System32\Drivers
+End
+//
+//
+Echo,"Add HD Audio device driver"
+//
+If,%CheckBox_hwpnp%,Equal,True,Begin
+// PNP HD Audio device driver
+//Run,%AutoRunScript%,Add,"HWPnp.exe -all +HDAUDIO"
+If,Not,ExistFile,%Target_Sys%\HideRun.exe,Require,File,HideRun.exe
+RegHiveLoad,Tmp_Software,%Target_Sys%\config\software
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\998,HDAudio,"hiderun.exe /w HWPnp.exe -all +PCI\CC_04 +HDAUDIO /cid /d+ /log+"
+RegHiveUnLoad,Tmp_Software
+End
+//
+If,%pCheckBox1%,Equal,True,begin
+If,ExistFile,#1\HDAudio.in?,CopyOrExpand,#1\HDAudio.inf,%Target_Win%\Inf
+If,ExistFile,#2\HDAudio.sy?,CopyOrExpand,#2\HDAudio.sys,%Target_Sys%\Drivers
+End
+//
+If,%pCheckBox2%,Equal,True,begin
+ExtractAllFiles,%ScriptFile%,%SourceArch%_Inf,%Target_Win%\Inf
+ExtractAllFiles,%ScriptFile%,%SourceArch%_Drivers,%Target_Sys%\Drivers
+ExtractAllFiles,%ScriptFile%,%SourceArch%_System32,%Target_Sys%
+End
+//
+If,%pCheckBox3%,Equal,True,begin
+If,ExistFile,%GlobalTemplates%\drivers\HDAudio\%SourceArch%_inf\*.inf,FileCopy,%GlobalTemplates%\drivers\HDAudio\inf\*.inf,%Target_Win%\Inf
+If,ExistFile,%GlobalTemplates%\drivers\HDAudio\%SourceArch%_drivers\*.sys,FileCopy,%GlobalTemplates%\drivers\HDAudio\drivers\*.*,%Target_Sys%\Drivers
+If,ExistFile,%GlobalTemplates%\drivers\HDAudio\%SourceArch%_system32\*.dll,FileCopy,%GlobalTemplates%\drivers\HDAudio\system32\*.*,%Target_Sys%
+End
+
+[open_drivers_directorya]
+Call,OpenDir,%pFileBox1%
+
+[open_device_drivers]
+If,Not,ExistDir,%GlobalTemplates%\drivers\HDAudio\x86_inf,DirMake,%GlobalTemplates%\drivers\HDAudio\x86_inf
+If,Not,ExistDir,%GlobalTemplates%\drivers\HDAudio\x86_drivers,DirMake,%GlobalTemplates%\drivers\HDAudio\x86_drivers
+If,Not,ExistDir,%GlobalTemplates%\drivers\HDAudio\x86_system32,DirMake,%GlobalTemplates%\drivers\HDAudio\x86_system32
+If,Not,ExistDir,%GlobalTemplates%\drivers\HDAudio\x64_inf,DirMake,%GlobalTemplates%\drivers\HDAudio\x64_inf
+If,Not,ExistDir,%GlobalTemplates%\drivers\HDAudio\x64_drivers,DirMake,%GlobalTemplates%\drivers\HDAudio\x64_drivers
+If,Not,ExistDir,%GlobalTemplates%\drivers\HDAudio\x64_system32,DirMake,%GlobalTemplates%\drivers\HDAudio\x64_system32
+Call,OpenDir,%GlobalTemplates%\drivers\HDAudio
+
+[EchoWarn]
+Echo,"%ScriptTitle% ---",Warn
+Echo,"%ScriptTitle% #1",Warn
+Echo,"%ScriptTitle% #1",Warn
+Echo,"%ScriptTitle% #1",Warn
+Echo,"%ScriptTitle% #1",Warn
+Echo,"%ScriptTitle% #1",Warn
+Echo,"%ScriptTitle% #1",Warn
+Echo,"%ScriptTitle% #1",Warn
+Echo,"%ScriptTitle% #1",Warn
+Echo,"%ScriptTitle% #1",Warn
+Echo,"%ScriptTitle% #1",Warn
+Echo,"%ScriptTitle% ---",Warn
+
+[AuthorEncoded]
+HDAudio.gif=3687,4916
+Logo=HDAudio.gif
+
+[EncodedFile-AuthorEncoded-HDAudio.gif]
+lines=1
+0=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
+1=Jc8hJXbFTamLhRjhuuIDJ0X0HafkYkT+Ay4BVk33OaGdwxJySbG1slW8ELnuL7Mm+jGfURV/61TAj/VJr1Ok28sLzGrcTf5OEywoLbonuepD0zk07gEO9mgMBhm8RHhOUyRIoe+/aJIF65iiCAEZToh1pwECv5h95/lJUsmMHE63MD3CCpwxtyToGIOIhJVvKmXzAdD9lCB0XpIUE4xCnuOnFwMkyVkkawOWWGFZhh9e4Hc5bilsvsYVyUl1HgTY3FGyE+esh5GeQ1dy1ny1rj70gtGwxOALKgUcwcpO0wPJAe9I+jUL0gotoKrIe8r4C5a8ECZVLWSYZ0BuZJg4I74ItvJTPVqIBg628NmTolD8re6IcrzTOWP5RBknGY0oUyjkyJ9dSiIcSSyXxBzjbkJhUmuhoRQBPXj4N3OJQa8rGvtFa/mAElFE3JRy02g1b8AaovAJo+l6XrYRPDRwOUdn5sLNgNMNAgCw3oKJkVzYy5l492oYM2PcFyxuCpoxWItYgzNPR3WnnkewCPA0FpNi+nYF046VWisJp45AUdU+sGidFXPMjBQVjwPMHx2AbXYLcIGHdRwAw0ZQaoZQOBAhvPMSk8A7kXh8kW2Ezo4TF6KOYpnDgMx6GqszyrfhqxY1Blf04ktkGQ6aNr9tDQ74EaNAv+WYuYUQJobrbDU5xdAB48W+PfZXtnPWSjA0bUURMG/YIDgYDI/wGGpxl2eJzj9nBxLE3JzNdLz0xjGAUjDsjzQWgZPuzyJ8rOfGVgAgBx9AdGmH7tQQEAAAACAAAAJwAAABwOAAAAAAAAAQAAAAAAAAAAAAAA
+
+[EncodedFolders]
+x86_Inf
+x86_Drivers
+x86_System32
+x64_Inf
+x64_Drivers
+x64_System32
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+Call,UploadXQ
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+

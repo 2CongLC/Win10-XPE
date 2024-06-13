@@ -1,0 +1,572 @@
+[Main]
+Title=ProgramFilesPE
+Type=Plugin
+Author=Galapo
+Description=ProgramFilesPE provides options for %ProgramFiles% variable location and configuration.
+Credits=http://TheOven.org
+Version=028
+Download_Level=0
+Level=1
+Selected=True
+Mandatory=True
+NoWarning=False
+Contact=http://TheOven.org/index.php?board=3.0
+Date=2020.02.29
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Basic/4%20ProgramFilesPE.script
+CertifiedBy=
+Certification=
+HistoryNotes01=
+History001=Lancelot RunFromXXX default added to begining of [ProgramFilesPE]
+History002=Lancelot reorganisation for Gena (episode 1: RadioButtons checked working okey :) others probably too....)
+History003=Lancelot CommonFiles support added (thanks to BlueLife) along with some x64 support (episode 2: checkboxes not checked yet - I feel life would be easy (plugin shorter) by running [ProgramFilesPE] at "Profile Post Settings" .... time)
+History007=Galapo updated to use %common(x86)% variable for non-x86 builds; fixed plugin to work with updated ML RunFrom variables
+History008=Galapo added missing RegAddBoot lines when radio boxes 2 & 3 are selected
+History009=Galapo changed %CDDrive% variable setting back to #$pCDDrive#$p (new ExpEnvVar.exe is OK with WB bug entries now)
+History010=Lancelot speed enhancements (again wb bug workaround and round and round....)
+History011=Lancelot IniVariables PrepPEGenScript RamIsoScript WimIsoScript
+History011=Lancelot WimPackExclude routine changed
+History011=Lancelot new IniVariables adjustments
+History013=Galapo made some fixes for when ProgramFiles set to User Profile Drive
+History014=Lancelot GenaPrograms used default picking one of Galapo's previous suggestion. Reason: writing ' is quite hard to find when testing for none enu user me....  history: reply 14 15 http://TheOven.org/index.php?topic=145.msg2448#msg2448
+History015=Lancelot NoWarnROW implemented
+History016=Lancelot new RunFrom adjustments
+History017=Lancelot fix wrong shortcuts on profile change http://TheOven.org/index.php?topic=1131.0
+History018=Lancelot fix  //--Writing Default Value: - oscar http://TheOven.org/index.php?topic=1131.0  Program Files\Uninstall Information case ;)
+History019=Lancelot workaround - double if begin --> log indent bug - Date:2015.10.09
+History023=Lancelot syntax updated - Date:2016.01.31
+History024=Lancelot Added Basic_PluginCache_Extract - Date:2016.10.30
+History025=Lancelot Update hiderun lines - Date:2017.09.23
+History026=Lancelot Update pProgramFilesNameTextBox1 %ProjectTitle%Programs -> GenaPrograms => Update to get PEBakery tests easier - ied206 Reply 45 http://TheOven.org/index.php?topic=2271.msg24721#msg24721 - Date:2017.11.21
+History027=Lancelot %ProjectTitle% deprecated - Date:2017.11.21
+History028=Lancelot pProgramFilesSuffixTextBox Default value changed to _Gena - Date:2020.02.29
+
+[Interface]
+pProgramFilesTextLabel="[ Program files config ]",1,1,10,3,186,18,11,Bold
+pBevel2=pBevel2,1,12,-1,25,334,220
+pProgramFilesNameTextBox1=,1,0,22,165,260,21,"Programs Files"
+pProgramFilesNameRadioButton1="Use default name for %ProgramFiles% folder",1,11,6,121,240,20,False
+pProgramFilesNameRadioButton2="Set %ProgramFiles% folder name to:",1,11,6,144,240,20,True
+pProgramFilesLocScrollBox=%SystemDrive%,1,4,67,34,129,21,%SystemDrive%,"User Profile Drive","Run From RAM","Run From CD",A:,B:,C:,D:,E:,F:,G:,H:,I:,J:,K:,L:,M:,N:,O:,P:,Q:,R:,S:,T:,U:,V:,W:,Y:,Z:
+pProgramFilespTextLabel3="NOTE: It is strongly recommended not to alter settings unless you know the consequences of the action upon your build. No checks are made to determine if the setting is compatible with other build options chosen in the project.",1,1,1,250,335,57,8,Bold
+pProgramFilesNameRadioButton3="Use default name for %ProgramFiles% appended with",1,11,5,193,284,20,False
+pProgramFilesSuffixTextBox=,1,0,22,214,258,21,_Gena
+pProgramFilesForceTarget_ProgCheckBox="Set %Target_Prog% here (if not automatically done so - only needed when forcing copying to hardcoded usb drive etc.)",1,3,4,82,324,32,False
+app_force="Force all programs here (even RunFromRAM and RunFromCD)",1,3,4,60,323,18,False
+pTextLabel3=Location:,1,1,8,36,60,18,8,Bold
+pWebLabel_Plugin="Plugin Page",1,10,271,3,55,18,http://TheOven.org/index.php?board=3.0
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[Variables]
+
+[Process]
+If,ExistFile,%ProjectTemp%\Basic_PluginCache_Extract.ini,Echo,"Basic PluginCache"
+If,Not,ExistFile,%ProjectTemp%\Basic_PluginCache_Extract.ini,Run,%ScriptFile%,Process_Normal
+
+[Process_Normal]
+IniRead,%ProjectDir%\script.project,IniVariables,PrepPEGenScript,%PrepPEGenScript%
+TXTAddLine,%PrepPEGenScript%,"Exec#$c%ScriptFile%#$cProgramFilesPE",APPEND
+//Run,%scriptfile%,ProgramFilesPE
+//
+// #################################### From: ProgramFilesPE ###########################################################################################
+//History11=Lancelot Selected=False - Not required as default
+//History16=Lancelot hiderun line fixed
+//History17=Galapo added RegAddBoot lines for when %ProgramFiles% resides at %PEDrive%
+//History18=Galapo altered hiderun line
+//
+
+[ProgramFilesPE]
+Echo,"ProgramFilesPE: Setting Default values for RunFromXXX"
+Echo,"ProgramFilesPE: Setting Program Files options..."
+IniRead,%ProjectDir%\script.project,IniVariables,NoWarnRegOverWrite,%NoWarnROW%
+IniRead,%ProjectDir%\script.project,IniVariables,CDDrive,%CDDrive%
+Set,%loc%,%pProgramFilesLocScrollBox%
+Set,%run_from%,False
+Set,%AtRAM%,False
+IniWrite,%ProjectDir%\script.project,IniVariables,AtRAM,False
+IniWrite,%ProjectDir%\script.project,VariablesRunFromX,#$pAtRAM#$p,False
+Set,%AtCD%,False
+IniWrite,%ProjectDir%\script.project,IniVariables,AtCD,False
+IniWrite,%ProjectDir%\script.project,VariablesRunFromX,#$pAtCD#$p,False
+Set,%CDON%,False
+IniWrite,%ProjectDir%\script.project,IniVariables,CDON,False
+IniWrite,%ProjectDir%\script.project,VariablesRunFromX,#$pCDON#$p,False
+Set,%AtRAM_force%,False
+IniWrite,%ProjectDir%\script.project,IniVariables,AtRAM_force,False
+IniWrite,%ProjectDir%\script.project,VariablesRunFromX,#$pAtRAM_force#$p,False
+Set,%AtCD_force%,False
+IniWrite,%ProjectDir%\script.project,IniVariables,AtCD_force,False
+IniWrite,%ProjectDir%\script.project,VariablesRunFromX,#$pAtCD_force#$p,False
+//
+Set,%RFRM_TargetDir%,%TargetDir%
+Set,%RMDrive%,%SettingsDrive%
+//
+If,%loc%,Equal,"User Profile Drive",Set,%loc%,%SettingsDrive%
+If,%loc%,Equal,Run From RAM,Begin
+Set,%AtRAM_force%,%app_force%
+IniWrite,%ProjectDir%\script.project,IniVariables,AtRAM_force,%app_force%
+IniWrite,%ProjectDir%\script.project,VariablesRunFromX,#$pAtRAM_force#$p,%app_force%
+Set,%AtRAM%,True
+IniWrite,%ProjectDir%\script.project,IniVariables,AtRAM,True
+IniWrite,%ProjectDir%\script.project,VariablesRunFromX,#$pAtRAM#$p,True
+Set,%loc%,%SettingsDrive%
+IniRead,%ProjectDir%\script.project,IniVariables,RamIsoScript,%RamIsoScript%
+IniRead,%RamIsoScript%,Main,Selected,%sel%
+If,%sel%,Equal,True,Begin
+Set,%run_from%,RAM
+Set,%loc%,%SystemDrive%
+End
+IniRead,%ProjectDir%\script.project,IniVariables,WimIsoScript,%WimIsoScript%
+IniRead,%WimIsoScript%,Main,Selected,%sel%
+If,%sel%,Equal,True,Begin
+Set,%run_from%,RAM
+Set,%loc%,%SystemDrive%
+End
+Set,%RMDrive%,%loc%
+If,Not,%loc%,Equal,%SystemDrive%,Set,%RFRM_TargetDir%,%TargetProfilesBaseDir%
+End
+If,%loc%,Equal,Run From CD,Begin
+Set,%AtCD_force%,%app_force%,PERMANENT
+IniWrite,%ProjectDir%\script.project,IniVariables,AtCD_force,%app_force%
+IniWrite,%ProjectDir%\script.project,VariablesRunFromX,#$pAtCD_force#$p,%app_force%
+Set,%AtCD%,True
+IniWrite,%ProjectDir%\script.project,IniVariables,AtCD,True
+IniWrite,%ProjectDir%\script.project,VariablesRunFromX,#$pAtCD#$p,True
+Set,%CDON%,True
+IniWrite,%ProjectDir%\script.project,IniVariables,CDON,True
+IniWrite,%ProjectDir%\script.project,VariablesRunFromX,#$pCDON#$p,True
+Set,%run_from%,CD
+Set,%loc%,%CDDrive%
+End
+IniRead,%ProjectInfo%,String,ProgramFiles,%prog%
+If,%pProgramFilesNameRadioButton1%,EQUAL,True,Begin
+If,Not,%run_from%,Equal,False,Begin
+IniRead,%ProjectInfo%,String,CommonFiles,%common%
+IniRead,%ProjectInfo%,String,CommonFiles(x86),%common(x86)%
+IniWrite,%ProjectInfo%,String,ProgramFiles,"%prog% %run_from%"
+IniWrite,%ProjectInfo%,BasePath,ProgramFiles,"%prog% %run_from%"
+IniWrite,%ProjectInfo%,BasePath,CommonFiles,"%prog% %run_from%\%common%"
+If,Not,%sourcearch%,Equal,x86,Begin
+IniWrite,%ProjectInfo%,String,ProgramFiles(x86),"%prog% %run_from% (x86)"
+IniWrite,%ProjectInfo%,BasePath,ProgramFiles(x86),"%prog% %run_from% (x86)"
+IniWrite,%ProjectInfo%,BasePath,CommonFiles(x86),"%prog% %run_from% (x86)\%common(x86)%"
+End
+Else,Begin
+IniWrite,%ProjectInfo%,String,ProgramFiles(x86),"%prog% %run_from%"
+IniWrite,%ProjectInfo%,BasePath,ProgramFiles(x86),"%prog% %run_from%"
+IniWrite,%ProjectInfo%,BasePath,CommonFiles(x86),"%prog% %run_from%\%common%"
+End
+//--
+IniWrite,%ProjectInfo%,TargetStrings,sProgram_Files,"%prog% %run_from%"
+IniWrite,%ProjectInfo%,TargetPaths,Program_Files,"%TargetDir%\%prog% %run_from%"
+IniWrite,%ProjectInfo%,TargetPaths,Common_Files,"%TargetDir%\%prog% %run_from%\%common%"
+//--
+Set,%p_path%,"%loc%\%prog% %run_from%"
+Set,%ProgramFilesFolder%,"%prog% %run_from%"
+IniWrite,%ProjectDir%\script.project,IniVariables,ProgramFilesFolder,%ProgramFilesFolder%
+DirMake,"%TargetDir%\%prog% %run_from%\%common%"
+Set,%Target_Prog%,"%TargetDir%\%prog% %run_from%",PERMANENT
+Set,%PE_Programs%,"%loc%\%prog% %run_from%",PERMANENT
+RegHiveLoad,Tmp_Software,%Target_Sys%\config\software
+If,%NoWarnROW%,Equal,True,System,ERROROFF,3
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\Windows\CurrentVersion,ProgramFilesDir,"%p_path%"
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\Windows\CurrentVersion,ProgramFilesPath,"%p_path%"
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\Windows\CurrentVersion,CommonFilesDir,"%p_path%\%common%"
+If,%loc%,Equal,%CDDrive%,Begin
+RegAddBoot,HKLM,0x1,Software\Microsoft\Windows\CurrentVersion,ProgramFilesDir,"%p_path%"
+RegAddBoot,HKLM,0x1,Software\Microsoft\Windows\CurrentVersion,ProgramFilesPath,"%p_path%"
+RegAddBoot,HKLM,0x1,Software\Microsoft\Windows\CurrentVersion,CommonFilesDir,"%p_path%\%common%"
+If,Not,%SourceArch%,Equal,x86,Begin
+If,%NoWarnROW%,Equal,True,System,ERROROFF,6
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\Windows\CurrentVersion,"CommonFilesDir (x86)","%p_path% (x86)\%common(x86)%"
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\Windows\CurrentVersion,"ProgramFilesDir (x86)","%p_path% (x86)"
+RegWrite,HKLM,0x2,Tmp_Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"CommonFilesDir","%p_path% (x86)\%common(x86)%"
+RegWrite,HKLM,0x2,Tmp_Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"CommonFilesDir (x86)","%p_path% (x86)\%common(x86)%"
+RegWrite,HKLM,0x2,Tmp_Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"ProgramFilesDir","%p_path% (x86)"
+RegWrite,HKLM,0x2,Tmp_Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"ProgramFilesDir (x86)","%p_path% (x86)"
+If,%loc%,Equal,%CDDrive%,Begin
+RegAddBoot,HKLM,0x1,Software\Microsoft\Windows\CurrentVersion,"CommonFilesDir (x86)","%p_path% (x86)\%common(x86)%"
+RegAddBoot,HKLM,0x1,Software\Microsoft\Windows\CurrentVersion,"ProgramFilesDir (x86)","%p_path% (x86)"
+RegAddBoot,HKLM,0x1,Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"CommonFilesDir","%p_path% (x86)\%common(x86)%"
+RegAddBoot,HKLM,0x1,Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"CommonFilesDir (x86)","%p_path% (x86)\%common(x86)%"
+RegAddBoot,HKLM,0x1,Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"ProgramFilesDir","%p_path% (x86)"
+RegAddBoot,HKLM,0x1,Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"ProgramFilesDir (x86)","%p_path% (x86)"
+End
+End
+End
+RegHiveUnLoad,Tmp_Software
+End
+Else,Begin
+Set,%p_path%,%loc%\%prog%
+Set,%ProgramFilesFolder%,%prog%
+IniWrite,%ProjectDir%\script.project,IniVariables,ProgramFilesFolder,%ProgramFilesFolder%
+//Set,%AtCD%,%app_force%,PERMANENT
+//Set,%AtRAM%,%app_force%,PERMANENT
+End
+End
+If,%pProgramFilesNameRadioButton2%,EQUAL,True,Begin
+IniRead,%ProjectInfo%,String,CommonFiles,%common%
+IniRead,%ProjectInfo%,String,CommonFiles(x86),%common(x86)%
+//
+IniWrite,%ProjectInfo%,String,ProgramFiles,"%pProgramFilesNameTextBox1%"
+IniWrite,%ProjectInfo%,BasePath,ProgramFiles,"%pProgramFilesNameTextBox1%"
+IniWrite,%ProjectInfo%,BasePath,CommonFiles,"%pProgramFilesNameTextBox1%\%common%"
+If,Not,%sourcearch%,Equal,x86,Begin
+IniWrite,%ProjectInfo%,String,ProgramFiles(x86),"%pProgramFilesNameTextBox1% (x86)"
+IniWrite,%ProjectInfo%,BasePath,ProgramFiles(x86),"%pProgramFilesNameTextBox1% (x86)"
+IniWrite,%ProjectInfo%,BasePath,CommonFiles(x86),"%pProgramFilesNameTextBox1% (x86)\%common(x86)%"
+End
+Else,Begin
+IniWrite,%ProjectInfo%,String,ProgramFiles(x86),"%pProgramFilesNameTextBox1%"
+IniWrite,%ProjectInfo%,BasePath,ProgramFiles(x86),"%pProgramFilesNameTextBox1%"
+IniWrite,%ProjectInfo%,BasePath,CommonFiles(x86),"%pProgramFilesNameTextBox1%\%common%"
+End
+//
+IniWrite,%ProjectInfo%,TargetStrings,sProgram_Files,"%pProgramFilesNameTextBox1%"
+IniWrite,%ProjectInfo%,TargetPaths,Program_Files,"%pProgramFilesNameTextBox1%"
+IniWrite,%ProjectInfo%,TargetPaths,Common_Files,"%pProgramFilesNameTextBox1%\%common%"
+//--
+If,ExistDir,%TargetDir%\%prog%,DirDelete,%TargetDir%\%prog%
+DirMake,%TargetDir%\%pProgramFilesNameTextBox1%\%common%
+If,Not,%sourcearch%,Equal,x86,DirMake,%TargetDir%\%pProgramFilesNameTextBox1%\%common(x86)%
+Set,%Target_Prog%,%TargetDir%\%pProgramFilesNameTextBox1%,PERMANENT
+Set,%p_path%,%loc%\%pProgramFilesNameTextBox1%
+Set,%ProgramFilesFolder%,%pProgramFilesNameTextBox1%
+IniWrite,%ProjectDir%\script.project,IniVariables,ProgramFilesFolder,%ProgramFilesFolder%
+//--Writing Default Value:
+RegHiveLoad,Tmp_Software,%Target_Sys%\config\software
+If,%NoWarnROW%,Equal,True,System,ERROROFF,3
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\Windows\CurrentVersion,ProgramFilesDir,"%p_path%"
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\Windows\CurrentVersion,ProgramFilesPath,"%p_path%"
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\Windows\CurrentVersion,CommonFilesDir,"%p_path%\%common%"
+RegHiveUnLoad,Tmp_Software
+//--Writing Default Value:
+//--
+If,Not,%loc%,Equal,%SettingsDrive%,Begin
+Set,%PE_Programs%,%p_path%,PERMANENT
+RegHiveLoad,Tmp_Software,%Target_Sys%\config\software
+If,%NoWarnROW%,Equal,True,System,ERROROFF,3
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\Windows\CurrentVersion,ProgramFilesDir,"%p_path%"
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\Windows\CurrentVersion,ProgramFilesPath,"%p_path%"
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\Windows\CurrentVersion,CommonFilesDir,"%p_path%\%common%"
+If,%loc%,Equal,%CDDrive%,Begin
+RegAddBoot,HKLM,0x1,Software\Microsoft\Windows\CurrentVersion,ProgramFilesDir,"%p_path%"
+RegAddBoot,HKLM,0x1,Software\Microsoft\Windows\CurrentVersion,ProgramFilesPath,"%p_path%"
+RegAddBoot,HKLM,0x1,Software\Microsoft\Windows\CurrentVersion,CommonFilesDir,"%p_path%\%common%"
+End
+If,Not,%SourceArch%,Equal,x86,Begin
+If,%NoWarnROW%,Equal,True,System,ERROROFF,6
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\Windows\CurrentVersion,"CommonFilesDir (x86)","%p_path% (x86)\%common(x86)%"
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\Windows\CurrentVersion,"ProgramFilesDir (x86)","%p_path% (x86)"
+RegWrite,HKLM,0x2,Tmp_Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"CommonFilesDir","%p_path% (x86)\%common(x86)%"
+RegWrite,HKLM,0x2,Tmp_Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"CommonFilesDir (x86)","%p_path% (x86)\%common(x86)%"
+RegWrite,HKLM,0x2,Tmp_Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"ProgramFilesDir","%p_path% (x86)"
+RegWrite,HKLM,0x2,Tmp_Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"ProgramFilesDir (x86)","%p_path% (x86)"
+If,%loc%,Equal,%CDDrive%,Begin
+RegAddBoot,HKLM,0x1,Software\Microsoft\Windows\CurrentVersion,"CommonFilesDir (x86)","%p_path% (x86)\%common(x86)%"
+RegAddBoot,HKLM,0x1,Software\Microsoft\Windows\CurrentVersion,"ProgramFilesDir (x86)","%p_path% (x86)"
+RegAddBoot,HKLM,0x1,Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"CommonFilesDir","%p_path% (x86)\%common(x86)%"
+RegAddBoot,HKLM,0x1,Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"CommonFilesDir (x86)","%p_path% (x86)\%common(x86)%"
+RegAddBoot,HKLM,0x1,Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"ProgramFilesDir","%p_path% (x86)"
+RegAddBoot,HKLM,0x1,Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"ProgramFilesDir (x86)","%p_path% (x86)"
+End
+End
+RegHiveUnLoad,Tmp_Software
+End
+//Set,%AtCD%,%app_force%,PERMANENT
+//Set,%AtRAM%,%app_force%,PERMANENT
+End
+If,%pProgramFilesNameRadioButton3%,EQUAL,True,Begin
+IniRead,%ProjectInfo%,String,CommonFiles,%common%
+IniRead,%ProjectInfo%,String,CommonFiles(x86),%common(x86)%
+//
+IniWrite,%ProjectInfo%,String,ProgramFiles,%prog%%pProgramFilesSuffixTextBox%
+IniWrite,%ProjectInfo%,BasePath,ProgramFiles,%prog%%pProgramFilesSuffixTextBox%
+IniWrite,%ProjectInfo%,BasePath,CommonFiles,%prog%%pProgramFilesSuffixTextBox%\%common%
+If,Not,%sourcearch%,Equal,x86,Begin
+IniWrite,%ProjectInfo%,String,ProgramFiles(x86),"%prog%%pProgramFilesSuffixTextBox% (x86)"
+IniWrite,%ProjectInfo%,BasePath,ProgramFiles(x86),"%prog%%pProgramFilesSuffixTextBox% (x86)"
+IniWrite,%ProjectInfo%,BasePath,CommonFiles(x86),"%prog%%pProgramFilesSuffixTextBox% (x86)\%common(x86)%"
+End
+Else,Begin
+IniWrite,%ProjectInfo%,String,ProgramFiles(x86),%prog%%pProgramFilesSuffixTextBox%
+IniWrite,%ProjectInfo%,BasePath,ProgramFiles(x86),%prog%%pProgramFilesSuffixTextBox%
+IniWrite,%ProjectInfo%,BasePath,CommonFiles(x86),%prog%%pProgramFilesSuffixTextBox%\%common%
+End
+//
+IniWrite,%ProjectInfo%,TargetStrings,sProgram_Files,%prog%%pProgramFilesSuffixTextBox%
+IniWrite,%ProjectInfo%,TargetPaths,Program_Files,%TargetDir%\%prog%%pProgramFilesSuffixTextBox%
+IniWrite,%ProjectInfo%,TargetPaths,Common_Files,%TargetDir%\%prog%%pProgramFilesSuffixTextBox%\%common%
+If,ExistDir,%TargetDir%\%prog%,DirDelete,%TargetDir%\%prog%
+Set,%Target_Prog%,%TargetDir%\%prog%%pProgramFilesSuffixTextBox%,PERMANENT
+DirMake,%TargetDir%\%prog%%pProgramFilesSuffixTextBox%
+DirMake,%TargetDir%\%prog%%pProgramFilesSuffixTextBox%\%common%
+If,Not,%sourcearch%,Equal,x86,DirMake,%TargetDir%\%prog%%pProgramFilesSuffixTextBox%\%common(x86)%
+Set,%p_path%,%loc%\%prog%%pProgramFilesSuffixTextBox%
+Set,%ProgramFilesFolder%,%prog%%pProgramFilesSuffixTextBox%
+IniWrite,%ProjectDir%\script.project,IniVariables,ProgramFilesFolder,%ProgramFilesFolder%
+If,Not,%loc%,Equal,%SettingsDrive%,Begin
+Set,%PE_Programs%,%p_path%,PERMANENT
+RegHiveLoad,Tmp_Software,%Target_Sys%\config\software
+If,%NoWarnROW%,Equal,True,System,ERROROFF,3
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\Windows\CurrentVersion,ProgramFilesDir,"%p_path%"
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\Windows\CurrentVersion,ProgramFilesPath,"%p_path%"
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\Windows\CurrentVersion,CommonFilesDir,"%p_path%\%common%"
+If,%loc%,Equal,%CDDrive%,Begin
+RegAddBoot,HKLM,0x1,Software\Microsoft\Windows\CurrentVersion,ProgramFilesDir,"%p_path%"
+RegAddBoot,HKLM,0x1,Software\Microsoft\Windows\CurrentVersion,ProgramFilesPath,"%p_path%"
+RegAddBoot,HKLM,0x1,Software\Microsoft\Windows\CurrentVersion,CommonFilesDir,"%p_path%\%common%"
+End
+If,Not,%SourceArch%,Equal,x86,Begin
+If,%NoWarnROW%,Equal,True,System,ERROROFF,6
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\Windows\CurrentVersion,"CommonFilesDir (x86)","%p_path% (x86)\%common(x86)%"
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\Windows\CurrentVersion,"ProgramFilesDir (x86)","%p_path% (x86)"
+RegWrite,HKLM,0x2,Tmp_Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"CommonFilesDir","%p_path% (x86)\%common(x86)%"
+RegWrite,HKLM,0x2,Tmp_Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"CommonFilesDir (x86)","%p_path% (x86)\%common(x86)%"
+RegWrite,HKLM,0x2,Tmp_Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"ProgramFilesDir","%p_path% (x86)"
+RegWrite,HKLM,0x2,Tmp_Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"ProgramFilesDir (x86)","%p_path% (x86)"
+If,%loc%,Equal,%CDDrive%,Begin
+RegAddBoot,HKLM,0x1,Software\Microsoft\Windows\CurrentVersion,"CommonFilesDir (x86)","%p_path% (x86)\%common(x86)%"
+RegAddBoot,HKLM,0x1,Software\Microsoft\Windows\CurrentVersion,"ProgramFilesDir (x86)","%p_path% (x86)"
+RegAddBoot,HKLM,0x1,Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"CommonFilesDir","%p_path% (x86)\%common(x86)%"
+RegAddBoot,HKLM,0x1,Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"CommonFilesDir (x86)","%p_path% (x86)\%common(x86)%"
+RegAddBoot,HKLM,0x1,Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"ProgramFilesDir","%p_path% (x86)"
+RegAddBoot,HKLM,0x1,Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"ProgramFilesDir (x86)","%p_path% (x86)"
+End
+End
+RegHiveUnLoad,Tmp_Software
+End
+//Set,%AtCD%,%app_force%,PERMANENT
+//Set,%AtRAM%,%app_force%,PERMANENT
+End
+//-
+Set,%t%,0
+If,Not,%loc%,Equal,%CDDrive%,Begin
+If,Not,%loc%,Equal,%SystemDrive%,Set,%t%,1
+End
+If,%t%,Equal,1,Begin
+//If,Not,%loc%,Equal,%CDDrive%,If,Not,%loc%,Equal,%SystemDrive%,Begi-n
+Set,%ProgramFilesDrive%,%loc%
+IniWrite,%ProjectDir%\script.project,IniVariables,ProgramFilesDrive,%ProgramFilesDrive%
+IniRead,%ProjectInfo%,String,ProgramFiles,%prog%
+IniRead,%ProjectInfo%,String,CommonFiles,%common%
+IniRead,%ProjectInfo%,String,CommonFiles(x86),%common(x86)%
+Set,%PE_Programs%,#$pprogramfiles#$p,PERMANENT
+//Set,%PE_Programs%,%p_path%,PERMANENT
+RegHiveLoad,Tmp_Software,%Target_Sys%\config\software
+If,%NoWarnROW%,Equal,True,System,ERROROFF,3
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\Windows\CurrentVersion,ProgramFilesDir,"%p_path%"
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\Windows\CurrentVersion,ProgramFilesPath,"%p_path%"
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\Windows\CurrentVersion,CommonFilesDir,"%p_path%\%common%"
+If,Not,%SourceArch%,Equal,x86,Begin
+If,%NoWarnROW%,Equal,True,System,ERROROFF,6
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\Windows\CurrentVersion,"CommonFilesDir (x86)","%p_path% (x86)\%common(x86)%"
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\Windows\CurrentVersion,"ProgramFilesDir (x86)","%p_path% (x86)"
+RegWrite,HKLM,0x2,Tmp_Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"CommonFilesDir","%p_path% (x86)\%common(x86)%"
+RegWrite,HKLM,0x2,Tmp_Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"CommonFilesDir (x86)","%p_path% (x86)\%common(x86)%"
+RegWrite,HKLM,0x2,Tmp_Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"ProgramFilesDir","%p_path% (x86)"
+RegWrite,HKLM,0x2,Tmp_Software\Wow6432Node\Microsoft\Windows\CurrentVersion,"ProgramFilesDir (x86)","%p_path% (x86)"
+End
+RegHiveUnLoad,Tmp_Software
+IniRead,%ProjectInfo%,BasePath,ProgramFiles,%prog%
+If,%loc%,Equal,%SettingsDrive%,Begin
+//IniRead,%ProjectInfo%,BasePath,ProfileBase,%DS%
+//StrFormat,PATH,%DS%,%p_target%
+//StrFormat,CTRIM,%p_target%,\,%p_target%
+//StrFormat,PATH,%Modelram%,%Modelram_path%
+//StrFormat,CTRIM,%Modelram_path%,\,%Modelram_path%
+//DirMake,%Modelram_path%\%p_target%\%prog%
+DirMake,%TargetProfilesBaseDir%\%prog%
+DirMake,%TargetProfilesBaseDir%\%prog%\%common%
+If,Not,%sourcearch%,Equal,x86,DirMake,%TargetProfilesBaseDir%\%prog%\%common(x86)%
+If,ExistDir,%TargetDir%\%prog%,DirDelete,%TargetDir%\%prog%
+//If,%app_force%,Equal,True,Set,%Target_Prog%,%TargetProfilesBaseDir%\%DS%\%prog%,PERMANENT
+//If,%app_force%,Equal,True,Set,%Target_Prog%,%TargetProfilesBaseDir%\%prog%,PERMANENT
+Set,%Target_Prog%,%TargetProfilesBaseDir%\%prog%,PERMANENT
+End
+Else,Begin
+If,%pProgramFilesForceTarget_ProgCheckBox%,Equal,True,Begin
+If,Not,ExistDir,%loc%\,Begin
+Message,"ProgramFilesPE has been configured to use %loc% as %ProgramFiles% drive. However, plugin could not locate a drive assigned with this letter, which is needed during build to copy files to.",ERROR
+Halt,"ProgramFilesPE has been configured to use %loc% as %ProgramFiles% drive. However, plugin could not locate a drive assigned with this letter, which is needed during build to copy files to."
+End
+Else,Begin
+Call,HostProgramFilesDir
+StrFormat,Split,%HostProgramFilesDir%,\,0,%count%
+Loop,%ScriptFile%,A-Loop,1,%count%
+If,%DriveCheck%,Equal,%loc%,Begin
+Message,"ProgramFilesPE has been configured to use %loc% as %ProgramFiles% drive. However, plugin detects that this is the same drive letter of your current HOST system, which could cause problems to your system. Build will therefore exit.",ERROR
+Halt,"ProgramFilesPE has been configured to use %loc% as %ProgramFiles% drive. However, plugin detects that this is the same drive letter of your current HOST system, which could cause problems to your system. Build will therefore exit."
+End
+Else,Begin
+DirMake,%loc%\%prog%
+Set,%Target_Prog%,%loc%\%prog%,PERMANENT
+End
+//--
+Call,Call,HostProgramFilesDirX86
+StrFormat,Split,%HostProgramFilesDirX86%,\,0,%count%
+Loop,%ScriptFile%,A-LoopB,1,%count%
+If,%DriveCheck%,Equal,%loc%,Begin
+Message,"ProgramFilesPE has been configured to use %loc% as %ProgramFiles% drive. However, plugin detects that this is the same drive letter of your current HOST system, which could cause problems to your system. Build will therefore exit.",ERROR
+Halt,"ProgramFilesPE has been configured to use %loc% as %ProgramFiles% drive. However, plugin detects that this is the same drive letter of your current HOST system, which could cause problems to your system. Build will therefore exit."
+End
+Else,Begin
+DirMake,%loc%\%prog%
+Set,%Target_Prog%,%loc%\%prog%,PERMANENT
+End
+End
+End
+End
+If,Not,%pProgramFilesForceTarget_ProgCheckBox%,Equal,True,Begin
+ExtractFile,%ScriptFile%,Junc,junc.exe,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\HideRun.exe,Require,File,HideRun.exe
+FileCreateBlank,%Target_Sys%\ProgramFiles-Junction.cmd
+TXTAddLine,%Target_Sys%\ProgramFiles-Junction.cmd,"FOR /F #$qusebackq tokens=*#$q #$p#$pi IN (`dir/b #$q#$pSystemDrive#$p\%prog%\*.*#$q`) DO (",APPEND
+TXTAddLine,%Target_Sys%\ProgramFiles-Junction.cmd,"IF NOT EXIST #$q#$pProgramFiles#$p\#$p#$pi#$q md #$q#$pProgramFiles#$p\#$p#$pi#$q &junc.exe #$q#$pProgramFiles#$p\#$p#$pi#$q #$q\??\#$pSystemDrive#$p\%prog%\#$p#$pi#$q)",APPEND
+If,ExistSection,%ProjectDir%\script.project,VariablesWimPack,Begin
+AddVariables,%ProjectDir%\script.project,VariablesWimPack
+WimPackExclude,//ProgramFiles-Junction exclusion file list,ProgramFiles-Junction.cmd
+WimPackExclude,ProgramFiles-Junction.cmd,ProgramFiles-Junction.cmd
+End
+RegHiveLoad,Tmp_Software,%RegSoftware%
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\001,ProgramFiles,"hiderun.exe /w ProgramFiles-Junction.cmd"
+RegHiveUnLoad,Tmp_Software
+End
+End
+Else,Begin
+If,%pProgramFilesLocScrollBox%,Equal,Run From CD,Set,%ProgramFilesDrive%,#$pCDDrive#$p
+Else,Set,%ProgramFilesDrive%,#$pSystemDrive#$p
+IniWrite,%ProjectDir%\script.project,IniVariables,ProgramFilesDrive,%ProgramFilesDrive%
+End
+If,%pProgramFilesLocScrollBox%,Equal,Run From CD,Begin
+Set,%include_Folder%,%ProgramFilesFolder%
+If,ExistVar,%RAM_exclude%,Begin
+StrFormat,POS,%RAM_exclude%,"%include_Folder%|",%stPos%
+If,%stPos%,Equal,0,Set,%RAM_exclude%,"%RAM_exclude%%include_Folder%|",PERMANENT
+End
+Else,Set,%RAM_exclude%,"%include_Folder%|",PERMANENT
+End
+//--
+//decide to keep a complete list first here ;) -- some of them be adjusted in script.project so commented out but here only to remind
+IniRead,%ProjectInfo%,String,ProgramFiles,%prog%
+//Set,%RFDF_Drive%,#$pSystemDrive#$p,Permanent
+//Set,%RFRM_TargetDir%,%TargetDir%,Permanent
+//Set,%RFDF_Target_Prog%,%RFDF_TargetDir%\%RFDF_Programs%,Permanent
+//Set,%RFDF_PE_Programs%,%RFDF_Drive%\%RFDF_Programs%,Permanent
+//-
+//Set,%RMDrive%,#$pSettingsDrive#$p,Permanent
+//Set,%RFRM_Drive%,#$pRMDrive#$p,Permanent
+If,%app_force%,Equal,True,Set,%RFRM_Programs%,"%prog%"
+Else,Set,%RFRM_Programs%,"%prog% RAM"
+//Set,%RFRM_TargetDir%,%TargetDir%,Permanent
+//Set,%RFRM_Target_Prog%,%RFRM_TargetDir%\%RFRM_Programs%,Permanent
+//Set,%RFRM_PE_Programs%,%RMDrive%\%RFRM_Programs%,Permanent
+//-
+//Set,%CDDrive%=#$pCDDrive#$p
+//Set,%RFCD_Drive%=%CDDrive%
+If,%app_force%,Equal,True,Set,%RFCD_Programs%,"%prog%"
+Else,Set,%RFCD_Programs%,"%prog% CD"
+//Set,%RFCD_TargetDir%=%TargetDir%,Permanent
+//Set,%RFCD_Target_Prog%=%RFCD_TargetDir%\%RFCD_Programs%,Permanent
+//Set,%RFCD_PE_Programs%=%CDDrive%\%RFCD_Programs%,Permanent
+//
+//If,Not,ExistDir,%RFRM_TargetDir%,DirMake,%RFRM_TargetDir%
+//If,Not,ExistDir,%RFCD_TargetDir%,DirMake,%RFCD_TargetDir%
+//--
+//--History017
+IniRead,%ProjectDir%\script.project,IniVariables,ProgramFilesDrive,%t1%
+IniRead,%ProjectDir%\script.project,IniVariables,ProgramFilesFolder,%t2%
+Set,%PE_Programs%,%t1%\%t2%,Permanent
+//--History017
+//--
+IniWrite,%ProjectDir%\script.project,IniVariables,RMDrive,%RMDrive%
+IniWrite,%ProjectDir%\script.project,IniVariables,RFDF_Drive,##$pSystemDrive##$p
+IniWrite,%ProjectDir%\script.project,IniVariables,RFDF_Programs,%prog%
+IniWrite,%ProjectDir%\script.project,IniVariables,RFDF_TargetDir,%TargetDir%
+IniWrite,%ProjectDir%\script.project,IniVariables,RFDF_Target_Prog,%TargetDir%\%prog%
+IniWrite,%ProjectDir%\script.project,IniVariables,RFDF_PE_Programs,"##$pSystemDrive##$p\%prog%"
+IniWrite,%ProjectDir%\script.project,IniVariables,RFRM_Drive,%RMDrive%
+IniWrite,%ProjectDir%\script.project,IniVariables,RFRM_Programs,%RFRM_Programs%
+IniWrite,%ProjectDir%\script.project,IniVariables,RFRM_TargetDir,%RFRM_TargetDir%
+IniWrite,%ProjectDir%\script.project,IniVariables,RFRM_Target_Prog,%RFRM_TargetDir%\%RFRM_Programs%
+IniWrite,%ProjectDir%\script.project,IniVariables,RFRM_PE_Programs,%RMDrive%\%RFRM_Programs%
+IniWrite,%ProjectDir%\script.project,IniVariables,RFCD_Drive,##$pCDDrive##$p
+IniWrite,%ProjectDir%\script.project,IniVariables,RFCD_Programs,%RFCD_Programs%
+IniWrite,%ProjectDir%\script.project,IniVariables,RFCD_TargetDir,%TargetDir%
+IniWrite,%ProjectDir%\script.project,IniVariables,RFCD_Target_Prog,%TargetDir%\%RFCD_Programs%
+IniWrite,%ProjectDir%\script.project,IniVariables,RFCD_PE_Programs,##$pCDDrive##$p\%RFCD_Programs%
+//--
+IniWrite,%ProjectDir%\script.project,VariablesRunFromDefault,#$pTarget_Prog#$p,%Target_Prog%
+IniWrite,%ProjectDir%\script.project,VariablesRunFromDefault,#$pPE_Programs#$p,%PE_Programs%
+IniWrite,%ProjectDir%\script.project,VariablesRunFromDefault,#$pCDDrive#$p,%CDDrive%
+IniWrite,%ProjectDir%\script.project,VariablesRunFromDefault,#$pAtRAM#$p,%AtRAM%
+IniWrite,%ProjectDir%\script.project,VariablesRunFromDefault,#$pAtCD#$p,%AtCD%
+IniWrite,%ProjectDir%\script.project,VariablesRunFromDefault,#$pCDON#$p,%CDON%
+IniWrite,%ProjectDir%\script.project,VariablesRunFromDefault,#$pAtRAM_force#$p,%AtRAM_force%
+IniWrite,%ProjectDir%\script.project,VariablesRunFromDefault,#$pAtCD_force#$p,%AtCD_force%
+//--
+IniWrite,%ProjectDir%\script.project,VariablesRunFromSystem32,#$pTarget_Prog#$p,%Target_Sys%
+IniWrite,%ProjectDir%\script.project,VariablesRunFromSystem32,#$pPE_Programs#$p,##$pWinDir##$p\System32
+//--
+IniWrite,%ProjectDir%\script.project,VariablesRunFromSysWOW64,#$pTarget_Prog#$p,%Target_Win%\SysWOW64
+IniWrite,%ProjectDir%\script.project,VariablesRunFromSysWOW64,#$pPE_Programs#$p,##$pWinDir##$p\SysWOW64
+
+[A-Loop]
+StrFormat,Split,%HostProgramFilesDir%,\,#c,%FirstPart%
+If,#c,Equal,1,Set,%DriveCheck%,%FirstPart%
+
+[A-LoopB]
+StrFormat,Split,%HostProgramFilesDirX86%,\,#c,%FirstPart%
+If,#c,Equal,1,Set,%DriveCheck%,%FirstPart%
+
+[Finish]
+// @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+[AuthorEncoded]
+ProgramFilesPE.gif=3421,4562
+Logo=ProgramFilesPE.gif
+
+[EncodedFile-AuthorEncoded-ProgramFilesPE.gif]
+lines=1
+0=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
+1=ICag4fBnvwwj4HVzXh7G+5xS3oQPzi8KY3dtgG9CzyoA+6U/6A6XO8k2rfp9XFriEPZE2KrjGNJvzgB9n4QQk04QTN8GYwCIAOxrAFexBGUfInzgAiMScwDBgPAnMCdbBicdEQNmAl0/AD+eADDaALB9GBulAj5dAEblAE/wcYwJUcG8AO+GAEeZAHy7AFMJgKMDiDM6gPRSdwT1AOeDABG4gRL9AAzVAC96AZ3icYrUF8wycYRlh8R6cQhEQSxOADIagMN/AW33eFWJiFrGETTLEQ0bMPTJAG2dAEmjANEOAGu5CGu3ADbNiGbtiG28CFXSgUukAMDXCHjbEPwTAGe8iHY+CHgHhucziIhFiIAQEAO3icEwooyk8vSsx1y8xJLQ5w1UvPTGMYBSMH8PPily87euE8IwMAhJoJzuWvIo8BAAAAAgAAACoAAAAPDQAAAAAAAAEAAAAAAAAAAAAAAA
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+Call,UploadXQ
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+
+[EncodedFolders]
+junc
+
+[junc]
+junc.exe=2639,3519
+
+[EncodedFile-junc-junc.exe]
+lines=0
+0=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
+

@@ -1,0 +1,13 @@
+[main]
+Title=Gena
+Author=TheOven Chefs (Galapo, Lancelot)
+Description=The most flexible PE 1x on Earth, using Explorer as shell, supporting SATA/IDE drives, USB devices, and many other features and tweaks. This project is based on PE environment and will use a Windows ™ XP/2003 Install CD.
+Download_Level=0
+Version=005
+Selected=True
+Contact=http://Theoven.org
+Date=2015.01.10
+
+[Links]
+Projects\MyPlugins_Direct\*.*
+Projects\Gena-Sweets\*.*

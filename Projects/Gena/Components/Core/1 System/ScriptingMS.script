@@ -1,0 +1,1462 @@
+[Main]
+Title=Scripting Support MS
+Type=Plugin
+Author=thuun
+Description=Adds pre-registered support for WSH, VBS, JS, and OLE automation
+Credits=Erwin Veermans http://www.veder.com/nwdskpe/#download , thuun, Galapo, saydin77, homes32, Lancelot
+Version=017
+Download_Level=1
+Level=3
+Selected=True
+Mandatory=False
+NoWarning=False
+Contact=http://TheOven.org
+Date=2016.11.10
+Depend=
+Disable_CANCEL=%scriptdir%\ScriptingSup.Script,%scriptdir%\ScriptingCore.script
+Web1=http://gena.cwcodes.net/Projects/Gena/Components/Core/1%20System/ScriptingMS.script
+CertifiedBy=
+Certification=
+HistoryNotes01=Lancelot RF have "Title=Scripting Support" script, in order not to mix things AND make syncronisation with naming, current Plugin named "Title=Scripting Support MS"
+HistoryNotes02=Lancelot yes some Wow6432Node values contains system32 , all checked ;).
+History001a=Lancelot conversion ""%1"" --> #$q#$p1#$q
+History001b=Lancelot some quotes removed
+History001c=Lancelot check HistoryConfusion on Plugin - 1 line removed , some notes taken // History01Notes written to some lines
+History001d=Lancelot Full PEx64 support
+History001=Lancelot following homes32's request, ScriptingCore.script and ScriptingSup.script united with PEx64 support :).
+History002=Lancelot thanks ScarySpons for reporting : missings added // minor fixes // urlmon.dll mlang.dll switch %mlangurlmon% added and for now some of mlang.dll changed to urlmon.dll // options on second interface not to fix users mind
+History003=Lancelot optional msvbvm50.exe/dll provide file button for none xp32bit sources ;). (Untill a way found to distribute :>) //Title=Scripting Support MS (check HistoryNote)
+History010=Lancelot NoWarnROW implemented x 3
+History011=Lancelot POSReady 2009 exit
+History012=Lancelot Added DU buttons - Date:2016.01.28
+History014=Lancelot Added Compare button - Date:2016.10.21
+History017=Lancelot Added Components_PluginCache_Extract x 2 - Date:2016.11.09 - Date:2016.11.10
+
+[Interface]
+Advanced_pBevel=pBevel1,0,12,9,58,143,74
+pTextLabel_Advanced_warning="Advanced Settings:",0,1,15,63,121,18,8,Bold
+pCheckBox_Support=Support,0,3,20,106,60,18,True
+pCheckBox_Core=Core,0,3,20,85,60,18,True
+pButton_Show_Second_Gui=a,1,8,403,232,16,16,Show_Second_Gui,True,True,False,_Show_Second_Gui_,True
+pButton_Show_First_Gui=b,0,8,403,232,16,16,Show_First_Gui,True,True,False,_Show_First_Gui_,True
+Msvbvm50_pBevel1=pBevel1,1,12,200,59,246,66
+Msvbvm50_OpenSourceFilesbutton="Provide msvbvm50",1,8,210,89,110,25,OpenSourceFilesDir,,False,_OpenSourceFilesDir_,False
+Msvbvm50_pWebLabel=Msvbvm50,1,10,325,92,200,18,http://support.microsoft.com/kb/180071
+Msvbvm50_pButton_Read_Me="Read Me",1,8,385,91,48,18,Msvbvm50_Read_Me,0,False,False,_Msvbvm50_Read_Me_,False
+Msvbvm50_pTextLabel="Optional msvbvm50 for None XP source",1,1,207,65,196,18,8,Normal
+WebLabel_Plugin="Plugin Page",1,10,338,4,55,18,http://TheOven.org/index.php?board=9
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[Variables]
+%Providemsvbvm50File%=%GlobalTemplates%\Hotfixes\msvbvm50
+%Providemsvbvm50FileExtractFolder%=%Providemsvbvm50File%\msvbvm50exe
+
+[Cache_SCD_Info_Additional_Plugin]
+IniRead,%ScriptFile%,Main,Selected,%t%
+If,%t%,Equal,True,Begin
+Run,%api%,Cache_SCD_Info_Additional_Plugin_ML,#1,#2,#3,#4,#5,#6,#7,#8,#9
+//-
+Call,RetrieveFolderUniqueID,%Providemsvbvm50File%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,%Plugin_FName_Sub%_|_Providemsvbvm50File_RetrieveFolderUniqueID,%RetrieveFolderUniqueID%
+If,%RetrieveFolderUniqueID%,Equal,1,IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,%Plugin_FName_Sub%_|_Providemsvbvm50File_RetrieveFolderUniqueID,"%RetrieveFolderUniqueID% : Directory Not Exists"
+If,%RetrieveFolderUniqueID%,Equal,2,IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,%Plugin_FName_Sub%_|_Providemsvbvm50File_RetrieveFolderUniqueID,"%RetrieveFolderUniqueID% : Directory exists but empty"
+//-
+Echo,"Cache_SCD_Info_Additional_Plugin - Finish - %Plugin_FName%"
+End
+
+[OpenSourceFilesDir]
+Call,OpenDir,%Providemsvbvm50File%
+
+[Msvbvm50_Read_Me]
+If,Not,ExistDir,%ProjectTemp%,DirMake,%ProjectTemp%
+ExtractFile,%ScriptFile%,Folder,"Msvbvm50 Read Me.txt",%ProjectTemp%
+Call,StartDoc,"%ProjectTemp%\Msvbvm50 Read Me.txt"
+
+[Show_Second_Gui]
+System,CURSOR,Wait
+Run,%ScriptFile%,Second_Gui
+System,RefreshInterface
+System,CURSOR,Normal
+
+[Show_First_Gui]
+System,CURSOR,Wait
+Run,%ScriptFile%,First_Gui
+System,RefreshInterface
+System,CURSOR,Normal
+
+[Second_Gui]
+Run,%ScriptFile%,Show-Hide-First_Gui,False
+Run,%ScriptFile%,Show-Hide-Second_Gui,True
+
+[First_Gui]
+Run,%ScriptFile%,Show-Hide-Second_Gui,False
+Run,%ScriptFile%,Show-Hide-First_Gui,True
+
+[Show-Hide-Second_Gui]
+Visible,%Advanced_pBevel%,#1,PERMANENT
+Visible,%pTextLabel_Advanced_warning%,#1,PERMANENT
+Visible,%pCheckBox_Support%,#1,PERMANENT
+Visible,%pCheckBox_Core%,#1,PERMANENT
+//--
+Visible,%pButton_Show_First_Gui%,#1,PERMANENT
+
+[Show-Hide-First_Gui]
+//--
+Visible,%pButton_Show_Second_Gui%,#1,PERMANENT
+
+[Process]
+If,ExistFile,%ProjectTemp%\Components_PluginCache_Extract.ini,Echo,"Components PluginCache"
+If,Not,ExistFile,%ProjectTemp%\Components_PluginCache_Extract.ini,Run,%ScriptFile%,Process_Normal
+
+[Process_Normal]
+If,ExistFile,%SourceDir%\win51.pos,Exit,"%ScriptTitle% Plugin does not support POSReady 2009"
+If,Not,%pCheckBox_Support%,Equal,True,Echo,"pCheckBox_Support NOT selected TRUE"
+If,Not,%pCheckBox_Core%,Equal,True,Echo,"pCheckBox_Core NOT selected TRUE"
+IniRead,%ProjectDir%\script.project,IniVariables,NoWarnRegOverWrite,%NoWarnROW%
+Echo,"Script support processing"
+Set,%targetdirvalue%,%target_sys%
+Set,%sourcedirvalue%,%source_sys%\
+Set,%registrysub%,""
+Set,%systemreglocation%,System32
+//--
+Set,%mlangurlmon%,urlmon.dll
+//Set,%mlangurlmon%,mlang.dll
+//--
+Echo,"Copy System files"
+Run,%ScriptFile%,File_Requirements_A
+If,%SourceArch%,Equal,x86,Run,%ScriptFile%,File_Requirements_B
+Run,%ScriptFile%,File_Requirements_C
+//--
+RegHiveLoad,Tmp_Software,%target_sys%\config\software
+RegHiveLoad,Tmp_System,%target_sys%\setupreg.hiv
+//--
+Echo,"Add System Registry"
+Run,%ScriptFile%,Registry_Write_Common_A
+If,%SourceArch%,Equal,x86,Run,%ScriptFile%,Registry_Write_Common_B
+Run,%ScriptFile%,Registry_Write_Common_C
+//-
+If,%pCheckBox_Core%,Equal,True,Run,%ScriptFile%,Registry_Write_Core_A
+If,%pCheckBox_Support%,Equal,True,Run,%ScriptFile%,Registry_Write_Support_A
+If,%pCheckBox_Support%,Equal,True,Run,%ScriptFile%,Registry_Write_Support_C
+If,ExistFile,%targetdirvalue%\msvbvm50.dll,Run,%ScriptFile%,vbvm50_B
+//--
+If,Not,%SourceArch%,Equal,x86,Begin
+If,%TargetWOW64%,Equal,x86,Run,%scriptfile%,wow64supportcoming
+End
+//--
+RegHiveUnLoad,Tmp_Software
+RegHiveUnLoad,Tmp_System
+Echo,"All done."
+
+[wow64supportcoming]
+Echo,"Adding wow64 support"
+Set,%targetdirvalue%,%target_win%\SysWOW64
+Set,%sourcedirvalue%,%SourceDir%\I386\W
+Set,%registrysub%,Wow6432Node\
+Set,%systemreglocation%,SysWOW64
+//-
+Echo,"Copy wow64 files"
+Run,%ScriptFile%,File_Requirements_A
+Run,%ScriptFile%,File_Requirements_B
+//-
+Echo,"Add wow64 Registry"
+Run,%ScriptFile%,Registry_Write_Common_A
+Run,%ScriptFile%,Registry_Write_Common_B
+If,%pCheckBox_Core%,Equal,True,Run,%ScriptFile%,Registry_Write_Core_A
+If,%pCheckBox_Support%,Equal,True,Run,%ScriptFile%,Registry_Write_Support_A
+If,ExistFile,%targetdirvalue%\msvbvm50.dll,Run,%ScriptFile%,vbvm50_B
+
+[File_Requirements_C]
+Echo,"Adding scripting support and activeX controls files C %systemreglocation% .."
+//same values for ALL
+If,Not,ExistFile,%target_win%\Inf\wsh.inf,CopyOrExpand,%source_sys%\wsh.inf,%target_win%\Inf\wsh.inf
+
+[File_Requirements_B]
+Echo,"Adding scripting support and activeX controls files B %systemreglocation% .."
+//PEx86 + wow64
+If,Not,ExistFile,%targetdirvalue%\msscript.ocx,CopyOrExpand,%sourcedirvalue%msscript.ocx,%targetdirvalue%\msscript.ocx
+If,Not,ExistFile,%targetdirvalue%\msvbvm60.dll,CopyOrExpand,%sourcedirvalue%msvbvm60.dll,%targetdirvalue%\msvbvm60.dll
+If,Not,ExistFile,%targetdirvalue%\olepro32.dll,CopyOrExpand,%sourcedirvalue%olepro32.dll,%targetdirvalue%\olepro32.dll
+
+[File_Requirements_A]
+//PEx86 + wow64 + PEx64
+Echo,"Adding scripting support and activeX controls files A %systemreglocation% .."
+If,%pCheckBox_Support%,Equal,True,Begin
+If,Not,ExistFile,%targetdirvalue%\advpack.dll,CopyOrExpand,%sourcedirvalue%advpack.dll,%targetdirvalue%\advpack.dll
+End
+//--
+If,Not,ExistFile,%targetdirvalue%\asycfilt.dll,CopyOrExpand,%sourcedirvalue%asycfilt.dll,%targetdirvalue%\asycfilt.dll
+If,Not,ExistFile,%targetdirvalue%\comcat.dll,CopyOrExpand,%sourcedirvalue%comcat.dll,%targetdirvalue%\comcat.dll
+If,Not,ExistFile,%targetdirvalue%\comctl32.dll,CopyOrExpand,%sourcedirvalue%comctl32.dll,%targetdirvalue%\comctl32.dll
+If,Not,ExistFile,%targetdirvalue%\cscript.exe,CopyOrExpand,%sourcedirvalue%cscript.exe,%targetdirvalue%\cscript.exe
+If,Not,ExistFile,%targetdirvalue%\jscript.dll,CopyOrExpand,%sourcedirvalue%jscript.dll,%targetdirvalue%\jscript.dll
+//--
+If,%pCheckBox_Support%,Equal,True,Begin
+If,Not,ExistFile,%targetdirvalue%\mfc42.dll,CopyOrExpand,%sourcedirvalue%mfc42.dll,%targetdirvalue%\mfc42.dll
+If,Not,ExistFile,%targetdirvalue%\msls31.dll,CopyOrExpand,%sourcedirvalue%msls31.dll,%targetdirvalue%\msls31.dll
+End
+//--
+If,Not,ExistFile,%targetdirvalue%\jsproxy.dll,CopyOrExpand,%sourcedirvalue%jsproxy.dll,%targetdirvalue%\jsproxy.dll
+//--
+//msvbvm50.dll not exists on Win2k3 x86 & Win2k3/XPx64 x64 - only exists on XP x86 source
+//If,%OS%%SourceArch%,Equal,XPx86,If,Not,ExistFile,%targetdirvalue%\msvbvm50.dll,CopyOrExpand,%sourcedirvalue%msvbvm50.dll,%targetdirvalue%\
+If,Not,ExistFile,%targetdirvalue%\msvbvm50.dll,Begin
+If,ExistFile,%sourcedirvalue%msvbvm50.???,CopyOrExpand,%sourcedirvalue%msvbvm50.dll,%targetdirvalue%\
+End
+If,Not,ExistFile,%targetdirvalue%\msvbvm50.dll,Begin
+If,ExistFile,%Providemsvbvm50File%\msvbvm50.dll,FileCopy,%Providemsvbvm50FileExtractFolder%\msvbvm50.dll,%targetdirvalue%\
+End
+If,Not,ExistFile,%targetdirvalue%\msvbvm50.dll,Begin
+If,ExistFile,%Providemsvbvm50FileExtractFolder%\msvbvm50.dll,FileCopy,%Providemsvbvm50FileExtractFolder%\msvbvm50.dll,%targetdirvalue%\
+End
+If,Not,ExistFile,%targetdirvalue%\msvbvm50.dll,Begin
+If,ExistFile,%Providemsvbvm50File%\msvbvm50.exe,Run,%scriptfile%,vbvm50_File
+End
+//--
+If,Not,ExistFile,%targetdirvalue%\oleaut32.dll,CopyOrExpand,%sourcedirvalue%oleaut32.dll,%targetdirvalue%\oleaut32.dll
+If,Not,ExistFile,%targetdirvalue%\scrobj.dll,CopyOrExpand,%sourcedirvalue%scrobj.dll,%targetdirvalue%\scrobj.dll
+If,Not,ExistFile,%targetdirvalue%\scrrun.dll,CopyOrExpand,%sourcedirvalue%scrrun.dll,%targetdirvalue%\scrrun.dll
+If,Not,ExistFile,%targetdirvalue%\stdole2.tlb,CopyOrExpand,%sourcedirvalue%stdole2.tlb,%targetdirvalue%\stdole2.tlb
+If,Not,ExistFile,%targetdirvalue%\vbscript.dll,CopyOrExpand,%sourcedirvalue%vbscript.dll,%targetdirvalue%\vbscript.dll
+If,Not,ExistFile,%targetdirvalue%\wscript.exe,CopyOrExpand,%sourcedirvalue%wscript.exe,%targetdirvalue%\wscript.exe
+If,Not,ExistFile,%targetdirvalue%\wshext.dll,CopyOrExpand,%sourcedirvalue%wshext.dll,%targetdirvalue%\wshext.dll
+If,Not,ExistFile,%targetdirvalue%\wshom.ocx,CopyOrExpand,%sourcedirvalue%wshom.ocx,%targetdirvalue%\wshom.ocx
+
+[vbvm50_File]
+Echo,"Extract msvbvm50.exe and copy msvbvm50.dll"
+ShellExecute,Hide,%Tools%\7z.exe,"x #$q%Providemsvbvm50File%\msvbvm50.exe#$q -y -o#$q%Providemsvbvm50FileExtractFolder%#$q"
+FileCopy,%Providemsvbvm50FileExtractFolder%\msvbvm50.dll,%targetdirvalue%
+
+[vbvm50_B]
+Echo,"Adding scripting support and activeX controls Registry vbvm50 B %systemreglocation% .."
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%TypeLib\{000204EF-0000-0000-C000-000000000046}\5.0,,"Visual Basic For Applications"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%TypeLib\{000204EF-0000-0000-C000-000000000046}\5.0\9\win32,,#$pSystemRoot#$p\%systemreglocation%\msvbvm50.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%TypeLib\{000204EF-0000-0000-C000-000000000046}\5.0\FLAGS,,0
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%TypeLib\{000204EF-0000-0000-C000-000000000046}\5.0\HELPDIR,,#$pSystemRoot#$p\%systemreglocation%
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%TypeLib\{97177EBC-0C54-11D0-B407-00AA00C14969}\5.0,,"Visual Basic runtime objects and procedures"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%TypeLib\{97177EBC-0C54-11D0-B407-00AA00C14969}\5.0\9\win32,,#$pSystemRoot#$p\%systemreglocation%\msvbvm50.dll\2
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%TypeLib\{97177EBC-0C54-11D0-B407-00AA00C14969}\5.0\FLAGS,,4
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%TypeLib\{97177EBC-0C54-11D0-B407-00AA00C14969}\5.0\HELPDIR,,#$pSystemRoot#$p\%systemreglocation%
+
+[Registry_Write_Support_C]
+Echo,"Adding scripting support and activeX controls Registry (Suppport C) %systemreglocation% .."
+//same values for ALL
+//RegWrite ! Overwrote existing key ".COM;.EXE;.BAT;.CMD" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Session Manager\Environment",PATHEXT,".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH"
+
+[Registry_Write_Support_A]
+Echo,"Adding scripting support and activeX controls Registry (Suppport A) %systemreglocation% .."
+//History001 - HistoryConfusion - where this key come from !!!!!!!
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%TypeLib\{00020430-0000-0000-C000-000000000046}\2.0,PrimaryInteropAssemblyName,"stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+
+[Registry_Write_Common_C]
+Echo,"Adding scripting support and activeX controls Registry (Common C) %systemreglocation% .."
+//same values for ALL
+RegWrite,HKLM,0x2,Tmp_System\ControlSet001\Services\EventLog\Application\WSH,EventMessageFile,#$pSystemRoot#$p\System32\wshext.dll
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\EventLog\Application\WSH,TypesSupported,31
+//History01Notes "Windows Script Host" does not exists on x64 registry at ControlSet001\Services\EventLog\System
+RegWrite,HKLM,0x2,"Tmp_System\ControlSet001\Services\EventLog\System\Windows Script Host",EventMessageFile,#$pSystemRoot#$p\System32\wshext.dll
+RegWrite,HKLM,0x4,"Tmp_System\ControlSet001\Services\EventLog\System\Windows Script Host",TypesSupported,24
+
+[Registry_Write_Common_B]
+Echo,"Adding scripting support and activeX controls Registry (Common B) %systemreglocation% .."
+//PEx86 + wow64
+//on PEx86 available
+//on PEx64 only exists on wow64
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{D5DE8D20-5BB8-11D1-A1E3-00A0C90F2731},,VBPropertyBag
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{D5DE8D20-5BB8-11D1-A1E3-00A0C90F2731}\InProcServer32,,#$pSystemRoot#$p\%systemreglocation%\msvbvm60.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{D5DE8D20-5BB8-11D1-A1E3-00A0C90F2731}\InProcServer32,ThreadingModel,Apartment
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%TypeLib\{000204EF-0000-0000-C000-000000000046}\6.0,,"Visual Basic For Applications"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%TypeLib\{000204EF-0000-0000-C000-000000000046}\6.0\9\win32,,#$pSystemRoot#$p\%systemreglocation%\msvbvm60.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%TypeLib\{000204EF-0000-0000-C000-000000000046}\6.0\FLAGS,,0
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%TypeLib\{000204EF-0000-0000-C000-000000000046}\6.0\HELPDIR,,#$pSystemRoot#$p\%systemreglocation%
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%TypeLib\{EA544A21-C82D-11D1-A3E4-00A0C90AEA82}\6.0,,"Visual Basic runtime objects and procedures"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%TypeLib\{EA544A21-C82D-11D1-A3E4-00A0C90AEA82}\6.0\9\win32,,#$pSystemRoot#$p\%systemreglocation%\msvbvm60.dll\3
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%TypeLib\{EA544A21-C82D-11D1-A3E4-00A0C90AEA82}\6.0\FLAGS,,4
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%TypeLib\{EA544A21-C82D-11D1-A3E4-00A0C90AEA82}\6.0\HELPDIR,,#$pSystemRoot#$p\%systemreglocation%
+
+[Registry_Write_Common_A]
+Echo,"Adding scripting support and activeX controls Registry (Common A) %systemreglocation% .."
+//PEx86 + wow64 + PEx64
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%.js,,JSFile
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%.JSE,,JSEFile
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%.sct,,scriptletfile
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%.sct,"Content Type",text/scriptlet
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%.VBE,,VBEFile
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%.vbs,,VBSFile
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%.wsc,,scriptletfile
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%.wsc,"Content Type",text/scriptlet
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%.WSF,,WSFFile
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%.WSH,,WSHFile
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{0000002F-0000-0000-C000-000000000046},,CLSID_RecordInfo
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{0000002F-0000-0000-C000-000000000046}\InprocServer32,,oleaut32.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{0000002F-0000-0000-C000-000000000046}\InprocServer32,ThreadingModel,Both
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{0BE35203-8F91-11CE-9DE3-00AA004BB851},,CLSID_StdFont
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{0BE35203-8F91-11CE-9DE3-00AA004BB851}\CLSID,,"Standard Font"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{0BE35203-8F91-11CE-9DE3-00AA004BB851}\InprocServer32,,oleaut32.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{0BE35203-8F91-11CE-9DE3-00AA004BB851}\InprocServer32,ThreadingModel,Both
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{0BE35203-8F91-11CE-9DE3-00AA004BB851}\ProgID,,StdFont
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{0BE35204-8F91-11CE-9DE3-00AA004BB851},,CLSID_StdPict
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{0BE35204-8F91-11CE-9DE3-00AA004BB851}\CLSID,,"Standard Picture"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{0BE35204-8F91-11CE-9DE3-00AA004BB851}\InprocServer32,,oleaut32.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{0BE35204-8F91-11CE-9DE3-00AA004BB851}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{0BE35204-8F91-11CE-9DE3-00AA004BB851}\ProgID,,StdPicture
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{B196B286-BAB4-101A-B69C-00AA00341D07},,PSFactoryBuffer
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{B196B286-BAB4-101A-B69C-00AA00341D07}\InprocServer32,,oleaut32.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{B196B286-BAB4-101A-B69C-00AA00341D07}\InprocServer32,ThreadingModel,Both
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{06290BD0-48AA-11D2-8432-006008C3FBFC},,"Object under which scriptlets may be created"
+//HistoryConfusion - Implemented Categories does not exists on xpx64sp2 build here !! neither in Classes\CLSID nor in Classes\Wow6432Node\CLSID
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\%registrysub%CLSID\{06290BD0-48AA-11D2-8432-006008C3FBFC}\Implemented Categories\{7DD95801-9882-11CF-9FA9-00AA006C42C4}","",""
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{06290BD0-48AA-11D2-8432-006008C3FBFC}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\scrobj.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{06290BD0-48AA-11D2-8432-006008C3FBFC}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{06290BD0-48AA-11D2-8432-006008C3FBFC}\ProgID,,Scriptlet.Context
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{06290BD1-48AA-11D2-8432-006008C3FBFC},,"Constructor that allows hosts better control creating scriptlets"
+//HistoryConfusion - Implemented Categories does not exists on xpx64sp2 build here !! neither in Classes\CLSID nor in Classes\Wow6432Node\CLSID
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\%registrysub%CLSID\{06290BD1-48AA-11D2-8432-006008C3FBFC}\Implemented Categories\{7DD95801-9882-11CF-9FA9-00AA006C42C4}","",""
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{06290BD1-48AA-11D2-8432-006008C3FBFC}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\scrobj.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{06290BD1-48AA-11D2-8432-006008C3FBFC}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{06290BD1-48AA-11D2-8432-006008C3FBFC}\ProgID,,Scriptlet.Constructor
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{06290BD2-48AA-11D2-8432-006008C3FBFC},,"Factory bindable using IPersistMoniker"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{06290BD2-48AA-11D2-8432-006008C3FBFC}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\scrobj.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{06290BD2-48AA-11D2-8432-006008C3FBFC}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{06290BD2-48AA-11D2-8432-006008C3FBFC}\ProgID,,Scriptlet.Factory
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{06290BD3-48AA-11D2-8432-006008C3FBFC},,"Moniker to a Windows Script Component"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{06290BD3-48AA-11D2-8432-006008C3FBFC}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\scrobj.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{06290BD3-48AA-11D2-8432-006008C3FBFC}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{06290BD3-48AA-11D2-8432-006008C3FBFC}\ProgID,,script
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{06290BD4-48AA-11D2-8432-006008C3FBFC},,"Object for encoding scriptlets"
+//HistoryConfusion - Implemented Categories does not exists on xpx64sp2 build here !! neither in Classes\CLSID nor in Classes\Wow6432Node\CLSID
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\%registrysub%CLSID\{06290BD4-48AA-11D2-8432-006008C3FBFC}\Implemented Categories\{7DD95801-9882-11CF-9FA9-00AA006C42C4}","",""
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{06290BD4-48AA-11D2-8432-006008C3FBFC}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\scrobj.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{06290BD4-48AA-11D2-8432-006008C3FBFC}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{06290BD4-48AA-11D2-8432-006008C3FBFC}\ProgID,,Scriptlet.HostEncode
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{06290BD5-48AA-11D2-8432-006008C3FBFC},,"Object for constructing type libraries for scriptlets"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{06290BD5-48AA-11D2-8432-006008C3FBFC}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\scrobj.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{06290BD5-48AA-11D2-8432-006008C3FBFC}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{06290BD5-48AA-11D2-8432-006008C3FBFC}\ProgID,,Scriptlet.TypeLib
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{06290BD8-48AA-11D2-8432-006008C3FBFC},,"Constructor for Scriptlet Automation Handler"
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\%registrysub%CLSID\{06290BD8-48AA-11D2-8432-006008C3FBFC}\Implemented Categories\{7DD95801-9882-11CF-9FA9-00AA006C42C4}","",""
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{06290BD8-48AA-11D2-8432-006008C3FBFC}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\scrobj.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{06290BD8-48AA-11D2-8432-006008C3FBFC}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{06290BD8-48AA-11D2-8432-006008C3FBFC}\ProgID,,ScriptletHandler.Automation
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{06290BD9-48AA-11D2-8432-006008C3FBFC},,"Constructor for Scriptlet Event Handler"
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\%registrysub%CLSID\{06290BD9-48AA-11D2-8432-006008C3FBFC}\Implemented Categories\{7DD95801-9882-11CF-9FA9-00AA006C42C4}","",""
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{06290BD9-48AA-11D2-8432-006008C3FBFC}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\scrobj.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{06290BD9-48AA-11D2-8432-006008C3FBFC}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{06290BD9-48AA-11D2-8432-006008C3FBFC}\ProgID,,ScriptletHandler.Event
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{06290BDA-48AA-11D2-8432-006008C3FBFC},,"Constructor for Scriptlet ASP Handler"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{06290BDA-48AA-11D2-8432-006008C3FBFC}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\scrobj.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{06290BDA-48AA-11D2-8432-006008C3FBFC}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{06290BDA-48AA-11D2-8432-006008C3FBFC}\ProgID,,ScriptletHandler.ASP
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{06290BDB-48AA-11D2-8432-006008C3FBFC},,"Constructor for Scriptlet Behavior Handler"
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\%registrysub%CLSID\{06290BDB-48AA-11D2-8432-006008C3FBFC}\Implemented Categories\{7DD95801-9882-11CF-9FA9-00AA006C42C4}","",""
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{06290BDB-48AA-11D2-8432-006008C3FBFC}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\scrobj.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{06290BDB-48AA-11D2-8432-006008C3FBFC}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{06290BDB-48AA-11D2-8432-006008C3FBFC}\ProgID,,ScriptletHandler.Behavior
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{093FF999-1EA0-4079-9525-9614C3504B74},,"Windows Script Host Network Object"
+//History01Notes - found but not added
+//RegWrite,HKLM,0x1,"Tmp_Software\Classes\%registrysub%CLSID\{093FF999-1EA0-4079-9525-9614C3504B74}\Implemented Categories\{40FC6ED5-2438-11CF-A3DB-080036F12502}","",""
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{093FF999-1EA0-4079-9525-9614C3504B74}\InProcServer32,,#$pSystemRoot#$p\%systemreglocation%\wshom.ocx
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{093FF999-1EA0-4079-9525-9614C3504B74}\InProcServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{093FF999-1EA0-4079-9525-9614C3504B74}\ProgID,,WScript.Network.1
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{093FF999-1EA0-4079-9525-9614C3504B74}\Programmable,,""
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{093FF999-1EA0-4079-9525-9614C3504B74}\TypeLib,,{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{093FF999-1EA0-4079-9525-9614C3504B74}\VersionIndependentProgID,,WScript.Network
+//--
+//--History002
+//urlmon
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{0968e258-16c7-4dba-aa86-462dd61e31a3},,PersistentZoneIdentifier
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{0968e258-16c7-4dba-aa86-462dd61e31a3}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\urlmon.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{0968e258-16c7-4dba-aa86-462dd61e31a3}\InprocServer32,ThreadingModel,Apartment
+//
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{0CF774D0-F077-11D1-B1BC-00C04F86C324},,"HTML Host Encode Object"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{0CF774D0-F077-11D1-B1BC-00C04F86C324}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\scrrun.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{0CF774D0-F077-11D1-B1BC-00C04F86C324}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{0CF774D0-F077-11D1-B1BC-00C04F86C324}\ProgID,,HTML.HostEncode
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{0CF774D1-F077-11D1-B1BC-00C04F86C324},,"ASP Host Encode Object"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{0CF774D1-F077-11D1-B1BC-00C04F86C324}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\scrrun.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{0CF774D1-F077-11D1-B1BC-00C04F86C324}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{0CF774D1-F077-11D1-B1BC-00C04F86C324}\ProgID,,ASP.HostEncode
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{0D43FE01-F093-11CF-8940-00A0C9054228},,"FileSystem Object"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{0D43FE01-F093-11CF-8940-00A0C9054228}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\scrrun.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{0D43FE01-F093-11CF-8940-00A0C9054228}\InprocServer32,ThreadingModel,Both
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{0D43FE01-F093-11CF-8940-00A0C9054228}\ProgID,,Scripting.FileSystemObject
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{0D43FE01-F093-11CF-8940-00A0C9054228}\TypeLib,,{420B2830-E718-11CF-893D-00A0C9054228}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{0D43FE01-F093-11CF-8940-00A0C9054228}\Version,,1.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{275C23E2-3747-11D0-9FEA-00AA003F8646},,"Multi Language Support"
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{275C23E2-3747-11D0-9FEA-00AA003F8646}\InProcServer32,,#$pSystemRoot#$p\%systemreglocation%\mlang.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{275C23E2-3747-11D0-9FEA-00AA003F8646}\InProcServer32,ThreadingModel,Both
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{32B533BB-EDAE-11d0-BD5A-00AA00B92AF1},,"AP Class Install Handler filter"
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{32B533BB-EDAE-11d0-BD5A-00AA00B92AF1}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\%mlangurlmon%
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{32B533BB-EDAE-11d0-BD5A-00AA00B92AF1}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{32DA2B15-CFED-11D1-B747-00C04FC2B085},,"Script Encoder Object"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{32DA2B15-CFED-11D1-B747-00C04FC2B085}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\scrrun.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{32DA2B15-CFED-11D1-B747-00C04FC2B085}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{32DA2B15-CFED-11D1-B747-00C04FC2B085}\ProgID,,Scripting.Encoder
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{32DA2B15-CFED-11D1-B747-00C04FC2B085}\TypeLib,,{420B2830-E718-11CF-893D-00A0C9054228}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{32DA2B15-CFED-11D1-B747-00C04FC2B085}\Version,,1.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{3dd53d40-7b8b-11D0-b013-00aa0059ce02},,"CDL: Asychronous Pluggable Protocol Handler"
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{3dd53d40-7b8b-11D0-b013-00aa0059ce02}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\%mlangurlmon%
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{3dd53d40-7b8b-11D0-b013-00aa0059ce02}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{3F4DACA4-160D-11D2-A8E9-00104B365C9F},,"VBScript Regular Expression"
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{3F4DACA4-160D-11D2-A8E9-00104B365C9F}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\vbscript.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{3F4DACA4-160D-11D2-A8E9-00104B365C9F}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{3F4DACA4-160D-11D2-A8E9-00104B365C9F}\ProgID,,VBScript.RegExp
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{3F4DACA4-160D-11D2-A8E9-00104B365C9F}\TypeLib,,{3F4DACA7-160D-11D2-A8E9-00104B365C9F}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{3F4DACA4-160D-11D2-A8E9-00104B365C9F}\Version,,5.5
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{54c37cd0-d944-11d0-a9f4-006097942311}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\%mlangurlmon%
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{54c37cd0-d944-11d0-a9f4-006097942311}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{60254CA5-953B-11CF-8C96-00AA00B8708C},,"Shell Extension For Windows Script Host"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{60254CA5-953B-11CF-8C96-00AA00B8708C}\InProcServer32,,#$pSystemRoot#$p\%systemreglocation%\wshext.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{60254CA5-953B-11CF-8C96-00AA00B8708C}\InProcServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{72C24DD5-D70A-438B-8A42-98424B88AFB8},,"Windows Script Host Shell Object"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{72C24DD5-D70A-438B-8A42-98424B88AFB8}\InProcServer32,,#$pSystemRoot#$p\%systemreglocation%\wshom.ocx
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{72C24DD5-D70A-438B-8A42-98424B88AFB8}\InProcServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{72C24DD5-D70A-438B-8A42-98424B88AFB8}\ProgID,,WScript.Shell.1
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{72C24DD5-D70A-438B-8A42-98424B88AFB8}\TypeLib,,{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{72C24DD5-D70A-438B-8A42-98424B88AFB8}\VersionIndependentProgID,,WScript.Shell
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{79eac9e0-baf9-11ce-8c82-00aa004ba90b},,"URL Moniker"
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{79eac9e0-baf9-11ce-8c82-00aa004ba90b}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\%mlangurlmon%
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{79eac9e0-baf9-11ce-8c82-00aa004ba90b}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{79eac9e2-baf9-11ce-8c82-00aa004ba90b},,"http: Asychronous Pluggable Protocol Handler"
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{79eac9e2-baf9-11ce-8c82-00aa004ba90b}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\%mlangurlmon%
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{79eac9e2-baf9-11ce-8c82-00aa004ba90b}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{79eac9e3-baf9-11ce-8c82-00aa004ba90b},,"ftp: Asychronous Pluggable Protocol Handler"
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{79eac9e3-baf9-11ce-8c82-00aa004ba90b}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\%mlangurlmon%
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{79eac9e3-baf9-11ce-8c82-00aa004ba90b}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{79eac9e4-baf9-11ce-8c82-00aa004ba90b},,"gopher: Asychronous Pluggable Protocol Handler"
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{79eac9e4-baf9-11ce-8c82-00aa004ba90b}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\%mlangurlmon%
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{79eac9e4-baf9-11ce-8c82-00aa004ba90b}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{79eac9e5-baf9-11ce-8c82-00aa004ba90b},,"https: Asychronous Pluggable Protocol Handler"
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{79eac9e5-baf9-11ce-8c82-00aa004ba90b}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\%mlangurlmon%
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{79eac9e5-baf9-11ce-8c82-00aa004ba90b}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{79eac9e6-baf9-11ce-8c82-00aa004ba90b},,"mk: Asychronous Pluggable Protocol Handler"
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{79eac9e6-baf9-11ce-8c82-00aa004ba90b}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\%mlangurlmon%
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{79eac9e6-baf9-11ce-8c82-00aa004ba90b}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{79eac9e7-baf9-11ce-8c82-00aa004ba90b},,"file:, local: Asychronous Pluggable Protocol Handler"
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{79eac9e7-baf9-11ce-8c82-00aa004ba90b}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\%mlangurlmon%
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{79eac9e7-baf9-11ce-8c82-00aa004ba90b}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{79EAC9F1-BAF9-11CE-8C82-00AA004BA90B},,"URLMoniker ProxyStub Factory"
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{79EAC9F1-BAF9-11CE-8C82-00AA004BA90B}\InProcServer32,,#$pSystemRoot#$p\%systemreglocation%\%mlangurlmon%
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{79EAC9F1-BAF9-11CE-8C82-00AA004BA90B}\InProcServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{79eac9f2-baf9-11ce-8c82-00aa004ba90b},,"Async BindCtx"
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{79eac9f2-baf9-11ce-8c82-00aa004ba90b}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\%mlangurlmon%
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{79eac9f2-baf9-11ce-8c82-00aa004ba90b}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{7b8a2d94-0ac9-11d1-896c-00c04Fb6bfc4},,"Security Manager"
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{7b8a2d94-0ac9-11d1-896c-00c04Fb6bfc4}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\%mlangurlmon%
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{7b8a2d94-0ac9-11d1-896c-00c04Fb6bfc4}\InprocServer32,ThreadingModel,Both
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{7b8a2d95-0ac9-11d1-896c-00c04Fb6bfc4},,"URL Zone Manager"
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{7b8a2d95-0ac9-11d1-896c-00c04Fb6bfc4}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\%mlangurlmon%
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{7b8a2d95-0ac9-11d1-896c-00c04Fb6bfc4}\InprocServer32,ThreadingModel,Both
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{7E48C5CF-72F6-4C84-9F43-B04B87B31243},,Scripting.Signer
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{7E48C5CF-72F6-4C84-9F43-B04B87B31243}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\wshext.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{7E48C5CF-72F6-4C84-9F43-B04B87B31243}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{7E48C5CF-72F6-4C84-9F43-B04B87B31243}\ProgID,,Scripting.Signer
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{7E48C5CF-72F6-4C84-9F43-B04B87B31243}\TypeLib,,{95CEF0E5-A4ED-4703-B501-AE70A153697A}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{7E48C5CF-72F6-4C84-9F43-B04B87B31243}\Version,,1.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{85131630-480C-11D2-B1F9-00C04F86C324},,"JS File Host Encode Object"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{85131630-480C-11D2-B1F9-00C04F86C324}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\scrrun.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{85131630-480C-11D2-B1F9-00C04F86C324}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{85131630-480C-11D2-B1F9-00C04F86C324}\ProgID,,JSFile.HostEncode
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{85131631-480C-11D2-B1F9-00C04F86C324},,"VBS File Host Encode Object"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{85131631-480C-11D2-B1F9-00C04F86C324}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\scrrun.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{85131631-480C-11D2-B1F9-00C04F86C324}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{85131631-480C-11D2-B1F9-00C04F86C324}\ProgID,,VBSFile.HostEncode
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{8f6b0360-b80d-11d0-a9b3-006097942311},,"AP lzdhtml encoding/decoding Filter"
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{8f6b0360-b80d-11d0-a9b3-006097942311}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\%mlangurlmon%
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{8f6b0360-b80d-11d0-a9b3-006097942311}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{B15B8DC0-C7E1-11d0-8680-00AA00BDCB71},,SoftDist
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{B15B8DC0-C7E1-11d0-8680-00AA00BDCB71}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\%mlangurlmon%
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{B15B8DC0-C7E1-11d0-8680-00AA00BDCB71}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{B54F3741-5B07-11cf-A4B0-00AA004A55E8},,"VB Script Language"
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{B54F3741-5B07-11cf-A4B0-00AA004A55E8}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\vbscript.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{B54F3741-5B07-11cf-A4B0-00AA004A55E8}\InprocServer32,ThreadingModel,Both
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{B54F3741-5B07-11cf-A4B0-00AA004A55E8}\ProgID,,VBScript
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{B54F3742-5B07-11cf-A4B0-00AA004A55E8},,"VB Script Language Authoring"
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{B54F3742-5B07-11cf-A4B0-00AA004A55E8}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\vbscript.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{B54F3742-5B07-11cf-A4B0-00AA004A55E8}\InprocServer32,ThreadingModel,Both
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{B54F3742-5B07-11cf-A4B0-00AA004A55E8}\ProgID,,"VBScript Author"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{B54F3743-5B07-11cf-A4B0-00AA004A55E8},,"VBScript Language Encoding"
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{B54F3743-5B07-11cf-A4B0-00AA004A55E8}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\vbscript.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{B54F3743-5B07-11cf-A4B0-00AA004A55E8}\InprocServer32,ThreadingModel,Both
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{B54F3743-5B07-11cf-A4B0-00AA004A55E8}\ProgID,,VBScript.Encode
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{C04D65CF-B70D-11D0-B188-00AA0038C969},,"Multi Language String"
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{C04D65CF-B70D-11D0-B188-00AA0038C969}\InProcServer32,,#$pSystemRoot#$p\%systemreglocation%\mlang.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{C04D65CF-B70D-11D0-B188-00AA0038C969}\InProcServer32,ThreadingModel,Both
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{c733e4af-576e-11d0-b28c-00c04fd7cd22},,"Thread NotificationMgr"
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{c733e4af-576e-11d0-b28c-00c04fd7cd22}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\%mlangurlmon%
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{c733e4af-576e-11d0-b28c-00c04fd7cd22}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{D66D6F99-CDAA-11D0-B822-00C04FC9B31F},,"Multi Language ConvertCharset"
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{D66D6F99-CDAA-11D0-B822-00C04FC9B31F}\InProcServer32,,#$pSystemRoot#$p\%systemreglocation%\mlang.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{D66D6F99-CDAA-11D0-B822-00C04FC9B31F}\InProcServer32,ThreadingModel,Both
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{EE09B103-97E0-11CF-978F-00A02463E06F},,Scripting.Dictionary
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{EE09B103-97E0-11CF-978F-00A02463E06F}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\scrrun.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{EE09B103-97E0-11CF-978F-00A02463E06F}\InprocServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{EE09B103-97E0-11CF-978F-00A02463E06F}\ProgID,,Scripting.Dictionary
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{EE09B103-97E0-11CF-978F-00A02463E06F}\TypeLib,,{420B2830-E718-11CF-893D-00A0C9054228}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{EE09B103-97E0-11CF-978F-00A02463E06F}\Version,,1.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{f414c260-6ac0-11cf-b6d1-00aa00bbbb58},,"JScript Language"
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{f414c260-6ac0-11cf-b6d1-00aa00bbbb58}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\jscript.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{f414c260-6ac0-11cf-b6d1-00aa00bbbb58}\InprocServer32,ThreadingModel,Both
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{f414c260-6ac0-11cf-b6d1-00aa00bbbb58}\ProgID,,JScript
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{f414c261-6ac0-11cf-b6d1-00aa00bbbb58},,"JScript Language Authoring"
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{f414c261-6ac0-11cf-b6d1-00aa00bbbb58}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\jscript.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{f414c261-6ac0-11cf-b6d1-00aa00bbbb58}\InprocServer32,ThreadingModel,Both
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{f414c261-6ac0-11cf-b6d1-00aa00bbbb58}\ProgID,,"JScript Author"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{f414c262-6ac0-11cf-b6d1-00aa00bbbb58},,"JScript Language Encoding"
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{f414c262-6ac0-11cf-b6d1-00aa00bbbb58}\InprocServer32,,#$pSystemRoot#$p\%systemreglocation%\jscript.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{f414c262-6ac0-11cf-b6d1-00aa00bbbb58}\InprocServer32,ThreadingModel,Both
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{f414c262-6ac0-11cf-b6d1-00aa00bbbb58}\ProgID,,JScript.Encode
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{F935DC22-1CF0-11D0-ADB9-00C04FD58A0B},,"Windows Script Host Shell Object"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{F935DC22-1CF0-11D0-ADB9-00C04FD58A0B}\InProcServer32,,#$pSystemRoot#$p\%systemreglocation%\wshom.ocx
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{F935DC22-1CF0-11D0-ADB9-00C04FD58A0B}\InProcServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{F935DC22-1CF0-11D0-ADB9-00C04FD58A0B}\ProgID,,WScript.Shell.1
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{F935DC22-1CF0-11D0-ADB9-00C04FD58A0B}\TypeLib,,{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{F935DC22-1CF0-11D0-ADB9-00C04FD58A0B}\VersionIndependentProgID,,WScript.Shell
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{F935DC26-1CF0-11D0-ADB9-00C04FD58A0B},,"Windows Script Host Network Object"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%CLSID\{F935DC26-1CF0-11D0-ADB9-00C04FD58A0B}\InProcServer32,,#$pSystemRoot#$p\%systemreglocation%\wshom.ocx
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{F935DC26-1CF0-11D0-ADB9-00C04FD58A0B}\InProcServer32,ThreadingModel,Apartment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{F935DC26-1CF0-11D0-ADB9-00C04FD58A0B}\ProgID,,WScript.Network.1
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{F935DC26-1CF0-11D0-ADB9-00C04FD58A0B}\TypeLib,,{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%CLSID\{F935DC26-1CF0-11D0-ADB9-00C04FD58A0B}\VersionIndependentProgID,,WScript.Network
+//urlmon
+//--History002
+//--
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\%registrysub%Component Categories\{0AEE2A92-BCBB-11D0-8C72-00C04FC2B085}",409,"Active Scripting Engine with Authoring"
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\%registrysub%Component Categories\{F0B7A1A1-9847-11CF-8F20-00805F2CD064}",409,"Active Scripting Engine"
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\%registrysub%Component Categories\{F0B7A1A2-9847-11CF-8F20-00805F2CD064}",409,"Active Scripting Engine with Parsing"
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\%registrysub%Component Categories\{F0B7A1A3-9847-11CF-8F20-00805F2CD064}",409,"Active Scripting Engine with Encoding"
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%ECMAScript,,"JScript Language"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%ECMAScript\CLSID,,{f414c260-6ac0-11cf-b6d1-00aa00bbbb58}
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%HTML.HostEncode\CLSID,,{0CF774D0-F077-11D1-B1BC-00C04F86C324}
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%htmlfile\ScriptHostEncode,,{0CF774D0-F077-11D1-B1BC-00C04F86C324}
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%JavaScript,,"JScript Language"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%JavaScript\CLSID,,{f414c260-6ac0-11cf-b6d1-00aa00bbbb58}
+//
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\%registrysub%JavaScript Author",,"JScript Language Authoring"
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\%registrysub%JavaScript Author\CLSID",,{f414c261-6ac0-11cf-b6d1-00aa00bbbb58}
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%JavaScript1.1,,"JScript Language"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%JavaScript1.1\CLSID,,{f414c260-6ac0-11cf-b6d1-00aa00bbbb58}
+//--
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\%registrysub%JavaScript1.1 Author",,"JScript Language Authoring"
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\%registrysub%JavaScript1.1 Author\CLSID",,{f414c261-6ac0-11cf-b6d1-00aa00bbbb58}
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%JavaScript1.2,,"JScript Language"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%JavaScript1.2\CLSID,,{f414c260-6ac0-11cf-b6d1-00aa00bbbb58}
+//--
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\%registrysub%JavaScript1.2 Author",,"JScript Language Authoring"
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\%registrysub%JavaScript1.2 Author\CLSID",,{f414c261-6ac0-11cf-b6d1-00aa00bbbb58}
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%JavaScript1.3,,"JScript Language"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%JavaScript1.3\CLSID,,{f414c260-6ac0-11cf-b6d1-00aa00bbbb58}
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%JScript,,"JScript Language"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%JScript\CLSID,,{f414c260-6ac0-11cf-b6d1-00aa00bbbb58}
+//--
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\%registrysub%JScript Author",,"JScript Language Authoring"
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\%registrysub%JScript Author\CLSID",,{f414c261-6ac0-11cf-b6d1-00aa00bbbb58}
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%JScript.Encode,,"JScript Language Encoding"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%JScript.Encode\CLSID,,{f414c262-6ac0-11cf-b6d1-00aa00bbbb58}
+//--
+//yes on wow64 values are System32 ;)
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%JSEFile,,"JScript Encoded Script File"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%JSEFile,FriendlyTypeName,"@#$pSystemRoot#$p\System32\wshext.dll,-4805"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%JSEFile\DefaultIcon,,"#$pSystemRoot#$p\System32\WScript.exe,3"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%JSEFile\ScriptEngine,,JScript.Encode
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%JSEFile\Shell\Edit,,&Edit
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%JSEFile\Shell\Edit\Command,,"#$pSystemRoot#$p\System32\Notepad.exe %1"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%JSEFile\Shell\Open,,&Open
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%JSEFile\Shell\Open\Command,,"#$pSystemRoot#$p\System32\WScript.exe #$q#$p1#$q %*"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%JSEFile\Shell\Open2,,"Open &with Command Prompt"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%JSEFile\Shell\Open2\Command,,"#$pSystemRoot#$p\System32\CScript.exe #$q#$p1#$q %*"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%JSEFile\Shell\Print,,&Print
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%JSEFile\Shell\Print\Command,,"#$pSystemRoot#$p\System32\Notepad.exe /p %1"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%JSEFile\ShellEx\DropHandler,,{60254CA5-953B-11CF-8C96-00AA00B8708C}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%JSEFile\ShellEx\PropertySheetHandlers\WSHProps,,{60254CA5-953B-11CF-8C96-00AA00B8708C}
+//--
+//yes on wow64 values are System32 ;)
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%JSFile,,"JScript Script File"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%JSFile,FriendlyTypeName,"@#$pSystemRoot#$p\System32\wshext.dll,-4804"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%JSFile\DefaultIcon,,"#$pSystemRoot#$p\System32\WScript.exe,3"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%JSFile\ScriptEngine,,JScript
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%JSFile\ScriptHostEncode,,{85131630-480C-11D2-B1F9-00C04F86C324}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%JSFile\Shell\Edit,,&Edit
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%JSFile\Shell\Edit\Command,,"#$pSystemRoot#$p\System32\Notepad.exe %1"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%JSFile\Shell\Open,,&Open
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%JSFile\Shell\Open\Command,,"#$pSystemRoot#$p\System32\WScript.exe #$q#$p1#$q %*"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%JSFile\Shell\Open2,,"Open &with Command Prompt"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%JSFile\Shell\Open2\Command,,"#$pSystemRoot#$p\System32\CScript.exe #$q#$p1#$q %*"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%JSFile\Shell\Print,,&Print
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%JSFile\Shell\Print\Command,,"#$pSystemRoot#$p\System32\Notepad.exe /p %1"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%JSFile\ShellEx\DropHandler,,{60254CA5-953B-11CF-8C96-00AA00B8708C}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%JSFile\ShellEx\PropertySheetHandlers\WSHProps,,{60254CA5-953B-11CF-8C96-00AA00B8708C}
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%JSFile.HostEncode\CLSID,,{85131630-480C-11D2-B1F9-00C04F86C324}
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%LiveScript,,"JScript Language"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%LiveScript\CLSID,,{f414c260-6ac0-11cf-b6d1-00aa00bbbb58}
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\%registrysub%LiveScript Author",,"JScript Language Authoring"
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\%registrysub%LiveScript Author\CLSID",,{f414c261-6ac0-11cf-b6d1-00aa00bbbb58}
+//--
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\%registrysub%PROTOCOLS\Filter\Class Install Handler",,"AP Class Install Handler filter"
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\%registrysub%PROTOCOLS\Filter\Class Install Handler",CLSID,{32B533BB-EDAE-11d0-BD5A-00AA00B92AF1}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%PROTOCOLS\Filter\deflate,,"AP Deflate Encoding/Decoding Filter "
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%PROTOCOLS\Filter\deflate,CLSID,{8f6b0360-b80d-11d0-a9b3-006097942311}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%PROTOCOLS\Filter\gzip,,"AP GZIP Encoding/Decoding Filter "
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%PROTOCOLS\Filter\gzip,CLSID,{8f6b0360-b80d-11d0-a9b3-006097942311}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%PROTOCOLS\Filter\lzdhtml,,"AP lzdhtml encoding/decoding Filter"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%PROTOCOLS\Filter\lzdhtml,CLSID,{8f6b0360-b80d-11d0-a9b3-006097942311}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%PROTOCOLS\Handler\cdl,,"CDL: Asychronous Pluggable Protocol Handler"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%PROTOCOLS\Handler\cdl,CLSID,{3dd53d40-7b8b-11D0-b013-00aa0059ce02}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%PROTOCOLS\Handler\file,,"file:, local: Asychronous Pluggable Protocol Handler"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%PROTOCOLS\Handler\file,CLSID,{79eac9e7-baf9-11ce-8c82-00aa004ba90b}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%PROTOCOLS\Handler\ftp,,"ftp: Asychronous Pluggable Protocol Handler"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%PROTOCOLS\Handler\ftp,CLSID,{79eac9e3-baf9-11ce-8c82-00aa004ba90b}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%PROTOCOLS\Handler\gopher,,"gopher: Asychronous Pluggable Protocol Handler"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%PROTOCOLS\Handler\gopher,CLSID,{79eac9e4-baf9-11ce-8c82-00aa004ba90b}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%PROTOCOLS\Handler\http,,"http: Asychronous Pluggable Protocol Handler"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%PROTOCOLS\Handler\http,CLSID,{79eac9e2-baf9-11ce-8c82-00aa004ba90b}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%PROTOCOLS\Handler\https,,"https: Asychronous Pluggable Protocol Handler"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%PROTOCOLS\Handler\https,CLSID,{79eac9e5-baf9-11ce-8c82-00aa004ba90b}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%PROTOCOLS\Handler\local,,"file:, local: Asychronous Pluggable Protocol Handler"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%PROTOCOLS\Handler\local,CLSID,{79eac9e7-baf9-11ce-8c82-00aa004ba90b}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%PROTOCOLS\Handler\mk,,"mk: Asychronous Pluggable Protocol Handler"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%PROTOCOLS\Handler\mk,CLSID,{79eac9e6-baf9-11ce-8c82-00aa004ba90b}
+//--
+//--History002
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%script,,"Moniker to a Windows Script Component"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%script\CLSID,,{06290BD3-48AA-11D2-8432-006008C3FBFC}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Scripting.Dictionary,,Scripting.Dictionary
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Scripting.Dictionary\CLSID,,{EE09B103-97E0-11CF-978F-00A02463E06F}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Scripting.Encoder,,"Script Encoder Object"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Scripting.Encoder\CLSID,,{32DA2B15-CFED-11D1-B747-00C04FC2B085}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Scripting.FileSystemObject,,"FileSystem Object"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Scripting.FileSystemObject\CLSID,,{0D43FE01-F093-11CF-8940-00A0C9054228}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Scripting.Signer\CLSID,,{7E48C5CF-72F6-4C84-9F43-B04B87B31243}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%scriptlet,,"Old moniker to a Windows Script Component"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%scriptlet\CLSID,,{06290BD3-48AA-11D2-8432-006008C3FBFC}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Scriptlet.Constructor,,"Constructor that allows hosts better control creating scriptlets"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Scriptlet.Constructor\CLSID,,{06290BD1-48AA-11D2-8432-006008C3FBFC}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Scriptlet.Context,,"Object under which scriptlets may be created"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Scriptlet.Context\CLSID,,{06290BD0-48AA-11D2-8432-006008C3FBFC}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Scriptlet.Factory,,"Factory bindable using IPersistMoniker"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Scriptlet.Factory\CLSID,,{06290BD2-48AA-11D2-8432-006008C3FBFC}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Scriptlet.HostEncode,,"Object for encoding scriptlets"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Scriptlet.HostEncode\CLSID,,{06290BD4-48AA-11D2-8432-006008C3FBFC}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Scriptlet.TypeLib,,"Object for constructing type libraries for scriptlets"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Scriptlet.TypeLib\CLSID,,{06290BD5-48AA-11D2-8432-006008C3FBFC}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%scriptletfile,,"Windows Script Component"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%scriptletfile,FriendlyTypeName,"@#$pSystemRoot#$p\System32\scrobj.dll,-8192"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%scriptletfile\AutoRegister,,#$pSystemRoot#$p\%systemreglocation%\scrobj.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%scriptletfile\CLSID,,{06290BD2-48AA-11D2-8432-006008C3FBFC}
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%scriptletfile\DefaultIcon,,"#$pSystemRoot#$p\%systemreglocation%\scrobj.dll,0"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%scriptletfile\ScriptHostEncode,,{06290BD4-48AA-11D2-8432-006008C3FBFC}
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\%registrysub%scriptletfile\Shell\Generate Typelib",,"&Generate Type Library"
+RegWrite,HKLM,0x2,"Tmp_Software\Classes\%registrysub%scriptletfile\Shell\Generate Typelib\command",,"#$q#$pSystemRoot#$p\System32\RUNDLL32.EXE#$q #$pSystemRoot#$p\%systemreglocation%\scrobj.dll,GenerateTypeLib #$q#$p1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%scriptletfile\Shell\Open,,&Open
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%scriptletfile\Shell\Open\command,,"#$q#$pSystemRoot#$p\NOTEPAD.EXE#$q #$q#$p1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%scriptletfile\Shell\Register,,&Register
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%scriptletfile\Shell\Register\command,,"#$q#$pSystemRoot#$p\System32\REGSVR32.EXE#$q /i:#$q#$p1#$q #$q#$pSystemRoot#$p\%systemreglocation%\scrobj.dll#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%scriptletfile\Shell\Unregister,,&Unregister
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%scriptletfile\Shell\Unregister\command,,"#$q#$pSystemRoot#$p\System32\REGSVR32.EXE#$q /u /n /i:#$q#$p1#$q #$q#$pSystemRoot#$p\%systemreglocation%\scrobj.dll#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%ScriptletHandler.ASP,,"Constructor for Scriptlet ASP Handler"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%ScriptletHandler.ASP\CLSID,,{06290BDA-48AA-11D2-8432-006008C3FBFC}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%ScriptletHandler.Automation,,"Constructor for Scriptlet Automation Handler"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%ScriptletHandler.Automation\CLSID,,{06290BD8-48AA-11D2-8432-006008C3FBFC}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%ScriptletHandler.Behavior,,"Constructor for Scriptlet Behavior Handler"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%ScriptletHandler.Behavior\CLSID,,{06290BDB-48AA-11D2-8432-006008C3FBFC}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%ScriptletHandler.Event,,"Constructor for Scriptlet Event Handler"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%ScriptletHandler.Event\CLSID,,{06290BD9-48AA-11D2-8432-006008C3FBFC}
+//--History002
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%TypeLib\{00020430-0000-0000-C000-000000000046}\2.0,,"OLE Automation"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%TypeLib\{00020430-0000-0000-C000-000000000046}\2.0\0\win32,,#$pSystemRoot#$p\System32\stdole2.tlb
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%TypeLib\{00020430-0000-0000-C000-000000000046}\2.0\FLAGS,,0
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%TypeLib\{00020430-0000-0000-C000-000000000046}\2.0\HELPDIR,,#$pSystemRoot#$p\System32
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%TypeLib\{06290C00-48AA-11D2-8432-006008C3FBFC}\1.0,,"Microsoft Scriptlet Library"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%TypeLib\{06290C00-48AA-11D2-8432-006008C3FBFC}\1.0\0\win32,,#$pSystemRoot#$p\%systemreglocation%\scrobj.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%TypeLib\{06290C00-48AA-11D2-8432-006008C3FBFC}\1.0\FLAGS,,0
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%TypeLib\{06290C00-48AA-11D2-8432-006008C3FBFC}\1.0\HELPDIR,,#$pSystemRoot#$p\%systemreglocation%
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%TypeLib\{3F4DACA7-160D-11D2-A8E9-00104B365C9F}\1.0,,"Microsoft VBScript Regular Expressions 1.0"
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%TypeLib\{3F4DACA7-160D-11D2-A8E9-00104B365C9F}\1.0\0\win32,,#$pSystemRoot#$p\%systemreglocation%\vbscript.dll\2
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%TypeLib\{3F4DACA7-160D-11D2-A8E9-00104B365C9F}\1.0\FLAGS,,0
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%TypeLib\{3F4DACA7-160D-11D2-A8E9-00104B365C9F}\1.0\HELPDIR,,#$pSystemRoot#$p\%systemreglocation%
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%TypeLib\{3F4DACA7-160D-11D2-A8E9-00104B365C9F}\5.5,,"Microsoft VBScript Regular Expressions 5.5"
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%TypeLib\{3F4DACA7-160D-11D2-A8E9-00104B365C9F}\5.5\0\win32,,#$pSystemRoot#$p\%systemreglocation%\vbscript.dll\3
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%TypeLib\{3F4DACA7-160D-11D2-A8E9-00104B365C9F}\5.5\FLAGS,,0
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%TypeLib\{3F4DACA7-160D-11D2-A8E9-00104B365C9F}\5.5\HELPDIR,,#$pSystemRoot#$p\%systemreglocation%
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%TypeLib\{420B2830-E718-11CF-893D-00A0C9054228}\1.0,,"Microsoft Scripting Runtime"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%TypeLib\{420B2830-E718-11CF-893D-00A0C9054228}\1.0\0\win32,,#$pSystemRoot#$p\%systemreglocation%\scrrun.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%TypeLib\{420B2830-E718-11CF-893D-00A0C9054228}\1.0\FLAGS,,0
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%TypeLib\{420B2830-E718-11CF-893D-00A0C9054228}\1.0\HELPDIR,,#$pSystemRoot#$p\%systemreglocation%
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%TypeLib\{95CEF0E5-A4ED-4703-B501-AE70A153697A}\1.0,,ScriptSigner
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%TypeLib\{95CEF0E5-A4ED-4703-B501-AE70A153697A}\1.0\0\win32,,#$pSystemRoot#$p\%systemreglocation%\wshext.dll
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%TypeLib\{95CEF0E5-A4ED-4703-B501-AE70A153697A}\1.0\FLAGS,,0
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%TypeLib\{95CEF0E5-A4ED-4703-B501-AE70A153697A}\1.0\HELPDIR,,#$pSystemRoot#$p\%systemreglocation%
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%TypeLib\{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}\1.0,,"Windows Script Host Object Model"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%TypeLib\{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}\1.0\0\win32,,#$pSystemRoot#$p\%systemreglocation%\wshom.ocx
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%TypeLib\{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}\1.0\FLAGS,,0
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%TypeLib\{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}\1.0\HELPDIR,,#$pSystemRoot#$p\%systemreglocation%
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%VBEFile,,"VBScript Encoded Script File"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%VBEFile,FriendlyTypeName,"@#$pSystemRoot#$p\System32\wshext.dll,-4803"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%VBEFile\DefaultIcon,,"#$pSystemRoot#$p\System32\WScript.exe,2"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%VBEFile\ScriptEngine,,VBScript.Encode
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%VBEFile\Shell\Edit,,&Edit
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%VBEFile\Shell\Edit\Command,,"#$pSystemRoot#$p\System32\Notepad.exe %1"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%VBEFile\Shell\Open,,&Open
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%VBEFile\Shell\Open\Command,,"#$pSystemRoot#$p\System32\WScript.exe #$q#$p1#$q %*"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%VBEFile\Shell\Open2,,"Open &with Command Prompt"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%VBEFile\Shell\Open2\Command,,"#$pSystemRoot#$p\System32\CScript.exe #$q#$p1#$q %*"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%VBEFile\Shell\Print,,&Print
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%VBEFile\Shell\Print\Command,,"#$pSystemRoot#$p\System32\Notepad.exe /p %1"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%VBEFile\ShellEx\DropHandler,,{60254CA5-953B-11CF-8C96-00AA00B8708C}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%VBEFile\ShellEx\PropertySheetHandlers\WSHProps,,{60254CA5-953B-11CF-8C96-00AA00B8708C}
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%VBS,,"VB Script Language"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%VBS\CLSID,,{B54F3741-5B07-11cf-A4B0-00AA004A55E8}
+//--
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\%registrysub%VBS Author",,"VB Script Language Authoring"
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\%registrysub%VBS Author\CLSID",,{B54F3742-5B07-11cf-A4B0-00AA004A55E8}
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%VBScript,,"VB Script Language"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%VBScript\CLSID,,{B54F3741-5B07-11cf-A4B0-00AA004A55E8}
+//--
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\%registrysub%VBScript Author",,"VB Script Language Authoring"
+RegWrite,HKLM,0x1,"Tmp_Software\Classes\%registrysub%VBScript Author\CLSID",,{B54F3742-5B07-11cf-A4B0-00AA004A55E8}
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%VBScript.Encode,,"VBScript Language Encoding"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%VBScript.Encode\CLSID,,{B54F3743-5B07-11cf-A4B0-00AA004A55E8}
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%VBScript.RegExp,,"VBScript Regular Expression"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%VBScript.RegExp\CLSID,,{3F4DACA4-160D-11D2-A8E9-00104B365C9F}
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%VBSFile,,"VBScript Script File"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%VBSFile,FriendlyTypeName,"@#$pSystemRoot#$p\System32\wshext.dll,-4802"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%VBSFile\DefaultIcon,,"#$pSystemRoot#$p\System32\WScript.exe,2"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%VBSFile\ScriptEngine,,VBScript
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%VBSFile\ScriptHostEncode,,{85131631-480C-11D2-B1F9-00C04F86C324}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%VBSFile\Shell\Edit,,&Edit
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%VBSFile\Shell\Edit\Command,,"#$pSystemRoot#$p\System32\Notepad.exe %1"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%VBSFile\Shell\Open,,&Open
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%VBSFile\Shell\Open\Command,,"#$pSystemRoot#$p\System32\WScript.exe #$q#$p1#$q %*"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%VBSFile\Shell\Open2,,"Open &with Command Prompt"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%VBSFile\Shell\Open2\Command,,"#$pSystemRoot#$p\System32\CScript.exe #$q#$p1#$q %*"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%VBSFile\Shell\Print,,&Print
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%VBSFile\Shell\Print\Command,,"#$pSystemRoot#$p\System32\Notepad.exe /p %1"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%VBSFile\ShellEx\DropHandler,,{60254CA5-953B-11CF-8C96-00AA00B8708C}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%VBSFile\ShellEx\PropertySheetHandlers\WSHProps,,{60254CA5-953B-11CF-8C96-00AA00B8708C}
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%VBSFile.HostEncode\CLSID,,{85131631-480C-11D2-B1F9-00C04F86C324}
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%WScript.Network,,"Windows Script Host Network Object"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%WScript.Network\CLSID,,{093FF999-1EA0-4079-9525-9614C3504B74}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%WScript.Network\CurVer,,WScript.Network.1
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%WScript.Network.1,,"Windows Script Host Network Object"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%WScript.Network.1\CLSID,,{093FF999-1EA0-4079-9525-9614C3504B74}
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%WScript.Shell,,"Windows Script Host Shell Object"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%WScript.Shell\CLSID,,{72C24DD5-D70A-438B-8A42-98424B88AFB8}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%WScript.Shell\CurVer,,WScript.Shell.1
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%WScript.Shell.1,,"Windows Script Host Shell Object"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%WScript.Shell.1\CLSID,,{72C24DD5-D70A-438B-8A42-98424B88AFB8}
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%WSFFile,,"Windows Script File"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%WSFFile,FriendlyTypeName,"@#$pSystemRoot#$p\System32\wshext.dll,-4801"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%WSFFile\DefaultIcon,,"#$pSystemRoot#$p\System32\WScript.exe,2"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%WSFFile\Shell\Edit,,&Edit
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%WSFFile\Shell\Edit\Command,,"#$pSystemRoot#$p\System32\Notepad.exe %1"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%WSFFile\Shell\Open,,&Open
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%WSFFile\Shell\Open\Command,,"#$pSystemRoot#$p\System32\WScript.exe #$q#$p1#$q %*"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%WSFFile\Shell\Open2,,"Open &with Command Prompt"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%WSFFile\Shell\Open2\Command,,"#$pSystemRoot#$p\System32\CScript.exe #$q#$p1#$q %*"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%WSFFile\Shell\Print,,&Print
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%WSFFile\Shell\Print\Command,,"#$pSystemRoot#$p\System32\Notepad.exe /p %1"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%WSFFile\ShellEx\DropHandler,,{60254CA5-953B-11CF-8C96-00AA00B8708C}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%WSFFile\ShellEx\PropertySheetHandlers\WSHProps,,{60254CA5-953B-11CF-8C96-00AA00B8708C}
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%WSHFile,,"Windows Script Host Settings File"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%WSHFile,FriendlyTypeName,"@#$pSystemRoot#$p\System32\wshext.dll,-4800"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%WSHFile,IsShortcut,Yes
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%WSHFile\DefaultIcon,,"#$pSystemRoot#$p\System32\WScript.exe,1"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%WSHFile\Shell\Open,,&Open
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%WSHFile\Shell\Open\Command,,"#$pSystemRoot#$p\System32\WScript.exe #$q#$p1#$q %*"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%WSHFile\Shell\Open2,,"Open &with Command Prompt"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\%registrysub%WSHFile\Shell\Open2\Command,,"#$pSystemRoot#$p\System32\CScript.exe #$q#$p1#$q %*"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%WSHFile\ShellEx\DropHandler,,{60254CA5-953B-11CF-8C96-00AA00B8708C}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%WSHFile\ShellEx\PropertySheetHandlers\WSHProps,,{60254CA5-953B-11CF-8C96-00AA00B8708C}
+//--
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Active Setup\Installed Components\{4f645220-306d-11d2-995d-00c04f98bbc9}",,"Microsoft Windows Script 5.6"
+RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Active Setup\Installed Components\{4f645220-306d-11d2-995d-00c04f98bbc9}",ComponentID,MSVBScript
+RegWrite,HKLM,0x4,"Tmp_Software\%registrysub%Microsoft\Active Setup\Installed Components\{4f645220-306d-11d2-995d-00c04f98bbc9}",IsInstalled,1
+//--
+Set,%t%,-
+If,ExistRegKey,HKLM,"Tmp_Software\%registrysub%Microsoft\Active Setup\Installed Components\{4f645220-306d-11d2-995d-00c04f98bbc9}",Locale,RegRead,HKLM,"Tmp_Software\%registrysub%Microsoft\Active Setup\Installed Components\{4f645220-306d-11d2-995d-00c04f98bbc9}",Locale,%t%
+If,%t%,Equal,-,RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Active Setup\Installed Components\{4f645220-306d-11d2-995d-00c04f98bbc9}",Locale,EN
+//--
+//RegWrite ! Overwrote existing key "5,6,0,8827" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Active Setup\Installed Components\{4f645220-306d-11d2-995d-00c04f98bbc9}",Version,"5,6,0,7426"
+//--
+RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Windows\CurrentVersion\Shell Extensions\Approved",{60254CA5-953B-11CF-8C96-00AA00B8708C},"Shell extensions for Windows Script Host"
+//
+RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Windows Script Host\Settings",ActiveDebugging,0
+RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Windows Script Host\Settings",DisplayLogo,1
+RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Windows Script Host\Settings",SilentTerminate,0
+RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Windows Script Host\Settings",UseWINSAFER,1
+RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Windows Script Host\Settings",TrustPolicy,0
+RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Windows Script Host\Settings",IgnoreUserSettings,1
+//History01Notes "Windows Scripting Host" exist no where in x64 registry
+RegWrite,HKLM,0x2,"Tmp_Software\%registrysub%Microsoft\Windows Scripting Host\Locations",CScript,#$pSystemRoot#$p\System32\cscript.exe
+RegWrite,HKLM,0x2,"Tmp_Software\%registrysub%Microsoft\Windows Scripting Host\Locations",WScript,#$pSystemRoot#$p\System32\wscript.exe
+Set,%RTmp%,""
+If,ExistRegKey,HKLM,"Tmp_Software\%registrysub%Microsoft\Windows Scripting Host\Script Extensions\.JS","",RegRead,HKLM,"Tmp_Software\%registrysub%Microsoft\Windows Scripting Host\Script Extensions\.JS","",%RTmp%
+If,%RTmp%,Equal,"",RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Windows Scripting Host\Script Extensions\.JS",,"JavaScript Script File"
+If,%version%,Smaller,80,Begin
+Set,%RTmp%,""
+If,ExistRegKey,HKLM,"Tmp_Software\%registrysub%Microsoft\Windows Scripting Host\Script Extensions\.JS",DefaultIcon,RegRead,HKLM,"Tmp_Software\%registrysub%Microsoft\Windows Scripting Host\Script Extensions\.JS",DefaultIcon,%RTmp%
+If,%RTmp%,Equal,"#$pSystemRoot#$p\System32\wscript.exe,3",ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\Tmp_Software\%registrysub%Microsoft\Windows Scripting Host\Script Extensions\.JS#$q /v DefaultIcon /f"
+End
+RegWrite,HKLM,0x2,"Tmp_Software\%registrysub%Microsoft\Windows Scripting Host\Script Extensions\.JS",DefaultIcon,"#$pSystemRoot#$p\System32\wscript.exe,3"
+RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Windows Scripting Host\Script Extensions\.JS",EngineID,JavaScript
+RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Windows Scripting Host\Script Extensions\.JS",ScriptID,JSFile
+Set,%RTmp%,""
+If,ExistRegKey,HKLM,"Tmp_Software\%registrysub%Microsoft\Windows Scripting Host\Script Extensions\.VBS","",RegRead,HKLM,"Tmp_Software\%registrysub%Microsoft\Windows Scripting Host\Script Extensions\.VBS","",%RTmp%
+If,%RTmp%,Equal,"",RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Windows Scripting Host\Script Extensions\.VBS",,"VBScript Script File"
+If,%version%,Smaller,80,Begin
+Set,%RTmp%,""
+If,ExistRegKey,HKLM,"Tmp_Software\%registrysub%Microsoft\Windows Scripting Host\Script Extensions\.VBS",DefaultIcon,RegRead,HKLM,"Tmp_Software\%registrysub%Microsoft\Windows Scripting Host\Script Extensions\.VBS",DefaultIcon,%RTmp%
+If,%RTmp%,Equal,"#$pSystemRoot#$p\System32\wscript.exe,2",ShellExecute,Hide,Reg.exe,"Delete #$qHKLM\Tmp_Software\%registrysub%Microsoft\Windows Scripting Host\Script Extensions\.VBS#$q /v DefaultIcon /f"
+End
+RegWrite,HKLM,0x2,"Tmp_Software\%registrysub%Microsoft\Windows Scripting Host\Script Extensions\.VBS",DefaultIcon,"#$pSystemRoot#$p\System32\wscript.exe,2"
+RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Windows Scripting Host\Script Extensions\.VBS",EngineID,VBScript
+RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Windows Scripting Host\Script Extensions\.VBS",ScriptID,VBSFile
+//--
+//urlmon
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{4F9F9FCB-E0F4-48EB-B7AB-FA2EA9365CB4}\ProxyStubClsid32,,{79EAC9F1-BAF9-11CE-8C82-00AA004BA90B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{4F9F9FCB-E0F4-48EB-B7AB-FA2EA9365CB4}\NumMethods,,6
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{4F9F9FCB-E0F4-48EB-B7AB-FA2EA9365CB4},,IHttpNegotiate2
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{69D14C80-C18E-11D0-A9CE-006097942311}\ProxyStubClsid32,,{79EAC9F1-BAF9-11CE-8C82-00AA004BA90B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{69D14C80-C18E-11D0-A9CE-006097942311}\NumMethods,,6
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{69D14C80-C18E-11D0-A9CE-006097942311},,IDataFilter
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{79EAC9C0-BAF9-11CE-8C82-00AA004BA90B}\ProxyStubClsid32,,{79EAC9F1-BAF9-11CE-8C82-00AA004BA90B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{79EAC9C0-BAF9-11CE-8C82-00AA004BA90B}\NumMethods,,9
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{79EAC9C0-BAF9-11CE-8C82-00AA004BA90B},,IBinding
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{79EAC9C1-BAF9-11CE-8C82-00AA004BA90B}\ProxyStubClsid32,,{79EAC9F1-BAF9-11CE-8C82-00AA004BA90B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{79EAC9C1-BAF9-11CE-8C82-00AA004BA90B}\NumMethods,,11
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{79EAC9C1-BAF9-11CE-8C82-00AA004BA90B},,IBindStatusCallback
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{79EAC9C9-BAF9-11CE-8C82-00AA004BA90B}\ProxyStubClsid32,,{79EAC9F1-BAF9-11CE-8C82-00AA004BA90B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{79EAC9C9-BAF9-11CE-8C82-00AA004BA90B}\NumMethods,,9
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{79EAC9C9-BAF9-11CE-8C82-00AA004BA90B},,IPersistMoniker
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{79EAC9CE-BAF9-11CE-8C82-00AA004BA90B}\ProxyStubClsid32,,{79EAC9F1-BAF9-11CE-8C82-00AA004BA90B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{79EAC9CE-BAF9-11CE-8C82-00AA004BA90B}\NumMethods,,5
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{79EAC9CE-BAF9-11CE-8C82-00AA004BA90B},,IMediaHolder
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{79EAC9CF-BAF9-11CE-8C82-00AA004BA90B}\ProxyStubClsid32,,{79EAC9F1-BAF9-11CE-8C82-00AA004BA90B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{79EAC9CF-BAF9-11CE-8C82-00AA004BA90B}\NumMethods,,4
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{79EAC9CF-BAF9-11CE-8C82-00AA004BA90B},,ITransactionData
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{79EAC9D0-BAF9-11CE-8C82-00AA004BA90B}\ProxyStubClsid32,,{79EAC9F1-BAF9-11CE-8C82-00AA004BA90B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{79EAC9D0-BAF9-11CE-8C82-00AA004BA90B}\NumMethods,,4
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{79EAC9D0-BAF9-11CE-8C82-00AA004BA90B},,IAuthenticate
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{79EAC9D2-BAF9-11CE-8C82-00AA004BA90B}\ProxyStubClsid32,,{79EAC9F1-BAF9-11CE-8C82-00AA004BA90B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{79EAC9D2-BAF9-11CE-8C82-00AA004BA90B}\NumMethods,,5
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{79EAC9D2-BAF9-11CE-8C82-00AA004BA90B},,IHttpNegotiate
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{79EAC9D5-BAF9-11CE-8C82-00AA004BA90B}\ProxyStubClsid32,,{79EAC9F1-BAF9-11CE-8C82-00AA004BA90B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{79EAC9D5-BAF9-11CE-8C82-00AA004BA90B}\NumMethods,,12
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{79EAC9D5-BAF9-11CE-8C82-00AA004BA90B},,IBindStatusCallbackMsg
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{79EAC9D6-BAFA-11CE-8C82-00AA004BA90B}\ProxyStubClsid32,,{79EAC9F1-BAF9-11CE-8C82-00AA004BA90B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{79EAC9D6-BAFA-11CE-8C82-00AA004BA90B}\NumMethods,,4
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{79EAC9D6-BAFA-11CE-8C82-00AA004BA90B},,IWinInetInfo
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{79EAC9D8-BAFA-11CE-8C82-00AA004BA90B}\ProxyStubClsid32,,{79EAC9F1-BAF9-11CE-8C82-00AA004BA90B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{79EAC9D8-BAFA-11CE-8C82-00AA004BA90B}\NumMethods,,5
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{79EAC9D8-BAFA-11CE-8C82-00AA004BA90B},,IWinInetHttpInfo
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{79EAC9EE-BAF9-11CE-8C82-00AA004BA90B}\ProxyStubClsid32,,{79EAC9F1-BAF9-11CE-8C82-00AA004BA90B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{79EAC9EE-BAF9-11CE-8C82-00AA004BA90B}\NumMethods,,11
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{79EAC9EE-BAF9-11CE-8C82-00AA004BA90B},,IInternetSecurityManager
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{A5CA5F7F-1847-4D87-9C5B-918509F7511D}\ProxyStubClsid32,,{79EAC9F1-BAF9-11CE-8C82-00AA004BA90B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{A5CA5F7F-1847-4D87-9C5B-918509F7511D}\NumMethods,,4
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{A5CA5F7F-1847-4D87-9C5B-918509F7511D},,IMonikerProp
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{F164EDF1-CC7C-4F0D-9A94-34222625C393}\ProxyStubClsid32,,{79EAC9F1-BAF9-11CE-8C82-00AA004BA90B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{F164EDF1-CC7C-4F0D-9A94-34222625C393}\NumMethods,,12
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{F164EDF1-CC7C-4F0D-9A94-34222625C393},,IInternetSecurityManagerEx
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{FC4801A1-2BA9-11CF-A229-00AA003D7352}\ProxyStubClsid32,,{79EAC9F1-BAF9-11CE-8C82-00AA004BA90B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{FC4801A1-2BA9-11CF-A229-00AA003D7352}\NumMethods,,6
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{FC4801A1-2BA9-11CF-A229-00AA003D7352},,IBindHost
+//urlmon
+
+[Registry_Write_Core_A]
+Echo,"Adding scripting support and activeX controls Registry (Core A) %systemreglocation% .."
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{14E469E0-BF61-11CF-8385-8F69D8F1350B},,AsyncProperty_VB5
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{14E469E0-BF61-11CF-8385-8F69D8F1350B}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{14E469E0-BF61-11CF-8385-8F69D8F1350B}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{14E469E0-BF61-11CF-8385-8F69D8F1350B}\TypeLib,,{EA544A21-C82D-11D1-A3E4-00A0C90AEA82}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{14E469E0-BF61-11CF-8385-8F69D8F1350B}\TypeLib,Version,6.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{2CE46480-1A08-11CF-AD63-00AA00614F3E},,SelectedControls
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{2CE46480-1A08-11CF-AD63-00AA00614F3E}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{2CE46480-1A08-11CF-AD63-00AA00614F3E}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{2CE46480-1A08-11CF-AD63-00AA00614F3E}\TypeLib,,{EA544A21-C82D-11D1-A3E4-00A0C90AEA82}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{2CE46480-1A08-11CF-AD63-00AA00614F3E}\TypeLib,Version,6.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{41A7D760-6018-11CF-9016-00AA0068841E},,DataObject
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{41A7D760-6018-11CF-9016-00AA0068841E}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{41A7D760-6018-11CF-9016-00AA0068841E}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{41A7D760-6018-11CF-9016-00AA0068841E}\TypeLib,,{EA544A21-C82D-11D1-A3E4-00A0C90AEA82}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{41A7D760-6018-11CF-9016-00AA0068841E}\TypeLib,Version,6.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{41A7D761-6018-11CF-9016-00AA0068841E},,DataObjectFiles
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{41A7D761-6018-11CF-9016-00AA0068841E}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{41A7D761-6018-11CF-9016-00AA0068841E}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{41A7D761-6018-11CF-9016-00AA0068841E}\TypeLib,,{EA544A21-C82D-11D1-A3E4-00A0C90AEA82}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{41A7D761-6018-11CF-9016-00AA0068841E}\TypeLib,Version,6.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{4495AD01-C993-11D1-A3E4-00A0C90AEA82},,_PropertyBag
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{4495AD01-C993-11D1-A3E4-00A0C90AEA82}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{4495AD01-C993-11D1-A3E4-00A0C90AEA82}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{4495AD01-C993-11D1-A3E4-00A0C90AEA82}\TypeLib,,{EA544A21-C82D-11D1-A3E4-00A0C90AEA82}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{4495AD01-C993-11D1-A3E4-00A0C90AEA82}\TypeLib,Version,6.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{45046D60-08CA-11CF-A90F-00AA0062BB4C},,PropertyBag_VB5
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{45046D60-08CA-11CF-A90F-00AA0062BB4C}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{45046D60-08CA-11CF-A90F-00AA0062BB4C}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{45046D60-08CA-11CF-A90F-00AA0062BB4C}\TypeLib,,{EA544A21-C82D-11D1-A3E4-00A0C90AEA82}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{45046D60-08CA-11CF-A90F-00AA0062BB4C}\TypeLib,Version,6.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{737361EC-467F-11D1-810F-0000F87557AA},,Licenses
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{737361EC-467F-11D1-810F-0000F87557AA}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{737361EC-467F-11D1-810F-0000F87557AA}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{737361EC-467F-11D1-810F-0000F87557AA}\TypeLib,,{EA544A21-C82D-11D1-A3E4-00A0C90AEA82}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{737361EC-467F-11D1-810F-0000F87557AA}\TypeLib,Version,6.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{7500A6BA-EB65-11D1-938D-0000F87557C9},,DataBinding
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{7500A6BA-EB65-11D1-938D-0000F87557C9}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{7500A6BA-EB65-11D1-938D-0000F87557C9}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{7500A6BA-EB65-11D1-938D-0000F87557C9}\TypeLib,,{EA544A21-C82D-11D1-A3E4-00A0C90AEA82}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{7500A6BA-EB65-11D1-938D-0000F87557C9}\TypeLib,Version,6.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{8284B8A2-A8A8-11D1-A3D2-00A0C90AEA82},,LicenseInfo
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{8284B8A2-A8A8-11D1-A3D2-00A0C90AEA82}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{8284B8A2-A8A8-11D1-A3D2-00A0C90AEA82}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{8284B8A2-A8A8-11D1-A3D2-00A0C90AEA82}\TypeLib,,{EA544A21-C82D-11D1-A3E4-00A0C90AEA82}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{8284B8A2-A8A8-11D1-A3D2-00A0C90AEA82}\TypeLib,Version,6.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{83C49FF0-B294-11D0-9488-00A0C91110ED},,DataMembers
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{83C49FF0-B294-11D0-9488-00A0C91110ED}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{83C49FF0-B294-11D0-9488-00A0C91110ED}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{83C49FF0-B294-11D0-9488-00A0C91110ED}\TypeLib,,{EA544A21-C82D-11D1-A3E4-00A0C90AEA82}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{83C49FF0-B294-11D0-9488-00A0C91110ED}\TypeLib,Version,6.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{888A5A60-B283-11CF-8AD5-00A0C90AEA82},,Hyperlink
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{888A5A60-B283-11CF-8AD5-00A0C90AEA82}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{888A5A60-B283-11CF-8AD5-00A0C90AEA82}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{888A5A60-B283-11CF-8AD5-00A0C90AEA82}\TypeLib,,{EA544A21-C82D-11D1-A3E4-00A0C90AEA82}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{888A5A60-B283-11CF-8AD5-00A0C90AEA82}\TypeLib,Version,6.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{A4C466B8-499F-101B-BB78-00AA00383CBB},,_ErrObject
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{A4C466B8-499F-101B-BB78-00AA00383CBB}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{A4C466B8-499F-101B-BB78-00AA00383CBB}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{A4C466B8-499F-101B-BB78-00AA00383CBB}\TypeLib,,{000204EF-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{A4C466B8-499F-101B-BB78-00AA00383CBB}\TypeLib,Version,6.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{A4C46780-499F-101B-BB78-00AA00383CBB},,_Collection
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{A4C46780-499F-101B-BB78-00AA00383CBB}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{A4C46780-499F-101B-BB78-00AA00383CBB}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{A4C46780-499F-101B-BB78-00AA00383CBB}\TypeLib,,{000204EF-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{A4C46780-499F-101B-BB78-00AA00383CBB}\TypeLib,Version,6.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{B28FA150-0FF0-11CF-A911-00AA0062BB4C},,AmbientProperties
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{B28FA150-0FF0-11CF-A911-00AA0062BB4C}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{B28FA150-0FF0-11CF-A911-00AA0062BB4C}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{B28FA150-0FF0-11CF-A911-00AA0062BB4C}\TypeLib,,{EA544A21-C82D-11D1-A3E4-00A0C90AEA82}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{B28FA150-0FF0-11CF-A911-00AA0062BB4C}\TypeLib,Version,6.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{BE8F9800-2AAA-11CF-AD67-00AA00614F3E},,ParentControls
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{BE8F9800-2AAA-11CF-AD67-00AA00614F3E}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{BE8F9800-2AAA-11CF-AD67-00AA00614F3E}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{BE8F9800-2AAA-11CF-AD67-00AA00614F3E}\TypeLib,,{EA544A21-C82D-11D1-A3E4-00A0C90AEA82}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{BE8F9800-2AAA-11CF-AD67-00AA00614F3E}\TypeLib,Version,6.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C0324960-2AAA-11CF-AD67-00AA00614F3E},,ContainedControls
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C0324960-2AAA-11CF-AD67-00AA00614F3E}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C0324960-2AAA-11CF-AD67-00AA00614F3E}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C0324960-2AAA-11CF-AD67-00AA00614F3E}\TypeLib,,{EA544A21-C82D-11D1-A3E4-00A0C90AEA82}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C0324960-2AAA-11CF-AD67-00AA00614F3E}\TypeLib,Version,6.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C4D651F0-7697-11D1-A1E9-00A0C90F2731},,EventParameter
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C4D651F0-7697-11D1-A1E9-00A0C90F2731}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C4D651F0-7697-11D1-A1E9-00A0C90F2731}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C4D651F0-7697-11D1-A1E9-00A0C90F2731}\TypeLib,,{EA544A21-C82D-11D1-A3E4-00A0C90AEA82}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C4D651F0-7697-11D1-A1E9-00A0C90F2731}\TypeLib,Version,6.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C4D651F1-7697-11D1-A1E9-00A0C90F2731},,EventParameters
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C4D651F1-7697-11D1-A1E9-00A0C90F2731}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C4D651F1-7697-11D1-A1E9-00A0C90F2731}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C4D651F1-7697-11D1-A1E9-00A0C90F2731}\TypeLib,,{EA544A21-C82D-11D1-A3E4-00A0C90AEA82}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C4D651F1-7697-11D1-A1E9-00A0C90F2731}\TypeLib,Version,6.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C4D651F2-7697-11D1-A1E9-00A0C90F2731},,EventInfo
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C4D651F2-7697-11D1-A1E9-00A0C90F2731}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C4D651F2-7697-11D1-A1E9-00A0C90F2731}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C4D651F2-7697-11D1-A1E9-00A0C90F2731}\TypeLib,,{EA544A21-C82D-11D1-A3E4-00A0C90AEA82}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C4D651F2-7697-11D1-A1E9-00A0C90F2731}\TypeLib,Version,6.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{CBB76011-C508-11D1-A3E3-00A0C90AEA82},,AsyncProperty
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{CBB76011-C508-11D1-A3E3-00A0C90AEA82}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{CBB76011-C508-11D1-A3E3-00A0C90AEA82}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{CBB76011-C508-11D1-A3E3-00A0C90AEA82}\TypeLib,,{EA544A21-C82D-11D1-A3E4-00A0C90AEA82}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{CBB76011-C508-11D1-A3E3-00A0C90AEA82}\TypeLib,Version,6.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{D4E0F020-720A-11CF-8136-00AA00C14959},,DataBindings
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{D4E0F020-720A-11CF-8136-00AA00C14959}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{D4E0F020-720A-11CF-8136-00AA00C14959}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{D4E0F020-720A-11CF-8136-00AA00C14959}\TypeLib,,{EA544A21-C82D-11D1-A3E4-00A0C90AEA82}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{D4E0F020-720A-11CF-8136-00AA00C14959}\TypeLib,Version,6.0
+//History01Notes - most following entries does not exists on a newly installed xpx64
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{D624E3E0-720A-11CF-8136-00AA00C14959},,DataBinding
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{D624E3E0-720A-11CF-8136-00AA00C14959}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{D624E3E0-720A-11CF-8136-00AA00C14959}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{D624E3E0-720A-11CF-8136-00AA00C14959}\TypeLib,,{97177EBC-0C54-11D0-B407-00AA00C14969}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{D624E3E0-720A-11CF-8136-00AA00C14959}\TypeLib,Version,5.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{E43FD401-8715-11D1-98E7-00A0C9702442},,IVbeRuntimeHost
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{E43FD401-8715-11D1-98E7-00A0C9702442}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{E43FD401-8715-11D1-98E7-00A0C9702442}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{E43FD401-8715-11D1-98E7-00A0C9702442}\TypeLib,,{EA544A21-C82D-11D1-A3E4-00A0C90AEA82}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{E43FD401-8715-11D1-98E7-00A0C9702442}\TypeLib,Version,6.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{EB41E8C1-4442-11D1-8906-00A0C9110049},,_DDataBoundClass
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{EB41E8C1-4442-11D1-8906-00A0C9110049}\ProxyStubClsid,,{00020420-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{EB41E8C1-4442-11D1-8906-00A0C9110049}\ProxyStubClsid32,,{00020420-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{EB41E8C1-4442-11D1-8906-00A0C9110049}\TypeLib,,{EA544A21-C82D-11D1-A3E4-00A0C90AEA82}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{EB41E8C1-4442-11D1-8906-00A0C9110049}\TypeLib,Version,6.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{EB41E8C2-4442-11D1-8906-00A0C9110049},,_DDataSourceClass
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{EB41E8C2-4442-11D1-8906-00A0C9110049}\ProxyStubClsid,,{00020420-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{EB41E8C2-4442-11D1-8906-00A0C9110049}\ProxyStubClsid32,,{00020420-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{EB41E8C2-4442-11D1-8906-00A0C9110049}\TypeLib,,{EA544A21-C82D-11D1-A3E4-00A0C90AEA82}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{EB41E8C2-4442-11D1-8906-00A0C9110049}\TypeLib,Version,6.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{EB41E8C3-4442-11D1-8906-00A0C9110049},,_DDataBoundAndDataSourceClass
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{EB41E8C3-4442-11D1-8906-00A0C9110049}\ProxyStubClsid,,{00020420-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{EB41E8C3-4442-11D1-8906-00A0C9110049}\ProxyStubClsid32,,{00020420-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{EB41E8C3-4442-11D1-8906-00A0C9110049}\TypeLib,,{EA544A21-C82D-11D1-A3E4-00A0C90AEA82}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{EB41E8C3-4442-11D1-8906-00A0C9110049}\TypeLib,Version,6.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{EB41E8C4-4442-11D1-8906-00A0C9110049},,_DPersistableClass
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{EB41E8C4-4442-11D1-8906-00A0C9110049}\ProxyStubClsid,,{00020420-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{EB41E8C4-4442-11D1-8906-00A0C9110049}\ProxyStubClsid32,,{00020420-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{EB41E8C4-4442-11D1-8906-00A0C9110049}\TypeLib,,{EA544A21-C82D-11D1-A3E4-00A0C90AEA82}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{EB41E8C4-4442-11D1-8906-00A0C9110049}\TypeLib,Version,6.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{EB41E8C5-4442-11D1-8906-00A0C9110049},,_DPersistableDataSourceClass
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{EB41E8C5-4442-11D1-8906-00A0C9110049}\ProxyStubClsid,,{00020420-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{EB41E8C5-4442-11D1-8906-00A0C9110049}\ProxyStubClsid32,,{00020420-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{EB41E8C5-4442-11D1-8906-00A0C9110049}\TypeLib,,{EA544A21-C82D-11D1-A3E4-00A0C90AEA82}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{EB41E8C5-4442-11D1-8906-00A0C9110049}\TypeLib,Version,6.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{FCFB3D2B-A0FA-1068-A738-08002B3371B5},,_DClass
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{FCFB3D2B-A0FA-1068-A738-08002B3371B5}\ProxyStubClsid,,{00020420-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{FCFB3D2B-A0FA-1068-A738-08002B3371B5}\ProxyStubClsid32,,{00020420-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{FCFB3D2B-A0FA-1068-A738-08002B3371B5}\TypeLib,,{EA544A21-C82D-11D1-A3E4-00A0C90AEA82}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{FCFB3D2B-A0FA-1068-A738-08002B3371B5}\TypeLib,Version,6.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{00020411-0000-0000-C000-000000000046},,ITypeLib2
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{00020411-0000-0000-C000-000000000046}\NumMethods,,16
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{00020411-0000-0000-C000-000000000046}\ProxyStubClsid32,,{00020420-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{00020412-0000-0000-C000-000000000046},,ITypeInfo2
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{00020412-0000-0000-C000-000000000046}\NumMethods,,32
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{00020412-0000-0000-C000-000000000046}\ProxyStubClsid32,,{00020420-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{01E44665-24AC-101B-84ED-08002B2EC713},,IPropertyPage2
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{01E44665-24AC-101B-84ED-08002B2EC713}\NumMethods,,15
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{01E44665-24AC-101B-84ED-08002B2EC713}\ProxyStubClsid32,,{B196B286-BAB4-101A-B69C-00AA00341D07}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{1CF2B120-547D-101B-8E65-08002B2BD119},,IErrorInfo
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{1CF2B120-547D-101B-8E65-08002B2BD119}\NumMethods,,8
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{1CF2B120-547D-101B-8E65-08002B2BD119}\ProxyStubClsid32,,{B196B286-BAB4-101A-B69C-00AA00341D07}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{22F03340-547D-101B-8E65-08002B2BD119},,ICreateErrorInfo
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{22F03340-547D-101B-8E65-08002B2BD119}\NumMethods,,8
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{22F03340-547D-101B-8E65-08002B2BD119}\ProxyStubClsid32,,{B196B286-BAB4-101A-B69C-00AA00341D07}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{22F55881-280B-11D0-A8A9-00A0C90C2004},,IPersistPropertyBag2
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{22F55881-280B-11D0-A8A9-00A0C90C2004}\NumMethods,,8
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{22F55881-280B-11D0-A8A9-00A0C90C2004}\ProxyStubClsid32,,{B196B286-BAB4-101A-B69C-00AA00341D07}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{22F55882-280B-11D0-A8A9-00A0C90C2004},,IPropertyBag2
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{22F55882-280B-11D0-A8A9-00A0C90C2004}\NumMethods,,8
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{22F55882-280B-11D0-A8A9-00A0C90C2004}\ProxyStubClsid32,,{B196B286-BAB4-101A-B69C-00AA00341D07}
+//--
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3127CA40-446E-11CE-8135-00AA004BB851},,IErrorLog
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3127CA40-446E-11CE-8135-00AA004BB851}\NumMethods,,4
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3127CA40-446E-11CE-8135-00AA004BB851}\ProxyStubClsid32,,{B196B286-BAB4-101A-B69C-00AA00341D07}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{376BD3AA-3845-101B-84ED-08002B2EC713},,IPerPropertyBrowsing
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{376BD3AA-3845-101B-84ED-08002B2EC713}\NumMethods,,7
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{376BD3AA-3845-101B-84ED-08002B2EC713}\ProxyStubClsid32,,{B196B286-BAB4-101A-B69C-00AA00341D07}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{37D84F60-42CB-11CE-8135-00AA004BB851},,IPersistPropertyBag
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{37D84F60-42CB-11CE-8135-00AA004BB851}\NumMethods,,7
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{37D84F60-42CB-11CE-8135-00AA004BB851}\ProxyStubClsid32,,{B196B286-BAB4-101A-B69C-00AA00341D07}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3AF24290-0C96-11CE-A0CF-00AA00600AB8},,IAdviseSinkEx
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3AF24290-0C96-11CE-A0CF-00AA00600AB8}\NumMethods,,9
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3AF24290-0C96-11CE-A0CF-00AA00600AB8}\ProxyStubClsid32,,{B196B286-BAB4-101A-B69C-00AA00341D07}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{4EF6100A-AF88-11D0-9846-00C04FC29993},,FontEvents
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{4EF6100A-AF88-11D0-9846-00C04FC29993}\NumMethods,,7
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{4EF6100A-AF88-11D0-9846-00C04FC29993}\ProxyStubClsid,,{00020420-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{4EF6100A-AF88-11D0-9846-00C04FC29993}\ProxyStubClsid32,,{00020420-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{4EF6100A-AF88-11D0-9846-00C04FC29993}\TypeLib,,{00020430-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{4EF6100A-AF88-11D0-9846-00C04FC29993}\TypeLib,Version,2.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{55272A00-42CB-11CE-8135-00AA004BB851},,IPropertyBag
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{55272A00-42CB-11CE-8135-00AA004BB851}\NumMethods,,5
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{55272A00-42CB-11CE-8135-00AA004BB851}\ProxyStubClsid32,,{B196B286-BAB4-101A-B69C-00AA00341D07}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{55980BA0-35AA-11CF-B671-00AA004CD6D8},,IPointerInactive
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{55980BA0-35AA-11CF-B671-00AA004CD6D8}\NumMethods,,6
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{55980BA0-35AA-11CF-B671-00AA004CD6D8}\ProxyStubClsid32,,{B196B286-BAB4-101A-B69C-00AA00341D07}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{742B0E01-14E6-101B-914E-00AA00300CAB},,ISimpleFrameSite
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{742B0E01-14E6-101B-914E-00AA00300CAB}\NumMethods,,5
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{742B0E01-14E6-101B-914E-00AA00300CAB}\ProxyStubClsid32,,{B196B286-BAB4-101A-B69C-00AA00341D07}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{7BF80980-BF32-101A-8BBB-00AA00300CAB},,IPicture
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{7BF80980-BF32-101A-8BBB-00AA00300CAB}\NumMethods,,17
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{7BF80980-BF32-101A-8BBB-00AA00300CAB}\ProxyStubClsid32,,{B196B286-BAB4-101A-B69C-00AA00341D07}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{7BF80981-BF32-101A-8BBB-00AA00300CAB},,Picture
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{7BF80981-BF32-101A-8BBB-00AA00300CAB}\NumMethods,,7
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{7BF80981-BF32-101A-8BBB-00AA00300CAB}\ProxyStubClsid,,{00020420-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{7BF80981-BF32-101A-8BBB-00AA00300CAB}\ProxyStubClsid32,,{00020420-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{7BF80981-BF32-101A-8BBB-00AA00300CAB}\TypeLib,,{00020430-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{7BF80981-BF32-101A-8BBB-00AA00300CAB}\TypeLib,Version,2.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{7FD52380-4E07-101B-AE2D-08002B2EC713},,IPersistStreamInit
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{7FD52380-4E07-101B-AE2D-08002B2EC713}\NumMethods,,9
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{7FD52380-4E07-101B-AE2D-08002B2EC713}\ProxyStubClsid32,,{B196B286-BAB4-101A-B69C-00AA00341D07}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{894AD3B0-EF97-11CE-9BC9-00AA00608E01},,IOleUndoUnit
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{894AD3B0-EF97-11CE-9BC9-00AA00608E01}\NumMethods,,7
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{894AD3B0-EF97-11CE-9BC9-00AA00608E01}\ProxyStubClsid32,,{B196B286-BAB4-101A-B69C-00AA00341D07}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{9BFBBC02-EFF1-101A-84ED-00AA00341D07},,IPropertyNotifySink
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{9BFBBC02-EFF1-101A-84ED-00AA00341D07}\NumMethods,,5
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{9BFBBC02-EFF1-101A-84ED-00AA00341D07}\ProxyStubClsid32,,{B196B286-BAB4-101A-B69C-00AA00341D07}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{9C2CAD80-3424-11CF-B670-00AA004CD6D8},,IOleInPlaceSiteEx
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{9C2CAD80-3424-11CF-B670-00AA004CD6D8}\NumMethods,,18
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{9C2CAD80-3424-11CF-B670-00AA004CD6D8}\ProxyStubClsid32,,{B196B286-BAB4-101A-B69C-00AA00341D07}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{A1FAF330-EF97-11CE-9BC9-00AA00608E01},,IOleParentUndoUnit
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{A1FAF330-EF97-11CE-9BC9-00AA00608E01}\NumMethods,,12
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{A1FAF330-EF97-11CE-9BC9-00AA00608E01}\ProxyStubClsid32,,{B196B286-BAB4-101A-B69C-00AA00341D07}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{A6BC3AC0-DBAA-11CE-9DE3-00AA004BB851},,IProvideClassInfo2
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{A6BC3AC0-DBAA-11CE-9DE3-00AA004BB851}\NumMethods,,5
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{A6BC3AC0-DBAA-11CE-9DE3-00AA004BB851}\ProxyStubClsid32,,{B196B286-BAB4-101A-B69C-00AA00341D07}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{A7ABA9C1-8983-11CF-8F20-00805F2CD064},,IProvideMultipleClassInfo
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{A7ABA9C1-8983-11CF-8F20-00805F2CD064}\NumMethods,,7
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{A7ABA9C1-8983-11CF-8F20-00805F2CD064}\ProxyStubClsid32,,{B196B286-BAB4-101A-B69C-00AA00341D07}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{B196B283-BAB4-101A-B69C-00AA00341D07},,IProvideClassInfo
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{B196B283-BAB4-101A-B69C-00AA00341D07}\NumMethods,,4
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{B196B283-BAB4-101A-B69C-00AA00341D07}\ProxyStubClsid32,,{B196B286-BAB4-101A-B69C-00AA00341D07}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{B196B288-BAB4-101A-B69C-00AA00341D07},,IOleControl
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{B196B288-BAB4-101A-B69C-00AA00341D07}\NumMethods,,7
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{B196B288-BAB4-101A-B69C-00AA00341D07}\ProxyStubClsid32,,{B196B286-BAB4-101A-B69C-00AA00341D07}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{B196B289-BAB4-101A-B69C-00AA00341D07},,IOleControlSite
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{B196B289-BAB4-101A-B69C-00AA00341D07}\NumMethods,,10
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{B196B289-BAB4-101A-B69C-00AA00341D07}\ProxyStubClsid32,,{B196B286-BAB4-101A-B69C-00AA00341D07}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{B196B28B-BAB4-101A-B69C-00AA00341D07},,ISpecifyPropertyPages
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{B196B28B-BAB4-101A-B69C-00AA00341D07}\NumMethods,,4
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{B196B28B-BAB4-101A-B69C-00AA00341D07}\ProxyStubClsid32,,{B196B286-BAB4-101A-B69C-00AA00341D07}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{B196B28C-BAB4-101A-B69C-00AA00341D07},,IPropertyPageSite
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{B196B28C-BAB4-101A-B69C-00AA00341D07}\NumMethods,,7
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{B196B28C-BAB4-101A-B69C-00AA00341D07}\ProxyStubClsid32,,{B196B286-BAB4-101A-B69C-00AA00341D07}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{B196B28D-BAB4-101A-B69C-00AA00341D07},,IPropertyPage
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{B196B28D-BAB4-101A-B69C-00AA00341D07}\NumMethods,,14
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{B196B28D-BAB4-101A-B69C-00AA00341D07}\ProxyStubClsid32,,{B196B286-BAB4-101A-B69C-00AA00341D07}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{B196B28F-BAB4-101A-B69C-00AA00341D07},,IClassFactory2
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{B196B28F-BAB4-101A-B69C-00AA00341D07}\NumMethods,,8
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{B196B28F-BAB4-101A-B69C-00AA00341D07}\ProxyStubClsid32,,{B196B286-BAB4-101A-B69C-00AA00341D07}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{B3E7C340-EF97-11CE-9BC9-00AA00608E01},,IEnumOleUndoUnits
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{B3E7C340-EF97-11CE-9BC9-00AA00608E01}\NumMethods,,7
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{B3E7C340-EF97-11CE-9BC9-00AA00608E01}\ProxyStubClsid32,,{B196B286-BAB4-101A-B69C-00AA00341D07}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{BD1AE5E0-A6AE-11CE-BD37-504200C10000},,IPersistMemory
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{BD1AE5E0-A6AE-11CE-BD37-504200C10000}\NumMethods,,9
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{BD1AE5E0-A6AE-11CE-BD37-504200C10000}\ProxyStubClsid32,,{B196B286-BAB4-101A-B69C-00AA00341D07}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{BEF6E002-A874-101A-8BBA-00AA00300CAB},,IFont
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{BEF6E002-A874-101A-8BBA-00AA00300CAB}\NumMethods,,27
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{BEF6E002-A874-101A-8BBA-00AA00300CAB}\ProxyStubClsid32,,{B196B286-BAB4-101A-B69C-00AA00341D07}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{BEF6E003-A874-101A-8BBA-00AA00300CAB},,Font
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{BEF6E003-A874-101A-8BBA-00AA00300CAB}\NumMethods,,7
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{BEF6E003-A874-101A-8BBA-00AA00300CAB}\ProxyStubClsid,,{00020420-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{BEF6E003-A874-101A-8BBA-00AA00300CAB}\ProxyStubClsid32,,{00020420-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{BEF6E003-A874-101A-8BBA-00AA00300CAB}\TypeLib,,{00020430-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{BEF6E003-A874-101A-8BBA-00AA00300CAB}\TypeLib,Version,2.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{CF51ED10-62FE-11CF-BF86-00A0C9034836},,IQuickActivate
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{CF51ED10-62FE-11CF-BF86-00A0C9034836}\NumMethods,,6
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{CF51ED10-62FE-11CF-BF86-00A0C9034836}\ProxyStubClsid32,,{B196B286-BAB4-101A-B69C-00AA00341D07}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{D001F200-EF97-11CE-9BC9-00AA00608E01},,IOleUndoManager
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{D001F200-EF97-11CE-9BC9-00AA00608E01}\NumMethods,,15
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{D001F200-EF97-11CE-9BC9-00AA00608E01}\ProxyStubClsid32,,{B196B286-BAB4-101A-B69C-00AA00341D07}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{FC4801A3-2BA9-11CF-A229-00AA003D7352},,IObjectWithSite
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{FC4801A3-2BA9-11CF-A229-00AA003D7352}\NumMethods,,5
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{FC4801A3-2BA9-11CF-A229-00AA003D7352}\ProxyStubClsid32,,{B196B286-BAB4-101A-B69C-00AA00341D07}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{06290C02-48AA-11D2-8432-006008C3FBFC},,DIBehaviorHandlerOM
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{06290C02-48AA-11D2-8432-006008C3FBFC}\ProxyStubClsid,,{00020420-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{06290C02-48AA-11D2-8432-006008C3FBFC}\ProxyStubClsid32,,{00020420-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{06290C02-48AA-11D2-8432-006008C3FBFC}\TypeLib,,{06290C00-48AA-11D2-8432-006008C3FBFC}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{06290C02-48AA-11D2-8432-006008C3FBFC}\TypeLib,Version,1.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{08FED190-BE19-11D3-A28B-00104BD35090},,IWshExec
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{08FED190-BE19-11D3-A28B-00104BD35090}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{08FED190-BE19-11D3-A28B-00104BD35090}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{08FED190-BE19-11D3-A28B-00104BD35090}\TypeLib,,{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{08FED190-BE19-11D3-A28B-00104BD35090}\TypeLib,Version,1.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{0AB5A3D0-E5B6-11D0-ABF5-00A0C90FFFC0},,IFileSystem
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{0AB5A3D0-E5B6-11D0-ABF5-00A0C90FFFC0}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{0AB5A3D0-E5B6-11D0-ABF5-00A0C90FFFC0}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{0AB5A3D0-E5B6-11D0-ABF5-00A0C90FFFC0}\TypeLib,,{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{0AB5A3D0-E5B6-11D0-ABF5-00A0C90FFFC0}\TypeLib,Version,1.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{24BE5A30-EDFE-11D2-B933-00104B365C9F},,IWshShell2
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{24BE5A30-EDFE-11D2-B933-00104B365C9F}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{24BE5A30-EDFE-11D2-B933-00104B365C9F}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{24BE5A30-EDFE-11D2-B933-00104B365C9F}\TypeLib,,{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{24BE5A30-EDFE-11D2-B933-00104B365C9F}\TypeLib,Version,1.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{24BE5A31-EDFE-11D2-B933-00104B365C9F},,IWshNetwork2
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{24BE5A31-EDFE-11D2-B933-00104B365C9F}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{24BE5A31-EDFE-11D2-B933-00104B365C9F}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{24BE5A31-EDFE-11D2-B933-00104B365C9F}\TypeLib,,{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{24BE5A31-EDFE-11D2-B933-00104B365C9F}\TypeLib,Version,1.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{2A0B9D10-4B87-11D3-A97A-00104B365C9F},,IFileSystem3
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{2A0B9D10-4B87-11D3-A97A-00104B365C9F}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{2A0B9D10-4B87-11D3-A97A-00104B365C9F}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{2A0B9D10-4B87-11D3-A97A-00104B365C9F}\TypeLib,,{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{2A0B9D10-4B87-11D3-A97A-00104B365C9F}\TypeLib,Version,1.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{2DE0A190-A1A4-11D1-B382-00A0C911E8B2},,IGenScriptletTLib
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{2DE0A190-A1A4-11D1-B382-00A0C911E8B2}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{2DE0A190-A1A4-11D1-B382-00A0C911E8B2}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{2DE0A190-A1A4-11D1-B382-00A0C911E8B2}\TypeLib,,{06290C00-48AA-11D2-8432-006008C3FBFC}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{2DE0A190-A1A4-11D1-B382-00A0C911E8B2}\TypeLib,Version,1.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3F4DACA0-160D-11D2-A8E9-00104B365C9F},,IRegExp
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3F4DACA0-160D-11D2-A8E9-00104B365C9F}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3F4DACA0-160D-11D2-A8E9-00104B365C9F}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3F4DACA0-160D-11D2-A8E9-00104B365C9F}\TypeLib,,{3F4DACA7-160D-11D2-A8E9-00104B365C9F}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3F4DACA0-160D-11D2-A8E9-00104B365C9F}\TypeLib,Version,5.5
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3F4DACA1-160D-11D2-A8E9-00104B365C9F},,IMatch
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3F4DACA1-160D-11D2-A8E9-00104B365C9F}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3F4DACA1-160D-11D2-A8E9-00104B365C9F}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3F4DACA1-160D-11D2-A8E9-00104B365C9F}\TypeLib,,{3F4DACA7-160D-11D2-A8E9-00104B365C9F}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3F4DACA1-160D-11D2-A8E9-00104B365C9F}\TypeLib,Version,5.5
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3F4DACA2-160D-11D2-A8E9-00104B365C9F},,IMatchCollection
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3F4DACA2-160D-11D2-A8E9-00104B365C9F}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3F4DACA2-160D-11D2-A8E9-00104B365C9F}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3F4DACA2-160D-11D2-A8E9-00104B365C9F}\TypeLib,,{3F4DACA7-160D-11D2-A8E9-00104B365C9F}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3F4DACA2-160D-11D2-A8E9-00104B365C9F}\TypeLib,Version,5.5
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3F4DACB0-160D-11D2-A8E9-00104B365C9F},,IRegExp2
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3F4DACB0-160D-11D2-A8E9-00104B365C9F}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3F4DACB0-160D-11D2-A8E9-00104B365C9F}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3F4DACB0-160D-11D2-A8E9-00104B365C9F}\TypeLib,,{3F4DACA7-160D-11D2-A8E9-00104B365C9F}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3F4DACB0-160D-11D2-A8E9-00104B365C9F}\TypeLib,Version,5.5
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3F4DACB1-160D-11D2-A8E9-00104B365C9F},,IMatch2
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3F4DACB1-160D-11D2-A8E9-00104B365C9F}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3F4DACB1-160D-11D2-A8E9-00104B365C9F}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3F4DACB1-160D-11D2-A8E9-00104B365C9F}\TypeLib,,{3F4DACA7-160D-11D2-A8E9-00104B365C9F}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3F4DACB1-160D-11D2-A8E9-00104B365C9F}\TypeLib,Version,5.5
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3F4DACB2-160D-11D2-A8E9-00104B365C9F},,IMatchCollection2
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3F4DACB2-160D-11D2-A8E9-00104B365C9F}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3F4DACB2-160D-11D2-A8E9-00104B365C9F}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3F4DACB2-160D-11D2-A8E9-00104B365C9F}\TypeLib,,{3F4DACA7-160D-11D2-A8E9-00104B365C9F}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3F4DACB2-160D-11D2-A8E9-00104B365C9F}\TypeLib,Version,5.5
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3F4DACB3-160D-11D2-A8E9-00104B365C9F},,ISubMatches
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3F4DACB3-160D-11D2-A8E9-00104B365C9F}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3F4DACB3-160D-11D2-A8E9-00104B365C9F}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3F4DACB3-160D-11D2-A8E9-00104B365C9F}\TypeLib,,{3F4DACA7-160D-11D2-A8E9-00104B365C9F}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{3F4DACB3-160D-11D2-A8E9-00104B365C9F}\TypeLib,Version,5.5
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{41904400-BE18-11D3-A28B-00104BD35090},,IWshShell3
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{41904400-BE18-11D3-A28B-00104BD35090}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{41904400-BE18-11D3-A28B-00104BD35090}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{41904400-BE18-11D3-A28B-00104BD35090}\TypeLib,,{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{41904400-BE18-11D3-A28B-00104BD35090}\TypeLib,Version,1.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{42C642C1-97E1-11CF-978F-00A02463E06F},,IDictionary
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{42C642C1-97E1-11CF-978F-00A02463E06F}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{42C642C1-97E1-11CF-978F-00A02463E06F}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{42C642C1-97E1-11CF-978F-00A02463E06F}\TypeLib,,{420B2830-E718-11CF-893D-00A0C9054228}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{42C642C1-97E1-11CF-978F-00A02463E06F}\TypeLib,Version,1.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{53BAD8C1-E718-11CF-893D-00A0C9054228},,ITextStream
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{53BAD8C1-E718-11CF-893D-00A0C9054228}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{53BAD8C1-E718-11CF-893D-00A0C9054228}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{53BAD8C1-E718-11CF-893D-00A0C9054228}\TypeLib,,{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{53BAD8C1-E718-11CF-893D-00A0C9054228}\TypeLib,Version,1.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{97D8B206-3401-4006-B872-F95A679D7CA3},,IScriptSigningControl
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{97D8B206-3401-4006-B872-F95A679D7CA3}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{97D8B206-3401-4006-B872-F95A679D7CA3}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{97D8B206-3401-4006-B872-F95A679D7CA3}\TypeLib,,{95CEF0E5-A4ED-4703-B501-AE70A153697A}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{97D8B206-3401-4006-B872-F95A679D7CA3}\TypeLib,Version,1.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{AADC65F6-CFF1-11D1-B747-00C04FC2B085},,IScriptEncoder
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{AADC65F6-CFF1-11D1-B747-00C04FC2B085}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{AADC65F6-CFF1-11D1-B747-00C04FC2B085}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{AADC65F6-CFF1-11D1-B747-00C04FC2B085}\TypeLib,,{420B2830-E718-11CF-893D-00A0C9054228}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{AADC65F6-CFF1-11D1-B747-00C04FC2B085}\TypeLib,Version,1.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C7C3F5A0-88A3-11D0-ABCB-00A0C90FFFC0},,IDrive
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C7C3F5A0-88A3-11D0-ABCB-00A0C90FFFC0}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C7C3F5A0-88A3-11D0-ABCB-00A0C90FFFC0}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C7C3F5A0-88A3-11D0-ABCB-00A0C90FFFC0}\TypeLib,,{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C7C3F5A0-88A3-11D0-ABCB-00A0C90FFFC0}\TypeLib,Version,1.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C7C3F5A1-88A3-11D0-ABCB-00A0C90FFFC0},,IDriveCollection
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C7C3F5A1-88A3-11D0-ABCB-00A0C90FFFC0}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C7C3F5A1-88A3-11D0-ABCB-00A0C90FFFC0}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C7C3F5A1-88A3-11D0-ABCB-00A0C90FFFC0}\TypeLib,,{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C7C3F5A1-88A3-11D0-ABCB-00A0C90FFFC0}\TypeLib,Version,1.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C7C3F5A2-88A3-11D0-ABCB-00A0C90FFFC0},,IFolder
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C7C3F5A2-88A3-11D0-ABCB-00A0C90FFFC0}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C7C3F5A2-88A3-11D0-ABCB-00A0C90FFFC0}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C7C3F5A2-88A3-11D0-ABCB-00A0C90FFFC0}\TypeLib,,{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C7C3F5A2-88A3-11D0-ABCB-00A0C90FFFC0}\TypeLib,Version,1.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C7C3F5A3-88A3-11D0-ABCB-00A0C90FFFC0},,IFolderCollection
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C7C3F5A3-88A3-11D0-ABCB-00A0C90FFFC0}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C7C3F5A3-88A3-11D0-ABCB-00A0C90FFFC0}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C7C3F5A3-88A3-11D0-ABCB-00A0C90FFFC0}\TypeLib,,{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C7C3F5A3-88A3-11D0-ABCB-00A0C90FFFC0}\TypeLib,Version,1.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C7C3F5A4-88A3-11D0-ABCB-00A0C90FFFC0},,IFile
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C7C3F5A4-88A3-11D0-ABCB-00A0C90FFFC0}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C7C3F5A4-88A3-11D0-ABCB-00A0C90FFFC0}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C7C3F5A4-88A3-11D0-ABCB-00A0C90FFFC0}\TypeLib,,{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C7C3F5A4-88A3-11D0-ABCB-00A0C90FFFC0}\TypeLib,Version,1.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C7C3F5A5-88A3-11D0-ABCB-00A0C90FFFC0},,IFileCollection
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C7C3F5A5-88A3-11D0-ABCB-00A0C90FFFC0}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C7C3F5A5-88A3-11D0-ABCB-00A0C90FFFC0}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C7C3F5A5-88A3-11D0-ABCB-00A0C90FFFC0}\TypeLib,,{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{C7C3F5A5-88A3-11D0-ABCB-00A0C90FFFC0}\TypeLib,Version,1.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{F935DC21-1CF0-11D0-ADB9-00C04FD58A0B},,IWshShell
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{F935DC21-1CF0-11D0-ADB9-00C04FD58A0B}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{F935DC21-1CF0-11D0-ADB9-00C04FD58A0B}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{F935DC21-1CF0-11D0-ADB9-00C04FD58A0B}\TypeLib,,{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{F935DC21-1CF0-11D0-ADB9-00C04FD58A0B}\TypeLib,Version,1.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{F935DC23-1CF0-11D0-ADB9-00C04FD58A0B},,IWshShortcut
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{F935DC23-1CF0-11D0-ADB9-00C04FD58A0B}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{F935DC23-1CF0-11D0-ADB9-00C04FD58A0B}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{F935DC23-1CF0-11D0-ADB9-00C04FD58A0B}\TypeLib,,{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{F935DC23-1CF0-11D0-ADB9-00C04FD58A0B}\TypeLib,Version,1.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{F935DC25-1CF0-11D0-ADB9-00C04FD58A0B},,IWshNetwork
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{F935DC25-1CF0-11D0-ADB9-00C04FD58A0B}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{F935DC25-1CF0-11D0-ADB9-00C04FD58A0B}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{F935DC25-1CF0-11D0-ADB9-00C04FD58A0B}\TypeLib,,{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{F935DC25-1CF0-11D0-ADB9-00C04FD58A0B}\TypeLib,Version,1.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{F935DC27-1CF0-11D0-ADB9-00C04FD58A0B},,IWshCollection
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{F935DC27-1CF0-11D0-ADB9-00C04FD58A0B}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{F935DC27-1CF0-11D0-ADB9-00C04FD58A0B}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{F935DC27-1CF0-11D0-ADB9-00C04FD58A0B}\TypeLib,,{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{F935DC27-1CF0-11D0-ADB9-00C04FD58A0B}\TypeLib,Version,1.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{F935DC29-1CF0-11D0-ADB9-00C04FD58A0B},,IWshEnvironment
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{F935DC29-1CF0-11D0-ADB9-00C04FD58A0B}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{F935DC29-1CF0-11D0-ADB9-00C04FD58A0B}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{F935DC29-1CF0-11D0-ADB9-00C04FD58A0B}\TypeLib,,{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{F935DC29-1CF0-11D0-ADB9-00C04FD58A0B}\TypeLib,Version,1.0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{F935DC2B-1CF0-11D0-ADB9-00C04FD58A0B},,IWshURLShortcut
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{F935DC2B-1CF0-11D0-ADB9-00C04FD58A0B}\ProxyStubClsid,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{F935DC2B-1CF0-11D0-ADB9-00C04FD58A0B}\ProxyStubClsid32,,{00020424-0000-0000-C000-000000000046}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{F935DC2B-1CF0-11D0-ADB9-00C04FD58A0B}\TypeLib,,{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\%registrysub%Interface\{F935DC2B-1CF0-11D0-ADB9-00C04FD58A0B}\TypeLib,Version,1.0
+//--
+RegWrite,HKLM,0x2,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllCreateIndirectData\{06C9E010-38CE-11D4-A2A3-00104BD35090}",Dll,#$pSystemRoot#$p\%systemreglocation%\wshext.dll
+RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllCreateIndirectData\{06C9E010-38CE-11D4-A2A3-00104BD35090}",FuncName,CreateIndirectData
+RegWrite,HKLM,0x2,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllCreateIndirectData\{1629F04E-2799-4DB5-8FE5-ACE10F17EBAB}",Dll,#$pSystemRoot#$p\%systemreglocation%\wshext.dll
+RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllCreateIndirectData\{1629F04E-2799-4DB5-8FE5-ACE10F17EBAB}",FuncName,CreateIndirectData
+RegWrite,HKLM,0x2,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllCreateIndirectData\{1A610570-38CE-11D4-A2A3-00104BD35090}",Dll,#$pSystemRoot#$p\%systemreglocation%\wshext.dll
+RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllCreateIndirectData\{1A610570-38CE-11D4-A2A3-00104BD35090}",FuncName,CreateIndirectData
+RegWrite,HKLM,0x2,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllGetSignedDataMsg\{06C9E010-38CE-11D4-A2A3-00104BD35090}",Dll,#$pSystemRoot#$p\%systemreglocation%\wshext.dll
+RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllGetSignedDataMsg\{06C9E010-38CE-11D4-A2A3-00104BD35090}",FuncName,GetSignedDataMsg
+RegWrite,HKLM,0x2,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllGetSignedDataMsg\{1629F04E-2799-4DB5-8FE5-ACE10F17EBAB}",Dll,#$pSystemRoot#$p\%systemreglocation%\wshext.dll
+RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllGetSignedDataMsg\{1629F04E-2799-4DB5-8FE5-ACE10F17EBAB}",FuncName,GetSignedDataMsg
+RegWrite,HKLM,0x2,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllGetSignedDataMsg\{1A610570-38CE-11D4-A2A3-00104BD35090}",Dll,#$pSystemRoot#$p\%systemreglocation%\wshext.dll
+RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllGetSignedDataMsg\{1A610570-38CE-11D4-A2A3-00104BD35090}",FuncName,GetSignedDataMsg
+RegWrite,HKLM,0x2,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllIsMyFileType2\{06C9E010-38CE-11D4-A2A3-00104BD35090}",Dll,#$pSystemRoot#$p\%systemreglocation%\wshext.dll
+RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllIsMyFileType2\{06C9E010-38CE-11D4-A2A3-00104BD35090}",FuncName,IsFileSupportedName
+RegWrite,HKLM,0x2,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllIsMyFileType2\{1629F04E-2799-4DB5-8FE5-ACE10F17EBAB}",Dll,#$pSystemRoot#$p\%systemreglocation%\wshext.dll
+RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllIsMyFileType2\{1629F04E-2799-4DB5-8FE5-ACE10F17EBAB}",FuncName,IsFileSupportedName
+RegWrite,HKLM,0x2,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllIsMyFileType2\{1A610570-38CE-11D4-A2A3-00104BD35090}",Dll,#$pSystemRoot#$p\%systemreglocation%\wshext.dll
+RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllIsMyFileType2\{1A610570-38CE-11D4-A2A3-00104BD35090}",FuncName,IsFileSupportedName
+RegWrite,HKLM,0x2,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllPutSignedDataMsg\{06C9E010-38CE-11D4-A2A3-00104BD35090}",Dll,#$pSystemRoot#$p\%systemreglocation%\wshext.dll
+RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllPutSignedDataMsg\{06C9E010-38CE-11D4-A2A3-00104BD35090}",FuncName,PutSignedDataMsg
+RegWrite,HKLM,0x2,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllPutSignedDataMsg\{1629F04E-2799-4DB5-8FE5-ACE10F17EBAB}",Dll,#$pSystemRoot#$p\%systemreglocation%\wshext.dll
+RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllPutSignedDataMsg\{1629F04E-2799-4DB5-8FE5-ACE10F17EBAB}",FuncName,PutSignedDataMsg
+RegWrite,HKLM,0x2,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllPutSignedDataMsg\{1A610570-38CE-11D4-A2A3-00104BD35090}",Dll,#$pSystemRoot#$p\%systemreglocation%\wshext.dll
+RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllPutSignedDataMsg\{1A610570-38CE-11D4-A2A3-00104BD35090}",FuncName,PutSignedDataMsg
+RegWrite,HKLM,0x2,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllRemoveSignedDataMsg\{06C9E010-38CE-11D4-A2A3-00104BD35090}",Dll,#$pSystemRoot#$p\%systemreglocation%\wshext.dll
+RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllRemoveSignedDataMsg\{06C9E010-38CE-11D4-A2A3-00104BD35090}",FuncName,RemoveSignedDataMsg
+RegWrite,HKLM,0x2,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllRemoveSignedDataMsg\{1629F04E-2799-4DB5-8FE5-ACE10F17EBAB}",Dll,#$pSystemRoot#$p\%systemreglocation%\wshext.dll
+RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllRemoveSignedDataMsg\{1629F04E-2799-4DB5-8FE5-ACE10F17EBAB}",FuncName,RemoveSignedDataMsg
+RegWrite,HKLM,0x2,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllRemoveSignedDataMsg\{1A610570-38CE-11D4-A2A3-00104BD35090}",Dll,#$pSystemRoot#$p\%systemreglocation%\wshext.dll
+RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllRemoveSignedDataMsg\{1A610570-38CE-11D4-A2A3-00104BD35090}",FuncName,RemoveSignedDataMsg
+RegWrite,HKLM,0x2,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllVerifyIndirectData\{06C9E010-38CE-11D4-A2A3-00104BD35090}",Dll,#$pSystemRoot#$p\%systemreglocation%\wshext.dll
+RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllVerifyIndirectData\{06C9E010-38CE-11D4-A2A3-00104BD35090}",FuncName,VerifyIndirectData
+RegWrite,HKLM,0x2,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllVerifyIndirectData\{1629F04E-2799-4DB5-8FE5-ACE10F17EBAB}",Dll,#$pSystemRoot#$p\%systemreglocation%\wshext.dll
+RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllVerifyIndirectData\{1629F04E-2799-4DB5-8FE5-ACE10F17EBAB}",FuncName,VerifyIndirectData
+RegWrite,HKLM,0x2,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllVerifyIndirectData\{1A610570-38CE-11D4-A2A3-00104BD35090}",Dll,#$pSystemRoot#$p\%systemreglocation%\wshext.dll
+RegWrite,HKLM,0x1,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllVerifyIndirectData\{1A610570-38CE-11D4-A2A3-00104BD35090}",FuncName,VerifyIndirectData
+//History01Notes - Seed does not exists here !!!
+RegWrite,HKLM,0x3,"Tmp_Software\%registrysub%Microsoft\Cryptography\OID\EncodingType 0\CryptSIPDllVerifyIndirectData\{1A610570-38CE-11D4-A2A3-00104BD35090}",Seed,16,ee,b3,95,90,3e,d5,f9,6c,76,b8,67,cc,cc,77,6a,02,4a,6f,b4,bf,d7,d1,bf,3c,a8,1b,6e,03,d1,d9,01,83,24,2e,9d,bf,d5,3d,98,97,dc,e6,d1,1f,e6,e7,cf,70,df,c2,f1,66,55,18,fd,b3,6c,fd,8c,f0,12,67,1f,76,6e,49,ca,bc,b8,aa,c8,2a,e8,66,62,01,32,30,85
+//--
+
+[AuthorEncoded]
+scripting.ico=5182,6910
+Logo=scripting.ico
+
+[EncodedFile-AuthorEncoded-scripting.ico]
+lines=1
+0=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
+1=+q36nUf2F3ZpHUv6of6o9W8s7/5pM7rk1yzzVIZw7Zcs+V8P+7/kj9S+q/jD+J9Z/0J5r6113qX7fIRweQ/pxVFyi2Xr3Vryv4rW3t+dyzbz8nl8nf3EltdE8vQC9dFT2rCeX6Ffxg7tw3+yDGLvtnUbusO6Qn2WbPLNagrYNDKtn3sHeQtMeEKRTcH1l7YqiHCfxV5H/IP5xW5d/dei20T9fw8/mDgw3FGx8f+iPWg/oX4w8m/5kg+C/Vq6RBDzXffK2RfEOH/mjk+mX/rJHwc+4p2hg/EHcwWfIOwl+x9kSQ7oRJ3IcrxbVtR1M0/v8dEGb9GPgH2Ng5TZuz7/d7xB9k/ody/Ur6I3sF08PzEonvon41ct618j5F2jNKPYBrlnVfZTTXreQ9k5ukvQvnPpr3wMT9kCrJO1wqqmk/rSnOdA9P6NK3F3xmTvEC9bAZ72zZfctcv6E1euH/OX9UqyDvdf/jnI1rWHg2SUc7PL/YtxhMwnOy7itl30bcp/yb6NlG9m0YLWpXT76hnr0z+BXUwI6Q6JPrfAO6xH/C/iSf3Q8YNnLOVyGJdew/vci/3ayQ/A/jN/sfWUPl6zaJSy1yz5L9j5k/vG9n3mfohfYI/Ow52bOxd45vNFDdNnPuIUTofj313VrKXaVpX7wqYq23f88u4u/B3x8McBk1b2VEJm5PuY9niP83qX7jKf8qo1njTWK/Yvad0p6lRa7hNhHMG84/71VY97Mk/MQdE8q+X+IORQzlPopqNqyK974NGFBWj36F1fTZFe2Hlfm6n0Nix3UR/9MUQ/s7j1iwMDChbWN8NhzLKqHnNbAuk260gLQ3af1T/bbKZ56tIOtmR/6zxJlnm/CcWbRefP6iZN6IvBuB9+1x9XqIrpU8fzCfv5Vz3dZQ3VXCyZxycI9VKdw8vV7pAnbuXT35+xUb+6Hz3/rVK295cDLsjM/Bs9oyuEU+MK62CTJorVX02Wrac2kM8pmt+cywxcwZ+cyK65X3u8QfPvdk7qSzVyDcjJ/rlve8tGcEac/IfrmW9+2ceziqKYX9GUWtK7z8F83debjT7y649/L3QtZDHBe6bjqY++7ZEFwRqMDtsWr8Q1WIAfnleLe0BuMq6zG5thHT6psxs8mAWTSXLL1RcEbkX97zqg2Sf5DPG/jMCpWiZ5HXlHJP3DHg3WreL9ZjIOXoUiHnvgpP5VTgIVUx7krLx2Vnry3+xMOz8+8uhvB3cQ5jKRa+9O2u/JG7z8O0owG4yO8urA9Nxn3xWXA6PRcuagrhxv0yDCuqhOiyWoivbsDkumZIa9CDspF41twinZPopZ7B37sw94k3kMp5b9BjAuU9lvDzmVsY1WwQcf4aac75vCo4pS3HI1klsCe9ALYqctuWnLriNnvHoc7w89l5H8LuSvr5Ye/PN+msf/gN7LecxnF7L8Csk0G42Dcc1gbGwi/hKbA/JhOPp+SAjyof/HNKMLiwEsJLquEerY2CeJZMPiCF8PE5PwefFaYKzhtAYeY9aT2f91DuxZmnX34V9csKOKYpwf2k3duT78OPcTn4ycEzbjM3uneaf5n/gwc4uUzqufSXiu5Ld6DNmkPodi0GZ524geP3XcDpR6/hnNNB+LlvOK66HoObQpPQPVqJhxPUeCpNhxeyi/A6rU1wURWGE9eiaD58vhxP+ihGmlMsXUfXMvZG2qeT3hBvrtI+3SevEk9qy/AQ9U331HzcnKDDtVEanLFx99I3127t1P/3HUT9a7BDT5shTgP6f7ZRbblwK8w+fAnXJ+bCF6SnX0dnwWeBCTCf+DTP+zbO8PSHWScCYb53KC6/HAGrA+7B5ttJuCtKCQcT1XAyPRe91QVwNa8cAgorMai4GoLJk1FgcHk9aU0dUt7hYmEVaz1xvgwOq4rBIz0ff07Uwff3smHFHRW+ucHdbdKqzV36/td6iFO3F15542/j3db98792nqmOKWP/3Azni+rwiK4StqTmw+r4HFgapcbPwtJh4U0FzSkeF16KADeaw2c+oTj37E1Y7BsGK6/fw/WhSbCV5uORoMEDqTrwzCyA39XFeEJbSvpYhscJsyfp2yF1CfJ55TZ6/k+JubgmRgvL72bBwmAlvuV+wm3iul2P/f8UeFwN+3ukrvg1TUOzm7JRvz22tsk7uLIh+kZFQ75PUZ3JM6cS9qjLcBOt9RpFHi6N1uDSexr8KlqNK+4o8cuQFPzyZiJ+HRSPqwNjcaV/NC67Go3fBiXid6Gp+EO4EjdEqnA95WI9vfc74sq3EWr8MjwLl4Rm4twbafi+fzJOP3P7i/G/HPvL/p8I/vEpqO52Lr+m/4ncKtejusp3DmjK3PZpyn7eqSw8vC2j5NKPity7q+N16Z+HK4s+Dcuofz9MpX//doZpmm/Eg7d87jyY7hPePi8gHhZTLLkeC19QzL8cDR9ejIL3LkTBTN8omOoTCa97RTygWPJXYu/s55f0AssNilzLFeFp3T45d6P7B39c7zH9gFevyXtPDRy/45it6w877Uf/uMfBdb2Hq8vKn8Y6r9gwwWHp2klOny6dMnzu0imu85dNdl22btLLWzzHjfUMHPnqqdu9/zfxP+6P44IvLR0/dbN0+niJ5dAPF1k6f7TEcti85ZbObuseyRlEjLCkf3ArvRiE2MI3ez0c63ns0cWx1/+TcdBfP+bLz+9sNOMw5w/NI0jPQWyXR0r8FsT/AQDT0Al4nOMtTi7KLCjJzEvXy0zOZxgFIwzsU4XQH4Wxy69J+vmMgQkAhn4KIBHkRJEBAAAAAgAAACkAAADxEwAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFolders]
+Folder
+
+[Folder]
+Msvbvm50 Read Me.txt=335,447
+
+[EncodedFile-Folder-Msvbvm50 Read Me.txt]
+lines=0
+0=eJxVj01PhDAQhu8k/Ic3HIxc+Fh1NXszJsY9bCSevO7SEhoKQ9opwr+3Fd3gpe1MOs/7zMlOl6l/KDKhNWjQC+SsLFv/RvJZwZIztRQJLk5pYeMojk7bEUHSYiBex8LUrrsDGcz7e9zg+OyvlWFxO9oDuJUL2vMksXL2P5w0gI+vWMjhi5wW0KqTYNp+vVr+yoA8zHjieetqk8AqU7xoVXdIKkOTEhK9Z3hE2ISZhjjapagc//UzOUu8f1zLkOTjuVUWDWkhTcC+BZvGDVkowjpBuPb5jRrEP5Q38wfzeMhz68aRDGe9qg1Zajirqc+7S14+FcVj+Q3di33SeJwT8S0uSyrLNTVQCEpNTFHwTdUrqShhGAUjBbQwQug/OOQnT398jIEJAOAqC0c8twRrAQAAAAIAAAAvAAAA/AAAAAAAAAABAAAAAAAAAAAAAAA
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+Call,UploadXQ
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+

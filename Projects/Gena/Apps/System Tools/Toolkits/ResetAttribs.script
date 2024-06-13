@@ -1,0 +1,41 @@
+[main]
+Title=ResetAttribs
+Description=
+Selected=True
+Level=5
+Version=1
+Download_Level=0
+NoWarning=False
+Date=16.09.2020
+Author=2CongLC.Vn
+
+[variables]
+%ProgramTitle%=ResetAttribs
+%ProgramEXE%=ResetAttribs.vbs
+%ProgramFolder%=Toolkits
+
+[Interface]
+pCheckBox1="Run from RAM (boot.wim) - Recommended",1,3,19,18,264,18,True
+
+
+[process]
+If,%pCheckBox1%,Equal,True,Begin
+  DirMake,"%Target_Prog%\%ProgramFolder%\"
+  DirCopy,"%ScriptDir%\*.*","%Target_Prog%\%ProgramFolder%\"
+  Run,%ScriptFile%,Add_Shortcuts
+  Run,%ScriptFile%,Add_Registry
+End
+
+[Add_Shortcuts]
+
+
+[Add_Registry]
+//0x1 = String, 0x2 = Expand String, 0x3 = Binary Data, 0x4 = Dword
+RegHiveLoad,Tmp_Software,%RegSoftware%
+RegWrite,HKLM,0x1,Tmp_Software\Classes\*\shell\ResetAttribs,,"ResetAttribs"
+//RegWrite,HKLM,0x2,Tmp_Software\Classes\*\shell\ResetAttribs\Icon,,"%PE_Programs%\%ProgramFolder%\Icons\ResetAttribs.ico"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\*\shell\ResetAttribs\command,,"wscript.exe #$q%PE_Programs%\%ProgramFolder%\%ProgramEXE%#$q #$q%1#$q"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\Directory\shell\ResetAttribs,,"ResetAttribs"
+//RegWrite,HKLM,0x2,Tmp_Software\Classes\Directory\shell\ResetAttribs\Icon,,"%PE_Programs%\%ProgramFolder%\Icons\ResetAttribs.ico"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\Directory\shell\ResetAttribs\command,,"wscript.exe #$q%PE_Programs%\%ProgramFolder%\%ProgramEXE%#$q #$q%L#$q"
+RegHiveUnLoad,Tmp_Software

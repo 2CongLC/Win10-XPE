@@ -1,0 +1,1459 @@
+[Main]
+Title=Network Support
+Type=Plugin
+Author=fxscrpt
+Description=Add preinstalled network components to build
+Credits=Lancelot and Galapo - http://TheOven.org
+Version=022
+Download_Level=0
+Level=0
+Selected=True
+Mandatory=False
+NoWarning=False
+Contact=http://TheOven.org/index.php?board=3
+Date=2018.01.06
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Basic/Shells/Core/1%20System/20CoreNet.script
+CertifiedBy=
+Certification=
+HistoryNotes01=
+History005=copyorexpand for dxmrtp.dll used to be more flexible on nonstandart sources
+History005=dialup network default false - files (ex rtcdll.dll) does not exists on 2k3 source - gui also changed
+History006=gui changed (DUN is OK for W2003) , copyorexpand for more files
+History008=fixscrpt removed %PEDrive%
+History009=fixscrpt fixed crypto dependency
+History011=Lancelot getfile replace to Require,HighVersion
+History011=Lancelot workarounded for less warnings
+History014=Lancelot IniVariables RegFactory
+History015=Lancelot NoWarnROW NoWarnFOW integrated - Date:2012.01.17
+History016=Lancelot Efsadu.dll fix for Gena - not exists at XP Home (Efsadu.dll = File Encryption Utility) Exists at Win2000/XPPro/2003 - "Encrypting File System (EFS)" feature not exists on XP home so Efsadu.dll not provided on XP-Home-CD. - Date:2016.10.19
+History017=Lancelot Added DU Buttons - Date:2016.10.20
+History019=Lancelot Added Basic_PluginCache_Extract - Date:2016.10.30
+History020=Lancelot PEBakery Less Warning - If,Not,ExistFile,%Target_Sys%\  dnsapi.dll iphlpapi.dll kerberos.dll mpr.dll nddeapi.dll netapi32.dll regapi.dll channel.dll certcli.dll efsadu.dll winscard.dll winspool.drv inetpp.dll authz.dll oakley.dll wldap32.dll lsasrv.dll crypt32.dll cryptui.dll ipsecsvc.dll wininet.dll ndis.sys - Date:2018.01.06
+History022=Lancelot More If,Not,ExistFile, x2 - Date:2018.01.06
+
+[Interface]
+pTextBox1="Computer name:",1,0,12,51,200,21,Gena
+pTextBox2=Workgroup:,1,0,222,51,200,21,WORKGROUP
+pCheckBox1="Dialup network",1,3,28,110,100,18,False
+pCheckBox2="Remote access ",1,3,28,134,100,18,False
+pBevel1=pBevel1,1,12,12,102,201,64
+pTextLabel1="Optional components:",1,1,11,83,112,18,8,Normal
+pCheckBox10=Ipv6,1,3,232,111,100,18,False
+pCheckBox11=NetBEUI,1,3,232,136,100,18,False
+pBevel2=pBevel2,1,12,221,103,201,63
+pTextLabel2="Optional protocols:",1,1,221,83,97,18,8,Normal
+pWebLabel2="Plugin Page",1,10,338,4,55,18,http://TheOven.org/index.php?board=3
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[Variables]
+%regmethod%=build
+%xpsxs1%=x86_Microsoft.Windows.Networking.Dxmrtp_6595b64144ccf1df_5.2.2.3_x-ww_468466a7
+%xpsxs2%=x86_Microsoft.Windows.Networking.RtcDll_6595b64144ccf1df_5.2.2.3_x-ww_d6bd8b95
+%xpsxs3%=x86_Microsoft.Windows.Networking.RtcRes_6595b64144ccf1df_5.2.2.3_de_78e7f208
+%ComputerName%=Gena
+%WorkgroupName%=WORKGROUP
+%sysdrive%=X:
+%inf2hivedebug%=0
+
+[IniScriptVariables]
+ComputerName=Gena
+WorkgroupName=WORKGROUP
+
+[Process]
+If,ExistFile,%ProjectTemp%\Basic_PluginCache_Extract.ini,Echo,"Basic PluginCache"
+If,Not,ExistFile,%ProjectTemp%\Basic_PluginCache_Extract.ini,Run,%ScriptFile%,Process_Normal
+
+[Process_Normal]
+Run,%ScriptFile%,SetVariables
+Run,%ScriptFile%,InstallCore
+If,%pCheckBox1%,Equal,True,Run,%ScriptFile%,InstallDUN
+If,%pCheckBox10%,Equal,True,Run,%ScriptFile%,InstallIPv6
+If,%pCheckBox11%,Equal,True,Run,%ScriptFile%,InstallNetBeui
+//Run,%ScriptFile%,InstallFax
+If,%pCheckBox2%,Equal,True,Run,%ScriptFile%,InstallRRAS
+
+[RegisterDep]
+If,Not,ExistSection,%ProjectTemp%\depends.script,CoreNetInstallCore,Begin
+IniAddSection,%ProjectTemp%\depends.script,CoreNetInstallCore
+IniWriteTextLine,%ProjectTemp%\depends.script,CoreNetInstallCore,"Exec,%ScriptFile%,InstallCore"
+End
+
+[SetVariables]
+Set,%PInfo%,%ProjectInfo%
+IniRead,%PInfo%,Settings,Target,%tmp%
+If,%tmp%,Equal,"",Set,%PInfo%,%ProjectTemp%\ProjectInfo.ini
+IniRead,%PInfo%,OS,Type,%OS%
+IniRead,%PInfo%,OS,ServicePack,%SP%
+IniRead,%PInfo%,Cabs,SP_CAB,%SPCAB%
+IniRead,%PInfo%,Cabs,DR_CAB,%DRCAB%
+If,Not,%pTextBox1%,Equal,"",Set,%ComputerName%,%pTextBox1%
+If,Not,%pTextBox2%,Equal,"",Set,%WorkgroupName%,%pTextBox2%
+IniWrite,%ScriptFile%,IniScriptVariables,ComputerName,%ComputerName%
+IniWrite,%ScriptFile%,IniScriptVariables,WorkgroupName,%WorkgroupName%
+
+[InstallCore]
+IniRead,%ProjectDir%\script.project,IniVariables,ApiRegScript,%ApiRegScript%
+If,ExistSection,%ProjectTemp%\depends.script,CoreNetInstallCore,Begin
+IniDeleteSection,%ProjectTemp%\depends.script,CoreNetInstallCore
+Exec,%ProjectTemp%\depends.script,ExecDep,CoreMainInstallCore
+Exec,%ProjectTemp%\depends.script,ExecDep,CoreMainCopyNLSFiles
+Exec,%ProjectTemp%\depends.script,ExecDep,CoreCryptoInstallCore
+Run,%ProjectTemp%\depends.script,ExecDep,CoreMainInstallCore
+Run,%ProjectTemp%\depends.script,ExecDep,CoreMainCopyNLSFiles
+Run,%ProjectTemp%\depends.script,ExecDep,CoreCryptoInstallCore
+Run,%ScriptFile%,SetVariables
+IniRead,%PInfo%,String,CommonFiles,%DirCommonFiles%
+Run,%ApiRegScript%,setlevel,520,True
+//ExtractFile,%ScriptFile%,files,startnet.exe,%Target_Sys%
+ExtractFile,%ScriptDir%\20CoreNet_Files.script,files,startnet.exe,%Target_Sys%
+Echo,"Processing files ..."
+DirMake,"%Target_prog%\%DirCommonFiles%\System\Ole DB"
+DirMake,%Target_Sys%\Help
+If,Not,ExistFile,%Target_Sys%\activeds.dll,CopyOrExpand,%Source_Win%\activeds.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\activeds.tlb,CopyOrExpand,%Source_Win%\activeds.tlb,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\adsldp.dll,CopyOrExpand,%Source_Win%\adsldp.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\adsldpc.dll,CopyOrExpand,%Source_Win%\adsldpc.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\adsmsext.dll,CopyOrExpand,%Source_Win%\adsmsext.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\adsnt.dll,CopyOrExpand,%Source_Win%\adsnt.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\dsprop.dll,CopyOrExpand,%Source_Win%\dsprop.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\dsquery.dll,CopyOrExpand,%Source_Win%\dsquery.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\dsuiext.dll,CopyOrExpand,%Source_Win%\dsuiext.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\alrsvc.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\browser.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\clusapi.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\dhcpcsvc.dll,CopyOrExpand,%Source_Win%\dhcpcsvc.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\dnsapi.dll,CopyOrExpand,%Source_Win%\dnsapi.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\dnsrslvr.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\eventlog.dll,CopyOrExpand,%Source_Win%\eventlog.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\icmp.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\iphlpapi.dll,CopyOrExpand,%Source_Win%\iphlpapi.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\kerberos.dll,CopyOrExpand,%Source_Win%\kerberos.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\lmhsvc.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\rasrad.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\mpr.dll,CopyOrExpand,%Source_Win%\mpr.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\mprapi.dll,CopyOrExpand,%Source_Win%\mprapi.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\mprui.dll,CopyOrExpand,%Source_Win%\mprui.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\msgsvc.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\nddeapi.dll,CopyOrExpand,%Source_Win%\nddeapi.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\net.exe,%Target_Sys%
+CopyOrExpand,%Source_Win%\net1.exe,%Target_Sys%
+CopyOrExpand,%Source_Win%\neth.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\netapi32.dll,CopyOrExpand,%Source_Win%\netapi32.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\netcfgx.dll,CopyOrExpand,%Source_Win%\netcfgx.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\netevent.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\netlogon.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\w32time.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\pautoenr.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\netman.dll,CopyOrExpand,%Source_Win%\netman.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\netmsg.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\netplwiz.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\netrap.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\netshell.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\netui0.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\netui1.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\netui2.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\ntlanman.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\ntlanui.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\ntlanui2.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\ntshrui.dll,CopyOrExpand,%Source_Win%\ntshrui.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\polstore.dll,CopyOrExpand,%Source_Win%\polstore.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\rasapi32.dll,CopyOrExpand,%Source_Win%\rasapi32.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\rasman.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\rassapi.dll,CopyOrExpand,%Source_Win%\rassapi.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\regapi.dll,CopyOrExpand,%Source_Win%\regapi.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\rnr20.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\rshx32.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\rtutils.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\schannel.dll,CopyOrExpand,%Source_Win%\schannel.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\snmpapi.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\inetmib1.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\tcpmib.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\mgmtapi.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\wsnmp32.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\srvsvc.dll,CopyOrExpand,%Source_Win%\srvsvc.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\tapi32.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\winrnr.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\wkssvc.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\wmi.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\wshnetbs.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\wshtcpip.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\wtsapi32.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\wzcdlg.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\netid.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\hnetcfg.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\dgnet.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\ipnathlp.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\resutils.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\certcli.dll,CopyOrExpand,%Source_Win%\certcli.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\netsetup.cpl,%Target_Sys%
+CopyOrExpand,%Source_Win%\ncpa.cpl,%Target_Sys%
+If,Not,ExistFile,"%Target_prog%\%DirCommonFiles%\System\Ole DB\oledb32.dll",CopyOrExpand,%Source_Win%\oledb32.dll,"%Target_prog%\%DirCommonFiles%\System\Ole DB"
+If,Not,ExistFile,"%Target_prog%\%DirCommonFiles%\System\Ole DB\oledb32r.dll",CopyOrExpand,%Source_Win%\oledb32r.dll,"%Target_prog%\%DirCommonFiles%\System\Ole DB"
+If,Not,ExistFile,%Target_Sys%\msdart.dll,CopyOrExpand,%Source_Win%\msdart.dll,%Target_Sys%
+//Run,%ScriptFile%,getfile,wzcsapi.dll,system32
+//Run,%ScriptFile%,getfile,wzcsvc.dll,system32
+Require,HighVersion,wzcsapi.dll,TargetWin\System32
+Require,HighVersion,wzcsvc.dll,TargetWin\System32
+//
+If,Not,ExistFile,%Target_Sys%\efsadu.dll,Begin
+If,ExistFile,%Source_Sys%\efsadu.dl?,CopyOrExpand,%Source_Win%\efsadu.dll,%Target_Sys%
+End
+CopyOrExpand,%Source_Win%\linkinfo.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\winscard.dll,CopyOrExpand,%Source_Win%\winscard.dll,%Target_Sys%
+//
+CopyOrExpand,%Source_Win%\win32spl.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\localspl.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\bidispl.dll,%Target_Sys%
+//CopyOrExpand,%Source_Win%\pmspl.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\spoolss.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\localui.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\winspool.drv,CopyOrExpand,%Source_Win%\winspool.drv,%Target_Sys%
+CopyOrExpand,%Source_Win%\spoolsv.exe,%Target_Sys%
+CopyOrExpand,%Source_Win%\tcpmon.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\usbmon.dll,%Target_Sys%
+//CopyOrExpand,%Source_Win%\cnbjmon.dll,%Target_Sys%
+//CopyOrExpand,%Source_Win%\pjlmon.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\inetpp.dll,CopyOrExpand,%Source_Win%\inetpp.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\ntprint.dll,CopyOrExpand,%Source_Win%\ntprint.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\printui.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\tcpmonui.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\tcpmon.ini,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\inetpp.dll,CopyOrExpand,%Source_Win%\inetpp.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\inetppui.dll,%Target_Sys%
+//
+If,Not,ExistFile,%Target_Sys%\authz.dll,CopyOrExpand,%Source_Win%\authz.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\oakley.dll,CopyOrExpand,%Source_Win%\oakley.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\wldap32.dll,CopyOrExpand,%Source_Win%\wldap32.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\lsasrv.dll,CopyOrExpand,%Source_Win%\lsasrv.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\crypt32.dll,CopyOrExpand,%Source_Win%\crypt32.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\cryptui.dll,CopyOrExpand,%Source_Win%\cryptui.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\winipsec.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\ipsecsnp.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\ipsecsvc.dll,CopyOrExpand,%Source_Win%\ipsecsvc.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\ipsmsnap.dll,%Target_Sys%
+//
+CopyOrExpand,%Source_Win%\netsh.exe,%Target_Sys%
+CopyOrExpand,%Source_Win%\ipmontr.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\ipv6mon.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\ifmon.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\ippromon.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\rasmontr.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\hnetmon.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\fwcfg.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\wininet.dll,CopyOrExpand,%Source_Win%\wininet.dll,%Target_Sys%
+//test
+CopyOrExpand,%Source_Win%\tracert.exe,%Target_Sys%
+CopyOrExpand,%Source_Win%\share.exe,%Target_Sys%
+CopyOrExpand,%Source_Win%\route.exe,%Target_Sys%
+CopyOrExpand,%Source_Win%\ping.exe,%Target_Sys%
+CopyOrExpand,%Source_Win%\nbtstat.exe,%Target_Sys%
+CopyOrExpand,%Source_Win%\locator.exe,%Target_Sys%
+CopyOrExpand,%Source_Win%\ipconfig.exe,%Target_Sys%
+CopyOrExpand,%Source_Win%\arp.exe,%Target_Sys%
+CopyOrExpand,%Source_Win%\netdde.exe,%Target_Sys%
+//CopyOrExpand,%Source_Win%\w32tm.exe,%Target_Sys%
+//
+CopyOrExpand,%Source_Win%\net.hlp,%Target_Win%\Help
+//
+CopyOrExpand,%Source_Win%\afd.sys,%Target_Sys%\drivers
+CopyOrExpand,%Source_Win%\atmarpc.sys,%Target_Sys%\drivers
+CopyOrExpand,%Source_Win%\ipsec.sys,%Target_Sys%\drivers
+CopyOrExpand,%Source_Win%\mrxsmb.sys,%Target_Sys%\drivers
+If,Not,ExistFile,%Target_Sys%\drivers\ndis.sys,CopyOrExpand,%Source_Win%\ndis.sys,%Target_Sys%\drivers
+CopyOrExpand,%Source_Win%\netbios.sys,%Target_Sys%\drivers
+CopyOrExpand,%Source_Win%\netbt.sys,%Target_Sys%\drivers
+CopyOrExpand,%Source_Win%\srv.sys,%Target_Sys%\drivers
+CopyOrExpand,%Source_Win%\tcpip.sys,%Target_Sys%\drivers
+CopyOrExpand,%Source_Win%\ipnat.sys,%Target_Sys%\drivers
+//Run,%ScriptFile%,getfile,ndisuio.sys,system32\drivers
+Require,HighVersion,ndisuio.sys,TargetWin\System32\Drivers
+//
+RegHiveLoad,Tmp_Software,%Target_Sys%\config\software
+RegHiveLoad,Tmp_System,%Target_Sys%\setupreg.hiv
+IniRead,%ProjectInfo%,BasePath,AUAppData,%tmp%
+DirMake,%TargetProfilesBaseDir%\%tmp%\spool\PRINTERS
+IniRead,%ProjectInfo%,RamDrive,Settings,%TmpDrive%
+IniRead,%ProjectInfo%,RamDrive,DriveLetter,%RamDisk%
+If,Not,%TmpDrive%,Equal,%RamDisk%,Set,%TmpDrive%,%sysdrive%
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Windows NT\CurrentVersion\Print\Printers,DefaultSpoolDirectory,%TmpDrive%\%tmp%\spool\PRINTERS
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Print\Printers,DefaultSpoolDirectory,%TmpDrive%\%tmp%\spool\PRINTERS
+//--InstallCore_Cancel_1
+RegWrite,HKLM,0x1,Tmp_Software\Classes\TypeLib\{97d25db0-0363-11cf-abc4-02608c9e7553}\1.0,,"Active DS Type Library"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\TypeLib\{97d25db0-0363-11cf-abc4-02608c9e7553}\1.0\0\win32,,#$pSystemRoot#$p\system32\activeds.tlb
+RegWrite,HKLM,0x1,Tmp_Software\Classes\TypeLib\{97d25db0-0363-11cf-abc4-02608c9e7553}\1.0\FLAGS,,0
+RegWrite,HKLM,0x2,Tmp_Software\Classes\TypeLib\{97d25db0-0363-11cf-abc4-02608c9e7553}\1.0\HELPDIR,,#$pSystemRoot#$p\system32
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Services\WinSock2\Parameters,WinSock_Registry_Version,2.0
+RegWrite,HKLM,0x7,Tmp_System\ControlSet001\Services\lanmanserver\Parameters,NullSessionPipes,COMNAP,COMNODE,SQL\QUERY,SPOOLSS,LLSRPC,EPMAPPER,LOCATOR,TrkWks,TrkSvr,SRVSVC,BROWSER
+RegWrite,HKLM,0x7,Tmp_System\ControlSet001\Services\lanmanserver\parameters,NullSessionShares,COMCFG,DFS$
+RegWrite,HKLM,0x4,Tmp_Software\Microsoft\Tracing,EnableConsoleTracing,0
+RegWrite,HKLM,0x4,Tmp_Software\Microsoft\Tracing\EAPOL,EnableFileTracing,0
+RegWrite,HKLM,0x4,Tmp_Software\Microsoft\Tracing\EAPOL,EnableConsoleTracing,0
+RegWrite,HKLM,0x4,Tmp_Software\Microsoft\Tracing\EAPOL,FileTracingMask,-65536
+RegWrite,HKLM,0x4,Tmp_Software\Microsoft\Tracing\EAPOL,ConsoleTracingMask,-65536
+RegWrite,HKLM,0x4,Tmp_Software\Microsoft\Tracing\EAPOL,MaxFileSize,1048576
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\Tracing\EAPOL,FileDirectory,#$ptemp#$p
+RegWrite,HKLM,0x4,Tmp_Software\Microsoft\Tracing\WZCTrace,EnableFileTracing,0
+RegWrite,HKLM,0x4,Tmp_Software\Microsoft\Tracing\WZCTrace,EnableConsoleTracing,0
+RegWrite,HKLM,0x4,Tmp_Software\Microsoft\Tracing\WZCTrace,FileTracingMask,-65536
+RegWrite,HKLM,0x4,Tmp_Software\Microsoft\Tracing\WZCTrace,ConsoleTracingMask,-65536
+RegWrite,HKLM,0x4,Tmp_Software\Microsoft\Tracing\WZCTrace,MaxFileSize,1048576
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\Tracing\WZCTrace,FileDirectory,#$ptemp#$p
+RegWrite,HKLM,0x4,Tmp_Software\Microsoft\Tracing\Wlpolicy,EnableFileTracing,0
+RegWrite,HKLM,0x4,Tmp_Software\Microsoft\Tracing\Wlpolicy,EnableConsoleTracing,0
+RegWrite,HKLM,0x4,Tmp_Software\Microsoft\Tracing\Wlpolicy,FileTracingMask,-65536
+RegWrite,HKLM,0x4,Tmp_Software\Microsoft\Tracing\Wlpolicy,ConsoleTracingMask,-65536
+RegWrite,HKLM,0x4,Tmp_Software\Microsoft\Tracing\Wlpolicy,MaxFileSize,1048576
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\Tracing\Wlpolicy,FileDirectory,#$ptemp#$p
+RegHiveUnLoad,Tmp_Software
+RegHiveUnLoad,Tmp_System
+//
+If,Not,ExistDir,%ProjectTemp%\inf2hive,DirMake,%ProjectTemp%\inf2hive
+If,ExistFile,%ProjectTemp%\inf2hive\inf2hive.ini,Shellexecute,Hide,cmd.exe,"/C del /q /f /A:R /A:H /A:S /A:A #$q%ProjectTemp%\inf2hive\inf2hive.ini#$q"
+If,ExistFile,%ProjectTemp%\inf2hive\inf2hive.ini,FileDelete,%ProjectTemp%\inf2hive\inf2hive.ini
+FileCreateBlank,%ProjectTemp%\inf2hive\inf2hive.ini
+TxtAddline,%ProjectTemp%\inf2hive\inf2hive.ini,[INF.KEYS],Append
+TXTAddLine,%ProjectTemp%\inf2hive\inf2hive.ini,HKLM#$c#$qSYSTEM\CurrentControlSet\Control\Network#$q,Append
+TXTAddLine,%ProjectTemp%\inf2hive\inf2hive.ini,HKLM#$c#$qSYSTEM\CurrentControlSet\Control\Print#$q,Append
+TXTAddLine,%ProjectTemp%\inf2hive\inf2hive.ini,HKLM#$c#$qSYSTEM\CurrentControlSet\Control\Class\{4D36E973-E325-11CE-BFC1-08002BE10318}#$q,Append
+TXTAddLine,%ProjectTemp%\inf2hive\inf2hive.ini,HKLM#$c#$qSYSTEM\CurrentControlSet\Control\Class\{4D36E974-E325-11CE-BFC1-08002BE10318}#$q,Append
+TXTAddLine,%ProjectTemp%\inf2hive\inf2hive.ini,HKLM#$c#$qSYSTEM\CurrentControlSet\Control\Class\{4D36E975-E325-11CE-BFC1-08002BE10318}#$q,Append
+TXTAddLine,%ProjectTemp%\inf2hive\inf2hive.ini,HKLM#$c#$qSYSTEM\CurrentControlSet\Services\Netman#$q,Append
+TXTAddLine,%ProjectTemp%\inf2hive\inf2hive.ini,HKLM#$c#$qSYSTEM\CurrentControlSet\Services\Spooler#$q,Append
+TXTAddLine,%ProjectTemp%\inf2hive\inf2hive.ini,HKLM#$c#$qSYSTEM\CurrentControlSet\Services\napagent#$q,Append
+TXTAddLine,%ProjectTemp%\inf2hive\inf2hive.ini,HKLM#$c#$qSYSTEM\CurrentControlSet\Services\EapHost#$q,Append
+TXTAddLine,%ProjectTemp%\inf2hive\inf2hive.ini,HKLM#$c#$qSYSTEM\CurrentControlSet\Services\Dhcp#$q,Append
+TXTAddLine,%ProjectTemp%\inf2hive\inf2hive.ini,HKLM#$c#$qSYSTEM\CurrentControlSet\Services\xmlprov#$q,Append
+TXTAddLine,%ProjectTemp%\inf2hive\inf2hive.ini,HKLM#$c#$qSYSTEM\CurrentControlSet\Services\NDIS#$q,Append
+TXTAddLine,%ProjectTemp%\inf2hive\inf2hive.ini,HKLM#$c#$qSYSTEM\CurrentControlSet\Services\NDProxy#$q,Append
+TXTAddLine,%ProjectTemp%\inf2hive\inf2hive.ini,HKLM#$c#$qSYSTEM\CurrentControlSet\Services\IpNat#$q,Append
+TXTAddLine,%ProjectTemp%\inf2hive\inf2hive.ini,HKLM#$c#$qSYSTEM\CurrentControlSet\Services\NetDDE#$q,Append
+TXTAddLine,%ProjectTemp%\inf2hive\inf2hive.ini,HKLM#$c#$qSYSTEM\CurrentControlSet\Services\NetDDEdsdm#$q,Append
+Run,%ApiRegScript%,ImportInfTHive,HIVESYS.INF,AddReg,20CoreNet_01_HiveSys_Core,%inf2hivedebug%
+//--InstallCore_Cancel_2
+Echo,"Processing registrations ..."
+Run,%ApiRegScript%,register,%regmethod%,"%PE_Programs%\%DirCommonFiles%\System\Ole DB\oledb32.dll"
+Run,%ApiRegScript%,register,%regmethod%,activeds.dll,polstore.dll,dsprop.dll,rshx32.dll,ipsecsnp.dll,ipsmsnap.dll,cryptui.dll
+Run,%ApiRegScript%,register,%regmethod%,bidispl.dll,netman.dll,netshell.dll,netcfgx.dll,hnetcfg.dll,dgnet.dll,netsetup.cpl
+Run,%ApiRegScript%,register,%regmethod%,"/n /i wininet.dll",certcli.dll
+Run,%ApiRegScript%,install,%regmethod%,dsuiext.dll,dsquery.dll,netplwiz.dll,w32time.dll
+Run,%ApiRegScript%,runcmd,%regmethod%,"startnet -c s -i ms_netbios"
+Run,%ApiRegScript%,runcmd,%regmethod%,"startnet -c p -i ms_tcpip"
+Run,%ApiRegScript%,runcmd,%regmethod%,"startnet -c c -i ms_msclient"
+Run,%ApiRegScript%,runcmd,%regmethod%,"startnet -c s -i ms_server"
+Run,%ApiRegScript%,runcmd,%regmethod%,"startnet -c p -i ms_ndisuio"
+Run,%ApiRegScript%,runcmd,%regmethod%,"startnet -c s -i ms_wzcsvc"
+IniRead,%ProjectDir%\script.project,IniVariables,PreApiRegScript,%PreApiRegScript%
+IniRead,%ProjectDir%\script.project,IniVariables,PostApiRegScript,%PostApiRegScript%
+IniWriteTextLine,%PreApiRegScript%,Process,"Exec,%ScriptFile%,preproc1"
+//no need exec here IniWriteTextLine,%PostApiRegScript%,Process,"Exec,%ScriptFile%,postproc1"
+IniWriteTextLine,%PostApiRegScript%,Process,"Run,%ScriptFile%,postproc1,%ScriptFile%"
+Run,%ScriptFile%,Net%OS%%SP%
+End
+
+[InstallCore_Cancel]
+//--InstallCore_Cancel_1
+//--
+//Set,%mram%,""
+//IniRead,%PInfo%,TargetPaths,Model,%mram%
+//If,Not,ExistDir,%mram%,Set,%mram%,%TargetDir%
+//If,Not,%mram%,Equal,"",Be gin
+//IniRead,%PInfo%,TargetPaths,Common_Application_Data,%tmp%
+//If,Not,%tmp%,Equal,"",Be gin
+//DirMake,%mram%\%tmp%\spool\PRINTERS
+//StrFormat,REPLACE,%tmp%,$ModelRAM,%TmpDrive%,%tmp%
+//RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Windows NT\CurrentVersion\Print\Printers,DefaultSpoolDirectory,%tmp%\spool\PRINTERS
+//RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Print\Printers,DefaultSpoolDirectory,%tmp%\spool\PRINTERS
+//End
+//End
+//--
+//--InstallCore_Cancel_2
+//--
+//If,ExistFile,%ProjectTemp%\tmp.ctl,FileDelete,%ProjectTemp%\tmp.ctl
+//If,ExistFile,%ProjectTemp%\tmpctl.txt,FileDelete,%ProjectTemp%\tmpctl.txt
+//FileCreateBlank,%ProjectTemp%\tmp.ctl
+//TXTAddLine,%ProjectTemp%\tmp.ctl,[tmp.inf]AddReg,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,HKLM#$c#$qSYSTEM\CurrentControlSet\Control\Network#$q@-2,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,HKLM#$c#$qSYSTEM\CurrentControlSet\Control\Print#$q@-2,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,HKLM#$c#$qSYSTEM\CurrentControlSet\Control\Class\{4D36E973-E325-11CE-BFC1-08002BE10318}#$q@-2,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,HKLM#$c#$qSYSTEM\CurrentControlSet\Control\Class\{4D36E974-E325-11CE-BFC1-08002BE10318}#$q@-2,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,HKLM#$c#$qSYSTEM\CurrentControlSet\Control\Class\{4D36E975-E325-11CE-BFC1-08002BE10318}#$q@-2,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,HKLM#$c#$qSYSTEM\CurrentControlSet\Services\Netman#$q@-2,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,HKLM#$c#$qSYSTEM\CurrentControlSet\Services\Spooler#$q@-2,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,HKLM#$c#$qSYSTEM\CurrentControlSet\Services\napagent#$q@-2,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,HKLM#$c#$qSYSTEM\CurrentControlSet\Services\EapHost#$q@-2,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,HKLM#$c#$qSYSTEM\CurrentControlSet\Services\Dhcp#$q@-2,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,HKLM#$c#$qSYSTEM\CurrentControlSet\Services\xmlprov#$q@-2,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,HKLM#$c#$qSYSTEM\CurrentControlSet\Services\NDIS#$q@-2,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,HKLM#$c#$qSYSTEM\CurrentControlSet\Services\NDProxy#$q@-2,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,HKLM#$c#$qSYSTEM\CurrentControlSet\Services\IpNat#$q@-2,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,HKLM#$c#$qSYSTEM\CurrentControlSet\Services\NetDDE#$q@-2,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,HKLM#$c#$qSYSTEM\CurrentControlSet\Services\NetDDEdsdm#$q@-2,Append
+//Run,%ApiRegScript%,ImportInf,HIVESYS.INF,S
+//Exec,%ProjectTemp%\tmpctl.txt,Process-Hive
+//--
+
+[NetXPSP1]
+Run,%ScriptFile%,NetXP
+
+[NetXPSP2]
+Run,%ScriptFile%,NetXP
+
+[NetXPSP3]
+Run,%ScriptFile%,NetXP
+CopyOrExpand,%Source_Win%\dot3api.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\dot3cfg.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\dot3dlg.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\dot3msm.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\dot3svc.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\dot3ui.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\eapolqec.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\eapp3hst.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\eappcfg.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\eappgnui.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\eapphost.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\eappprxy.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\eapqec.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\eapsvc.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\onex.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\qutil.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\qagent.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\qagentrt.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\wlanapi.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\napmontr.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\dot3gpclnt.dll,CopyOrExpand,%Source_Win%\dot3clnt.dll,%Target_Sys%\dot3gpclnt.dll
+If,Not,ExistFile,%Target_Sys%\l2gpstore.dll,CopyOrExpand,%Source_Win%\l2store.dll,%Target_Sys%\l2gpstore.dll
+IniRead,%ProjectDir%\script.project,IniVariables,ApiRegScript,%ApiRegScript%
+Run,%ApiRegScript%,register,%regmethod%,eapolqec.dll,eapp3hst.dll,eappgnui.dll,eapphost.dll,eapqec.dll,qutil.dll,qagent.dll,qagentrt.dll
+IniRead,%ProjectDir%\script.project,IniVariables,PostApiRegScript,%PostApiRegScript%
+//no need exec here IniWriteTextLine,%postApiRegScript%,Process,"Exec,%ScriptFile%,postprocxpsp3"
+IniWriteTextLine,%postApiRegScript%,Process,"Exec,%ScriptFile%,postprocxpsp3"
+
+[NetW2003SP1]
+Run,%ScriptFile%,NetW2003
+
+[NetW2003SP2]
+Run,%ScriptFile%,NetW2003
+
+[NetXP]
+CopyOrExpand,%Source_Win%\hnetwiz.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\ipxmontr.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\ipxpromn.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\rsvpmsg.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\rsvpperf.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\rsvpsp.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\rsvp.exe,%Target_Sys%
+Run,%ApiRegScript%,register,%regmethod%,hnetwiz.dll
+
+[NetW2003]
+CopyOrExpand,%Source_Win%\ipsecprf.ini,%Target_Sys%
+
+[InstallDUN]
+If,%OS%,Equal,W2003,Exec,%ProjectTemp%\depends.script,ExecDep,CoreMMCInstallCore
+If,%OS%,Equal,W2003,Exec,%ProjectTemp%\depends.script,ExecDep,CoreWMIInstallCore
+Run,%ApiRegScript%,setlevel,520,False
+Echo,"Processing files ..."
+DirMake,%Target_Sys%\ras
+DirMake,%Target_Win%\TAPI
+FileCreateBlank,%Target_Win%\TAPI\tsec.ini
+CopyOrExpand,%Source_Win%\confmsp.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\h323msp.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\ipsecsvc.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\mcastmib.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\mprmsg.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\ntlsapi.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\rasadhlp.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\rasauto.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\raschap.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\rasdlg.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\rasmans.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\rasmxs.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\rasppp.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\rasser.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\rastapi.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\rastls.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\iprtprio.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\iprtrmgr.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\rtm.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\sdpblb.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\sens.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\sensapi.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\senscfg.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\serialui.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\serwvdrv.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\tapi.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\tapi3.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\tapi32.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\tapiperf.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\tapisrv.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\tapiui.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\termmgr.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\umdmxfrm.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\unimdmat.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\uniplat.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\rasctrs.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\rasctrs.ini,%Target_Sys%
+CopyOrExpand,%Source_Win%\mdminst.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\msports.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\modemui.dll,%Target_Sys%
+//
+CopyOrExpand,%Source_Win%\telephon.cpl,%Target_Sys%
+CopyOrExpand,%Source_Win%\rasdial.exe,%Target_Sys%
+CopyOrExpand,%Source_Win%\rasphone.exe,%Target_Sys%
+CopyOrExpand,%Source_Win%\alg.exe,%Target_Sys%
+//
+CopyOrExpand,%Source_Win%\unimdm.tsp,%Target_Sys%
+CopyOrExpand,%Source_Win%\h323.tsp,%Target_Sys%
+CopyOrExpand,%Source_Win%\hidphone.tsp,%Target_Sys%
+CopyOrExpand,%Source_Win%\ipconf.tsp,%Target_Sys%
+CopyOrExpand,%Source_Win%\ndptsp.tsp,%Target_Sys%
+CopyOrExpand,%Source_Win%\kmddsp.tsp,%Target_Sys%
+//
+CopyOrExpand,%Source_Win%\asyncmac.sys,%Target_Sys%\drivers
+CopyOrExpand,%Source_Win%\ipfltdrv.sys,%Target_Sys%\drivers
+CopyOrExpand,%Source_Win%\ndistapi.sys,%Target_Sys%\drivers
+CopyOrExpand,%Source_Win%\ndiswan.sys,%Target_Sys%\drivers
+CopyOrExpand,%Source_Win%\ptilink.sys,%Target_Sys%\drivers
+CopyOrExpand,%Source_Win%\rasacd.sys,%Target_Sys%\drivers
+CopyOrExpand,%Source_Win%\rasl2tp.sys,%Target_Sys%\drivers
+CopyOrExpand,%Source_Win%\raspppoe.sys,%Target_Sys%\drivers
+CopyOrExpand,%Source_Win%\raspptp.sys,%Target_Sys%\drivers
+CopyOrExpand,%Source_Win%\raspti.sys,%Target_Sys%\drivers
+CopyOrExpand,%Source_Win%\wanarp.sys,%Target_Sys%\drivers
+CopyOrExpand,%Source_Win%\serial.sys,%Target_Sys%\drivers
+CopyOrExpand,%Source_Win%\serenum.sys,%Target_Sys%\drivers
+CopyOrExpand,%Source_Win%\parvdm.sys,%Target_Sys%\drivers
+//Run,%ScriptFile%,getfile,modem.sys,system32\drivers
+//Run,%ScriptFile%,getfile,modemcsa.sys,system32\drivers
+//Run,%ScriptFile%,getfile,rootmdm.sys,system32\drivers
+//Run,%ScriptFile%,getfile,parport.sys,system32\drivers
+//Run,%ScriptFile%,getfile,hid.dll,system32
+Require,HighVersion,modem.sys,TargetWin\System32\Drivers
+Require,HighVersion,modemcsa.sys,TargetWin\System32\Drivers
+Require,HighVersion,rootmdm.sys,TargetWin\System32\Drivers
+Require,HighVersion,parport.sys,TargetWin\System32\Drivers
+Require,HighVersion,hid.dll,TargetWin\System32
+If,%OS%,Equal,W2003,Begin
+CopyOrExpand,%Source_Win%\tapisnap.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\tapimgmt.msc,%Target_Sys%
+CopyOrExpand,%Source_Win%\tsec.dll,%Target_Sys%
+End
+//
+CopyOrExpand,%Source_Win%\mdmsetup.inf,%Target_Win%\Inf
+CopyOrExpand,%Source_Win%\mdmgen.inf,%Target_Win%\Inf
+CopyOrExpand,%Source_Win%\msports.inf,%Target_Win%\Inf
+//
+CopyOrExpand,%Source_Win%\switch.inf,%Target_Sys%\ras
+CopyOrExpand,%Source_Win%\pad.inf,%Target_Sys%\ras
+CopyOrExpand,%Source_Win%\cis.scp,%Target_Sys%\ras
+CopyOrExpand,%Source_Win%\pppmenu.scp,%Target_Sys%\ras
+CopyOrExpand,%Source_Win%\slipmenu.scp,%Target_Sys%\ras
+IniRead,%ProjectInfo%,BasePath,AUAppData,%tmp%
+DirMake,%TargetProfilesBaseDir%\Microsoft\Network\Connections\Pbk
+If,Not,ExistFile,%TargetProfilesBaseDir%\%tmp%\Microsoft\Network\Connections\Pbk\rasphone.pbk,FileCreateBlank,%TargetProfilesBaseDir%\%tmp%\Microsoft\Network\Connections\Pbk\rasphone.pbk
+//InstallDUN_Cancel_1
+RegHiveLoad,Tmp_Software,%Target_Sys%\config\software
+RegWrite,HKLM,0x4,Tmp_Software\Microsoft\Windows\CurrentVersion\Telephony\Providers,ProviderID0,1
+RegWrite,HKLM,0x4,Tmp_Software\Microsoft\Windows\CurrentVersion\Telephony\Providers,ProviderID1,2
+RegWrite,HKLM,0x4,Tmp_Software\Microsoft\Windows\CurrentVersion\Telephony\Providers,ProviderID2,3
+RegWrite,HKLM,0x4,Tmp_Software\Microsoft\Windows\CurrentVersion\Telephony\Providers,ProviderID3,4
+RegWrite,HKLM,0x4,Tmp_Software\Microsoft\Windows\CurrentVersion\Telephony\Providers,ProviderID4,5
+RegWrite,HKLM,0x4,Tmp_Software\Microsoft\Windows\CurrentVersion\Telephony\Providers,ProviderID5,6
+RegWrite,HKLM,0x4,Tmp_Software\Microsoft\Windows\CurrentVersion\Telephony\Providers,NextProviderID,7
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Windows\CurrentVersion\Telephony\Providers,ProviderFileName0,unimdm.tsp
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Windows\CurrentVersion\Telephony\Providers,ProviderFileName1,kmddsp.tsp
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Windows\CurrentVersion\Telephony\Providers,ProviderFileName2,ndptsp.tsp
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Windows\CurrentVersion\Telephony\Providers,ProviderFileName3,ipconf.tsp
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Windows\CurrentVersion\Telephony\Providers,ProviderFileName4,h323.tsp
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Windows\CurrentVersion\Telephony\Providers,ProviderFileName5,hidphone.tsp
+RegWrite,HKLM,0x4,Tmp_Software\Microsoft\Windows\CurrentVersion\Telephony\Providers,NumProviders,6
+RegHiveUnLoad,Tmp_Software
+RegHiveLoad,Tmp_System,%Target_Sys%\setupreg.hiv
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\SW\{eeab7790-c514-11d1-b42b-00805fc1270e}\asyncmac,Capabilities,176
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\SW\{eeab7790-c514-11d1-b42b-00805fc1270e}\asyncmac,UINumber,0
+RegWrite,HKLM,0x7,Tmp_System\ControlSet001\Enum\SW\{eeab7790-c514-11d1-b42b-00805fc1270e}\asyncmac,HardwareID,SW\{eeab7790-c514-11d1-b42b-00805fc1270e}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\SW\{eeab7790-c514-11d1-b42b-00805fc1270e}\asyncmac,ClassGUID,{4D36E972-E325-11CE-BFC1-08002BE10318}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\SW\{eeab7790-c514-11d1-b42b-00805fc1270e}\asyncmac,Class,Net
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\SW\{eeab7790-c514-11d1-b42b-00805fc1270e}\asyncmac,Mfg,Microsoft
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\SW\{eeab7790-c514-11d1-b42b-00805fc1270e}\asyncmac,Service,AsyncMac
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\SW\{eeab7790-c514-11d1-b42b-00805fc1270e}\asyncmac,DeviceDesc,"RAS Async Adapter"
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\SW\{eeab7790-c514-11d1-b42b-00805fc1270e}\asyncmac,ConfigFlags,0
+RegWrite,HKLM,0x4,"Tmp_System\ControlSet001\Enum\SW\{eeab7790-c514-11d1-b42b-00805fc1270e}\asyncmac\Device Parameters",InstanceIndex,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Services\swenum\Devices\{eeab7790-c514-11d1-b42b-00805fc1270e}\asyncmac\{ad498944-762f-11d0-8dcb-00c04fc3358c},,""
+RegHiveUnLoad,Tmp_System
+//--
+If,Not,ExistDir,%ProjectTemp%\inf2hive,DirMake,%ProjectTemp%\inf2hive
+If,ExistFile,%ProjectTemp%\inf2hive\inf2hive.ini,Shellexecute,Hide,cmd.exe,"/C del /q /f /A:R /A:H /A:S /A:A #$q%ProjectTemp%\inf2hive\inf2hive.ini#$q"
+If,ExistFile,%ProjectTemp%\inf2hive\inf2hive.ini,FileDelete,%ProjectTemp%\inf2hive\inf2hive.ini
+FileCreateBlank,%ProjectTemp%\inf2hive\inf2hive.ini
+TxtAddline,%ProjectTemp%\inf2hive\inf2hive.ini,[INF.KEYS],Append
+TXTAddLine,%ProjectTemp%\inf2hive\inf2hive.ini,HKLM#$c#$qSYSTEM\CurrentControlSet\Services\Serial#$q,Append
+TXTAddLine,%ProjectTemp%\inf2hive\inf2hive.ini,HKLM#$c#$qSYSTEM\CurrentControlSet\Services\Modem#$q,Append
+TXTAddLine,%ProjectTemp%\inf2hive\inf2hive.ini,HKLM#$c#$qSYSTEM\CurrentControlSet\Services\Rasman#$,Append
+TXTAddLine,%ProjectTemp%\inf2hive\inf2hive.ini,HKLM#$c#$qSYSTEM\CurrentControlSet\Services\Tapisrv#$q,Append
+Run,%ApiRegScript%,ImportInfTHive,HIVESYS.INF,AddReg,20CoreNet_02_HiveSys_Dun,%inf2hivedebug%
+//InstallDUN_Cancel_2
+Echo,"Processing registrations ..."
+Run,%ApiRegScript%,register,%regmethod%,confmsp.dll,h323msp.dll,termmgr.dll,tapi3.dll,sdpblb.dll,rastls.dll,raschap.dll
+If,%OS%,Equal,W2003,Run,%ApiRegScript%,register,%regmethod%,tapisnap.dll
+Run,%ApiRegScript%,runcmd,%regmethod%,"startnet -c s -i ms_rascli"
+Run,%ApiRegScript%,runcmd,%regmethod%,"startnet -c p -i ms_ndiswan"
+Run,%ApiRegScript%,runcmd,%regmethod%,"startnet -c p -i ms_pppoe"
+Run,%ApiRegScript%,runcmd,%regmethod%,"startnet -c p -i ms_pptp"
+Run,%ApiRegScript%,runcmd,%regmethod%,"startnet -c p -i ms_l2tp"
+Run,%ApiRegScript%,runcmd,%regmethod%,"startnet -c p -i ms_wanarp"
+Run,%ApiRegScript%,runcmd,%regmethod%,"startnet -c s -i ms_rasman"
+Run,%ApiRegScript%,runcmd,%regmethod%,"startnet -c s -i ms_alg"
+Run,%ApiRegScript%,runcmd,%regmethod%,"rundll32 modemui.dll,CountryRunOnce"
+Run,%ApiRegScript%,runcmd,%regmethod%,"net start rasman"
+IniRead,%ProjectDir%\script.project,IniVariables,PreApiRegScript,%PreApiRegScript%
+IniRead,%ProjectDir%\script.project,IniVariables,PostApiRegScript,%PostApiRegScript%
+IniWriteTextLine,%PreApiRegScript%,Process,"Exec,%ScriptFile%,preproc2"
+//no need exec here IniWriteTextLine,%PostApiRegScript%,Process,"Exec,%ScriptFile%,postproc2"
+IniWriteTextLine,%PostApiRegScript%,Process,"Run,%ScriptFile%,postproc2"
+Run,%ScriptFile%,DUN%OS%%SP%
+
+[InstallDUN_Cancel]
+//InstallDUN_Cancel_1
+//--
+//Set,%mram%,""
+//IniRead,%PInfo%,TargetPaths,Model,%mram%
+//If,Not,ExistDir,%mram%,Set,%mram%,%TargetDir%
+//If,Not,%mram%,Equal,"",Be gin
+//IniRead,%PInfo%,TargetPaths,Common_Application_Data,%tmp%
+//If,Not,%tmp%,Equal,"",Be gin
+//DirMake,%mram%\%tmp%\Microsoft\Network\Connections\Pbk
+//FileCreateBlank,%mram%\%tmp%\Microsoft\Network\Connections\Pbk\rasphone.pbk
+//End
+//End
+//--
+//InstallDUN_Cancel_2
+//--
+//If,ExistFile,%ProjectTemp%\tmp.ctl,FileDelete,%ProjectTemp%\tmp.ctl
+//If,ExistFile,%ProjectTemp%\tmpctl.txt,FileDelete,%ProjectTemp%\tmpctl.txt
+//FileCreateBlank,%ProjectTemp%\tmp.ctl
+//TXTAddLine,%ProjectTemp%\tmp.ctl,[tmp.inf]AddReg,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,HKLM#$c#$qSYSTEM\CurrentControlSet\Services\Serial#$q@-2,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,HKLM#$c#$qSYSTEM\CurrentControlSet\Services\Modem#$q@-2,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,HKLM#$c#$qSYSTEM\CurrentControlSet\Services\Rasman#$q@-2,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,HKLM#$c#$qSYSTEM\CurrentControlSet\Services\Tapisrv#$q@-2,Append
+//Run,%ApiRegScript%,ImportInf,HIVESYS.INF,S
+//Exec,%ProjectTemp%\tmpctl.txt,Process-Hive
+//--
+
+[DUNXPSP1]
+Run,%ScriptFile%,DUNXP
+
+[DUNXPSP2]
+Run,%ScriptFile%,DUNXP
+
+[DUNXPSP3]
+Run,%ScriptFile%,DUNXP
+CopyOrExpand,%Source_Win%\nwlnkfwd.sys,%Target_Sys%\drivers
+
+[DUNW2003SP1]
+Run,%ScriptFile%,DUNW2003
+
+[DUNW2003SP2]
+Run,%ScriptFile%,DUNW2003
+
+[DUNXP]
+CopyOrExpand,%Source_Win%\avtapi.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\ipinip.sys,%Target_Sys%\drivers
+CopyOrExpand,%Source_Win%\nwlnkflt.sys,%Target_Sys%\drivers
+//FileCopy > CopyOrExpand
+CopyOrExpand,%Source_Win%\ASMS\52\msft\windows\net\dxmrtp\dxmrtp.cat,%Target_Win%\WinSxS\manifests
+If,ExistFile,%Target_Win%\WinSxS\manifests\%xpsxs1%.CAT,Shellexecute,Hide,cmd.exe,"/C del /q /f /A:R /A:H /A:S /A:A #$q%Target_Win%\WinSxS\manifests\%xpsxs1%.CAT#$q"
+If,ExistFile,%Target_Win%\WinSxS\manifests\%xpsxs1%.CAT,FileDelete,%Target_Win%\WinSxS\manifests\%xpsxs1%.CAT
+FileRename,%Target_Win%\WinSxS\manifests\dxmrtp.cat,%Target_Win%\WinSxS\manifests\%xpsxs1%.CAT
+CopyOrExpand,%Source_Win%\ASMS\52\msft\windows\net\dxmrtp\dxmrtp.man,%Target_Win%\WinSxS\manifests
+If,ExistFile,%Target_Win%\WinSxS\manifests\%xpsxs1%.Manifest,Shellexecute,Hide,cmd.exe,"/C del /q /f /A:R /A:H /A:S /A:A #$q%Target_Win%\WinSxS\manifests\%xpsxs1%.Manifest#$q"
+If,ExistFile,%Target_Win%\WinSxS\manifests\%xpsxs1%.Manifest,FileDelete,%Target_Win%\WinSxS\manifests\%xpsxs1%.Manifest
+FileRename,%Target_Win%\WinSxS\manifests\dxmrtp.man,%Target_Win%\WinSxS\manifests\%xpsxs1%.Manifest
+If,Not,ExistDir,%Target_Win%\WinSxS\%xpsxs1%,DirMake,%Target_Win%\WinSxS\%xpsxs1%
+CopyOrExpand,%Source_Win%\ASMS\52\msft\windows\net\dxmrtp\dxmrtp.dll,%Target_Win%\WinSxS\%xpsxs1%
+CopyOrExpand,%Source_Win%\ASMS\52\msft\windows\net\rtcdll\rtcdll.cat,%Target_Win%\WinSxS\manifests
+If,ExistFile,%Target_Win%\WinSxS\manifests\%xpsxs2%.CAT,Shellexecute,Hide,cmd.exe,"/C del /q /f /A:R /A:H /A:S /A:A #$q%Target_Win%\WinSxS\manifests\%xpsxs2%.CAT#$q"
+If,ExistFile,%Target_Win%\WinSxS\manifests\%xpsxs2%.CAT,FileDelete,%Target_Win%\WinSxS\manifests\%xpsxs2%.CAT
+FileRename,%Target_Win%\WinSxS\manifests\rtcdll.cat,%Target_Win%\WinSxS\manifests\%xpsxs2%.CAT
+CopyOrExpand,%Source_Win%\ASMS\52\msft\windows\net\rtcdll\rtcdll.man,%Target_Win%\WinSxS\manifests
+If,ExistFile,%Target_Win%\WinSxS\manifests\%xpsxs2%.Manifest,Shellexecute,Hide,cmd.exe,"/C del /q /f /A:R /A:H /A:S /A:A #$q%Target_Win%\WinSxS\manifests\%xpsxs2%.Manifest#$q"
+If,ExistFile,%Target_Win%\WinSxS\manifests\%xpsxs2%.Manifest,FileDelete,%Target_Win%\WinSxS\manifests\%xpsxs2%.Manifest
+FileRename,%Target_Win%\WinSxS\manifests\rtcdll.man,%Target_Win%\WinSxS\manifests\%xpsxs2%.Manifest
+If,Not,ExistDir,%Target_Win%\WinSxS\%xpsxs2%,DirMake,%Target_Win%\WinSxS\%xpsxs2%
+CopyOrExpand,%Source_Win%\ASMS\52\msft\windows\net\rtcdll\rtcdll.dll,%Target_Win%\WinSxS\%xpsxs2%
+CopyOrExpand,%Source_Win%\ASMS\52\msft\windows\net\rtcres\rtcres.cat,%Target_Win%\WinSxS\manifests
+If,ExistFile,%Target_Win%\WinSxS\manifests\%xpsxs3%.CAT,Shellexecute,Hide,cmd.exe,"/C del /q /f /A:R /A:H /A:S /A:A #$q%Target_Win%\WinSxS\manifests\%xpsxs3%.CAT#$q"
+If,ExistFile,%Target_Win%\WinSxS\manifests\%xpsxs3%.CAT,FileDelete,%Target_Win%\WinSxS\manifests\%xpsxs3%.CAT
+FileRename,%Target_Win%\WinSxS\manifests\rtcres.cat,%Target_Win%\WinSxS\manifests\%xpsxs3%.CAT
+CopyOrExpand,%Source_Win%\ASMS\52\msft\windows\net\rtcres\rtcres.man,%Target_Win%\WinSxS\manifests
+If,ExistFile,%Target_Win%\WinSxS\manifests\%xpsxs3%.Manifest,Shellexecute,Hide,cmd.exe,"/C del /q /f /A:R /A:H /A:S /A:A #$q%Target_Win%\WinSxS\manifests\%xpsxs3%.Manifest#$q"
+If,ExistFile,%Target_Win%\WinSxS\manifests\%xpsxs3%.Manifest,FileDelete,%Target_Win%\WinSxS\manifests\%xpsxs3%.Manifest
+FileRename,%Target_Win%\WinSxS\manifests\rtcres.man,%Target_Win%\WinSxS\manifests\%xpsxs3%.Manifest
+If,Not,ExistDir,%Target_Win%\WinSxS\%xpsxs3%,DirMake,%Target_Win%\WinSxS\%xpsxs3%
+CopyOrExpand,%Source_Win%\ASMS\52\msft\windows\net\rtcres\rtcres.dll,%Target_Win%\WinSxS\%xpsxs3%
+//
+Run,%ApiRegScript%,register,%regmethod%,avtapi.dll
+
+[DUNW2003]
+
+[InstallRRAS]
+If,%OS%,Equal,W2003,Exec,%ProjectTemp%\depends.script,ExecDep,CoreMMCInstallCore
+If,%OS%,Equal,W2003,Exec,%ProjectTemp%\depends.script,ExecDep,CoreWMIInstallCore
+Run,%ApiRegScript%,setlevel,520,False
+CopyOrExpand,%Source_Win%\mprdim.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\mprddm.dll,%Target_Sys%
+If,%OS%,Equal,W2003,Begin
+CopyOrExpand,%Source_Win%\mprsnap.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\rrasprxy.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\rtrfiltr.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\rraswiz.exe,%Target_Sys%
+CopyOrExpand,%Source_Win%\remrras.exe,%Target_Sys%
+CopyOrExpand,%Source_Win%\rrasmgmt.msc,%Target_Sys%
+//
+CopyOrExpand,%Source_Win%\iashlpr.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\iaspolcy.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\iasrad.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\iassvcs.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\iasacct.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\iasads.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\iasnap.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\iasrecst.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\iassam.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\ias.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\iassdo.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\iasperf.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\napmmc.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\iasmmc.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\ias.msc,%Target_Sys%
+CopyOrExpand,%Source_Win%\netias.inf,%Target_Win%\Inf
+DirMake,%Target_Sys%\ias
+CopyOrExpand,%Source_Win%\ias.mdb,%Target_Sys%\ias
+CopyOrExpand,%Source_Win%\dnary.mdb,%Target_Sys%\ias
+Run,%ApiRegScript%,register,%regmethod%,iasrad.dll,iaspolcy.dll,iassvcs.dll,iashlpr.dll,napmmc.dll,iasmmc.dll,iassdo.dll,iasrecst.dll
+Run,%ApiRegScript%,register,%regmethod%,mprsnap.dll,rrasprxy.dll
+Run,%ApiRegScript%,runcmd,%regmethod%,"startnet -c s -i ms_rassrv"
+Run,%ApiRegScript%,runcmd,%regmethod%,"remrras.exe /RegServer"
+IniRead,%ProjectDir%\script.project,IniVariables,PostApiRegScript,%PostApiRegScript%
+//no need exec ehre IniWriteTextLine,%postApiRegScript%,Process,"Exec,%ScriptFile%,postproc3"
+IniWriteTextLine,%postApiRegScript%,Process,"Run,%ScriptFile%,postproc3"
+End
+
+[postproc3]
+RegHiveLoad,Tmp_System,%Target_Sys%\setupreg.hiv
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\RemoteAccess,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\RemoteAccess,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\RemoteAccess,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,"Routing and Remote Access"
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_REMOTEACCESS,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_REMOTEACCESS\0000,Service,RemoteAccess
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_REMOTEACCESS\0000,Legacy,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_REMOTEACCESS\0000,ConfigFlags,0
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_REMOTEACCESS\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_REMOTEACCESS\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_REMOTEACCESS\0000,DeviceDesc,%TMP%
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\RemoteAccess,Start,3
+RegHiveUnLoad,Tmp_System
+
+[InstallFax]
+Run,%ApiRegScript%,setlevel,520,False
+CopyOrExpand,%Source_Win%\FxsOcm.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\sysocmgr.exe,%Target_Sys%
+CopyOrExpand,%Source_Win%\fxsst.dll,%Target_Sys%
+Run,%ApiRegScript%,register,%regmethod%,FxsOcm.dll
+//todo : continue
+
+[InstallNetBeui]
+Run,%ApiRegScript%,setlevel,520,False
+If,ExistDir,%SourceDir%\VALUEADD\MSFT\NET\NETBEUI,Begin
+CopyOrExpand,%SourceDir%\VALUEADD\MSFT\NET\NETBEUI\NETNBF.INF,%Target_Win%\Inf
+CopyOrExpand,%SourceDir%\VALUEADD\MSFT\NET\NETBEUI\NBF.SYS,%Target_Sys%\drivers
+Run,%ApiRegScript%,runcmd,%regmethod%,"startnet -c p -i ms_netbeui"
+IniRead,%ProjectDir%\script.project,IniVariables,PostApiRegScript,%PostApiRegScript%
+//no need exec here IniWriteTextLine,%postApiRegScript%,Process,"Exec,%ScriptFile%,postproc5"
+IniWriteTextLine,%postApiRegScript%,Process,"Run,%ScriptFile%,postproc5"
+End
+
+[postproc5]
+RegHiveLoad,Tmp_System,%Target_Sys%\setupreg.hiv
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\Nbf,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\Nbf,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\Nbf,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,"NetBEUI Protocol"
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_NBF,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_NBF\0000,Service,Nbf
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_NBF\0000,Legacy,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_NBF\0000,ConfigFlags,0
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_NBF\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_NBF\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_NBF\0000,DeviceDesc,%TMP%
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_NBF\0000,Capabilities,0
+RegHiveUnLoad,Tmp_System
+
+[InstallIPv6]
+Run,%ApiRegScript%,setlevel,520,False
+CopyOrExpand,%Source_Win%\wship6.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\6to4svc.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\tcpip6.sys,%Target_Sys%\drivers
+//Run,%ScriptFile%,getfile,tunmp.sys,system32\drivers
+Require,HighVersion,tunmp.sys,TargetWin\System32\Drivers
+CopyOrExpand,%Source_Win%\nettun.inf,%Target_Win%\Inf
+CopyOrExpand,%Source_Win%\netip6.inf,%Target_Win%\Inf
+Run,%ApiRegScript%,runcmd,%regmethod%,"startnet -c p -i ms_tcpip6"
+IniRead,%ProjectDir%\script.project,IniVariables,PostApiRegScript,%PostApiRegScript%
+//no need exec here IniWriteTextLine,%postApiRegScript%,Process,"Exec,%ScriptFile%,postproc6"
+IniWriteTextLine,%postApiRegScript%,Process,"Run,%ScriptFile%,postproc6"
+
+[postproc6]
+RegHiveLoad,Tmp_System,%Target_Sys%\setupreg.hiv
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\Tcpip6,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\Tcpip6,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\Tcpip6,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,"Microsoft IPv6 Protocol Driver"
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_TCPIP6,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_TCPIP6\0000,Service,Tcpip6
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_TCPIP6\0000,Legacy,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_TCPIP6\0000,ConfigFlags,0
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_TCPIP6\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_TCPIP6\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_TCPIP6\0000,DeviceDesc,%TMP%
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\6to4,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\6to4,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\6to4,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,"IPv6 Helper Service"
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_6TO4,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_6TO4\0000,Service,6to4
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_6TO4\0000,Legacy,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_6TO4\0000,ConfigFlags,0
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_6TO4\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_6TO4\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_6TO4\0000,DeviceDesc,%TMP%
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\6to4,Start,3
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\tunmp,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\tunmp,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\tunmp,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,"Microsoft Tun Miniport Adapter Driver"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\*TUNMP\0000,ClassGUID,{4D36E972-E325-11CE-BFC1-08002BE10318}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\*TUNMP\0000,Class,Net
+RegWrite,HKLM,0x7,Tmp_System\ControlSet001\Enum\Root\*TUNMP\0000,HardwareID,*TUNMP
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\*TUNMP\0000,Mfg,Microsoft
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\*TUNMP\0000,Service,tunmp
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\*TUNMP\0000,DeviceDesc,%TMP%
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\*TUNMP\0000,ConfigFlags,0
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\*TUNMP\0000,Capabilities,128
+RegWrite,HKLM,0x4,"Tmp_System\ControlSet001\Enum\Root\*TUNMP\0000\Device Parameters",InstanceIndex,1
+RegHiveUnLoad,Tmp_System
+
+[postprocxpsp3]
+RegHiveLoad,Tmp_System,%Target_Sys%\setupreg.hiv
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\EapHost,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\EapHost,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\EapHost,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,"Extensible Authentication Protocol service"
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_EAPHOST,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_EAPHOST\0000,Service,EapHost
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_EAPHOST\0000,Legacy,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_EAPHOST\0000,ConfigFlags,0
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_EAPHOST\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_EAPHOST\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_EAPHOST\0000,DeviceDesc,%TMP%
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\Dot3svc,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\Dot3svc,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\Dot3svc,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,"Wired AutoConfig"
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_DOT3SVC,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_DOT3SVC\0000,Service,Dot3svc
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_DOT3SVC\0000,Legacy,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_DOT3SVC\0000,ConfigFlags,0
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_DOT3SVC\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_DOT3SVC\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_DOT3SVC\0000,DeviceDesc,%TMP%
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\napagent,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\napagent,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\napagent,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,"NAP-Agent (Network Access Protection)"
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_NAPAGENT,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_NAPAGENT\0000,Service,napagent
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_NAPAGENT\0000,Legacy,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_NAPAGENT\0000,ConfigFlags,0
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_NAPAGENT\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_NAPAGENT\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_NAPAGENT\0000,DeviceDesc,%TMP%
+RegHiveUnLoad,Tmp_System
+
+[getfile]
+Set,%tmptarget%,%Target_Win%
+If,Not,#2,Equal,"",Set,%tmptarget%,%Target_Win%\#2
+ShellExecute,hide,expand.exe,"#$q%Source_Win%\%SPCAB%#$q -F:#1 #$q%tmptarget%#$q"
+If,Not,ExistFile,%tmptarget%\#1,ShellExecute,hide,expand.exe,"#$q%Source_Win%\SP3.cab%#$q -F:#1 #$q%tmptarget%#$q"
+If,Not,ExistFile,%tmptarget%\#1,ShellExecute,hide,expand.exe,"#$q%Source_Win%\SP2.cab%#$q -F:#1 #$q%tmptarget%#$q"
+If,Not,ExistFile,%tmptarget%\#1,ShellExecute,hide,expand.exe,"#$q%Source_Win%\SP1.cab%#$q -F:#1 #$q%tmptarget%#$q"
+If,Not,ExistFile,%tmptarget%\#1,ShellExecute,hide,expand.exe,"#$q%Source_Win%\%DRCAB%#$q -F:#1 #$q%tmptarget%#$q"
+If,Not,ExistFile,%tmptarget%\#1,CopyOrExpand,%Source_Win%\#1,%tmptarget%
+If,Not,ExistFile,%tmptarget%\#1,HALT,"File not found."
+
+[preproc1]
+RegHiveLoad,Tmp_System,%Target_Sys%\setupreg.hiv
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\ComputerName\ComputerName,ComputerName,%ComputerName%
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\ComputerName\ActiveComputerName,ComputerName,%ComputerName%
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Session Manager\Environment",ComputerName,%ComputerName%
+RegHiveUnLoad,Tmp_System
+IniRead,%ProjectDir%\script.project,IniVariables,NoWarnFileOverWrite,%NoWarnFOW%
+If,%NoWarnFOW%,Equal,True,System,ERROROFF,7
+CopyOrExpand,%Source_Win%\certclas.inf,%Target_Win%\Inf
+CopyOrExpand,%Source_Win%\ndisuio.inf,%Target_Win%\Inf
+CopyOrExpand,%Source_Win%\netmscli.inf,%Target_Win%\Inf
+CopyOrExpand,%Source_Win%\netnb.inf,%Target_Win%\Inf
+CopyOrExpand,%Source_Win%\netserv.inf,%Target_Win%\Inf
+CopyOrExpand,%Source_Win%\nettcpip.inf,%Target_Win%\Inf
+CopyOrExpand,%Source_Win%\netwzc.inf,%Target_Win%\Inf
+If,ExistFile,%Target_Sys%\net.hlp,Shellexecute,Hide,cmd.exe,"/C del /q /f /A:R /A:H /A:S /A:A #$q%Target_Sys%\net.hlp#$q"
+If,ExistFile,%Target_Sys%\net.hlp,FileDelete,%Target_Sys%\net.hlp
+DirMake,%Target_Win%\l2schemas
+DirMake,%Target_Win%\Provisioning\Schemas
+Run,%ScriptFile%,copyExtraFiles
+
+[preproc2]
+CopyOrExpand,%Source_Win%\netrass.inf,%Target_Win%\Inf
+CopyOrExpand,%Source_Win%\netrasa.inf,%Target_Win%\Inf
+CopyOrExpand,%Source_Win%\netrast.inf,%Target_Win%\Inf
+
+[postproc1]
+//Run,%ScriptFile%,SetVariables
+If,Not,-#1,Equal,-,Begin
+IniRead,#1,IniScriptVariables,ComputerName,%ComputerName%
+IniRead,#1,IniScriptVariables,WorkgroupName,%WorkgroupName%
+End
+Set,%PInfo%,%ProjectInfo%
+IniRead,%ProjectInfo%,OS,Type,%OS%
+IniRead,%ProjectInfo%,OS,ServicePack,%SP%
+IniRead,%ProjectInfo%,Cabs,SP_CAB,%SPCAB%
+IniRead,%ProjectInfo%,Cabs,DR_CAB,%DRCAB%
+//--
+RegHiveLoad,Tmp_System,%Target_Sys%\setupreg.hiv
+//RegWrite ! Overwrote existing key "2" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\W32Time,Start,4
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\Mup,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\Mup,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\Mup,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,Mup
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_MUP,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_MUP\0000,Service,mup
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_MUP\0000,Legacy,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_MUP\0000,ConfigFlags,0
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_MUP\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_MUP\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_MUP\0000,DeviceDesc,%TMP%
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\NetBIOS,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\NetBIOS,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\NetBIOS,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,"NetBIOS Interface"
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_NETBIOS,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_NETBIOS\0000,Service,NetBIOS
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_NETBIOS\0000,Legacy,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_NETBIOS\0000,ConfigFlags,0
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_NETBIOS\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_NETBIOS\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_NETBIOS\0000,DeviceDesc,%TMP%
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\Dhcp,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\Dhcp,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\Dhcp,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,"DHCP Client"
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_DHCP,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_DHCP\0000,Service,Dhcp
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_DHCP\0000,Legacy,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_DHCP\0000,ConfigFlags,0
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_DHCP\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_DHCP\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_DHCP\0000,DeviceDesc,%TMP%
+//RegWrite ! Overwrote existing key "2" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\Dhcp,Start,3
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\Dnscache,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\Dnscache,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\Dnscache,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,"DNS Client"
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_DNSCACHE,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_DNSCACHE\0000,Service,Dnscache
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_DNSCACHE\0000,Legacy,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_DNSCACHE\0000,ConfigFlags,0
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_DNSCACHE\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_DNSCACHE\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_DNSCACHE\0000,DeviceDesc,%TMP%
+//RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\Dnscache,Start,3
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\IpNat,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\IpNat,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\IpNat,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,ipnat
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_IPNAT,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_IPNAT\0000,Service,ipnat
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_IPNAT\0000,Legacy,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_IPNAT\0000,ConfigFlags,32
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_IPNAT\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_IPNAT\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_IPNAT\0000,DeviceDesc,%TMP%
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_IPNAT\0000,Capabilities,0
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\IPSec,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\IPSec,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\IPSec,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,ipsec
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_IPSEC,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_IPSEC\0000,Service,ipsec
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_IPSEC\0000,Legacy,1
+//RegWrite ! Overwrote existing key "0" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_IPSEC\0000,ConfigFlags,32
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_IPSEC\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_IPSEC\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_IPSEC\0000,DeviceDesc,%TMP%
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_IPSEC\0000,Capabilities,0
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\LmHosts,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\LmHosts,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\LmHosts,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,"TCP/IP NetBIOS Helper"
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_LMHOSTS,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_LMHOSTS\0000,Service,LmHosts
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_LMHOSTS\0000,Legacy,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_LMHOSTS\0000,ConfigFlags,0
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_LMHOSTS\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_LMHOSTS\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_LMHOSTS\0000,DeviceDesc,%TMP%
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\MRxSmb,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\MRxSmb,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\MRxSmb,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,MRXSMB
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_MRXSMB,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_MRXSMB\0000,Service,MRxSmb
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_MRXSMB\0000,Legacy,1
+//RegWrite ! Overwrote existing key "0" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_MRXSMB\0000,ConfigFlags,32
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_MRXSMB\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_MRXSMB\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_MRXSMB\0000,DeviceDesc,%TMP%
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\NetBT,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\NetBT,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\NetBT,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,netbt
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_NETBT,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_NETBT\0000,Service,netbt
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_NETBT\0000,Legacy,1
+//RegWrite ! Overwrote existing key "0" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_NETBT\0000,ConfigFlags,32
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_NETBT\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_NETBT\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_NETBT\0000,DeviceDesc,%TMP%
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_NETBT\0000,Capabilities,0
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\Tcpip,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\Tcpip,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\Tcpip,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,tcpip
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_TCPIP,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_TCPIP\0000,Service,tcpip
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_TCPIP\0000,Legacy,1
+//RegWrite ! Overwrote existing key "0" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_TCPIP\0000,ConfigFlags,32
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_TCPIP\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_TCPIP\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_TCPIP\0000,DeviceDesc,%TMP%
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_TCPIP\0000,Capabilities,0
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\Nla,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\Nla,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\Nla,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,"Network Location Awareness (NLA)"
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_NLA,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_NLA\0000,Service,Nla
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_NLA\0000,Legacy,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_NLA\0000,ConfigFlags,0
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_NLA\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_NLA\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_NLA\0000,DeviceDesc,%TMP%
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\AFD,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\AFD,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\AFD,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,AFD
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_AFD,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_AFD\0000,Service,AFD
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_AFD\0000,Legacy,1
+//RegWrite ! Overwrote existing key "0" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_AFD\0000,ConfigFlags,32
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_AFD\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_AFD\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_AFD\0000,DeviceDesc,%TMP%
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_AFD\0000,Capabilities,0
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\PolicyAgent,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\PolicyAgent,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\PolicyAgent,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,"IPSEC Services"
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_POLICYAGENT,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_POLICYAGENT\0000,Service,PolicyAgent
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_POLICYAGENT\0000,Legacy,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_POLICYAGENT\0000,ConfigFlags,0
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_POLICYAGENT\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_POLICYAGENT\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_POLICYAGENT\0000,DeviceDesc,%TMP%
+//RegWrite ! Overwrote existing key "2" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\PolicyAgent,Start,3
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\Atmarpc,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\Atmarpc,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\Atmarpc,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,"ATM ARP Client Protocol"
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_ATMARPC,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_ATMARPC\0000,Service,Atmarpc
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_ATMARPC\0000,Legacy,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_ATMARPC\0000,ConfigFlags,0
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_ATMARPC\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_ATMARPC\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_ATMARPC\0000,DeviceDesc,%TMP%
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\Alerter,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\Alerter,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\Alerter,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,Alerter
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_ALERTER,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_ALERTER\0000,Service,Alerter
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_ALERTER\0000,Legacy,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_ALERTER\0000,ConfigFlags,32
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_ALERTER\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_ALERTER\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_ALERTER\0000,DeviceDesc,%TMP%
+//RegWrite ! Overwrote existing key "4" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\Alerter,Start,3
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\Messenger,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\Messenger,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\Messenger,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,Messenger
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_MESSENGER,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_MESSENGER\0000,Service,Messenger
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_MESSENGER\0000,Legacy,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_MESSENGER\0000,ConfigFlags,0
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_MESSENGER\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_MESSENGER\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_MESSENGER\0000,DeviceDesc,%TMP%
+//RegWrite ! Overwrote existing key "4" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\Messenger,Start,3
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\Browser,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\Browser,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\Browser,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,"Computer Browser"
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_BROWSER,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_BROWSER\0000,Service,Browser
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_BROWSER\0000,Legacy,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_BROWSER\0000,ConfigFlags,32
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_BROWSER\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_BROWSER\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_BROWSER\0000,DeviceDesc,%TMP%
+//RegWrite ! Overwrote existing key "3" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\Browser,Start,3
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\lanmanworkstation,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\lanmanworkstation,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\lanmanworkstation,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,Workstation
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_LANMANWORKSTATION,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_LANMANWORKSTATION\0000,Service,LanmanWorkstation
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_LANMANWORKSTATION\0000,Legacy,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_LANMANWORKSTATION\0000,ConfigFlags,32
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_LANMANWORKSTATION\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_LANMANWORKSTATION\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_LANMANWORKSTATION\0000,DeviceDesc,%TMP%
+//RegWrite ! Overwrote existing key "2" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\lanmanworkstation,Start,3
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\lanmanserver,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\lanmanserver,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\lanmanserver,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,Server
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_LANMANSERVER,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_LANMANSERVER\0000,Service,LanmanServer
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_LANMANSERVER\0000,Legacy,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_LANMANSERVER\0000,ConfigFlags,32
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_LANMANSERVER\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_LANMANSERVER\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_LANMANSERVER\0000,DeviceDesc,%TMP%
+//RegWrite ! Overwrote existing key "2" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\lanmanserver,Start,3
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\Ndisuio,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\Ndisuio,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\Ndisuio,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,"NDIS Usermode I/O Protocol"
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_NDISUIO,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_NDISUIO\0000,Service,Ndisuio
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_NDISUIO\0000,Legacy,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_NDISUIO\0000,ConfigFlags,0
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_NDISUIO\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_NDISUIO\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_NDISUIO\0000,DeviceDesc,%TMP%
+RegHiveUnLoad,Tmp_System
+RegHiveLoad,Tmp_Software,%Target_Sys%\config\software
+If,ExistRegSection,HKLM,Tmp_Software\EarlyStarter,Begin
+RegWrite,HKLM,0x2,Tmp_Software\EarlyStarter,z_Set_Workgroup,"-hiderun startnet.exe -wg %WorkgroupName%"
+End
+Else,Begin
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnceEx\000,z_workgroup,"hiderun startnet.exe -wg %WorkgroupName%"
+End
+RegHiveUnLoad,Tmp_Software
+
+[postproc2]
+RegHiveLoad,Tmp_System,%Target_Sys%\setupreg.hiv
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\MS_NDISWANIP\0000,ClassGUID,{4D36E972-E325-11CE-BFC1-08002BE10318}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\MS_NDISWANIP\0000,Class,Net
+RegWrite,HKLM,0x7,Tmp_System\ControlSet001\Enum\Root\MS_NDISWANIP\0000,HardwareID,ms_ndiswanip
+RegWrite,HKLM,0x7,Tmp_System\ControlSet001\Enum\Root\MS_NDISWANIP\0000,LowerFilters,NdisTapi
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\MS_NDISWANIP\0000,Mfg,Microsoft
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\MS_NDISWANIP\0000,Service,NdisWan
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\MS_NDISWANIP\0000,DeviceDesc,"WAN Miniport (IP)"
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\MS_NDISWANIP\0000,ConfigFlags,0
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\MS_NDISWANIP\0000,Capabilities,0
+RegWrite,HKLM,0x4,"Tmp_System\ControlSet001\Enum\Root\MS_NDISWANIP\0000\Device Parameters",InstanceIndex,1
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\RasAcd,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\RasAcd,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\RasAcd,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,"Remote Access Auto Connection Driver"
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_RASACD,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_RASACD\0000,Service,RasAcd
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_RASACD\0000,Legacy,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_RASACD\0000,ConfigFlags,0
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_RASACD\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_RASACD\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_RASACD\0000,DeviceDesc,%TMP%
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\ALG,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\ALG,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\ALG,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,"Application Layer Gateway Service"
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_ALG,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_ALG\0000,Service,ALG
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_ALG\0000,Legacy,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_ALG\0000,ConfigFlags,0
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_ALG\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_ALG\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_ALG\0000,DeviceDesc,%TMP%
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\Wanarp,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\Wanarp,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\Wanarp,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,"Remote Access IP ARP Driver"
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_WANARP,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_WANARP\0000,Service,Wanarp
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_WANARP\0000,Legacy,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_WANARP\0000,ConfigFlags,0
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_WANARP\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_WANARP\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_WANARP\0000,DeviceDesc,%TMP%
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\NdisTapi,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\NdisTapi,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\NdisTapi,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,"Remote Access NDIS TAPI Driver"
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_NDISTAPI,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_NDISTAPI\0000,Service,NdisTapi
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_NDISTAPI\0000,Legacy,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_NDISTAPI\0000,ConfigFlags,0
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_NDISTAPI\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_NDISTAPI\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_NDISTAPI\0000,DeviceDesc,%TMP%
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\TapiSrv,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\TapiSrv,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\TapiSrv,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,Telephony
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_TAPISRV,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_TAPISRV\0000,Service,TapiSrv
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_TAPISRV\0000,Legacy,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_TAPISRV\0000,ConfigFlags,0
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_TAPISRV\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_TAPISRV\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_TAPISRV\0000,DeviceDesc,%TMP%
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\Rasl2tp,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\Rasl2tp,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\Rasl2tp,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,"WAN Miniport (L2TP)"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\MS_L2TPMINIPORT\0000,ClassGUID,{4D36E972-E325-11CE-BFC1-08002BE10318}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\MS_L2TPMINIPORT\0000,Class,Net
+RegWrite,HKLM,0x7,Tmp_System\ControlSet001\Enum\Root\MS_L2TPMINIPORT\0000,HardwareID,ms_l2tpminiport
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\MS_L2TPMINIPORT\0000,Mfg,Microsoft
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\MS_L2TPMINIPORT\0000,Service,Rasl2tp
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\MS_L2TPMINIPORT\0000,DeviceDesc,%TMP%
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\MS_L2TPMINIPORT\0000,ConfigFlags,0
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\MS_L2TPMINIPORT\0000,Capabilities,0
+RegWrite,HKLM,0x4,"Tmp_System\ControlSet001\Enum\Root\MS_L2TPMINIPORT\0000\Device Parameters",InstanceIndex,1
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\RasPppoe,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\RasPppoe,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\RasPppoe,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,"WAN-Miniport (PPPOE)"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\MS_PPPOEMINIPORT\0000,ClassGUID,{4D36E972-E325-11CE-BFC1-08002BE10318}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\MS_PPPOEMINIPORT\0000,Class,Net
+RegWrite,HKLM,0x7,Tmp_System\ControlSet001\Enum\Root\MS_PPPOEMINIPORT\0000,HardwareID,ms_pppoeminiport
+RegWrite,HKLM,0x7,Tmp_System\ControlSet001\Enum\Root\MS_PPPOEMINIPORT\0000,LowerFilters,NdisTapi
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\MS_PPPOEMINIPORT\0000,Mfg,Microsoft
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\MS_PPPOEMINIPORT\0000,Service,RasPppoe
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\MS_PPPOEMINIPORT\0000,DeviceDesc,%TMP%
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\MS_PPPOEMINIPORT\0000,ConfigFlags,0
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\MS_PPPOEMINIPORT\0000,Capabilities,0
+RegWrite,HKLM,0x4,"Tmp_System\ControlSet001\Enum\Root\MS_PPPOEMINIPORT\0000\Device Parameters",InstanceIndex,1
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\PptpMiniport,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\PptpMiniport,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\PptpMiniport,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,"WAN-Miniport (PPTP)"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\MS_PPTPMINIPORT\0000,ClassGUID,{4D36E972-E325-11CE-BFC1-08002BE10318}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\MS_PPTPMINIPORT\0000,Class,Net
+RegWrite,HKLM,0x7,Tmp_System\ControlSet001\Enum\Root\MS_PPTPMINIPORT\0000,HardwareID,ms_pptpminiport
+RegWrite,HKLM,0x7,Tmp_System\ControlSet001\Enum\Root\MS_PPTPMINIPORT\0000,LowerFilters,NdisTapi
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\MS_PPTPMINIPORT\0000,Mfg,Microsoft
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\MS_PPTPMINIPORT\0000,Service,PptpMiniport
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\MS_PPTPMINIPORT\0000,DeviceDesc,%TMP%
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\MS_PPTPMINIPORT\0000,ConfigFlags,0
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\MS_PPTPMINIPORT\0000,Capabilities,0
+RegWrite,HKLM,0x4,"Tmp_System\ControlSet001\Enum\Root\MS_PPTPMINIPORT\0000\Device Parameters",InstanceIndex,1
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\Raspti,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\Raspti,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\Raspti,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,"Direct Parallel"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\MS_PTIMINIPORT\0000,ClassGUID,{4D36E972-E325-11CE-BFC1-08002BE10318}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\MS_PTIMINIPORT\0000,Class,Net
+RegWrite,HKLM,0x7,Tmp_System\ControlSet001\Enum\Root\MS_PTIMINIPORT\0000,HardwareID,ms_ptiminiport
+RegWrite,HKLM,0x7,Tmp_System\ControlSet001\Enum\Root\MS_PTIMINIPORT\0000,LowerFilters,PtiLink
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\MS_PTIMINIPORT\0000,Mfg,Microsoft
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\MS_PTIMINIPORT\0000,Service,Raspti
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\MS_PTIMINIPORT\0000,DeviceDesc,%TMP%
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\MS_PTIMINIPORT\0000,ConfigFlags,0
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\MS_PTIMINIPORT\0000,Capabilities,0
+RegWrite,HKLM,0x4,"Tmp_System\ControlSet001\Enum\Root\MS_PTIMINIPORT\0000\Device Parameters",InstanceIndex,1
+RegHiveUnLoad,Tmp_System
+
+[CopyExtraFiles]
+Echo,"Copying files ..."
+If,ExistFile,%ProjectTemp%\tmp.ctl,Shellexecute,Hide,cmd.exe,"/C del /q /f /A:R /A:H /A:S /A:A #$q%ProjectTemp%\tmp.ctl#$q"
+If,ExistFile,%ProjectTemp%\tmpcmd.cmd,Shellexecute,Hide,cmd.exe,"/C del /q /f /A:R /A:H /A:S /A:A #$q%ProjectTemp%\tmpcmd.cmd#$q"
+If,ExistFile,%ProjectTemp%\tmpctl.txt,Shellexecute,Hide,cmd.exe,"/C del /q /f /A:R /A:H /A:S /A:A #$q%ProjectTemp%\tmpctl.txt#$q"
+If,ExistFile,%ProjectTemp%\tmp.ctl,FileDelete,%ProjectTemp%\tmp.ctl
+If,ExistFile,%ProjectTemp%\tmpcmd.cmd,FileDelete,%ProjectTemp%\tmpcmd.cmd
+If,ExistFile,%ProjectTemp%\tmpctl.txt,FileDelete,%ProjectTemp%\tmpctl.txt
+FileCreateBlank,%ProjectTemp%\tmpcmd.cmd
+FileCreateBlank,%ProjectTemp%\tmpctl.txt
+FileCreateBlank,%ProjectTemp%\tmp.ctl
+IniRead,%ProjectDir%\script.project,IniVariables,ApiRegDir,%ApiRegDir%
+ShellExecute,hide,%ApiRegDir%\ApiRegUtil.exe,"getinffiles#$s#$q%Source_Win%\layout.inf#$q#$s[SourceDisksFiles]#$s#$q*.xsd*=*#$q#$s#$q%ProjectTemp%\tmp.ctl#$q"
+Run,%ScriptFile%,CopyExtraFiles1,l2schemas
+If,ExistFile,%ProjectTemp%\tmp.ctl,Shellexecute,Hide,cmd.exe,"/C del /q /f /A:R /A:H /A:S /A:A #$q%ProjectTemp%\tmp.ctl#$q"
+If,ExistFile,%ProjectTemp%\tmpcmd.cmd,Shellexecute,Hide,cmd.exe,"/C del /q /f /A:R /A:H /A:S /A:A #$q%ProjectTemp%\tmpcmd.cmd#$q"
+If,ExistFile,%ProjectTemp%\tmpctl.txt,Shellexecute,Hide,cmd.exe,"/C del /q /f /A:R /A:H /A:S /A:A #$q%ProjectTemp%\tmpctl.txt#$q"
+If,ExistFile,%ProjectTemp%\tmp.ctl,FileDelete,%ProjectTemp%\tmp.ctl
+If,ExistFile,%ProjectTemp%\tmpcmd.cmd,FileDelete,%ProjectTemp%\tmpcmd.cmd
+If,ExistFile,%ProjectTemp%\tmpctl.txt,FileDelete,%ProjectTemp%\tmpctl.txt
+FileCreateBlank,%ProjectTemp%\tmpcmd.cmd
+FileCreateBlank,%ProjectTemp%\tmpctl.txt
+FileCreateBlank,%ProjectTemp%\tmp.ctl
+IniRead,%ProjectDir%\script.project,IniVariables,ApiRegDir,%ApiRegDir%
+ShellExecute,hide,%ApiRegDir%\ApiRegUtil.exe,"getinffiles#$s#$q%Source_Win%\layout.inf#$q#$s[SourceDisksFiles]#$s#$q*.xdr*=*#$q#$s#$q%ProjectTemp%\tmp.ctl#$q"
+Run,%ScriptFile%,CopyExtraFiles1,Provisioning\Schemas
+
+[CopyExtraFiles1]
+TXTDelLine,%ProjectTemp%\tmp.ctl,count=
+TXTDelLine,%ProjectTemp%\tmp.ctl,[files]
+TXTAddLine,%ProjectTemp%\tmpcmd.cmd,"ECHO.#$s>#$s#$q%ProjectTemp%\tmpctl.txt#$q",Append
+TXTAddLine,%ProjectTemp%\tmpcmd.cmd,"for#$s/F#$s#$qusebackq tokens=2,3#$sdelims=,=#$q#$s#$p#$pi#$sIN#$s(#$q%ProjectTemp%\tmp.ctl#$q)#$sDO#$s(",Append
+TXTAddLine,%ProjectTemp%\tmpcmd.cmd,"ECHO#$sSystem#$cERROROFF#$s>>#$s#$q%ProjectTemp%\tmpctl.txt#$q",Append
+TXTAddLine,%ProjectTemp%\tmpcmd.cmd,"ECHO#$sIf#$cNot#$cExistFile#$c@#@$q@target@#$p#$pj@#@$q#$cCopyOrExpand#$c@#@$q@source@#$p#$pi@#@$q#$c@#@$q@target@#$p#$pj@#@$q#$s>>#$s#$q%ProjectTemp%\tmpctl.txt#$q)",Append
+ShellExecute,Hide,cmd.exe,"/c#$s#$q%ProjectTemp%\tmpcmd.cmd#$q"
+TXTreplace,%ProjectTemp%\tmpctl.txt,"@source@","#$psource_win#$p\"
+TXTreplace,%ProjectTemp%\tmpctl.txt,"@target@","#$ptarget_win#$p\#1\"
+TXTreplace,%ProjectTemp%\tmpctl.txt,"@#@$q","#$q"
+TXTAddLine,%ProjectTemp%\tmpctl.txt,[Process-Hive],PrePend
+Exec,%ProjectTemp%\tmpctl.txt,Process-Hive
+Shellexecute,Hide,cmd.exe,"/C del /q /f /A:R /A:H /A:S /A:A #$q%ProjectTemp%\tmpcmd.cmd#$q"
+If,ExistFile,%ProjectTemp%\tmpcmd.cmd,FileDelete,%ProjectTemp%\tmpcmd.cmd
+
+[EncodedFolders]
+files
+
+[files]
+
+[AuthorEncoded]
+logo.jpg=10469,13959
+Logo=logo.jpg
+
+[EncodedFile-AuthorEncoded-logo.jpg]
+lines=3
+0=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
+1=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
+2=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
+3=hxWoiuV42lUJQfQSAMiNx4O2c5FNumF6/XWNH3jhTT+EujPmFTTm8RmiJ0KTTUqU8xpj1idFVRoSnSc1nxSNCXiYBzrHF9vFE+4pjyQp/47z635VlV4BtUNV/naUdLD6ioIEyy8aBa5y534ui+MwDnK8aq9/ySn2AONtAjMuaoDFyofb96RAHE6uX5uZrj7S/Zrk7sWh4xWxgfFObJMVkASt5yCDaJiaX4z5o4mHFe3AvOJ8hTWnYY/QBwn6MX8/45QIBrF6Bw/sTlUziNG/TeztrsTdzmW3DvYCDdhSLCr8pFJKqJitrl5HNX5ItX8TtKsRLEH0jFk9T/FlDXcbnE+gQt/tcnZ60WW8U2dDQk/STBUK9ROli2KQ22qMD346x5YzP12Me03E9LJdhkUVaoMqre7VgjtwJQgrEebTITa309/QHnh4JKX8dsnMqjg36XTlhb+D/P9fa8XMrwPzE71XtDctzLDldDjHI+5P+zaWqhWaYXIg96uy3PYWPF9/Ow5b9TSG1+/+nDXH/+/vjeknpf3aT39XdHPKxkPzZCUp6nFELIO1KKRQqKFoyzY3xCsOl/rKW09YuG0gvF8nQRnXB2QJ8z9a83LrshyElXp7Vi+U67h+M4WkYrQ6qIgLsJjvDL1M/nJkY6zGijLtcVXTEj47F4CseSKL95K/RKMF0fqmyChjOT/G3hdEs3Uxn5EwsrlmP7ne6khTfx3/2s2RDbH8wSy+grM4zulRrJYiGLIZvwwgIv9so/z10etUsqxFsZLzGLJqlFVBwxpJYngw2ljOMv89BShAyfZRAkZNXwj9bnMp+YyKqEqlw+X0amTQyz7wDNbVNLNXEgrLlpkCLGRD7QT1j1vM85xTvjISqAcqRySS9KXSyvt9vGJFnn3XtbPUWEDj5QY18PnfGjbJCSvtCy9Gh2dN9IQmuRmIHslL1lrUcLmnVXvcIY7ei6/pNbIH25oxZpebLL8pWQtrXiEEckmgcHajzcMiCuaoBN8ghqSUWUoUY1jf1WIPc6zPl47jLvAYA9hUe7+cUjjUtkQBhpDq6QKh92v/hzutVudCY1/uGZaWaTDCL59KMSN8/Icba1k0AgHUEQpaWQa7fkJqUXeknyLIglwsoygBURAzWdy+fK7EHC4k2yaoJrF551Lj8AWsk/dLKPR54VnEVvy16aulePtrWOpMlq2i1o2Zi+qVw8Up2usI8U+sVe0TDhe6U/Oj1CX0dW+DF/BOcTa2fd0Cn32ptR2Tt+XtVUkTcJbf1S22R9rASKfO3f/93wcAp2W0Ht8TWDPYomC/Q3AAAceRKsa9cWJWLwFpKAXe1zKLVkAUIxHxRFRQaWJ0Tl/budD0BCSkIv5tDG21UAQjAy0ovZTXb9z+n/0ysZGf2pIlDlR0e/fte5c4990l3+G8P1+GT94Pc/zb+9pCl2O0tOCj7LOdx+XBKz28C9PPXvLLh6Wbaxr5vxJ7cBGXJTfXBnN1kQQLHcfPknduVPSfB/g/9HCUICdN/vLd++dLvNIf1v8H+VCHpJrBetuc77vycO/xePIYuIij46+Nt4u8mv6vOJmKMHwMDpJ/OXD4v/BwlLSy54nOPIyU/P18sqSGcYBSMRbNeE0HM1sMvbHBRPYWACAPtHBki/CRMZAQAAAAIAAAAkAAAAnSgAAAAAAAABAAAAAAAAAAAAAAA
+
+[DownloadXXX]
+IniRead,%ScriptFile%,Main,Level,%LevelBefore%
+Call,DownloadXQ
+IniWrite,%ScriptFile%,Main,Level,%LevelBefore%
+
+[UploadXXX]
+IniRead,%ScriptFile%,Main,Level,%LevelBefore%
+Call,UploadXQ
+IniWrite,%ScriptFile%,Main,Level,%LevelBefore%
+
+[Settings_Default]
+IniWrite,%ScriptFile%,Main,Level,0
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+

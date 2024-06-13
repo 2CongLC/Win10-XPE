@@ -1,0 +1,11 @@
+[Main]
+Link=Projects\Yomi\ShellG\GeoShell.script
+Selected=False
+Author=Lancelot
+Contact=http://TheOven.org
+Web1=
+HistoryNotes51=Macro Library Link Creator
+HistoryNotes52=Call,CreateLink http://TheOven.org/index.php?topic=45
+HistoryNotes53=Call,CreatePlugin http://TheOven.org/index.php?topic=45
+HistoryNotes54=Plugin Create Associate http://TheOven.org/index.php?topic=200
+

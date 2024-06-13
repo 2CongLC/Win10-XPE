@@ -1,0 +1,181 @@
+[Main]
+Title=Upx Compress
+Type=Plugin
+Author=Lancelot
+Description=.exe .dll - UPX Compress (UPX supports Microsoft Portable Executable and COFF Specification (EXE, DLL, OCX, BPL, CPL and other).)
+Credits=http://TheOven.org
+Version=007
+Download_Level=2
+Level=8
+Selected=False
+Mandatory=False
+NoWarning=False
+Contact=http://TheOven.org
+Date=2017.02.11
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Finals/1%20Optimizations/uu_Upx_Files.Script
+Web2=http://yomi.cwcodes.net/Yomi/Final_Y/uu_Upx_Files.Script
+CertifiedBy=
+Certification=
+HistoryNotes01=Make Each Section StandAlone (To get easily used by "Basic Project")
+HistoryNotes02=Default Settings to get minimum possible ("Basic Project")
+HistoryNotes03=Using UPX is not good always since some files can not "UPX UnCompress" which is used by some Final plugins - need to be tested if "UPX UnCompressable"
+History001=Lancelot 2016.09.22 Plugin created
+History002=Lancelot Added to server
+History003=Lancelot gdi32.dll not upx compressable on xpsp3x86 (ok on 2k3sp3x86) - Date:2016.09.23
+History004=Lancelot vga.dll not upx compressable on 2k3sp3x86 (ok on xpsp3x86) - Date:2016.09.23
+History005=Lancelot Added to Yomi - Date:2016.09.24
+History006=Lancelot Added Settings_Default - Date:2016.09.28
+History007=Lancelot - Add Compare Button - Date:2017.02.11
+
+[TO_DO]
+check others like services.exe lsass.exe deps etc. etc...
+//-
+check xpx64 AND 2k3x64 (upx x64 experimenatl support)
+//-
+Get unupxall.cmd from wimboot
+//-
+
+[InterFace]
+WebLabel_Plugin="Plugin Page",1,10,338,4,55,18,http://TheOven.org/index.php?board=9
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+pWebLabel1="UPX Portable",1,10,295,32,62,18,http://www.pazera-software.com/products/free-upx/
+pWebLabel2=UPX,1,10,295,13,20,18,https://upx.github.io/
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[Variables]
+
+[Process]
+//UPX_Compress_CheckBox="UPX Compress",1,3,160,16,95,18,True
+Echo,"UPX Process Start"
+IniRead,%ProjectDir%\Script.Project,IniVariables,OS,%OS%
+//-
+//Saydin77Core - Small Core Build - VeryVerySmall - cmd.exe - Winlogonexe -------------------------------------
+ShellExecute,Hide,%Tools%\upx.exe,"-9 advapi32.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-9 authz.dll",%Target_SYS%
+//-basesrv.dll NO-UPX COMPRESS - BSOD 2k3SP2x86 basesrv not found ShellExecute,Hide,%Tools%\upx.exe,"-9 basesrv.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-9 crypt32.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-9 csrsrv.dll",%Target_SYS%
+//-
+//-gdi32.dll NO-UPX COMPRESS - BSOD XPSP3x86 winsrv not found
+//-gdi32.dll UPX COMPRESS - Works ok 2k3SP2x86
+If,Not,%OS%,Equal,XP,ShellExecute,Hide,%Tools%\upx.exe,"-9 gdi32.dll",%Target_SYS%
+//-
+ShellExecute,Hide,%Tools%\upx.exe,"-9 imagehlp.dll",%Target_SYS%
+//-kernel32.dll NO-UPX COMPRESS - BSOD 2k3SP2x86 winsrv not found ShellExecute,Hide,%Tools%\upx.exe,"-9 kernel32.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-9 mpr.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-9 msasn1.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-9 msvcrt.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-9 nddeapi.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-9 netapi32.dll",%Target_SYS%
+//ShellExecute,Hide,%Tools%\upx.exe,"-9 NTDLL.DLL",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-9 profmap.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-9 psapi.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-9 regapi.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-9 rpcrt4.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-9 secur32.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-9 setupapi.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-9 sxs.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-9 user32.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-9 userenv.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-9 version.dll",%Target_SYS%
+//-vga.dll NO-UPX COMPRESS - BSOD 2k3SP2x86 winsrv not found ShellExecute,Hide,%Tools%\upx.exe,"-9 vga.dll",%Target_SYS%
+//-vga.dll UPX COMPRESS OK on XPsp3x86
+If,%OS%,Equal,XP,ShellExecute,Hide,%Tools%\upx.exe,"-9 vga.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-9 cmd.exe",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-9 csrss.exe",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-9 smss.exe",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-9 winlogon.exe",%Target_SYS%
+//Saydin77Core - Small Core Build - VeryVerySmall - cmd.exe - Winlogonexe -------------------------------------
+//-
+ShellExecute,Hide,%Tools%\upx.exe,"-9 framebuf.dll",%Target_SYS%
+//-
+ShellExecute,Hide,%Tools%\upx.exe,"-9 kbdus.dll",%Target_SYS%
+//-
+//Organise later
+ShellExecute,Hide,%Tools%\upx.exe,"-9 ntdsapi.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-9 samlib.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-9 samsrv.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-9 scesrv.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-9 shell32.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-9 utfs.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-9 winmm.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-9 wintrust.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-9 ws2_32.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-9 ws2help.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-9 dnsapi.dll",%Target_SYS%
+Echo,"UPX Process Finish"
+
+[UPX_Compress_CANCELL]
+//do not work properly - this even breaks files - need to be checked deeply
+ShellExecute,Hide,%Tools%\upx.exe,"-d advapi32.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-d authz.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-d basesrv.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-d crypt32.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-d csrsrv.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-d gdi32.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-d imagehlp.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-d kernel32.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-d mpr.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-d msasn1.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-d msvcrt.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-d nddeapi.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-d netapi32.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-d NTDLL.DLL",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-d profmap.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-d psapi.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-d regapi.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-d rpcrt4.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-d secur32.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-d setupapi.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-d sxs.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-d user32.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-d userenv.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-d version.dll",%Target_SYS%
+ShellExecute,Hide,%Tools%\upx.exe,"-d vga.dll",%Target_SYS%
+
+[AuthorEncoded]
+Saki-NuoveXT-Apps-package-settings_4848.ico=4703,6271
+Logo=Saki-NuoveXT-Apps-package-settings_4848.ico
+
+[EncodedFile-AuthorEncoded-Saki-NuoveXT-Apps-package-settings_4848.ico]
+lines=1
+0=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
+1=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
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[EncodedFolders]
+Folder
+
+[Folder]
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+Call,UploadXMultiQ
+
+[Settings_Default]
+IniWrite,%ScriptFile%,Main,Selected,False
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+

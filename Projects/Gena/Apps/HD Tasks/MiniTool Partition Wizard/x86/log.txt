@@ -1,0 +1,31 @@
+=====================================================================================
+2020-09-25 22:49:33:000 => [                                                    main.cpp, 00055] => OS MajorVer:5 MiniorVer:1 ServicePack:3
+2020-09-25 22:49:33:000 => [                                                    main.cpp, 00056] => System is server:No
+2020-09-25 22:49:33:000 => [                                                    main.cpp, 00057] => Software is 64 bit:No
+2020-09-25 22:49:33:000 => [                                                 idriver.cpp, 00618] => Copying 32 bit driver.
+2020-09-25 22:49:33:000 => [                                                 idriver.cpp, 00636] => Failed to copy file :D:\New folder\PartitionWizard\x86\pwdspio.sys.
+2020-09-25 22:49:33:015 => [                                                 idriver.cpp, 00408] => StartService failure! Error = 2 
+
+2020-09-25 22:49:33:015 => [                                                 idriver.cpp, 00477] => ControlService failed!  Error = 1062 
+
+2020-09-25 22:49:33:015 => [                                                 idriver.cpp, 00175] => CreateService failed!  Error = 1072
+2020-09-25 22:49:33:015 => [                                                 idriver.cpp, 00618] => Copying 32 bit driver.
+2020-09-25 22:49:33:015 => [                                                 idriver.cpp, 00636] => Failed to copy file :D:\New folder\PartitionWizard\x86\pwdrvio.sys.
+2020-09-25 22:49:33:015 => [                                                 idriver.cpp, 00378] => OpenService failed!  Error = 1060 
+
+2020-09-25 22:49:33:015 => [                                                 idriver.cpp, 00700] => Failed to call ManageDriver(DRIVER_FUNC_START)
+2020-09-25 22:49:33:015 => [                                                 idriver.cpp, 00455] => OpenService failed!  Error = 1060 
+
+2020-09-25 22:49:33:015 => [                                                 idriver.cpp, 00311] => OpenService failed!  Error = 1060 
+
+2020-09-25 22:49:33:015 => [                                                 idriver.cpp, 00408] => StartService failure! Error = 2 
+
+2020-09-25 22:49:33:015 => [                                                 idriver.cpp, 00710] => Failed to call ManageDriver(DRIVER_FUNC_INSTALL)
+2020-09-25 22:49:33:109 => [                             ..\winnative\kvolumemanager.cpp, 00216] => Disk0, Vaseky V 800/120G ATA, CHS:14593,255,63, total sectors: 234441648, bytes per sector = 512
+2020-09-25 22:49:33:187 => [                             ..\winnative\kvolumemanager.cpp, 00216] => Disk1, SAMSUNG HD161GJ ATA, CHS:19457,255,63, total sectors: 312581808, bytes per sector = 512
+2020-09-25 22:49:33:625 => [                             ..\winnative\kvolumemanager.cpp, 00216] => Disk2, TO Exter nal USB 3.0 USB, CHS:14593,255,63, total sectors: 234441648, bytes per sector = 512
+2020-09-25 22:49:33:828 => [                             ..\winnative\kvolumemanager.cpp, 00237] => Disk2 set alignmentFactor =AlignToMB
+2020-09-25 22:49:33:828 => [                  ..\winnative\kdynamicdiskvolumemanager.cpp, 00084] => Init DiskGroup=
+2020-09-25 22:49:33:828 => [                                ..\winnative\dynamicdisk.cpp, 00154] => Disk0 is not a dynamic disk.
+2020-09-25 22:49:33:828 => [                                ..\winnative\dynamicdisk.cpp, 00154] => Disk1 is not a dynamic disk.
+2020-09-25 22:49:33:828 => [                                ..\winnative\dynamicdisk.cpp, 00154] => Disk2 is not a dynamic disk.

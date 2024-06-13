@@ -1,0 +1,152 @@
+[Main]
+Title=VB6Run
+Type=Plugin
+Author=Lancelot
+Description=Microsoft Visual Basic 6.0 and Microsoft Visual Studio 6.0 controls comctl32.ocx mscomctl.ocx
+Credits=http://TheOven.org
+Version=008
+Download_Level=1
+Level=3
+Selected=True
+Mandatory=False
+NoWarning=False
+Contact=http://TheOven.org
+Date=2017.12.18
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Components/Core/1%20System/VB6Run.Script
+CertifiedBy=
+Certification=
+HistoryNotes01=
+History003=doveman extract bug fix http://TheOven.org/index.php?topic=268.0 - 2012.03.16
+History004=Lancelot syntax updated - Date:2016.02.01
+History006=Lancelot Added Components_PluginCache_Extract x 2 - Date:2016.11.09 - Date:2016.11.10
+History007=Lancelot fixed Message - Thanks to ied206 PEBakery Auto Syntax Checking Reply 3 http://TheOven.org/index.php?topic=2271.msg24582#msg24582 - Date:2017.11.09
+History008=Lancelot Update empty Home Page WebLabel - PEBakery - ied206 Reply 3 http://TheOven.org/index.php?topic=2329.msg25119#msg25119 - Date:2017.12.18
+
+[Interface]
+Custom_Provide_Button="Provide comctl32.ocx and mscomctl.ocx here",1,8,19,29,270,43,Openddir_Provide_Custom,opendir.bmp
+KB_TextLabel=Alternative:,1,1,18,154,62,18,8,Normal
+KB_Button_Provide="Provide VisualBasic6-KB896559-v1-ENU.exe here",1,8,23,185,267,52,Openddir_Provide_KB,opendir.bmp
+KB_WebLabel=VisualBasic6-KB896559-v1-ENU.exe,1,10,305,211,51,18,http://www.microsoft.com/download/en/details.aspx?id=10019
+WebLabel_Homepg=HomePage,1,10,343,20,55,18,https://en.wikipedia.org/wiki/Visual_Basic
+WebLabel_Plugin="Plugin Page",1,10,338,4,55,18,http://TheOven.org/index.php?board=9
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[Variables]
+%ProvideFiles%=%GlobalTemplates%\Hotfixes\KB896559
+%ProvideFilesC%=%GlobalTemplates%\Hotfixes\KB896559\Custom
+%ProgramFolder%=VisualBasic6-KB896559-v1
+%SetupFile%=VisualBasic6-KB896559-v1-ENU.exe
+
+[Cache_SCD_Info_Additional_Plugin]
+IniRead,%ScriptFile%,Main,Selected,%t%
+If,%t%,Equal,True,Begin
+Run,%api%,Cache_SCD_Info_Additional_Plugin_ML,#1,#2,#3,#4,#5,#6,#7,#8,#9
+//-
+Call,RetrieveFolderUniqueID,%ProvideFiles%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,%Plugin_FName_Sub%_|_ProvideFiles_RetrieveFolderUniqueID,%RetrieveFolderUniqueID%
+If,%RetrieveFolderUniqueID%,Equal,1,IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,%Plugin_FName_Sub%_|_ProvideFiles_RetrieveFolderUniqueID,"%RetrieveFolderUniqueID% : Directory Not Exists"
+If,%RetrieveFolderUniqueID%,Equal,2,IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,%Plugin_FName_Sub%_|_ProvideFiles_RetrieveFolderUniqueID,"%RetrieveFolderUniqueID% : Directory exists but empty"
+//-
+Call,RetrieveFolderUniqueID,%ProvideFilesC%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,%Plugin_FName_Sub%_|_ProvideFilesC_RetrieveFolderUniqueID,%RetrieveFolderUniqueID%
+If,%RetrieveFolderUniqueID%,Equal,1,IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,%Plugin_FName_Sub%_|_ProvideFilesC_RetrieveFolderUniqueID,"%RetrieveFolderUniqueID% : Directory Not Exists"
+If,%RetrieveFolderUniqueID%,Equal,2,IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,%Plugin_FName_Sub%_|_ProvideFilesC_RetrieveFolderUniqueID,"%RetrieveFolderUniqueID% : Directory exists but empty"
+//-
+Echo,"Cache_SCD_Info_Additional_Plugin - Finish - %Plugin_FName%"
+End
+
+[Process]
+If,ExistFile,%ProjectTemp%\Components_PluginCache_Extract.ini,Echo,"Components PluginCache"
+If,Not,ExistFile,%ProjectTemp%\Components_PluginCache_Extract.ini,Run,%ScriptFile%,Process_Normal
+
+[Process_Normal]
+Arch,x86
+Echo,"Processing %ScriptTitle%..."
+Set,%ok%,1
+If,Not,ExistFile,%ProvideFilesC%\mscomctl.ocx,Set,%ok%,0
+If,Not,ExistFile,%ProvideFilesC%\comctl32.ocx,Set,%ok%,0
+If,ExistFile,%ProvideFiles%\VisualBasic6-KB896559-v1-ENU.exe,Set,%ok%,1
+If,%ok%,Equal,0,Message,"%ScriptTitle% Required File(s) Missing",Error,5
+If,%ok%,Equal,0,Exit,"%ScriptTitle% Required File(s) Missing"
+//--
+Set,%ok%,1
+If,Not,ExistFile,%ProvideFilesC%\mscomctl.ocx,Set,%ok%,0
+If,Not,ExistFile,%ProvideFilesC%\comctl32.ocx,Set,%ok%,0
+If,%ok%,Equal,0,Run,%ScriptFile%,VisualBasic6-KB896559-v1-ENU_Extract
+//--
+If,%sourcearch%,Equal,x86,Set,%targetdirvalue%,%target_sys%
+If,Not,%sourcearch%,Equal,x86,Set,%targetdirvalue%,%target_win%\SysWOW64
+If,Not,ExistFile,%targetdirvalue%\mscomctl.ocx,FileCopy,%ProvideFilesC%\mscomctl.ocx,%targetdirvalue%
+If,Not,ExistFile,%targetdirvalue%\comctl32.ocx,FileCopy,%ProvideFilesC%\comctl32.ocx,%targetdirvalue%
+
+[VisualBasic6-KB896559-v1-ENU_Extract]
+//Extracting-7z-Start
+If,ExistDir,%ProjectTemp%\TempExtractFolder\%ProgramFolder%,Shellexecute,Hide,cmd.exe,"/C rd /s /q #$q%ProjectTemp%\TempExtractFolder\%ProgramFolder%#$q"
+If,ExistDir,%ProjectTemp%\TempExtractFolder\%ProgramFolder%,Echo,"Directory NOT DELETED",WARN
+DirMake,%ProjectTemp%\TempExtractFolder\%ProgramFolder%
+ShellExecute,Hide,%Tools%\7z.exe,"x #$q%ProvideFiles%\%SetupFile%#$q -y -o#$q%ProjectTemp%\TempExtractFolder\%ProgramFolder%\%ProgramFolder%#$q"
+//Extracting-7z-Finish
+If,Not,ExistDir,%ProvideFilesC%,DirMake,%ProvideFilesC%
+If,Not,ExistFile,%ProvideFilesC%\mscomctl.ocx,FileCopy,%ProjectTemp%\TempExtractFolder\%ProgramFolder%\%ProgramFolder%\mscomctl.ocx,%ProvideFilesC%
+If,Not,ExistFile,%ProvideFilesC%\comctl32.ocx,FileCopy,%ProjectTemp%\TempExtractFolder\%ProgramFolder%\%ProgramFolder%\comctl32.ocx,%ProvideFilesC%
+
+[Openddir_Provide_KB]
+If,Not,ExistDir,%ProvideFiles%,DirMake,%ProvideFiles%
+System,FILEREDIRECT,OFF
+ShellExecuteEx,Open,explorer.exe,/e#$c#$q%ProvideFiles%#$q
+System,FILEREDIRECT,ON
+
+[Openddir_Provide_Custom]
+If,Not,ExistDir,%ProvideFilesC%,DirMake,%ProvideFilesC%
+System,FILEREDIRECT,OFF
+ShellExecuteEx,Open,explorer.exe,/e#$c#$q%ProvideFilesC%#$q
+System,FILEREDIRECT,ON
+
+[AuthorEncoded]
+VisualBasic6.ico=368,491
+Logo=VisualBasic6.ico
+
+[InterfaceEncoded]
+opendir.bmp=571,762
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[EncodedFolders]
+Folder
+
+[Folder]
+
+[EncodedFile-AuthorEncoded-VisualBasic6.ico]
+lines=0
+0=eJylkr9KxEAQxr8zQuz0GuuUlgvbXBeLFHb3FldqIMWm25QBi+Cj2Fmm8EEsLCwDEY1wMM7sn8txyoH47X6z/GYmSxIGWPDKsguOp3g7AS4BXLEz9jVb8sfVuI2m8YcsSXHo+54z5DaI/CFLUhJ+qNJeKrC999KRn7xiw66uD+qhYa6r/9aNKef3S7Rq2xKp1jmJlFY0lai6wGMinK6mMbASrrquCxdoMCfTNFoKDfJ83q2sMfRpLOmUORnrUKfxnBmqtgP/umJNgxJGbZdL+tisqSgCfz0S3d7R9jXyA9GG+TkwRXk2O9WO21mOCyeZBOzxTdOeNUfY6bf7zJ7KASkNSNgLNsT8ecgPjOgXdu8nLk6eY8m/s7d/9DeUOwmAeJwTCMssLk3McUoszkw208tMzmcYBSMJ/GOC0AqM2OUvf7Jfx8AEAPbQCdvs4wwRAQAAAAIAAAAsAAAAIAEAAAAAAAABAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-opendir.bmp]
+lines=0
+0=eJyVkt1LU3EYx382esMuBFEKE8GLLL0IbyYhpEUI4aKytilTFN1xOrvxohpI9/0FlYESXUR2EXmxi4S9hYF4IZhOSdZMzJdtx+HwvO1sh2/P8cyxYFh9+TzPxXm+v+9z+J1z847ZxA5lprpMVZarEnbeGNC8vNSoI+E/5Z6YZs++Mk+QPTnkaaiAo4ee0LVPEcN/4tViTRjuNB7Jeh/cAxfPcEnNtY8hAW4ZwwqGVbCxL3k/D5zxC71x9AjoTsGRgG0jbY2K1siBfV2ybyjd2xkHr7HHIcO/CZh8ApdEfwIDKXASnAr6BDh4dG5mbVHJui727ar0VuQ/924tCtyNoTwgGFQGdZyxrHMfLgUuFYMShg4wIOrhVTNb3zVYdtCbQD+vQ4sqQwKhH/cLFQGx1C+W+EQWlC/Nyw0LqRUVt7fQtZPDvgtrDB2JHD1JnJrl8/dpjqjLipb3P9zG/Ti+qQirWJY1Yi0L06pW6F+QtJZf+grCEkOYrus5q/iJ06tgiwoLZ+0v3vyRnwEdoailtG6ufllVN1FXO36x6Pcd8wYogXJOrqDsB66+rTdPtV7/aGmcar0weeX4f6N2srrpQ/ON6Xvt3i7q9e+bz74uvqVQt7wPOn0c9b86DbV9tjlnR6n/o39kzmNQdPoblHVTL3ic484vSM1LySzSS8otYBgFIw6YMUPoD4zY5WddWriPgQkAk7cIYWOapDwBAAAAAgAAACcAAADwAQAAAAAAAAEAAAAAAAAAAAAAAA
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+Call,UploadXQ
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+

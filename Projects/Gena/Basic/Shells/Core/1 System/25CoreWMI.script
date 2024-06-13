@@ -1,0 +1,689 @@
+[Main]
+Title=WMI Support
+Type=Plugin
+Author=fxscrpt
+Description=Add windows management instrumentation to build
+Credits=Lancelot and Galapo - http://TheOven.org
+Version=014
+Download_Level=0
+Level=0
+Selected=False
+Mandatory=False
+NoWarning=False
+Contact=http://TheOven.org/index.php?board=3
+Date=2016.10.30_22:18.31 (GMT0: -3 Hours)
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Basic/Shells/Core/1%20System/25CoreWMI.script
+CertifiedBy=
+Certification=
+HistoryNotes01=
+History004=Lancelot Echo bug fixed
+History005=fixscrpt removed %PEDrive%
+History006=fixscrpt altered order for mofcomp evntrprv.mof
+History009=Lancelot use reg.exe for empty 0x7 ;)
+History011=Lancelot IniVariables RegFactory
+History012=Lancelot NoWarnROW implemented - Date:2012.01.17
+History014=Lancelot Added Basic_PluginCache_Extract - Date:2016.10.30
+
+[Interface]
+pTextLabel1="Info:#$xAdding WMI support naturally cause slower bootup ;)",1,1,15,38,264,27,8,Normal
+pWebLabel2="Plugin Page",1,10,338,4,55,18,http://TheOven.org/index.php?board=3
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[Variables]
+%regmethod%=build
+%sysdrive%=X:
+
+[Process]
+If,ExistFile,%ProjectTemp%\Basic_PluginCache_Extract.ini,Echo,"Basic PluginCache"
+If,Not,ExistFile,%ProjectTemp%\Basic_PluginCache_Extract.ini,Run,%ScriptFile%,Process_Normal
+
+[Process_Normal]
+Run,%ScriptFile%,SetVariables
+Run,%ScriptFile%,InstallCore
+
+[RegisterDep]
+If,Not,ExistSection,%ProjectTemp%\depends.script,CoreWMIInstallCore,Begin
+IniAddSection,%ProjectTemp%\depends.script,CoreWMIInstallCore
+IniWriteTextLine,%ProjectTemp%\depends.script,CoreWMIInstallCore,"Exec,%ScriptFile%,InstallCore"
+End
+
+[SetVariables]
+Set,%PInfo%,%ProjectInfo%
+IniRead,%PInfo%,Settings,Target,%tmp%
+If,%tmp%,Equal,"",Set,%PInfo%,%ProjectTemp%\ProjectInfo.ini
+IniRead,%PInfo%,OS,Type,%OS%
+IniRead,%PInfo%,OS,ServicePack,%SP%
+IniRead,%PInfo%,Cabs,SP_CAB,%SPCAB%
+IniRead,%PInfo%,Cabs,DR_CAB,%DRCAB%
+
+[InstallCore]
+IniRead,%projectdir%\script.project,IniVariables,ApiRegScript,%ApiRegScript%
+IniRead,%ProjectDir%\script.project,IniVariables,NoWarnRegOverWrite,%NoWarnROW%
+If,ExistSection,%ProjectTemp%\depends.script,CoreWMIInstallCore,Begin
+IniDeleteSection,%ProjectTemp%\depends.script,CoreWMIInstallCore
+//Exec,%ProjectTemp%\depends.script,ExecDep,CoreMainInstallCore
+Run,%ProjectTemp%\depends.script,ExecDep,CoreMainInstallCore
+Run,%ScriptFile%,SetVariables
+IniRead,%PInfo%,RamDrive,Settings,%TmpDrive%
+IniRead,%PInfo%,String,ProfileBase,%settingsfolder%
+Run,%ApiRegScript%,setlevel,525,True
+Echo,"Processing files ..."
+Set,%dir%,%target_sys%\wbem
+DirMake,%dir%
+DirMake,%dir%\xml
+DirMake,%dir%\AutoRecover
+IniRead,%ProjectInfo%,BasePath,AUAppData,%tmp%
+DirMake,%TargetProfilesBaseDir%\%tmp%\wbem
+DirMake,%TargetProfilesBaseDir%\%tmp%\wbem\Logs
+DirMake,%TargetProfilesBaseDir%\%tmp%\wbem\Repository
+DirMake,%TargetProfilesBaseDir%\%tmp%\wbem\MOF
+//Set,%mram%,""
+//IniRead,%PInfo%,TargetPaths,Model,%mram%
+//If,Not,ExistDir,%mram%,Set,%mram%,%TargetDir%
+//If,Not,%mram%,Equal,"",Be gin
+//IniRead,%PInfo%,TargetPaths,Common_Application_Data,%tmp%
+//If,Not,%tmp%,Equal,"",Be gin
+//DirMake,%mram%\%tmp%\wbem
+//DirMake,%mram%\%tmp%\wbem\Logs
+//DirMake,%mram%\%tmp%\wbem\Repository
+//DirMake,%mram%\%tmp%\wbem\MOF
+//E nd
+//E nd
+CopyOrExpand,%source_win%\cmprops.dll,%target_sys%
+CopyOrExpand,%source_win%\provthrd.dll,%target_sys%
+CopyOrExpand,%source_win%\activeds.dll,%target_sys%
+CopyOrExpand,%source_win%\activeds.tlb,%target_sys%
+CopyOrExpand,%source_win%\adsldpc.dll,%target_sys%
+CopyOrExpand,%source_win%\wldap32.dll,%target_sys%
+CopyOrExpand,%source_win%\wmi.dll,%target_sys%
+CopyOrExpand,%source_win%\loadperf.dll,%target_sys%
+CopyOrExpand,%source_win%\pdh.dll,%target_sys%
+CopyOrExpand,%source_win%\servdeps.dll,%target_sys%
+CopyOrExpand,%source_win%\mmfutil.dll,%target_sys%
+CopyOrExpand,%source_win%\ncobjapi.dll,%target_sys%
+CopyOrExpand,%source_win%\wmimgmt.msc,%target_sys%
+//
+CopyOrExpand,%source_win%\wmi2xml.dll,%dir%\xml
+CopyOrExpand,%source_win%\cim20.dtd,%dir%\xml
+CopyOrExpand,%source_win%\wmi20.dtd,%dir%\xml
+//
+CopyOrExpand,%source_win%\framedyn.dll,%dir%
+CopyOrExpand,%source_win%\esscli.dll,%dir%
+CopyOrExpand,%source_win%\fastprox.dll,%dir%
+CopyOrExpand,%source_win%\mofd.dll,%dir%
+CopyOrExpand,%source_win%\repdrvfs.dll,%dir%
+CopyOrExpand,%source_win%\wbemcore.dll,%dir%
+CopyOrExpand,%source_win%\wbemess.dll,%dir%
+CopyOrExpand,%source_win%\wbemsvc.dll,%dir%
+CopyOrExpand,%source_win%\wmiprvsd.dll,%dir%
+CopyOrExpand,%source_win%\wmisvc.dll,%dir%
+CopyOrExpand,%source_win%\wmiutils.dll,%dir%
+CopyOrExpand,%source_win%\wbemprox.dll,%dir%
+CopyOrExpand,%source_win%\unsecapp.exe,%dir%
+CopyOrExpand,%source_win%\wmiprvse.exe,%dir%
+//
+CopyOrExpand,%source_win%\wbemcntl.dll,%dir%
+CopyOrExpand,%source_win%\wbemdisp.dll,%dir%
+CopyOrExpand,%source_win%\wbemcomn.dll,%dir%
+CopyOrExpand,%source_win%\provthrd.dll,%dir%
+CopyOrExpand,%source_win%\winmgmtr.dll,%dir%
+CopyOrExpand,%source_win%\wbemdisp.dll,%dir%
+CopyOrExpand,%source_win%\wbemdisp.tlb,%dir%
+CopyOrExpand,%source_win%\wbemupgd.dll,%dir%
+CopyOrExpand,%source_win%\wmiapres.dll,%dir%
+CopyOrExpand,%source_win%\wmiaprpl.dll,%dir%
+CopyOrExpand,%source_win%\wmicookr.dll,%dir%
+CopyOrExpand,%source_win%\wmidcprv.dll,%dir%
+CopyOrExpand,%source_win%\winmgmt.exe,%dir%
+CopyOrExpand,%source_win%\wmiadap.exe,%dir%
+CopyOrExpand,%source_win%\wmiapsrv.exe,%dir%
+CopyOrExpand,%source_win%\mofcomp.exe,%dir%
+CopyOrExpand,%source_win%\wbemtest.exe,%dir%
+CopyOrExpand,%source_win%\wmic.exe,%dir%
+CopyOrExpand,%source_win%\tasklist.exe,%dir%
+//Provider
+//WMI Event Trace Provider
+CopyOrExpand,%source_win%\evntrprv.dll,%dir%
+CopyOrExpand,%source_win%\evntrprv.mof,%dir%
+//Win32 WMI Provider
+CopyOrExpand,%source_win%\wmiprov.dll,%dir%
+CopyOrExpand,%source_win%\wmi.mof,%dir%
+CopyOrExpand,%source_win%\wmi.mfl,%dir%
+CopyOrExpand,%source_win%\cimwin32.dll,%dir%
+CopyOrExpand,%source_win%\cimwin32.mof,%dir%
+CopyOrExpand,%source_win%\cimwin32.mfl,%dir%
+CopyOrExpand,%source_win%\secrcw32.mof,%dir%
+CopyOrExpand,%source_win%\secrcw32.mfl,%dir%
+//WMI DS Provider
+CopyOrExpand,%source_win%\dsprov.dll,%dir%
+CopyOrExpand,%source_win%\dsprov.mof,%dir%
+CopyOrExpand,%source_win%\dsprov.mfl,%dir%
+//WMI MSI Provider
+CopyOrExpand,%source_win%\msiprov.dll,%dir%
+CopyOrExpand,%source_win%\msi.mof,%dir%
+CopyOrExpand,%source_win%\msi.mfl,%dir%
+//Non-COM WMI Event provider
+CopyOrExpand,%source_win%\system.mof,%dir%
+CopyOrExpand,%source_win%\ncprov.dll,%dir%
+CopyOrExpand,%source_win%\ncprov.mof,%dir%
+CopyOrExpand,%source_win%\ncprov.mfl,%dir%
+//WMI Event Log Provider
+CopyOrExpand,%source_win%\ntevt.dll,%dir%
+CopyOrExpand,%source_win%\ntevt.mof,%dir%
+CopyOrExpand,%source_win%\ntevt.mfl,%dir%
+//Kernel Trace Provider
+CopyOrExpand,%source_win%\krnlprov.dll,%dir%
+CopyOrExpand,%source_win%\krnlprov.mof,%dir%
+CopyOrExpand,%source_win%\krnlprov.mfl,%dir%
+//
+//Windows Product Activation Configuration WMI provider
+CopyOrExpand,%source_win%\licwmi.dll,%target_sys%
+CopyOrExpand,%source_win%\licwmi.mof,%dir%
+CopyOrExpand,%source_win%\licwmi.mfl,%dir%
+//WBEM WMI Policy Status Provider
+CopyOrExpand,%source_win%\policman.dll,%dir%
+CopyOrExpand,%source_win%\policman.mof,%dir%
+CopyOrExpand,%source_win%\policman.mfl,%dir%
+//WBEM SMTP Event Consumer Provider
+CopyOrExpand,%source_win%\smtpcons.dll,%dir%
+CopyOrExpand,%source_win%\smtpcons.mof,%dir%
+CopyOrExpand,%source_win%\smtpcons.mfl,%dir%
+//WBEM Registry Property Provider
+CopyOrExpand,%source_win%\stdprov.dll,%dir%
+CopyOrExpand,%source_win%\regevent.mof,%dir%
+CopyOrExpand,%source_win%\regevent.mfl,%dir%
+//WBEM View Provider
+CopyOrExpand,%source_win%\viewprov.dll,%dir%
+//WBEM Current Time Provider
+CopyOrExpand,%source_win%\wmitimep.dll,%dir%
+CopyOrExpand,%source_win%\wmitimep.mof,%dir%
+CopyOrExpand,%source_win%\wmitimep.mfl,%dir%
+//WBEM Framework Instance Provider CIMA
+CopyOrExpand,%source_win%\wmipcima.dll,%dir%
+CopyOrExpand,%source_win%\wmipcima.mof,%dir%
+CopyOrExpand,%source_win%\wmipcima.mfl,%dir%
+//WMI Standard Event Consumers
+CopyOrExpand,%source_win%\wbemcons.dll,%dir%
+CopyOrExpand,%source_win%\wbemcons.mof,%dir%
+CopyOrExpand,%source_win%\wbemcons.mfl,%dir%
+//WMI Standard Event Consumer - scripting
+CopyOrExpand,%source_win%\scrcons.exe,%dir%
+CopyOrExpand,%source_win%\scrcons.mof,%dir%
+CopyOrExpand,%source_win%\scrcons.mfl,%dir%
+//WMI Windows Job Object Provider
+CopyOrExpand,%source_win%\wmipjobj.dll,%dir%
+CopyOrExpand,%source_win%\wmipjobj.mof,%dir%
+CopyOrExpand,%source_win%\wmipjobj.mfl,%dir%
+//Rsop Logging Mode Provider
+CopyOrExpand,%source_win%\userenv.dll,%target_sys%
+CopyOrExpand,%source_win%\rsop.mof,%dir%
+CopyOrExpand,%source_win%\rsop.mfl,%dir%
+CopyOrExpand,%source_win%\scersop.mof,%dir%
+//WBEM Disk Quota Volume Provider
+CopyOrExpand,%source_win%\wmipdskq.dll,%dir%
+CopyOrExpand,%source_win%\wmipdskq.mof,%dir%
+CopyOrExpand,%source_win%\wmipdskq.mfl,%dir%
+//Microsoft Session And Connection Provider
+CopyOrExpand,%source_win%\wmipsess.dll,%dir%
+CopyOrExpand,%source_win%\wmipsess.mof,%dir%
+CopyOrExpand,%source_win%\wmipsess.mfl,%dir%
+//WBEM Ping Provider
+CopyOrExpand,%source_win%\wmipicmp.dll,%dir%
+CopyOrExpand,%source_win%\wmipicmp.mof,%dir%
+CopyOrExpand,%source_win%\wmipicmp.mfl,%dir%
+//WBEM IP Route Provider
+CopyOrExpand,%source_win%\wmipiprt.dll,%dir%
+CopyOrExpand,%source_win%\wmipiprt.mof,%dir%
+CopyOrExpand,%source_win%\wmipiprt.mfl,%dir%
+//
+//subscription needs wbemcons.mof,smtpcons.mof,scrcons.mof,updprov.mof,fconprov.mof,trnsprov.mof,tmplprov.mof
+CopyOrExpand,%source_win%\subscrpt.mof,%dir%
+//
+CopyOrExpand,%source_win%\cli.mof,%dir%
+CopyOrExpand,%source_win%\cliegali.mof,%dir%\cliegaliases.mof
+CopyOrExpand,%source_win%\cliegali.mfl,%dir%\cliegaliases.mfl
+CopyOrExpand,%source_win%\scm.mof,%dir%
+//
+//
+//Command Line Trigger Consumer
+CopyOrExpand,%source_win%\evtgprov.dll,%dir%\CmdEvTgProv.dll
+CopyOrExpand,%source_win%\evtgprov.mof,%dir%\CmdEvTgProv.mof
+//WBEM Win32 Terminalservice Provider
+CopyOrExpand,%source_win%\tscfgwmi.dll,%target_sys%
+CopyOrExpand,%source_win%\tscfgwmi.mof,%dir%
+CopyOrExpand,%source_win%\tscfgwmi.mfl,%dir%
+//Home Net Provider
+CopyOrExpand,%source_win%\hnetcfg.dll,%target_sys%
+CopyOrExpand,%source_win%\hnetcfg.mof,%dir%
+//msinfo.dll
+//registered in CoreHelp.script
+//CopyOrExpand,%source_win%\whqlprov.mof,%dir%
+//ieinfo5.ocx
+//registered CoreIE.script
+//CopyOrExpand,%source_win%\ieinfo5.mof,%dir%
+//security center
+//CopyOrExpand,%source_win%\wscenter.mof,%dir%
+CopyOrExpand,%source_win%\mof.xsl,%dir%
+CopyOrExpand,%source_win%\rawxml.xsl,%dir%
+CopyOrExpand,%source_win%\xml.xsl,%dir%
+CopyOrExpand,%source_win%\csv.xsl,%dir%
+CopyOrExpand,%source_win%\hform.xsl,%dir%
+CopyOrExpand,%source_win%\htable.xsl,%dir%
+CopyOrExpand,%source_win%\xml.xsl,%dir%
+CopyOrExpand,%source_win%\texttbl.xsl,%dir%\texttable.xsl
+CopyOrExpand,%source_win%\textvalu.xsl,%dir%\textvaluelist.xsl
+CopyOrExpand,%source_win%\xslmap.xml,%dir%\xsl-mappings.xml
+RegHiveLoad,Tmp_Software,%target_sys%\config\software
+//If,ExistRegSection,HKLM,Tmp_Software\Microsoft\WBEM\CIMOM,RegDelete,HKLM,Tmp_Software\Microsoft\WBEM\CIMOM
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\WBEM\CIMOM,WMISetup,1
+//RegWrite ! Overwrote existing key "1" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\WBEM\CIMOM,Logging,0
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\WBEM\CIMOM,"Log File Max Size",65536
+//
+IniRead,%ProjectInfo%,BasePath,AUAppData,%tmp%
+IniRead,%ProjectInfo%,RamDrive,Settings,%TmpDrive%
+IniRead,%ProjectInfo%,RamDrive,DriveLetter,%RamDisk%
+If,Not,%TmpDrive%,Equal,%RamDisk%,Set,%TmpDrive%,%sysdrive%
+//RegWrite ! Overwrote existing key "%SystemRoot%\system32\WBEM\Logs" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\WBEM\CIMOM,"Logging Directory",%TmpDrive%\%tmp%\WBEM\Logs\
+//RegWrite ! Overwrote existing key "%SystemRoot%\system32\WBEM\Repository" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\WBEM\CIMOM,"Repository Directory",%TmpDrive%\%tmp%\WBEM\Repository
+//RegWrite ! Overwrote existing key "%SystemRoot%\system32\WBEM\MOF" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\WBEM\CIMOM,"MOF Self-Install Directory",%TmpDrive%\%tmp%\WBEM\MOF
+//Set,%mram%,""
+//IniRead,%PInfo%,TargetPaths,Model,%mram%
+//If,Not,ExistDir,%mram%,Set,%mram%,%TargetDir%
+//If,Not,%mram%,Equal,"",Be gin
+//IniRead,%PInfo%,TargetPaths,Common_Application_Data,%tmp%
+//If,Not,%tmp%,Equal,"",Be gin
+//IniRead,%PInfo%,RamDrive,Settings,%TmpDrive%
+//IniRead,%PInfo%,RamDrive,DriveLetter,%RamDisk%
+//If,Not,%TmpDrive%,Equal,%RamDisk%,Set,%TmpDrive%,%sysdrive%
+//StrFormat,REPLACE,%tmp%,$ModelRAM,%TmpDrive%,%tmp%
+//RegWrite,HKLM,0x1,Tmp_Software\Microsoft\WBEM\CIMOM,"Logging Directory",%tmp%\WBEM\Logs\
+//RegWrite,HKLM,0x2,Tmp_Software\Microsoft\WBEM\CIMOM,"Repository Directory",%tmp%\WBEM\Repository
+//RegWrite,HKLM,0x2,Tmp_Software\Microsoft\WBEM\CIMOM,"MOF Self-Install Directory",%tmp%\WBEM\MOF
+//End
+//End
+RegHiveUnLoad,Tmp_Software
+Echo,"Processing registrations ..."
+Set,%dir%,#$pSystemRoot#$p\System32\wbem
+Run,%ApiRegScript%,register,%regmethod%,activeds.dll,hnetcfg.dll
+Run,%ApiRegScript%,register,%regmethod%,%dir%\esscli.dll,%dir%\fastprox.dll,%dir%\mofd.dll,%dir%\repdrvfs.dll
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\unsecapp.exe /RegServer"
+Run,%ApiRegScript%,register,%regmethod%,%dir%\wbemcore.dll,%dir%\wbemess.dll,%dir%\wbemsvc.dll
+If,%OS%,Equal,XP,Run,%ApiRegScript%,register,%regmethod%,%dir%\wmimsg.dll
+Run,%ApiRegScript%,register,%regmethod%,%dir%\wmiprvsd.dll
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\wmiprvse.exe /RegServer"
+Run,%ApiRegScript%,register,%regmethod%,%dir%\wmisvc.dll,%dir%\wmiutils.dll,%dir%\wbemprox.dll
+//
+Run,%ApiRegScript%,register,%regmethod%,%dir%\cimwin32.dll,cmprops.dll,%dir%\dsprov.dll
+If,%OS%,Equal,XP,Run,%ApiRegScript%,register,%dir%\fwdprov.dll
+Run,%ApiRegScript%,register,%regmethod%,%dir%\krnlprov.dll,licwmi.dll,mmfutil.dll,%dir%\ncprov.dll,%dir%\ntevt.dll,%dir%\policman.dll
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\scrcons.exe /register"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\scrcons.exe /RegServer"
+Run,%ApiRegScript%,register,%regmethod%,servdeps.dll,%dir%\smtpcons.dll,%dir%\stdprov.dll
+If,%OS%,Equal,XP,Run,%ApiRegScript%,register,%regmethod%,%dir%\tmplprov.dll,%dir%\trnsprov.dll,%dir%\updprov.dll,%dir%\wbemads.dll
+Run,%ApiRegScript%,register,%regmethod%,%dir%\viewprov.dll
+Run,%ApiRegScript%,register,%regmethod%,%dir%\wbemcntl.dll,%dir%\wbemcons.dll,%dir%\wbemdisp.dll
+Run,%ApiRegScript%,register,%regmethod%,%dir%\xml\wmi2xml.dll,%dir%\wmiaprpl.dll
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\wmiapsrv.exe /RegServer"
+Run,%ApiRegScript%,register,%regmethod%,%dir%\wmicookr.dll,%dir%\wmidcprv.dll,%dir%\wmipcima.dll,%dir%\wmipdskq.dll,%dir%\wmipicmp.dll,%dir%\wmipiprt.dll
+Run,%ApiRegScript%,register,%regmethod%,%dir%\wmipjobj.dll,%dir%\wmiprov.dll,%dir%\wmipsess.dll,%dir%\wmitimep.dll,%dir%\evntrprv.dll,tscfgwmi.dll
+//
+Run,%ApiRegScript%,install,%regmethod%,%dir%\wbemupgd.dll
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\winmgmt.exe /RegServer"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\wmiadap.exe /RegServer"
+Run,%ScriptFile%,%OS%
+//
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\cimwin32.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\cimwin32.mfl"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\system.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\wmipcima.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\wmipcima.mfl"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\regevent.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\regevent.mfl"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\ntevt.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\ntevt.mfl"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\secrcw32.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\secrcw32.mfl"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\dsprov.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\dsprov.mfl"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\policman.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\policman.mfl"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\wmitimep.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\wmitimep.mfl"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\wmipdskq.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\wmipdskq.mfl"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\wmipicmp.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\wmipicmp.mfl"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\wmipiprt.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\wmipiprt.mfl"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\wmipjobj.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\wmipjobj.mfl"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\wmipsess.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\wmipsess.mfl"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\krnlprov.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\krnlprov.mfl"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\ncprov.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\ncprov.mfl"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\wbemcons.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\wbemcons.mfl"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\smtpcons.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\smtpcons.mfl"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\scrcons.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\scrcons.mfl"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\cli.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\cliegaliases.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\cliegaliases.mfl"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\tscfgwmi.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\tscfgwmi.mfl"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\licwmi.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\licwmi.mfl"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\hnetcfg.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\CmdEvTgProv.mof"
+//extra
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\ieinfo5.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\whqlprov.mof"
+If,%OS%,Equal,XP,Begin
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\fconprov.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\fconprov.mfl"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\fevprov.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\fevprov.mfl"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\tmplprov.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\tmplprov.mfl"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\trnsprov.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\trnsprov.mfl"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\updprov.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\updprov.mfl"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\subscrpt.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\wmi.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\wmi.mfl"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\evntrprv.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\scm.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\sr.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\dgnet.mof"
+//extra
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\wscenter.mof"
+If,%SP%,Equal,SP3,Begin
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\napclientprov.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\napclientschema.mof"
+End
+End
+If,%OS%,Equal,W2003,Begin
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\subscrpt.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\wmi.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\wmi.mfl"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\evntrprv.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\scm.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\cluswmi.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\wlbsprov.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\nlbmprov.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\wmipdfs.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\wmipdfs.mfl"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\replprov.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\AdStatus\trustmon.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\vds.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\vds.mfl"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\vss.mof"
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\vss.mfl"
+End
+//
+Run,%ApiRegScript%,install,%regmethod%,userenv.dll
+Run,%ApiRegScript%,register,%regmethod%,%dir%\msiprov.dll
+Run,%ApiRegScript%,runcmd,%regmethod%,"%dir%\mofcomp.exe %dir%\scersop.mof"
+//
+IniRead,%projectdir%\script.project,IniVariables,PostApiRegScript,%PostApiRegScript%
+//no need exec here IniWriteTextLine,%PostApiRegScript%,Process,"Exec,%ScriptFile%,postproc"
+IniWriteTextLine,%PostApiRegScript%,Process,"Run,%ScriptFile%,postproc"
+End
+
+[XP]
+Set,%dir%,%target_sys%\wbem
+CopyOrExpand,%source_win%\htblsort.xsl,%dir%\htable-sortby.xsl
+CopyOrExpand,%source_win%\texttblw.xsl,%dir%\texttablewsys.xsl
+CopyOrExpand,%source_win%\wmicmoff.xsl,%dir%\wmiclimofformat.xsl
+CopyOrExpand,%source_win%\wmictfmt.xsl,%dir%\wmiclitableformat.xsl
+CopyOrExpand,%source_win%\wmictfns.xsl,%dir%\wmiclitableformatnosys.xsl
+CopyOrExpand,%source_win%\wmicvalu.xsl,%dir%\wmiclivalueformat.xsl
+CopyOrExpand,%source_win%\wmimsg.dll,%dir%
+//WBEM Forwarding Consumer Provider
+CopyOrExpand,%source_win%\fwdprov.dll,%dir%
+CopyOrExpand,%source_win%\fconprov.mof,%dir%
+CopyOrExpand,%source_win%\fconprov.mfl,%dir%
+CopyOrExpand,%source_win%\fevprov.mof,%dir%
+CopyOrExpand,%source_win%\fevprov.mfl,%dir%
+//WBEM Template Provider
+CopyOrExpand,%source_win%\tmplprov.dll,%dir%
+CopyOrExpand,%source_win%\tmplprov.mof,%dir%
+CopyOrExpand,%source_win%\tmplprov.mfl,%dir%
+//WBEM Transient Instance Provider
+CopyOrExpand,%source_win%\trnsprov.dll,%dir%
+CopyOrExpand,%source_win%\trnsprov.mof,%dir%
+CopyOrExpand,%source_win%\trnsprov.mfl,%dir%
+//WBEM Updating Consumer Assoc Provider
+CopyOrExpand,%source_win%\updprov.dll,%dir%
+CopyOrExpand,%source_win%\updprov.mof,%dir%
+CopyOrExpand,%source_win%\updprov.mfl,%dir%
+//WMI ADSI Adapter
+CopyOrExpand,%source_win%\wbemads.dll,%dir%
+CopyOrExpand,%source_win%\wbemads.tlb,%dir%
+//NetDiag Provider
+CopyOrExpand,%source_win%\dgnet.dll,%target_sys%
+CopyOrExpand,%source_win%\dgnet.mof,%dir%
+//System Restore Provider
+CopyOrExpand,%source_win%\srclient.dll,%target_sys%
+CopyOrExpand,%source_win%\sr.mof,%dir%
+If,%SP%,Equal,SP3,Begin
+//WMI Nap Client Provider
+CopyOrExpand,%source_win%\qcliprov.dll,%target_sys%
+CopyOrExpand,%source_win%\napprov.mof,%dir%\napclientprov.mof
+CopyOrExpand,%source_win%\napschem.mof,%dir%\napclientschema.mof
+End
+StrFormat,REPLACE,%target_sys%,%TargetDir%,%sysdrive%,%tmp%
+Set,%tmp%,%tmp%\wbem
+RegHiveLoad,Tmp_Software,%target_sys%\config\software
+//RegWrite,HKLM,0x7,Tmp_Software\Microsoft\WBEM\CIMOM,Autorecover MOFs,%tmp%\cimwin32.mof,%tmp%\cimwin32.mfl,%tmp%\system.mof,%tmp%\wmipcima.mof,%tmp%\wmipcima.mfl,%tmp%\regevent.mof,%tmp%\regevent.mfl,%tmp%\ntevt.mof,%tmp%\ntevt.mfl,%tmp%\secrcw32.mof,%tmp%\secrcw32.mfl,%tmp%\dsprov.mof,%tmp%\dsprov.mfl,%tmp%\msi.mof,%tmp%\msi.mfl,%tmp%\policman.mof,%tmp%\policman.mfl,%tmp%\subscrpt.mof,%tmp%\wmi.mof,%tmp%\wmi.mfl,%tmp%\scm.mof,%tmp%\fevprov.mof,%tmp%\fevprov.mfl,%tmp%\wmitimep.mof,%tmp%\wmitimep.mfl,%tmp%\wmipdskq.mof,%tmp%\wmipdskq.mfl,%tmp%\wmipicmp.mof,%tmp%\wmipicmp.mfl,%tmp%\wmipiprt.mof,%tmp%\wmipiprt.mfl,%tmp%\wmipjobj.mof,%tmp%\wmipjobj.mfl,%tmp%\wmipsess.mof,%tmp%\wmipsess.mfl,%tmp%\krnlprov.mof,%tmp%\krnlprov.mfl,%tmp%\cli.mof,%tmp%\tscfgwmi.mof,%tmp%\tscfgwmi.mfl,%tmp%\licwmi.mof,%tmp%\licwmi.mfl,%tmp%\evntrprv.mof,%tmp%\hnetcfg.mof,%tmp%\sr.mof,%tmp%\CmdEvTgProv.mof,%tmp%\dgnet.mof,%tmp%\whqlprov.mof,%tmp%\ieinfo5.mof,%tmp%\rsop.mof,%tmp%\rsop.mfl,%tmp%\wscenter.mof,%tmp%\napclientprov.mof,%tmp%\apclientschema.mof,%tmp%\scersop.mof
+If,%version%,Smaller,80,ShellExecute,Hide,Reg.exe,"add #$qHKLM\Tmp_Software\Microsoft\WBEM\CIMOM#$q /v #$qAutorecover MOFs#$q /t REG_MULTI_SZ /f"
+Else,RegWrite,HKLM,0x7,Tmp_Software\Microsoft\WBEM\CIMOM,"Autorecover MOFs",""
+RegWrite,HKLM,0x1,Tmp_Software\Classes\TypeLib\{565783C6-CB41-11D1-8B02-00600806D9B6}\1.2,,"Microsoft WMI Scripting V1.2 Library"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\TypeLib\{565783C6-CB41-11D1-8B02-00600806D9B6}\1.2\0\win32,,#$pSystemRoot#$p\system32\wbem\wbemdisp.tlb
+RegWrite,HKLM,0x1,Tmp_Software\Classes\TypeLib\{565783C6-CB41-11D1-8B02-00600806D9B6}\1.2\FLAGS,,0
+RegWrite,HKLM,0x2,Tmp_Software\Classes\TypeLib\{565783C6-CB41-11D1-8B02-00600806D9B6}\1.2\HELPDIR,,#$pSystemRoot#$p\system32\wbem
+RegWrite,HKLM,0x2,Tmp_Software\Classes\TypeLib\{E503D000-5C7F-11D2-8B74-00104B2AFB41}\1.0\0\win32,,#$pSystemRoot#$p\system32\wbem\wbemads.tlb
+RegWrite,HKLM,0x1,Tmp_Software\Classes\TypeLib\{E503D000-5C7F-11D2-8B74-00104B2AFB41}\1.0\FLAGS,,0
+RegWrite,HKLM,0x1,Tmp_Software\Classes\TypeLib\{E503D000-5C7F-11D2-8B74-00104B2AFB41}\1.0\HELPDIR,,""
+RegWrite,HKLM,0x1,Tmp_Software\Classes\TypeLib\{97d25db0-0363-11cf-abc4-02608c9e7553}\1.0,,"Active DS Type Library"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\TypeLib\{97d25db0-0363-11cf-abc4-02608c9e7553}\1.0\0\win32,,#$pSystemRoot#$p\system32\activeds.tlb
+RegWrite,HKLM,0x1,Tmp_Software\Classes\TypeLib\{97d25db0-0363-11cf-abc4-02608c9e7553}\1.0\FLAGS,,0
+RegWrite,HKLM,0x2,Tmp_Software\Classes\TypeLib\{97d25db0-0363-11cf-abc4-02608c9e7553}\1.0\HELPDIR,,#$pSystemRoot#$p\system32
+RegHiveUnLoad,Tmp_Software
+Set,%dir%,#$pSystemRoot#$p\System32\wbem
+Run,%ApiRegScript%,register,%regmethod%,dgnet.dll,srclient.dll
+If,%SP%,Equal,SP3,Run,%ApiRegScript%,register,%regmethod%,qcliprov.dll
+
+[W2003]
+Set,%dir%,%target_sys%\wbem
+DirMake,%dir%\AdStatus
+//WBEM IP DFS Provider
+CopyOrExpand,%source_win%\wmipdfs.dll,%dir%
+CopyOrExpand,%source_win%\wmipdfs.mof,%dir%
+CopyOrExpand,%source_win%\wmipdfs.mfl,%dir%
+//Cluster service WMI instance provider
+CopyOrExpand,%source_win%\cluswmi.dll,%dir%
+CopyOrExpand,%source_win%\cluswmi.mof,%dir%
+//Microsoft NLB Instance Provider
+CopyOrExpand,%source_win%\wlbsctrl.dll,%target_sys%
+CopyOrExpand,%source_win%\wlbsprov.dll,%dir%
+CopyOrExpand,%source_win%\wlbsprov.mof,%dir%
+CopyOrExpand,%source_win%\nlbmprov.dll,%dir%
+CopyOrExpand,%source_win%\nlbmprov.mof,%dir%
+//
+CopyOrExpand,%source_win%\replprov.dll,%dir%
+CopyOrExpand,%source_win%\replprov.mof,%dir%
+CopyOrExpand,%source_win%\trustmon.dll,%dir%\AdStatus
+CopyOrExpand,%source_win%\trustmon.mof,%dir%\AdStatus
+//registered in RemovableStorage.script
+//CopyOrExpand,%source_win%\vds.mof,%dir%
+//CopyOrExpand,%source_win%\vds.mfl,%dir%
+//CopyOrExpand,%source_win%\vss.mof,%dir%
+//CopyOrExpand,%source_win%\vss.mfl,%dir%
+//
+StrFormat,REPLACE,%target_sys%,%TargetDir%,%sysdrive%,%tmp%
+Set,%tmp%,%tmp%\wbem
+RegHiveLoad,Tmp_Software,%target_sys%\config\software
+//RegWrite,HKLM,0x7,Tmp_Software\Microsoft\WBEM\CIMOM,"Autorecover MOFs",%tmp%\cimwin32.mof,%tmp%\cimwin32.mfl,%tmp%\system.mof,%tmp%\wmipcima.mof,%tmp%\wmipcima.mfl,%tmp%\regevent.mof,%tmp%\regevent.mfl,%tmp%\ntevt.mof,%tmp%\ntevt.mfl,%tmp%\secrcw32.mof,%tmp%\secrcw32.mfl,%tmp%\dsprov.mof,%tmp%\dsprov.mfl,%tmp%\msi.mof,%tmp%\msi.mfl,%tmp%\policman.mof,%tmp%\policman.mfl,%tmp%\subscrpt.mof,%tmp%\evntrprv.mof,%tmp%\wmi.mof,%tmp%\wmi.mfl,%tmp%\scm.mof,%tmp%\wmitimep.mof,%tmp%\wmitimep.mfl,%tmp%\wmipdfs.mof,%tmp%\wmipdfs.mfl,%tmp%\wmipdskq.mof,%tmp%\wmipdskq.mfl,%tmp%\wmipicmp.mof,%tmp%\wmipicmp.mfl,%tmp%\wmipiprt.mof,%tmp%\wmipiprt.mfl,%tmp%\wmipjobj.mof,%tmp%\wmipjobj.mfl,%tmp%\wmipsess.mof,%tmp%\wmipsess.mfl,%tmp%\krnlprov.mof,%tmp%\krnlprov.mfl,%tmp%\cli.mof,%tmp%\tscfgwmi.mof,%tmp%\tscfgwmi.mfl,%tmp%\licwmi.mof,%tmp%\licwmi.mfl,%tmp%\cluswmi.mof,%tmp%\scersop.mof,%tmp%\replprov.mof,%tmp%\wlbsprov.mof,%tmp%\nlbmprov.mof,%tmp%\hnetcfg.mof,%tmp%\CmdEvTgProv.mof,%tmp%\whqlprov.mof,%tmp%\ieinfo5.mof,%tmp%\rsop.mof,%tmp%\rsop.mfl,%tmp%\vds.mof,%tmp%\vds.mfl,%tmp%\vss.mof,%tmp%\vss.mfl
+If,%version%,Smaller,80,ShellExecute,Hide,Reg.exe,"add #$qHKLM\Tmp_Software\Microsoft\WBEM\CIMOM#$q /v #$qAutorecover MOFs#$q /t REG_MULTI_SZ /f"
+Else,RegWrite,HKLM,0x7,Tmp_Software\Microsoft\WBEM\CIMOM,"Autorecover MOFs",""
+RegWrite,HKLM,0x1,Tmp_Software\Classes\TypeLib\{565783C6-CB41-11D1-8B02-00600806D9B6}\1.2,,"Microsoft WMI Scripting V1.2 Library"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\TypeLib\{565783C6-CB41-11D1-8B02-00600806D9B6}\1.2\0\win32,,#$pSystemRoot#$p\system32\wbem\wbemdisp.tlb
+RegWrite,HKLM,0x1,Tmp_Software\Classes\TypeLib\{565783C6-CB41-11D1-8B02-00600806D9B6}\1.2\FLAGS,,0
+RegWrite,HKLM,0x2,Tmp_Software\Classes\TypeLib\{565783C6-CB41-11D1-8B02-00600806D9B6}\1.2\HELPDIR,,#$pSystemRoot#$p\system32\wbem
+RegHiveUnLoad,Tmp_Software
+Set,%dir%,#$pSystemRoot#$p\System32\wbem
+Run,%ApiRegScript%,register,%regmethod%,%dir%\wmipdfs.dll,%dir%\cluswmi.dll,%dir%\wlbsprov.dll,%dir%\nlbmprov.dll,%dir%\AdStatus\trustmon.dll,%dir%\replprov.dll
+
+[postproc]
+Echo,"Postprocessing: WMI Support ..."
+IniRead,%ProjectDir%\script.project,IniVariables,NoWarnRegOverWrite,%NoWarnROW%
+//Run,%ScriptFile%,SetVariables
+IniRead,%ProjectInfo%,OS,Type,%OS%
+IniRead,%ProjectInfo%,OS,ServicePack,%SP%
+IniRead,%ProjectInfo%,Cabs,SP_CAB,%SPCAB%
+IniRead,%ProjectInfo%,Cabs,DR_CAB,%DRCAB%
+RegHiveLoad,Tmp_System,%target_sys%\setupreg.hiv
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\winmgmt,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\winmgmt,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\winmgmt,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,"Windows Management Instrumentation"
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_WINMGMT,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_WINMGMT\0000,Service,winmgmt
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_WINMGMT\0000,Legacy,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_WINMGMT\0000,ConfigFlags,0
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_WINMGMT\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_WINMGMT\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_WINMGMT\0000,DeviceDesc,%TMP%
+//RegWrite ! Overwrote existing key "2" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\winmgmt,Start,3
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\winmgmt,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\winmgmt,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\winmgmt,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,"WMI Performance Adapter"
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_WMIAPSRV,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_WMIAPSRV\0000,Service,WmiApSrv
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_WMIAPSRV\0000,Legacy,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_WMIAPSRV\0000,ConfigFlags,0
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_WMIAPSRV\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_WMIAPSRV\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_WMIAPSRV\0000,DeviceDesc,%TMP%
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\WmiApSrv,Start,3
+Set,%TMP%,""
+//System,ERROROFF
+//RegRead,HKLM,Tmp_System\ControlSet001\Services\Wmi,DisplayName,%TMP%
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\Wmi,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\Wmi,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,"Windows Management Instrumentation Driver Extensions"
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_WMI,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_WMI\0000,Service,Wmi
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_WMI\0000,Legacy,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_WMI\0000,ConfigFlags,0
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_WMI\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_WMI\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_WMI\0000,DeviceDesc,%TMP%
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\Wmi,Start,3
+RegHiveUnLoad,Tmp_System
+RegHiveLoad,Tmp_Software,%target_sys%\config\software
+RegWrite,HKLM,0x4,Tmp_Software\Microsoft\WBEM\PROVIDERS\Performance,"Performance Refresh",1
+RegWrite,HKLM,0x4,Tmp_Software\Microsoft\WBEM\PROVIDERS\Performance,"Performance Refreshed",0
+RegWrite,HKLM,0x4,Tmp_Software\Microsoft\WBEM\FWD,AllowUnauthenticatedEvents,1
+RegWrite,HKLM,0x4,Tmp_Software\Microsoft\WBEM\CIMOM,"Requires Encrypted Connection",0
+//
+IniRead,%ProjectInfo%,BasePath,AUAppData,%tmp%
+IniRead,%ProjectInfo%,RamDrive,Settings,%TmpDrive%
+IniRead,%ProjectInfo%,RamDrive,DriveLetter,%RamDisk%
+If,Not,%TmpDrive%,Equal,%RamDisk%,Set,%TmpDrive%,%sysdrive%
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\WBEM\CIMOM,"Repository Directory",%TmpDrive%\%tmp%\WBEM\Repository
+RegWrite,HKLM,0x2,Tmp_Software\Microsoft\WBEM\CIMOM,"MOF Self-Install Directory",%TmpDrive%\%tmp%\WBEM\MOF
+//
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\WBEM\CIMOM,Logging,0
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\WBEM\CIMOM,"Log File Max Size",65536
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\WBEM\CIMOM,"Logging Directory",%TmpDrive%\%tmp%\WBEM\Logs\
+//--postproc_Cancel
+RegHiveUnLoad,Tmp_Software
+
+[postproc_Cancel]
+//--postproc_Cancel
+//
+//Set,%mram%,""
+//IniRead,%PInfo%,TargetPaths,Model,%mram%
+//If,Not,ExistDir,%mram%,Set,%mram%,%TargetDir%
+//If,Not,%mram%,Equal,"",Be gin
+//IniRead,%PInfo%,TargetPaths,Common_Application_Data,%tmp%
+//If,Not,%tmp%,Equal,"",Be gin
+//IniRead,%PInfo%,RamDrive,Settings,%TmpDrive%
+//IniRead,%PInfo%,RamDrive,DriveLetter,%RamDisk%
+//If,Not,%TmpDrive%,Equal,%RamDisk%,Set,%TmpDrive%,%sysdrive%
+//StrFormat,REPLACE,%tmp%,$ModelRAM,%TmpDrive%,%tmp%
+//RegWrite,HKLM,0x2,Tmp_Software\Microsoft\WBEM\CIMOM,"Repository Directory",%tmp%\WBEM\Repository
+//RegWrite,HKLM,0x2,Tmp_Software\Microsoft\WBEM\CIMOM,"MOF Self-Install Directory",%tmp%\WBEM\MOF
+//
+//RegWrite,HKLM,0x1,Tmp_Software\Microsoft\WBEM\CIMOM,Logging,0
+//RegWrite,HKLM,0x1,Tmp_Software\Microsoft\WBEM\CIMOM,"Log File Max Size",65536
+//RegWrite,HKLM,0x1,Tmp_Software\Microsoft\WBEM\CIMOM,"Logging Directory",%tmp%\WBEM\Logs\
+//End
+//End
+
+[AuthorEncoded]
+logo.jpg=9681,12908
+Logo=logo.jpg
+
+[EncodedFile-AuthorEncoded-logo.jpg]
+lines=3
+0=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
+1=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
+2=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
+3=ZKBxvw1woNzBbvlFmZd9oAdvN91/wrLfji7b9XvmmtLyGv6bhBHeXRDqTsqLPg1v6GX9AEQS9WwO+UxudHBchbZcQjiAuKZi2xaMecfV+4Y7dzC4TxK3Faxe4RMangYw1+f59drS/6u1U0Sso4Ik17h9Wpp8p6Dmnns/da5StLdGJ2gUS4kcX3jdeUZYMcnzP1h3s5TiG+xHFf9Fy5CvaOc7V2mA/bMuZlu0dORNJRn80sU9H9HfRub0UPqtLCN1tjKkzm2OWalzVljDbjpYPmPv2Pl9J/w7wLHOb+TJJkVa8qHWVTgW3gdj+uPwiyeHvRpgqkeLk0RUpXvk2VSq73LB00/CoytwQLP0EufZzkERAkRrlWLUlUsEnYagN2qQcbjzMbKSa28VNqyfkJEm7pvjDCxhEx1lMzPCO0PfaYYKFGdgmM24Iz/wr4Ge0kjFwGjV/eKLw6VdA8D+Y+vmv7JG3iFSDOLRG6q+QbR1dm6a7kVyJXuJ6wpeRnD1miWx4U7Z7KX/V+kNrMu/0y/7j4vwBnFMH3eJzjyMlPz9fLKkhnGAUjEZSpQehOVezyuUfFdzMwAQDwwgZ5+WTZrgEAAAACAAAAJAAAAIklAAAAAAAAAQAAAAAAAAAAAAAA
+
+[DownloadXXX]
+IniRead,%ScriptFile%,Main,Level,%LevelBefore%
+Call,DownloadXQ
+IniWrite,%ScriptFile%,Main,Level,%LevelBefore%
+
+[UploadXXX]
+IniRead,%ScriptFile%,Main,Level,%LevelBefore%
+Call,UploadXQ
+IniWrite,%ScriptFile%,Main,Level,%LevelBefore%
+
+[Settings_Default]
+IniWrite,%ScriptFile%,Main,Level,0
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+

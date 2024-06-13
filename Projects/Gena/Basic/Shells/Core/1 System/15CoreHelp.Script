@@ -1,0 +1,600 @@
+[Main]
+Title=Help Support
+Type=Plugin
+Author=fxscrpt
+Description=Add windows help system to build
+Credits=Lancelot and Galapo - http://TheOven.org
+Version=024
+Download_Level=0
+Level=0
+Selected=True
+Mandatory=False
+NoWarning=False
+Contact=http://TheOven.org/index.php?board=3
+Date=2018.01.06
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Basic/Shells/Core/1%20System/15CoreHelp.Script
+CertifiedBy=
+Certification=
+HistoryNotes01=SysDrive %sysdrive%=X: used in TShoot.inf - pchealth.inf - msinfo32.inf
+History004=Lancelot txtaddline fix
+History006=fxscrpt added shortcut for msinfo32.exe
+History007=fxscrpt removed %PEDrive%
+History009=fxscrpt moved msimg32.dll to core_main
+History010=fxscrpt altered helpsvc configuration
+History011=fxscrpt fixed dirmake  %XpResFolder%
+History012=fxscrpt fixes : CopyOrExpand does not work for cab files
+History013=Lancelot with X13-04874 (w2003-sp2-English) source PCHDT_S3.CAB exists , not PCHDT_S3.CA_ (same as TSHOOT.CAB), an overall fix made to Plugin to be sure in future no similar issue exists again , follow History013 in Plugin for the fix
+History014=Lancelot with X13-13875 (w2003-sp2-ChineseTra) source instead of PCHDT_S3 and hscsp_s3, PCHDT_E3 and hscsp_E3 exists ;) - fix made
+History016=Lancelot IniVariables RegFactory
+History017=Lancelot IniVariables OSServicePack - Date:2012.01.17
+History018=Lancelot fixed double if - Date:2016.10.02
+History020=Lancelot Added DU Buttons - Date:2016.10.20
+History022=Lancelot Added Basic_PluginCache_Extract - Date:2016.10.30
+History023=Lancelot PEBakery Syntax error fixed // PEBakery Less Warning - If,Not,ExistFile,%Target_Sys%\  itss.dll atrace.dll racpldlg.dll safrcdlg.dll safrdm.dll safrslv.dll userenv.dll dispex.dll version.dll wldap32.dll - Date:2018.01.05
+History024=Lancelot More If,Not,ExistFile, - Date:2018.01.06
+
+[HistoryNotesSysDrive]
+//--TShoot.inf
+HKEY_LOCAL_MACHINE\Tmp_Software\Microsoft\TShoot\TroubleshooterList\Tsdisp
+HKEY_LOCAL_MACHINE\Tmp_Software\Microsoft\TShoot\TroubleshooterList\tsdrive
+HKEY_LOCAL_MACHINE\Tmp_Software\Microsoft\TShoot\TroubleshooterList\tsgame
+HKEY_LOCAL_MACHINE\Tmp_Software\Microsoft\TShoot\TroubleshooterList\Tshardw
+HKEY_LOCAL_MACHINE\Tmp_Software\Microsoft\TShoot\TroubleshooterList\tshomenet
+HKEY_LOCAL_MACHINE\Tmp_Software\Microsoft\TShoot\TroubleshooterList\tsics
+HKEY_LOCAL_MACHINE\Tmp_Software\Microsoft\TShoot\TroubleshooterList\tsie
+HKEY_LOCAL_MACHINE\Tmp_Software\Microsoft\TShoot\TroubleshooterList\tsinputdev
+HKEY_LOCAL_MACHINE\Tmp_Software\Microsoft\TShoot\TroubleshooterList\tsmessaging
+HKEY_LOCAL_MACHINE\Tmp_Software\Microsoft\TShoot\TroubleshooterList\tsmodem
+HKEY_LOCAL_MACHINE\Tmp_Software\Microsoft\TShoot\TroubleshooterList\tsnetwrk
+HKEY_LOCAL_MACHINE\Tmp_Software\Microsoft\TShoot\TroubleshooterList\tsprint
+HKEY_LOCAL_MACHINE\Tmp_Software\Microsoft\TShoot\TroubleshooterList\tssetup
+HKEY_LOCAL_MACHINE\Tmp_Software\Microsoft\TShoot\TroubleshooterList\tssmode
+HKEY_LOCAL_MACHINE\Tmp_Software\Microsoft\TShoot\TroubleshooterList\tssound
+HKEY_LOCAL_MACHINE\Tmp_Software\Microsoft\TShoot\TroubleshooterList\tsstartup
+HKEY_LOCAL_MACHINE\Tmp_Software\Microsoft\TShoot\TroubleshooterList\tsusb
+HKEY_LOCAL_MACHINE\Tmp_Software\Microsoft\TShoot\TroubleshooterList\TS_DVD
+"Path"="X:\\I386\\Help\\tshoot.chm"
+//--pchealth.inf
+HKEY_LOCAL_MACHINE\Tmp_Software\Microsoft\Windows\CurrentVersion\App Paths\HELPCTR.EXE
+@="X:\\I386\\PCHealth\\HelpCtr\\Binaries\\HelpCtr.exe"
+HKEY_LOCAL_MACHINE\Tmp_Software\Microsoft\Windows\CurrentVersion\App Paths\MSCONFIG.EXE
+@="X:\\I386\\PCHealth\\HelpCtr\\Binaries\\MSConfig.exe"
+//--msinfo32.inf
+HKEY_LOCAL_MACHINE\Tmp_Software\Classes\MSInfo.Document\DefaultIcon
+@="X:\\Program Files\\Common Files\\Microsoft Shared\\MSInfo\\MSInfo32.exe,0"
+HKEY_LOCAL_MACHINE\Tmp_Software\Classes\MSInfo.Document\Shell\Open\Command
+@="X:\\Program Files\\Common Files\\Microsoft Shared\\MSInfo\\MSInfo32.exe /msinfo_file %1"
+HKEY_LOCAL_MACHINE\Tmp_Software\Classes\MSInfo.Document\Shell\Print\Command
+@="\"X:\\Program Files\\Common Files\\Microsoft Shared\\MSInfo\\MSInfo32.exe\" /p \"%1\""
+HKEY_LOCAL_MACHINE\Tmp_Software\Microsoft\Shared Tools\MSInfo
+"Path"="X:\\Program Files\\Common Files\\Microsoft Shared\\MSInfo\\MSInfo32.exe"
+HKEY_LOCAL_MACHINE\Tmp_Software\Microsoft\Windows\CurrentVersion\App Paths\msinfo32.exe
+@="X:\\Program Files\\Common Files\\Microsoft Shared\\MSInfo\\MSInfo32.exe"
+"Path"="X:\\Program Files\\Common Files\\Microsoft Shared\\MSInfo"
+
+[Interface]
+pCheckBox1="Add help control center and Msinfo32.exe utility",1,3,27,36,256,18,True
+pCheckBox2="Copy all help files to build",1,3,27,102,151,18,True
+pBevel1=pBevel1,1,12,11,26,278,100
+pTextLabel1="Optional components:",1,1,12,8,111,18,8,Normal
+pTextBox1="System Tools Shortcut Name",1,0,47,75,169,21,"System Information"
+pWebLabel2="Plugin Page",1,10,338,4,55,18,http://TheOven.org/index.php?board=3
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[Variables]
+%regmethod%=build
+%sysdrive%=X:
+%inf2hivedebug%=0
+
+[IniScriptVariables]
+sysdrive=X:
+
+[RegisterDep]
+If,Not,ExistSection,%ProjectTemp%\depends.script,CoreHelpInstallCore,Begin
+IniAddSection,%ProjectTemp%\depends.script,CoreHelpInstallCore
+IniWriteTextLine,%ProjectTemp%\depends.script,CoreHelpInstallCore,"Exec,%ScriptFile%,InstallCore"
+End
+If,Not,ExistSection,%ProjectTemp%\depends.script,CoreHelpInstallHelpSvc,Begin
+IniAddSection,%ProjectTemp%\depends.script,CoreHelpInstallHelpSvc
+IniWriteTextLine,%ProjectTemp%\depends.script,CoreHelpInstallHelpSvc,"Exec,%ScriptFile%,InstallHelpSvc"
+End
+If,Not,ExistSection,%ProjectTemp%\depends.script,CoreHelpCopyHelpFiles,Begin
+IniAddSection,%ProjectTemp%\depends.script,CoreHelpCopyHelpFiles
+IniWriteTextLine,%ProjectTemp%\depends.script,CoreHelpCopyHelpFiles,"Exec,%ScriptFile%,CopyHelpFiles"
+End
+
+[Process]
+If,ExistFile,%ProjectTemp%\Basic_PluginCache_Extract.ini,Echo,"Basic PluginCache"
+If,Not,ExistFile,%ProjectTemp%\Basic_PluginCache_Extract.ini,Run,%ScriptFile%,Process_Normal
+
+[Process_Normal]
+IniWrite,%ScriptFile%,IniScriptVariables,sysdrive,%sysdrive%
+Run,%ScriptFile%,SetVariables
+Run,%ScriptFile%,InstallCore
+If,%pCheckBox1%,Equal,True,Run,%ScriptFile%,InstallHelpSvc
+If,%pCheckBox1%,Equal,True,Run,%ScriptFile%,CopyHelpFiles
+
+[SetVariables]
+Set,%PInfo%,%ProjectInfo%
+IniRead,%PInfo%,Settings,Target,%tmp%
+If,%tmp%,Equal,"",Set,%PInfo%,%ProjectTemp%\ProjectInfo.ini
+IniRead,%PInfo%,OS,Type,%OS%
+IniRead,%PInfo%,Cabs,SP_CAB,%SPCAB%
+IniRead,%PInfo%,Cabs,DR_CAB,%DRCAB%
+IniRead,%PInfo%,OS,XpRes,%XpRes%
+
+[InstallCore]
+IniRead,%ProjectDir%\Script.Project,IniVariables,ApiRegScript,%ApiRegScript%
+If,ExistSection,%ProjectTemp%\depends.script,CoreHelpInstallCore,Begin
+IniDeleteSection,%ProjectTemp%\depends.script,CoreHelpInstallCore
+//Exec,%ProjectTemp%\depends.script,ExecDep,CoreMainInstallCore
+//Exec,%ProjectTemp%\depends.script,ExecDep,CoreScriptingInstallCore
+Run,%ProjectTemp%\depends.script,ExecDep,CoreMainInstallCore
+Run,%ProjectTemp%\depends.script,ExecDep,CoreScriptingInstallCore
+Run,%ScriptFile%,SetVariables
+Run,%ApiRegScript%,setlevel,515,True
+IniRead,%Source_Win%\TXTSETUP.SIF,Strings,MUI_PRIMARY_LANG_ID_DIR,%XpResFolder%
+If,%XpResFolder%,Equal,"",Begin
+Set,%XpResFolder%,system32\mui\%XpRes%
+End
+Else,Begin
+StrFormat,LEFT,%XpResFolder%,1,%tmp%
+If,%tmp%,Equal,"#$q",StrFormat,SPLIT,%XpResFolder%,#$q,0,%count%
+If,%count%,Bigger,0,StrFormat,SPLIT,%XpResFolder%,#$q,1,%XpResFolder%
+End
+//winhelp
+DirMake,%Target_Sys%\Wbem
+If,Not,%XpRes%,Equal,0409,DirMake,%Target_Win%\%XpResFolder%
+CopyOrExpand,%Source_Win%\bnts.dll,%Target_Win%\Help
+CopyOrExpand,%Source_Win%\sniffpol.dll,%Target_Win%\Help
+CopyOrExpand,%Source_Win%\sstub.dll,%Target_Win%\Help
+CopyOrExpand,%Source_Win%\tshoot.dll,%Target_Win%\Help
+CopyOrExpand,%Source_Win%\hh.exe,%Target_Sys%
+CopyOrExpand,%Source_Win%\hhctrl.ocx,%Target_Sys%
+CopyOrExpand,%Source_Win%\tdc.ocx,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\itss.dll,CopyOrExpand,%Source_Win%\itss.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\itircl.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\ftsrch.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\shimeng.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\mslbui.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\msctf.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\msctfp.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\msctfime.ime,%Target_Sys%
+CopyOrExpand,%Source_Win%\msimtf.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\RCBdyctl.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\atrace.dll,CopyOrExpand,%Source_Win%\atrace.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\racpldlg.dll,CopyOrExpand,%Source_Win%\racpldlg.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\safrcdlg.dll,CopyOrExpand,%Source_Win%\safrcdlg.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\safrdm.dll,CopyOrExpand,%Source_Win%\safrdm.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\safrslv.dll,CopyOrExpand,%Source_Win%\safrslv.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\winhlp32.exe,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\hhsetup.dll,CopyOrExpand,%Source_Win%\hhsetup.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\iepeers.dll,%Target_Sys%
+//CopyOrExpand,%Source_Win%\winhelp.exe,%Target_Win%
+If,Not,ExistFile,%Target_Sys%\userenv.dll,CopyOrExpand,%Source_Win%\userenv.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\dispex.dll,CopyOrExpand,%Source_Win%\dispex.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\version.dll,CopyOrExpand,%Source_Win%\version.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\wldap32.dll,CopyOrExpand,%Source_Win%\wldap32.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\whqlprov.mof,%Target_Sys%\Wbem
+If,Not,%XpRes%,Equal,0409,CopyOrExpand,%Source_Win%\hhctrlui.dll,%Target_Win%\%XpResFolder%
+If,%XpRes%,Equal,0409,CopyOrExpand,%Source_Win%\hhctrlui.dll,%Target_Sys%
+//
+RegHiveLoad,Tmp_Software,%Target_Sys%\config\software
+RegWrite,HKLM,0x4,Tmp_Software\Microsoft\HTMLHelp\1.x\HHRestrictions,MaxAllowedZone,1
+RegWrite,HKLM,0x4,Tmp_Software\Microsoft\HTMLHelp\1.x\HHRestrictions,EnableFrameNavigationInSafeMode,1
+RegWrite,HKLM,0x4,Tmp_Software\Microsoft\HTMLHelp\1.x\HHRestrictions,EnableNonInteractiveUser,1
+RegWrite,HKLM,0x4,Tmp_Software\Microsoft\HTMLHelp\1.x\ItssRestrictions,MaxAllowedZone,1
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.chm,,chm.file
+RegWrite,HKLM,0x1,Tmp_Software\Classes\chm.file,,"Compiled HTML Help file"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\chm.file\DefaultIcon,,"#$pSystemRoot#$p\System32\hh.exe,0"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\chm.file\shell\open\command,,"#$q#$pSystemRoot#$p\System32\hh.exe#$q #$p1"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.mmf,CachedFilterIID,{c3278e90-bea7-11cd-b579-08002b30bfeb}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.mmf\PersistentHandler,,{098f2470-bae0-11cd-b579-08002b30bfeb}
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.dlg,,Dialog
+RegWrite,HKLM,0x1,Tmp_Software\Classes\.dlg\ShellNew,NullFile,""
+RegHiveUnLoad,Tmp_Software
+//--
+If,Not,ExistDir,%ProjectTemp%\inf2hive,DirMake,%ProjectTemp%\inf2hive
+If,ExistFile,%ProjectTemp%\inf2hive\inf2hive.ini,Shellexecute,Hide,cmd.exe,"/C del /q /f /A:R /A:H /A:S /A:A #$q%ProjectTemp%\inf2hive\inf2hive.ini#$q"
+If,ExistFile,%ProjectTemp%\inf2hive\inf2hive.ini,FileDelete,%ProjectTemp%\inf2hive\inf2hive.ini
+FileCreateBlank,%ProjectTemp%\inf2hive\inf2hive.ini
+TxtAddline,%ProjectTemp%\inf2hive\inf2hive.ini,[INF.KEYS],Append
+TXTAddLine,%ProjectTemp%\inf2hive\inf2hive.ini,HKLM#$c#$qSoftware\Microsoft\Active#$sSetup\Installed#$sComponents\#$pCLSID_HELPCONT#$p#$q,Append
+TXTAddLine,%ProjectTemp%\inf2hive\inf2hive.ini,HKLM#$c#$qSoftware\Microsoft\Active#$sSetup\Installed#$sComponents\#$pCLSID_HTMLHELP#$p#$q,Append
+Run,%ApiRegScript%,ImportInfTHive,IE.inf,Base.IE.AddReg,15CoreHelp_01_IE,%inf2hivedebug%
+//--
+//--InstallCore_Cancel
+//
+Echo,"Processing registrations ..."
+Set,%dir%,#$pSystemRoot#$p\Help
+Run,%ApiRegScript%,register,%regmethod%,safrslv.dll,safrdm.dll,safrcdlg.dll,racpldlg.dll,msctf.dll,msctfp.dll,msimtf.dll
+Run,%ApiRegScript%,register,%regmethod%,%dir%\tshoot.dll,%dir%\sstub.dll,%dir%\sniffpol.dll
+Run,%ApiRegScript%,register,%regmethod%,rcbdyctl.dll,hhctrl.ocx,tdc.ocx,itss.dll,itircl.dll,userenv.dll,dispex.dll,iepeers.dll
+End
+
+[InstallCore_Cancel]
+//--InstallCore_Cancel
+//If,ExistFile,%ProjectTemp%\tmp.ctl,FileDelete,%ProjectTemp%\tmp.ctl
+//If,ExistFile,%ProjectTemp%\tmpctl.txt,FileDelete,%ProjectTemp%\tmpctl.txt
+//FileCreateBlank,%ProjectTemp%\tmp.ctl
+//TXTAddLine,%ProjectTemp%\tmp.ctl,[tmp.inf]Base.IE.AddReg,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,HKLM#$c#$qSoftware\Microsoft\Active#$sSetup\Installed#$sComponents\#$pCLSID_HELPCONT#$p#$q@-2,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,HKLM#$c#$qSoftware\Microsoft\Active#$sSetup\Installed#$sComponents\#$pCLSID_HTMLHELP#$p#$q@-2,Append
+//Run,%ApiRegScript%,ImportInf,IE.inf,W
+//Exec,%ProjectTemp%\tmpctl.txt,Process-Hive
+
+[InstallHelpSvc]
+If,ExistSection,%ProjectTemp%\depends.script,CoreHelpInstallHelpSvc,IniDeleteSection,%ProjectTemp%\depends.script,CoreHelpInstallHelpSvc
+Exec,%ProjectTemp%\depends.script,ExecDep,CoreScriptingInstallCore
+Exec,%ProjectTemp%\depends.script,ExecDep,CoreHelpInstallCore
+Run,%ApiRegScript%,setlevel,515,False
+Set,%PInfo%,%ProjectInfo%
+IniRead,%PInfo%,Settings,Target,%tmp%
+If,%tmp%,Equal,"",Set,%PInfo%,%ProjectTemp%\ProjectInfo.ini
+IniRead,%PInfo%,OS,Type,%OS%
+IniRead,%PInfo%,Cabs,SP_CAB,%SPCAB%
+IniRead,%PInfo%,Cabs,DR_CAB,%DRCAB%
+IniRead,%PInfo%,OS,XpRes,%XpRes%
+IniRead,%Source_Win%\TXTSETUP.SIF,Strings,MUI_PRIMARY_LANG_ID_DIR,%XpResFolder%
+If,%XpResFolder%,Equal,"",Begin
+Set,%XpResFolder%,system32\mui\%XpRes%
+End
+Else,Begin
+StrFormat,LEFT,%XpResFolder%,1,%tmp%
+If,%tmp%,Equal,"#$q",StrFormat,SPLIT,%XpResFolder%,#$q,0,%count%
+If,%count%,Bigger,0,StrFormat,SPLIT,%XpResFolder%,#$q,1,%XpResFolder%
+End
+//helpsvc
+DirMake,%Target_Sys%\Wbem
+DirMake,%Target_Win%\Help
+DirMake,%Target_Win%\%XpResFolder%
+CopyOrExpand,%Source_Win%\PCHealth.inf,%Target_Win%\Inf
+If,Not,ExistFile,%Target_Sys%\atrace.dll,CopyOrExpand,%Source_Win%\atrace.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\racpldlg.dll,CopyOrExpand,%Source_Win%\racpldlg.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\safrcdlg.dll,CopyOrExpand,%Source_Win%\safrcdlg.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\safrdm.dll,CopyOrExpand,%Source_Win%\safrdm.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\safrslv.dll,CopyOrExpand,%Source_Win%\safrslv.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\itss.dll,CopyOrExpand,%Source_Win%\itss.dll,%Target_Sys%
+CopyOrExpand,%Source_Win%\rcImLby.exe,%Target_Sys%
+CopyOrExpand,%Source_Win%\rdshost.exe,%Target_Sys%
+//
+Set,%dirtarget%,%Target_Win%\PCHealth\helpctr\binaries
+DirMake,%dirtarget%
+CopyOrExpand,%Source_Win%\HELPSVC.exe,%dirtarget%
+CopyOrExpand,%Source_Win%\HELPHOST.exe,%dirtarget%
+CopyOrExpand,%Source_Win%\HELPCTR.exe,%dirtarget%
+CopyOrExpand,%Source_Win%\BRPINFO.dll,%dirtarget%
+CopyOrExpand,%Source_Win%\HCAPPRES.dll,%dirtarget%
+CopyOrExpand,%Source_Win%\hscupd.exe,%dirtarget%
+CopyOrExpand,%Source_Win%\MSCONFIG.exe,%dirtarget%
+CopyOrExpand,%Source_Win%\MSINFO.dll,%dirtarget%
+CopyOrExpand,%Source_Win%\PCHSHELL.dll,%dirtarget%
+CopyOrExpand,%Source_Win%\PCHSVC.dll,%dirtarget%
+Run,%ScriptFile%,InstallHelpSvc%OS%
+//
+Set,%dirtarget%,%Target_Win%\PCHealth\HelpCtr\BATCH
+DirMake,%dirtarget%
+//History013 Expand,%Source_Win%\TShoot.ca_,%dirtarget%
+//--
+If,ExistFile,%Source_Win%\TShoot.ca_,Expand,%Source_Win%\TShoot.ca_,%dirtarget%
+If,ExistFile,%Source_Win%\TShoot.cab,FileCopy,%Source_Win%\TShoot.cab,%dirtarget%
+If,ExistFile,%Source_Win%\TShoot.cab,Shellexecute,Hide,Attrib,"-r TShoot.cab",%dirtarget%
+If,Not,ExistFile,%Source_Win%\TShoot.ca_,Begin
+If,Not,ExistFile,%Source_Win%\TShoot.cab,Echo,"TShoot cab missing at source",Warn
+End
+//--
+//
+Set,%dirtarget%,%Target_Win%\PCHealth\helpctr\Config
+DirMake,%dirtarget%
+CopyOrExpand,%Source_Win%\dataspec.xml,%dirtarget%
+//
+Set,%dirtarget%,%Target_Win%\PCHealth\UploadLB\Binaries
+DirMake,%dirtarget%
+CopyOrExpand,%Source_Win%\UploadM.exe,%dirtarget%
+//
+//--
+If,Not,ExistDir,%ProjectTemp%\inf2hive,DirMake,%ProjectTemp%\inf2hive
+If,ExistFile,%ProjectTemp%\inf2hive\inf2hive.ini,Shellexecute,Hide,cmd.exe,"/C del /q /f /A:R /A:H /A:S /A:A #$q%ProjectTemp%\inf2hive\inf2hive.ini#$q"
+If,ExistFile,%ProjectTemp%\inf2hive\inf2hive.ini,FileDelete,%ProjectTemp%\inf2hive\inf2hive.ini
+FileCreateBlank,%ProjectTemp%\inf2hive\inf2hive.ini
+TxtAddline,%ProjectTemp%\inf2hive\inf2hive.ini,[INF.KEYS],Append
+TXTAddLine,%ProjectTemp%\inf2hive\inf2hive.ini,HKLM#$c#$qSOFTWARE#$q,Append
+Run,%ApiRegScript%,ImportInfTHive,TSHOOT.inf,TShoot.Add.Reg,15CoreHelp_02_TSHOOT,%inf2hivedebug%
+RegHiveLoad,Tmp_Software,%Target_Sys%\config\software
+If,ExistRegKey,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnce,TshootDLL_Reg,RegDelete,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnce,TshootDLL_Reg
+If,ExistRegKey,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnce,SstubDLL_Reg,RegDelete,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnce,SstubDLL_Reg
+If,ExistRegKey,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnce,SniffpolDLL_Reg,RegDelete,HKLM,Tmp_Software\Microsoft\Windows\CurrentVersion\RunOnce,SniffpolDLL_Reg
+RegHiveUnLoad,Tmp_Software
+//--
+//--InstallHelpSvc_Cancel_1
+//--
+If,Not,ExistDir,%ProjectTemp%\inf2hive,DirMake,%ProjectTemp%\inf2hive
+If,ExistFile,%ProjectTemp%\inf2hive\inf2hive.ini,Shellexecute,Hide,cmd.exe,"/C del /q /f /A:R /A:H /A:S /A:A #$q%ProjectTemp%\inf2hive\inf2hive.ini#$q"
+If,ExistFile,%ProjectTemp%\inf2hive\inf2hive.ini,FileDelete,%ProjectTemp%\inf2hive\inf2hive.ini
+FileCreateBlank,%ProjectTemp%\inf2hive\inf2hive.ini
+TxtAddline,%ProjectTemp%\inf2hive\inf2hive.ini,[INF.KEYS],Append
+TXTAddLine,%ProjectTemp%\inf2hive\inf2hive.ini,HKCR#$c#$q#$q,Append
+TXTAddLine,%ProjectTemp%\inf2hive\inf2hive.ini,HKLM#$c#$q#$pKEY_SVCHOST#$p\PCHealth#$q,Append
+TXTAddLine,%ProjectTemp%\inf2hive\inf2hive.ini,HKLM#$c#$q#$pKEY_APPPATHS#$p#$q,Append
+Run,%ApiRegScript%,ImportInfTHive,pchealth.inf,INSTALL.reg.add,15CoreHelp_03_pchealth,%inf2hivedebug%
+//--
+//--InstallHelpSvc_Cancel_2
+//--
+RegHiveLoad,Tmp_Software,%Target_Sys%\config\software
+RegWrite,HKLM,0x1,Tmp_Software\Classes\HCP,,"Help Center Pluggable Protocol"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\HCP,"URL Protocol",""
+RegWrite,HKLM,0x4,Tmp_Software\Classes\HCP,EditFlags,2
+RegWrite,HKLM,0x2,Tmp_Software\Classes\HCP,FriendlyTypeName,"@#$pSystemRoot#$p\PCHealth\HelpCtr\Binaries\HCAppRes.dll,-2100"
+RegWrite,HKLM,0x2,Tmp_Software\Classes\HCP\shell\open\command,,"#$q#$pSystemRoot#$p\PCHealth\HelpCtr\Binaries\HelpCtr.exe#$q -FromHCP -url #$q%1#$q"
+//RegWrite,HKLM,0x2,Tmp_Software\Classes\MsRcIncident,FriendlyTypeName,"@%SystemRoot%\System32\RCBdyctl.dll,-150"
+//RegWrite,HKLM,0x4,Tmp_Software\Classes\MsRcIncident,EditFlags,65536
+//RegWrite,HKLM,0x2,Tmp_Software\Classes\MsRcIncident\DefaultIcon,,%SystemRoot%\PCHealth\HelpCtr\Binaries\HelpCtr.exe
+//PEBakery Syntax error: RegWrite,HKLM,0x2,Tmp_Software\Classes\MsRcIncident\shell\open\command,,"%SystemRoot%\PCHealth\HelpCtr\Binaries\HelpCtr.exe -Mode "hcp://system/Remote%%20Assistance/RAClientLayout.xml" -url "hcp://system/Remote%%20Assistance/Interaction/Client/rctoolScreen1.htm" -ExtraArgument "IncidentFile=%1""
+RegWrite,HKLM,0x2,Tmp_Software\Classes\MsRcIncident\shell\open\command,,"#$pSystemRoot#$p\PCHealth\HelpCtr\Binaries\HelpCtr.exe -Mode #$qhcp://system/Remote%%20Assistance/RAClientLayout.xml#$q -url #$qhcp://system/Remote%%20Assistance/Interaction/Client/rctoolScreen1.htm#$q -ExtraArgument #$qIncidentFile=#$p1#$q"
+// add help and support
+RegWrite,HKLM,0x4,Tmp_Software\Microsoft\Windows\CurrentVersion\Policies\Explorer,NoSMHelp,0
+RegHiveUnLoad,Tmp_Software
+RegHiveLoad,Tmp_System,%Target_Sys%\setupreg.hiv
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Control\Terminal Server,fAllowToGetHelp,1
+RegHiveUnLoad,Tmp_System
+//msinfo32
+IniRead,%PInfo%,String,CommonFiles,%DirCommonFiles%
+Set,%dirtarget%,"%Target_prog%\%DirCommonFiles%\Microsoft Shared\MSInfo"
+DirMake,%dirtarget%
+CopyOrExpand,%Source_Win%\MSINFO32.inf,%Target_Win%\Inf
+CopyOrExpand,%Source_Win%\MSINFO32.exe,%dirtarget%
+//
+If,Not,ExistDir,%ProjectTemp%\inf2hive,DirMake,%ProjectTemp%\inf2hive
+If,ExistFile,%ProjectTemp%\inf2hive\inf2hive.ini,Shellexecute,Hide,cmd.exe,"/C del /q /f /A:R /A:H /A:S /A:A #$q%ProjectTemp%\inf2hive\inf2hive.ini#$q"
+If,ExistFile,%ProjectTemp%\inf2hive\inf2hive.ini,FileDelete,%ProjectTemp%\inf2hive\inf2hive.ini
+FileCreateBlank,%ProjectTemp%\inf2hive\inf2hive.ini
+TxtAddline,%ProjectTemp%\inf2hive\inf2hive.ini,[INF.KEYS],Append
+TXTAddLine,%ProjectTemp%\inf2hive\inf2hive.ini,HKLM#$c#$qSOFTWARE#$q,Append
+TXTAddLine,%ProjectTemp%\inf2hive\inf2hive.ini,HKCR#$c#$q#$q,Append
+Run,%ApiRegScript%,ImportInfTHive,MSINFO32.inf,MSinfoRegistryItems,15CoreHelp_04_MSINFO32,%inf2hivedebug%
+//
+//--InstallHelpSvc_Cancel_3
+//
+Echo,"Processing registrations ..."
+//
+Run,%ApiRegScript%,register,%regmethod%,#$pSystemRoot#$p\pchealth\helpctr\binaries\BRPINFO.DLL,%systemroot%\pchealth\helpctr\binaries\MSINFO.DLL
+Run,%ApiRegScript%,runcmd,%regmethod%,"start /w %systemroot%\pchealth\helpctr\binaries\helpsvc /install2 /svchost netsvcs /regserver /RAInstall"
+Run,%ApiRegScript%,runcmd,%regmethod%,"#$pSystemRoot#$p\pchealth\helpctr\binaries\helphost.exe /regserver"
+Run,%ApiRegScript%,runcmd,%regmethod%,"#$pSystemRoot#$p\pchealth\helpctr\binaries\helpctr.exe /regserver"
+//Run,%ApiRegScript%,runcmd,%regmethod%,"#$pSystemRoot#$p\pchealth\UploadLB\binaries\UploadM.exe /svchost netsvcs /regserver"
+Run,%ApiRegScript%,runcmd,%regmethod%,"rcImLby -regserver"
+Run,%ApiRegScript%,runcmd,%regmethod%,"rdshost.exe /RegServer"
+IniRead,%ProjectDir%\Script.Project,IniVariables,PostApiRegScript,%PostApiRegScript%
+//no need exec here IniWriteTextLine,%PostApiRegScript%,PostVMBoot,"Exec,%ScriptFile%,postvm"
+IniWriteTextLine,%PostApiRegScript%,PostVMBoot,"Exec,%ScriptFile%,postvm,%ScriptFile%"
+//-
+IniRead,%PInfo%,String,Accessories,%AccDir%
+IniRead,%PInfo%,String,SystemTools,%SysToolsDir%
+Set,%tmp%,%pTextBox1%
+If,%tmp%,Equal,"",Set,%tmp%,"System Information"
+Add_Shortcut,StartMenu,%AccDir%\%SysToolsDir%,"%PE_Programs%\%DirCommonFiles%\Microsoft Shared\MSInfo\MSINFO32.exe",%tmp%
+Add,Desktopini,StartMenu,%AccDir%\%SysToolsDir%,,%tmp%.lnk,@shell32.dll#$c-22063
+Add,Desktopini,StartMenu,%AccDir%\%SysToolsDir%,.ShellClassInfo,LocalizedResourceName,@shell32.dll#$c-21788
+
+[InstallHelpSvc_Cancel]
+//--InstallHelpSvc_Cancel_1
+//--
+//If,ExistFile,%ProjectTemp%\tmp.ctl,FileDelete,%ProjectTemp%\tmp.ctl
+//If,ExistFile,%ProjectTemp%\tmpctl.txt,FileDelete,%ProjectTemp%\tmpctl.txt
+//FileCreateBlank,%ProjectTemp%\tmp.ctl
+//TXTAddLine,%ProjectTemp%\tmp.ctl,[tmp.inf]TShoot.Add.Reg,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,HKLM#$c#$qSOFTWARE\#$q@-2,Append
+//Run,%ApiRegScript%,ImportInf,TSHOOT.inf,W
+//TXTDelLine,%ProjectTemp%\tmpctl.txt,"RegWrite#$cHKLM#$c#$q0x1#$q#$c#$qWB-Software\Microsoft\Windows\CurrentVersion\RunOnce#$q"
+//TXTDelLine,%ProjectTemp%\tmpctl.txt,"RegWrite#$cHKLM#$c0x1#$c#$qWB-Software\Microsoft\Windows\CurrentVersion\RunOnce#$q"
+//Exec,%ProjectTemp%\tmpctl.txt,Process-Hive
+//--
+//--InstallHelpSvc_Cancel_1
+//--
+//--InstallHelpSvc_Cancel_2
+//--
+//If,ExistFile,%ProjectTemp%\tmp.ctl,FileDelete,%ProjectTemp%\tmp.ctl
+//If,ExistFile,%ProjectTemp%\tmpctl.txt,FileDelete,%ProjectTemp%\tmpctl.txt
+//FileCreateBlank,%ProjectTemp%\tmp.ctl
+//TXTAddLine,%ProjectTemp%\tmp.ctl,[tmp.inf]INSTALL.reg.add,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,HKCR#$c#$q#$q@-2,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,HKLM#$c#$pKEY_SVCHOST#$p\PCHealth@-2,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,HKLM#$c#$q#$pKEY_APPPATHS#$p#$q@-2,Append
+//Run,%ApiRegScript%,ImportInf,pchealth.inf,W
+//Exec,%ProjectTemp%\tmpctl.txt,Process-Hive
+//--
+//--InstallHelpSvc_Cancel_2
+//--
+//--InstallHelpSvc_Cancel_3
+//--
+//If,ExistFile,%ProjectTemp%\tmp.ctl,FileDelete,%ProjectTemp%\tmp.ctl
+//If,ExistFile,%ProjectTemp%\tmpctl.txt,FileDelete,%ProjectTemp%\tmpctl.txt
+//FileCreateBlank,%ProjectTemp%\tmp.ctl
+//TXTAddLine,%ProjectTemp%\tmp.ctl,[tmp.inf]MSinfoRegistryItems,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,HKLM#$c#$qSOFTWARE\#$q@-2,Append
+//TXTAddLine,%ProjectTemp%\tmp.ctl,HKCR#$c#$q#$q@-2,Append
+//Run,%ApiRegScript%,ImportInf,MSINFO32.inf,W
+//Exec,%ProjectTemp%\tmpctl.txt,Process-Hive
+//--
+//--InstallHelpSvc_Cancel_3
+
+[InstallHelpSvcXP]
+//History013 Expand,%Source_Win%\PCHDT_W3.CA_,%dirtarget%
+//History013 Expand,%Source_Win%\hscsp_w3.ca_,%dirtarget%
+//--
+If,ExistFile,%Source_Win%\PCHDT_W3.CA_,Expand,%Source_Win%\PCHDT_W3.CA_,%dirtarget%
+If,ExistFile,%Source_Win%\hscsp_w3.ca_,Expand,%Source_Win%\hscsp_w3.ca_,%dirtarget%
+If,ExistFile,%Source_Win%\PCHDT_W3.CAB,FileCopy,%Source_Win%\PCHDT_W3.CAB,%dirtarget%
+If,ExistFile,%Source_Win%\PCHDT_W3.CAB,Shellexecute,Hide,Attrib,"-r PCHDT_W3.CAB",%dirtarget%
+If,ExistFile,%Source_Win%\hscsp_w3.cab,FileCopy,%Source_Win%\hscsp_w3.cab,%dirtarget%
+If,ExistFile,%Source_Win%\hscsp_w3.cab,Shellexecute,Hide,Attrib,"-r hscsp_w3.cab",%dirtarget%
+If,Not,ExistFile,%Source_Win%\PCHDT_W3.CA_,Begin
+If,Not,ExistFile,%Source_Win%\PCHDT_W3.CAB,Echo,"PCHDT_W3 help cab missing at source",Warn
+End
+If,Not,ExistFile,%Source_Win%\hscsp_w3.ca_,Begin
+If,Not,ExistFile,%Source_Win%\hscsp_w3.cab,Echo,"hscsp_w3 help cab missing at source",Warn
+End
+//--
+IniRead,%ProjectDir%\Script.Project,IniVariables,OSServicePack,%SP%
+If,%SP%,Equal,SP3,CopyOrExpand,%Source_Win%\NOTIFLAG.exe,%dirtarget%
+
+[InstallHelpSvcW2003]
+//History013 Expand,%Source_Win%\PCHDT_S3.CA_,%dirtarget%
+//History013 Expand,%Source_Win%\hscsp_s3.ca_,%dirtarget%
+//--
+If,ExistFile,%Source_Win%\PCHDT_S3.CA_,Expand,%Source_Win%\PCHDT_S3.CA_,%dirtarget%
+If,ExistFile,%Source_Win%\hscsp_s3.ca_,Expand,%Source_Win%\hscsp_s3.ca_,%dirtarget%
+If,ExistFile,%Source_Win%\PCHDT_S3.CAB,FileCopy,%Source_Win%\PCHDT_S3.CAB,%dirtarget%
+If,ExistFile,%Source_Win%\PCHDT_S3.CAB,Shellexecute,Hide,Attrib,"-r PCHDT_S3.CAB",%dirtarget%
+If,ExistFile,%Source_Win%\hscsp_s3.cab,FileCopy,%Source_Win%\hscsp_s3.cab,%dirtarget%
+If,ExistFile,%Source_Win%\hscsp_s3.cab,Shellexecute,Hide,Attrib,"-r hscsp_s3.cab",%dirtarget%
+//--
+If,ExistFile,%Source_Win%\PCHDT_E3.CA_,Expand,%Source_Win%\PCHDT_E3.CA_,%dirtarget%
+If,ExistFile,%Source_Win%\hscsp_E3.ca_,Expand,%Source_Win%\hscsp_E3.ca_,%dirtarget%
+If,ExistFile,%Source_Win%\PCHDT_E3.CAB,FileCopy,%Source_Win%\PCHDT_E3.CAB,%dirtarget%
+If,ExistFile,%Source_Win%\PCHDT_E3.CAB,Shellexecute,Hide,Attrib,"-r PCHDT_E3.CAB",%dirtarget%
+If,ExistFile,%Source_Win%\hscsp_E3.cab,FileCopy,%Source_Win%\hscsp_E3.cab,%dirtarget%
+If,ExistFile,%Source_Win%\hscsp_E3.cab,Shellexecute,Hide,Attrib,"-r hscsp_E3.cab",%dirtarget%
+//--
+If,ExistFile,%Source_Win%\PCHDT_S3.CA_,Begin
+If,ExistFile,%Source_Win%\PCHDT_E3.CAB,Echo,"PCHDT_S3 - E3 Both Exists at source - This should not happen",Warn
+End
+If,ExistFile,%Source_Win%\hscsp_s3.ca_,Begin
+If,ExistFile,%Source_Win%\hscsp_e3.cab,Echo,"hscsp_s3 - e3 Both Exists at source - This should not happen",Warn
+End
+If,Not,ExistFile,%Source_Win%\PCHDT_S3.CA?,Begin
+If,Not,ExistFile,%Source_Win%\PCHDT_E3.CA?,Echo,"PCHDT_S3 - E3 help cab missing at source",Warn
+End
+If,Not,ExistFile,%Source_Win%\hscsp_s3.ca?,Begin
+If,Not,ExistFile,%Source_Win%\hscsp_e3.ca?,Echo,"hscsp_s3 - e3 help cab missing at source",Warn
+End
+//--
+
+[CopyHelpFiles]
+If,ExistSection,%ProjectTemp%\depends.script,CoreHelpCopyHelpFiles,IniDeleteSection,%ProjectTemp%\depends.script,CoreHelpCopyHelpFiles
+Exec,%ProjectTemp%\depends.script,ExecDep,CoreHelpInstallCore
+Echo,"Copying files ..."
+If,ExistFile,%ProjectTemp%\tmp.ctl,Shellexecute,Hide,cmd.exe,"/C del /q /f /A:R /A:H /A:S /A:A #$q%ProjectTemp%\tmp.ctl#$q"
+If,ExistFile,%ProjectTemp%\tmpcmd.cmd,Shellexecute,Hide,cmd.exe,"/C del /q /f /A:R /A:H /A:S /A:A #$q%ProjectTemp%\tmpcmd.cmd#$q"
+If,ExistFile,%ProjectTemp%\tmpctl.txt,Shellexecute,Hide,cmd.exe,"/C del /q /f /A:R /A:H /A:S /A:A #$q%ProjectTemp%\tmpctl.txt#$q"
+If,ExistFile,%ProjectTemp%\tmp.ctl,FileDelete,%ProjectTemp%\tmp.ctl
+If,ExistFile,%ProjectTemp%\tmpcmd.cmd,FileDelete,%ProjectTemp%\tmpcmd.cmd
+If,ExistFile,%ProjectTemp%\tmpctl.txt,FileDelete,%ProjectTemp%\tmpctl.txt
+FileCreateBlank,%ProjectTemp%\tmpcmd.cmd
+FileCreateBlank,%ProjectTemp%\tmpctl.txt
+FileCreateBlank,%ProjectTemp%\tmp.ctl
+IniRead,%ProjectDir%\Script.Project,IniVariables,ApiRegDir,%ApiRegDir%
+ShellExecute,hide,%ApiRegDir%\ApiRegUtil.exe,"getinffiles#$s#$q%Source_Win%\layout.inf#$q#$s[SourceDisksFiles]#$s#$q*.chm*=*|*.hlp*=*21,0,0*|*.cnt*=*21,0,0*#$q#$s#$q%ProjectTemp%\tmp.ctl#$q"
+Run,%ScriptFile%,CopyHelpFiles1
+If,ExistFile,%ProjectTemp%\tmp.ctl,Shellexecute,Hide,cmd.exe,"/C del /q /f /A:R /A:H /A:S /A:A #$q%ProjectTemp%\tmp.ctl#$q"
+If,ExistFile,%ProjectTemp%\tmpcmd.cmd,Shellexecute,Hide,cmd.exe,"/C del /q /f /A:R /A:H /A:S /A:A #$q%ProjectTemp%\tmpcmd.cmd#$q"
+If,ExistFile,%ProjectTemp%\tmpctl.txt,Shellexecute,Hide,cmd.exe,"/C del /q /f /A:R /A:H /A:S /A:A #$q%ProjectTemp%\tmpctl.txt#$q"
+If,ExistFile,%ProjectTemp%\tmp.ctl,FileDelete,%ProjectTemp%\tmp.ctl
+If,ExistFile,%ProjectTemp%\tmpcmd.cmd,FileDelete,%ProjectTemp%\tmpcmd.cmd
+If,ExistFile,%ProjectTemp%\tmpctl.txt,FileDelete,%ProjectTemp%\tmpctl.txt
+FileCreateBlank,%ProjectTemp%\tmpcmd.cmd
+FileCreateBlank,%ProjectTemp%\tmpctl.txt
+FileCreateBlank,%ProjectTemp%\tmp.ctl
+IniRead,%ProjectDir%\Script.Project,IniVariables,ApiRegDir,%ApiRegDir%
+ShellExecute,hide,%ApiRegDir%\ApiRegUtil.exe,"getinffiles#$s#$q%Source_Win%\layout.inf#$q#$s[SourceDisksFiles.x86]#$s#$q*.chm*=*|*.hlp*=*21,0,0*|*.cnt*=*21,0,0*#$q#$s#$q%ProjectTemp%\tmp.ctl#$q"
+Run,%ScriptFile%,CopyHelpFiles1
+
+[CopyHelpFiles1]
+TXTDelLine,%ProjectTemp%\tmp.ctl,count=
+TXTDelLine,%ProjectTemp%\tmp.ctl,[files]
+TXTAddLine,%ProjectTemp%\tmpcmd.cmd,"ECHO.#$s>#$s#$q%ProjectTemp%\tmpctl.txt#$q",Append
+TXTAddLine,%ProjectTemp%\tmpcmd.cmd,"for#$s/F#$s#$qusebackq tokens=2,3#$sdelims=,=#$q#$s#$p#$pi#$sIN#$s(#$q%ProjectTemp%\tmp.ctl#$q)#$sDO#$s(",Append
+TXTAddLine,%ProjectTemp%\tmpcmd.cmd,"ECHO#$sSystem#$cERROROFF#$s>>#$s#$q%ProjectTemp%\tmpctl.txt#$q",Append
+//TXTAddLine,%ProjectTemp%\tmpcmd.cmd,"ECHO#$sIf#$cExistFile#$c@#@$q@target@#$p#$pj@#@$q#$cFileDelete#$c@#@$q@target@#$p#$pj@#@$q#$s>>#$s#$q%ProjectTemp%\tmpctl.txt#$q",Append
+//TXTAddLine,%ProjectTemp%\tmpcmd.cmd,"ECHO#$sSystem#$cERROROFF#$s>>#$s#$q%ProjectTemp%\tmpctl.txt#$q",Append
+//TXTAddLine,%ProjectTemp%\tmpcmd.cmd,"ECHO#$sCopyOrExpand#$c@#@$q@source@#$p#$pi@#@$q#$c@#@$q@target@#$p#$pj@#@$q#$s>>#$s#$q%ProjectTemp%\tmpctl.txt#$q)",Append
+TXTAddLine,%ProjectTemp%\tmpcmd.cmd,"ECHO#$sIf#$cNot#$cExistFile#$c@#@$q@target@#$p#$pj@#@$q#$cCopyOrExpand#$c@#@$q@source@#$p#$pi@#@$q#$c@#@$q@target@#$p#$pj@#@$q#$s>>#$s#$q%ProjectTemp%\tmpctl.txt#$q)",Append
+ShellExecute,Hide,cmd.exe,"/c#$s#$q%ProjectTemp%\tmpcmd.cmd#$q"
+TXTreplace,%ProjectTemp%\tmpctl.txt,"@source@","#$psource_win#$p\"
+TXTreplace,%ProjectTemp%\tmpctl.txt,"@target@","#$ptarget_win#$p\Help\"
+TXTreplace,%ProjectTemp%\tmpctl.txt,"@#@$q","#$q"
+TXTAddLine,%ProjectTemp%\tmpctl.txt,[Process-Hive],PrePend
+Exec,%ProjectTemp%\tmpctl.txt,Process-Hive
+Shellexecute,Hide,cmd.exe,"/C del /q /f /A:R /A:H /A:S /A:A #$q%ProjectTemp%\tmpcmd.cmd#$q"
+If,ExistFile,%ProjectTemp%\tmpcmd.cmd,FileDelete,%ProjectTemp%\tmpcmd.cmd
+
+[postvm]
+Echo,"Postprocessing: Help And Support ..."
+If,Not,-#1,Equal,-,IniRead,#1,IniScriptVariables,sysdrive,%sysdrive%
+IniRead,%ProjectDir%\Script.Project,IniVariables,NoWarnRegOverWrite,%NoWarnROW%
+RegHiveLoad,Tmp_System,%Target_Sys%\setupreg.hiv
+Set,%TMP%,""
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\helpsvc,DisplayName,RegRead,HKLM,Tmp_System\ControlSet001\Services\helpsvc,DisplayName,%TMP%
+If,%TMP%,Equal,"",Set,%TMP%,"Help and Support"
+//RegWrite ! Overwrote existing key "2" with different data
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\helpsvc,Start,3
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\helpsvc,FailureActions,RegDelete,HKLM,Tmp_System\ControlSet001\Services\helpsvc,FailureActions
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_HELPSVC,NextInstance,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_HELPSVC\0000,Service,helpsvc
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_HELPSVC\0000,Legacy,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\Root\LEGACY_HELPSVC\0000,ConfigFlags,32
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_HELPSVC\0000,Class,LegacyDriver
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_HELPSVC\0000,ClassGUID,{8ECC055D-047F-11D1-A537-0000F8753ED1}
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\Root\LEGACY_HELPSVC\0000,DeviceDesc,%TMP%
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Terminal Server","",""
+RegHiveUnLoad,Tmp_System
+RegHiveLoad,Tmp_Software,%Target_Sys%\config\software
+If,ExistRegSection,HKLM,Tmp_Software\Microsoft\PCHealth\HelpSvc\Backup,RegDelete,HKLM,Tmp_Software\Microsoft\PCHealth\HelpSvc\Backup
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\PCHealth\HelpSvc\Backup,"",""
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\App Paths\helpctr.exe",,%sysdrive%\I386\PCHealth\helpctr\binaries\helpctr.exe
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows\CurrentVersion\App Paths\msconfig.exe",,%sysdrive%\I386\PCHealth\helpctr\binaries\msconfig.exe
+RegHiveUnLoad,Tmp_Software
+IniRead,%ProjectDir%\Script.Project,IniVariables,ApiRegHDDDrive,%ApiRegHDDDrive%
+StrFormat,REPLACE,%Target_Win%,%TargetDir%,%ApiRegHDDDrive%,%dirtarget%
+Set,%dirtarget%,%dirtarget%\PCHealth
+DirCopy,%dirtarget%\*,%Target_Win%\PCHealth
+
+[AuthorEncoded]
+logo.jpg=11211,14948
+Logo=logo.jpg
+
+[EncodedFile-AuthorEncoded-logo.jpg]
+lines=3
+0=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
+1=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
+2=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
+3=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
+
+[DownloadXXX]
+IniRead,%ScriptFile%,Main,Level,%LevelBefore%
+Call,DownloadXQ
+IniWrite,%ScriptFile%,Main,Level,%LevelBefore%
+
+[UploadXXX]
+IniRead,%ScriptFile%,Main,Level,%LevelBefore%
+Call,UploadXQ
+IniWrite,%ScriptFile%,Main,Level,%LevelBefore%
+
+[Settings_Default]
+IniWrite,%ScriptFile%,Main,Level,0
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+

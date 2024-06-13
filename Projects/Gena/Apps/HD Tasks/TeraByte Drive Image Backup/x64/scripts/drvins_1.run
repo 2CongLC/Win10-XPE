@@ -1,0 +1,63 @@
+;;Example/template script for Stage 1 of the Windows driver installation.
+
+;; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ NOTE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+;; Users who have purchased the Professional version (included with
+;; the purchase of Image for DOS/Linux/Windows) have access to an
+;; interactive script named OSDTOOL.TBS that provides far more 
+;; options in an easy to use menu.  See the manual for more details.
+;; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+;;Commands below are specific to the Intel 82801GR/GH SATA AHCI Controller
+
+;;Lines beginning with a single ";" need to be edited with correct values,
+;;and then uncommented.
+
+;;This script is being executed from a DOS boot disk containing:
+;; - the DOS version of TBOSDT
+;; - the Windows version of TBOSDT (named tbosdtw.exe)
+;; - the Stage 1 TBOSDT script named drvins_1.run
+;; - the Stage 2 TBOSDT script named drvins_2.run
+;;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+;;Step 1 - mount the target partition (assuming HD0, partition ID 1)
+;mount 0: 0 0x1
+
+;;Step 2 - create directory on target partition to copy driver files to 
+;md 0:\drivers\intel -s
+
+;;Step 3a - copy the driver files to directory on target
+;;This example is copying the files from a floppy drive
+;copy a:\iaahci.inf 0:\drivers\intel
+;copy a:\iaahci.cat 0:\drivers\intel
+;copy a:\iastor.sys 0:\drivers\intel
+
+;;Step 3b - or extract driver files from cab file
+;extract d:\path\iaahci.cab iaahci.inf 0:\drivers\intel
+;extract d:\path\iaahci.cab iaahci.cat 0:\drivers\intel
+;extract d:\path\iaahci.cab iastor.sys 0:\drivers\intel
+
+;;Step 4 - copy Windows version of TBOSDT and drvins_2.run to target
+;;Note: For this example, the Windows version of TBOSDT has been copied
+;;to the boot disk as TBOSDTW.EXE to differentiate it from the DOS version.
+;copy tbosdtw.exe 0:\drivers
+;copy drvins_2.run 0:\drivers
+
+;;Step 5 - open the system registry hive on the target
+;open reg 0 0:\windows\system32\config\system
+
+;;Step 6 - open the software registry hive on the target 
+;open reg 1 0:\windows\system32\config\software
+
+;;Step 7 - change to drive/directory on target containing the driver files
+;cd 0:\drivers\intel
+;0:
+
+;;Step 8 - run the copy inf command to install the driver (add -f to filter) 
+;;         Note: add --x64 to the end of the command for 64bit drivers.
+;copy inf iaahci.inf 0:\windows c:\windows 0 "" 1 -i -b
+
+;;Step 9 - configure Setup key to execute drvins_2.run script on next boot
+;open key 0 "" 0
+;set value 0 Setup CmdLine sz "c:\drivers\tbosdtw.exe c:\drivers\drvins_2.run"
+;set value 0 Setup SetupType dword 0x1
+;set value 0 Setup SystemSetupInProgress dword 1

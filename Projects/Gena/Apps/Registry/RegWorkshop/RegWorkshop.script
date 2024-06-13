@@ -1,0 +1,44 @@
+[main]
+Title=RegWorkshop
+Description=Registry Workshop 5.01 is an advanced registry editor. It is a perfect replacement for RegEdit and RegEdt32 which shipped with Windows.
+Selected=True
+Level=5
+Version=1
+Download_Level=0
+NoWarning=False
+Date=19.08.2020
+Author=2CongLC.Vn
+
+[variables]
+%ProgramTitle%=RegWorkshop
+%ProgramEXE%=RegWorkshop.exe
+%ProgramExex64%=RegWorkshopX64.exe
+%ProgramFolder%=RegistryWorkshop
+
+[Interface]
+pCheckBox2="Desktop Shortcut",1,3,18,43,200,18,False
+pCheckBox1="Run from RAM (boot.wim) - Recommended",1,3,19,18,264,18,True
+pCheckBox3="StartMenu : ",1,3,19,66,80,18,True
+pTextBox1="StartMenu Folder",1,0,24,106,200,21,Registry
+
+[process]
+If,%pCheckBox1%,Equal,True,Begin
+  DirMake,"%Target_Prog%\%ProgramFolder%\"
+  If,%SourceArch%,Equal,x86,Begin
+    DirCopy,"%ScriptDir%\x86\*.*","%Target_Prog%\%ProgramFolder%\"
+  End
+  If,%SourceArch%,Equal,x64,Begin
+    DirCopy,"%ScriptDir%\x64\*.*","%Target_Prog%\%ProgramFolder%\"
+    Set,%ProgramExe%,%ProgramExex64%
+  End
+  Run,%ScriptFile%,Add_Shortcuts
+  Run,%ScriptFile%,Add_Registry
+End
+
+[Add_Shortcuts]
+If,%pCheckBox2%,Equal,True,Add_Shortcut,Desktop
+If,%pCheckBox3%,Equal,True,Add_Shortcut,StartMenu,%pTextBox1%
+
+[Add_Registry]
+//0x1=String, 0x2 = Expand String, 0x3 = Binary Data, 0x4 = Dword
+

@@ -1,0 +1,432 @@
+[Main]
+Title=Turkish Language Group
+Type=Plugin
+Author=Saydin77, Lancelot
+Description=(NT5x) Turkce Dil Grubu Destegi (Turkce Q & F ve Azeri Latin)
+Credits=http://TheOven.org
+Version=010
+Download_Level=0
+Level=8
+Selected=False
+Mandatory=False
+NoWarning=False
+Contact=http://TheOven.org
+Date=2017.02.10
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Finals/1%20Optimizations/Lang_Turkish.script
+CertifiedBy=
+Certification=
+HistoryNotes01=IMPORTANT:-------------------
+HistoryNotes02=IMPORTANT:If you change [Interface] , also change [Process_Pre] [Process_Auto]
+HistoryNotes03=IMPORTANT:-------------------
+HistoryNotes04=Language Group List can be found inside Intl.inf ( [LanguageGroups] ) - [KBD.LGFiles.Turkish] [Turkish_Fonts] [NLS.LGFiles.Install.Turkish]
+HistoryNotes05=note: LID not always 4 letter cut. ex: Spanish: LID = 0C0A // DefaultLayout = 0001040A
+HistoryNotes06=If you do not change txtsetup.sif but only registry you will need c_1254.nls uncompressed
+HistoryNotes07=-shortly compressed nls only good for cmd shell and probably txtsetup.sif loaded ones -> for gui applications do not compress the ones that are not loaded via txtsetup.sif
+History002=Lancelot NoWarnROW implemented
+History003=Lancelot arialbd.ttf added (to fix gui scramble test with ob1 xpsp3x86 enu source)
+History004=Lancelot change default to Turkish Q (now we have ScanCode Map Plugin)
+History005=Lancelot For Lang_20_Auto added [Process_Pre] [Process_Auto]
+History007=Lancelot Added All_CheckBox_Turkish // All_Button_Turkish - http://TheOven.org/index.php?topic=1430
+History008=Lancelot Updated "Turkish Q Custom" with new features
+History009=Lancelot Updated "Turkish Q Custom" v3 - Date:2015.11.16
+History010=Lancelot Add Compare Button - Date:2017.02.10
+
+[TurkishQ.dll_Info]
+//Turkish Q Custom
+Decimal Seperator (numeric keybad)=.
+Decimal Seperator (numeric keybad) + Shift=.
+D + Alt+Ctrl (AltGr)=â (kucuk sapkali a)
+F + Alt+Ctrl (AltGr)=Â (buyuk sapkali a)
+//-
+NO: CapsLock turned off when Shift is depressed (also known as ShiftLock)
+//+
+T + Alt+Ctrl (AltGr)=TL symbol (Comes from latest MS TR Q keyboard  --> updating Gena ;) )
+
+[Interface]
+pTextLabel1="Keyboard 1:",1,1,9,27,60,18,8,Normal
+pTextLabel2="KeyBoard 2:",1,1,9,66,60,18,8,Normal
+pTextLabel3="Keyboard 3:",1,1,9,91,60,18,8,Normal
+pTextLabel4="Keyboard 4:",1,1,9,116,60,18,8,Normal
+pScrollBox_Keyboard_1="Turkish Q Custom                                                                     A000041f",1,4,71,25,110,21,"Turkish Q                                                                     0000041F","Turkish F                                                                     0001041f","Azeri Latin                                                                     0000042c","Turkish Q Custom                                                                     A000041f","Source                                                                     source00","Keep                                                                     Keep0000"
+pScrollBox_Keyboard_2="Turkish F                                                                     0001041f",1,4,71,65,110,21,"Turkish Q                                                                     0000041F","Turkish F                                                                     0001041f","Azeri Latin                                                                     0000042c","Turkish Q Custom                                                                     A000041f","English (US)                                                                     00000409","Source                                                                     source00","None                                                                     None0000","Keep                                                                     Keep0000"
+pScrollBox_Keyboard_3="Azeri Latin                                                                     0000042c",1,4,71,90,110,21,"Turkish Q                                                                     0000041F","Turkish F                                                                     0001041f","Azeri Latin                                                                     0000042c","Turkish Q Custom                                                                     A000041f","English (US)                                                                     00000409","Source                                                                     source00","None                                                                     None0000","Keep                                                                     Keep0000"
+pScrollBox_Keyboard_4="English (US)                                                                     00000409",1,4,71,115,110,21,"Turkish Q                                                                     0000041F","Turkish F                                                                     0001041f","Azeri Latin                                                                     0000042c","Turkish Q Custom                                                                     A000041f","English (US)                                                                     00000409","Source                                                                     source00","None                                                                     None0000","Keep                                                                     Keep0000"
+MSDN_KBL_WebLabel="Windows Keyboard Layouts",1,10,261,21,133,18,http://msdn.microsoft.com/en-us/goglobal/bb964651
+WebLabel_Plugin="Plugin Page",1,10,338,4,55,18,http://TheOven.org/index.php?board=9
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+All_Bevel=pBevel1,1,12,288,50,140,64
+All_CheckBox_Turkish="Add All Turkish Language Group",1,3,292,54,129,28,False
+All_Button_Turkish="Add All",1,8,370,85,52,25,All_Turkish_B,0,False,False,_All_Turkish_B_,False,"__Add All WesternEurope Language Group"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[Variables]
+%Process_Auto%=0
+
+[Process_Auto]
+//Run from other plugin
+Set,%Process_Auto%,1
+//-
+Set,%pScrollBox_Keyboard_1V%,#1
+Set,%pScrollBox_Keyboard_2V%,"Source                                                                     source00"
+Set,%pScrollBox_Keyboard_3V%,"Keep                                                                     Keep0000"
+Set,%pScrollBox_Keyboard_4V%,"Keep                                                                     Keep0000"
+//-
+Run,%ScriptFile%,Process
+
+[Process_Pre]
+Set,%pScrollBox_Keyboard_1V%,%pScrollBox_Keyboard_1%
+Set,%pScrollBox_Keyboard_2V%,%pScrollBox_Keyboard_2%
+Set,%pScrollBox_Keyboard_3V%,%pScrollBox_Keyboard_3%
+Set,%pScrollBox_Keyboard_4V%,%pScrollBox_Keyboard_4%
+
+[Process]
+If,Not,%OSFamily%,Equal,NT5,Exit,"%ScriptTitle% is only designed for NT5"
+If,Not,%Process_Pre%,Equal,1,Run,%ScriptFile%,Process_Pre
+//-
+IniRead,%ProjectDir%\script.project,IniVariables,NoWarnRegOverWrite,%NoWarnROW%
+RegHiveLoad,Tmp_Default,%RegDefault%
+RegHiveLoad,Tmp_Software,%RegSoftware%
+RegHiveLoad,Tmp_System,%RegSystem%
+//--
+If,%All_CheckBox_Turkish%,Equal,True,Run,%ScriptFile%,All_Turkish
+//--
+Run,%scriptfile%,Process_Common
+Run,%scriptfile%,Turkish_Process
+RegHiveUnLoad,Tmp_Default
+RegHiveUnLoad,Tmp_System
+RegHiveUnLoad,Tmp_Software
+
+[All_Turkish_B]
+RegHiveLoad,Tmp_Software,%RegSoftware%
+RegHiveLoad,Tmp_System,%RegSystem%
+Run,%ScriptFile%,All_Turkish
+RegHiveUnLoad,Tmp_System
+RegHiveUnLoad,Tmp_Software
+
+[All_Turkish]
+//Adds Keyboad DLL and Registry
+Run,%ScriptFile%,Lang_0000041F
+Run,%ScriptFile%,Lang_0001041f
+Run,%ScriptFile%,Lang_0000042c
+
+[Process_Common]
+If,Not,ExistDir,%ProjectTemp%,DirMake,%ProjectTemp%
+StrFormat,DATE,%myDate%,yyyymmddhhnn
+//Backup PreConfig For Reference-Tests....
+ShellExecute,hide,regedit.exe,"/e #$q%ProjectTemp%\Keyboard_Layout-Preload_%myDate%.reg.ini#$q #$qHKEY_LOCAL_MACHINE\Tmp_Default\Keyboard Layout\Preload#$q"
+//Better Not delete unless you have All Languages Plugin (with not deleting things can be arranged with seperate Plugins...)
+//If,ExistRegSection,HKLM,"Tmp_Default\Keyboard Layout\Preload",RegDelete,HKLM,"Tmp_Default\Keyboard Layout\Preload"
+
+[Turkish_Process]
+Run,%scriptfile%,Turkish_Common_Process
+//--
+StrFormat,Right,%pScrollBox_Keyboard_2V%,8,%DOSKEYBName_Selection%
+If,Not,%DOSKEYBName_Selection%,Equal,Keep0000,Run,%scriptfile%,MoreKeyBoard,2
+StrFormat,Right,%pScrollBox_Keyboard_3V%,8,%DOSKEYBName_Selection%
+If,Not,%DOSKEYBName_Selection%,Equal,Keep0000,Run,%scriptfile%,MoreKeyBoard,3
+StrFormat,Right,%pScrollBox_Keyboard_4V%,8,%DOSKEYBName_Selection%
+If,Not,%DOSKEYBName_Selection%,Equal,Keep0000,Run,%scriptfile%,MoreKeyBoard,4
+//--
+StrFormat,Right,%pScrollBox_Keyboard_1V%,8,%DOSKEYBName_Selection%
+Set,%TR_Process%,Yes
+If,%DOSKEYBName_Selection%,Equal,Keep0000,Set,%TR_Process%,No
+If,%DOSKEYBName_Selection%,Equal,source00,Begin
+Set,%TR_Process%,No
+Set,%DOSKEYBName_Selection%,source00
+Run,%scriptfile%,MoreKeyBoard,1
+End
+If,%TR_Process%,Equal,Yes,Run,%scriptfile%,MoreKeyBoard,1
+If,%TR_Process%,Equal,Yes,Run,%ScriptFile%,Turkish_Power_Process
+
+[Turkish_Power_Process]
+Run,%scriptfile%,Lang_%DOSKEYBName_Selection%
+//--
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Windows\CurrentVersion\Nls\LocaleMapIDs,,"255,254"
+//--
+If,%NoWarnROW%,Equal,True,System,ERROROFF,23
+RegWrite,HKLM,0x4,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontMapper",DEFAULT,162
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Fonts","Courier 10,12,15 (VGA res)",COURET.FON
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Fonts","MS Sans Serif 8,10,12,14,18,24 (VGA res)",SSERIFET.FON
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Fonts","MS Serif 8,10,12,14,18,24 (VGA res)",SERIFET.FON
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\Fonts","Small Fonts (VGA res)",SMALLET.FON
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","Arial TUR,162","Arial,162"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","Courier New TUR,162","Courier New,162"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes",Times,"Times New Roman"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","Times New Roman TUR,162","Times New Roman,162"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","Tms Rmn","MS Serif"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","System,0","System,162"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","Fixedsys,0","Fixedsys,162"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","Small Fonts,0","Small Fonts,162"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","MS Serif,0","MS Serif,162"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","MS Sans Serif,0","MS Sans Serif,162"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","Courier,0","Courier New,162"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","Arial Tur,0","Arial,162"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","Courier New Tur,0","Courier New,162"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","Times New Roman Tur,0","Times New Roman,162"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","Tahoma,0","Tahoma,162"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","Helv,0","MS Sans Serif,162"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","Tms Rmn,0","MS Serif,162"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes","MS Shell Dlg","Microsoft Sans Serif"
+//--
+//RegWrite,HKLM,0x4,Tmp_Default\Software\Microsoft\CTF\TIP\{DCBD6FA8-032F-11D3-B5B1-00C04FC324A1}\LanguageProfile\0x041F\{09EA4E4B-46CE-4469-B450-0DE76A435BBB},Enable,0
+//RegWrite,HKLM,0x1,"Tmp_Default\Keyboard Layout\Preload",1,0000041F
+If,%NoWarnROW%,Equal,True,System,ERROROFF,2
+RegWrite,HKLM,0x4,Tmp_Default\Software\Microsoft\CTF\TIP\{DCBD6FA8-032F-11D3-B5B1-00C04FC324A1}\LanguageProfile\0x%DOSKEYBNameLID%\{09EA4E4B-46CE-4469-B450-0DE76A435BBB},Enable,0
+RegWrite,HKLM,0x1,"Tmp_Default\Keyboard Layout\Preload",1,%DOSKEYBName_Selection%
+//--
+If,%NoWarnROW%,Equal,True,System,ERROROFF,7
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\CodePage,ACP,1254
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\CodePage,MACCP,10081
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\CodePage,OEMCP,857
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\CodePage,OEMHAL,vga857.fon
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\Language,%DOSKEYBNameLID%,l_intl.nls
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\Language,InstallLanguage,%DOSKEYBNameLID%
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\Language,Default,%DOSKEYBNameLID%
+//--
+If,%NoWarnROW%,Equal,True,System,ERROROFF,4
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Hardware Profiles\Current\Software\Fonts",FIXEDFON.FON,vgafixt.fon
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Hardware Profiles\Current\Software\Fonts",FONTS.FON,vgasyst.fon
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Hardware Profiles\Current\Software\Fonts",OEMFONT.FON,vga857.fon
+RegWrite,HKLM,0x4,"Tmp_System\ControlSet001\Hardware Profiles\Current\Software\Fonts",LogPixels,96
+//--
+Echo,"Writing txtsetup.sif"
+IniWrite,%target_win%\txtsetup.sif,nls,AnsiCodepage,"c_1254.nls,1254"
+IniWrite,%target_win%\txtsetup.sif,nls,OemCodepage,"c_857.nls,857,c_437.nls,437"
+IniWrite,%target_win%\txtsetup.sif,nls,MacCodepage,"c_10000.nls,10000"
+IniWrite,%target_win%\txtsetup.sif,nls,UnicodeCasetable,"l_intl.nls,%DOSKEYBNameLID%"
+IniWrite,%target_win%\txtsetup.sif,nls,OemHalFont,vga857.fon
+IniWrite,%target_win%\txtsetup.sif,nls,DefaultLayout,%DOSKEYBName_Selection%
+IniWrite,%target_win%\txtsetup.sif,SourceDisksFiles,vgaoem.fon,"1,,,,,,,22,0,0,,1,2"
+IniWrite,%target_win%\txtsetup.sif,SourceDisksFiles,vga850.fon,"1,,,,,,,22,0,0,,1,2"
+//vga857.fon not exists on enu
+IniWrite,%target_win%\txtsetup.sif,SourceDisksFiles,vga857.fon,"1,,,,,,,22,0,0,,1,2"
+IniWrite,%target_win%\txtsetup.sif,SourceDisksFiles,vga861.fon,"1,,,,,,,22,0,,,1,2"
+//c_857.nls not exists on enu
+IniWrite,%target_win%\txtsetup.sif,SourceDisksFiles,c_857.nls,"1,,,,,,,22,0,0,,1,2"
+IniWrite,%target_win%\txtsetup.sif,SourceDisksFiles,c_1254.nls,"1,,,,,,,22,0,0,,1,2"
+
+[Turkish_Common_Process]
+If,Not,ExistFile,%target_sys%\vgaoem.fon,CopyOrExpand,%source_win%\vgaoem.fon,%target_sys%\vgaoem.fon
+If,Not,ExistFile,%target_sys%\vga850.fon,CopyOrExpand,%source_win%\vga850.fon,%target_sys%\vga850.fon
+If,Not,ExistFile,%target_sys%\vga861.fon,CopyOrExpand,%source_win%\vga861.fon,%target_sys%\vga861.fon
+If,Not,ExistFile,%target_sys%\vga857.fon,CopyOrExpand,%source_win%\vga857.fon,%target_sys%\vga857.fon
+FileRename,%target_sys%\VGAOEM.FON,%target_sys%\VGAOEM.FONTEMP
+FileRename,%target_sys%\VGAOEM.FONTEMP,%target_sys%\VGAOEM.FON
+FileRename,%target_sys%\VGA850.FON,%target_sys%\VGA850.FONTEMP
+FileRename,%target_sys%\VGA850.FONTEMP,%target_sys%\VGA850.FON
+FileRename,%target_sys%\VGA861.FON,%target_sys%\VGA861.FONTEMP
+FileRename,%target_sys%\VGA861.FONTEMP,%target_sys%\VGA861.FON
+FileRename,%target_sys%\VGA857.FON,%target_sys%\VGA857.FONTEMP
+FileRename,%target_sys%\VGA857.FONTEMP,%target_sys%\VGA857.FON
+//--
+If,Not,ExistFile,%target_win%\Fonts\vgafixt.fon,CopyOrExpand,%source_win%\vgafixt.fon,%target_win%\Fonts\vgafixt.fon
+If,Not,ExistFile,%target_win%\Fonts\vgasyst.fon,CopyOrExpand,%source_win%\vgasyst.fon,%target_win%\Fonts\vgasyst.fon
+If,Not,ExistFile,%target_win%\Fonts\vga857.fon,CopyOrExpand,%source_win%\vga857.fon,%target_win%\Fonts\vga857.fon
+//--
+If,Not,ExistFile,%target_win%\Fonts\COURET.FON,CopyOrExpand,%source_win%\COURET.FON,%target_win%\Fonts\COURET.FON
+If,Not,ExistFile,%target_win%\Fonts\SERIFET.FON,CopyOrExpand,%source_win%\SERIFET.FON,%target_win%\Fonts\SERIFET.FON
+If,Not,ExistFile,%target_win%\Fonts\SMALLET.FON,CopyOrExpand,%source_win%\SMALLET.FON,%target_win%\Fonts\SMALLET.FON
+If,Not,ExistFile,%target_win%\Fonts\SSERIFET.FON,CopyOrExpand,%source_win%\SSERIFET.FON,%target_win%\Fonts\SSERIFET.FON
+//--
+If,ExistFile,%target_sys%\c_1254.nl_,Call,FileDelete,%target_sys%\c_1254.nl_
+If,ExistFile,%target_sys%\c_10081.nl_,Call,FileDelete,%target_sys%\c_10081.nl_
+If,ExistFile,%target_sys%\c_437.nl_,Call,FileDelete,%target_sys%\c_437.nl_
+If,ExistFile,%target_sys%\c_857.nl_,Call,FileDelete,%target_sys%\c_857.nl_
+If,ExistFile,%target_sys%\c_10000.nl_,Call,FileDelete,%target_sys%\c_10000.nl_
+If,Not,ExistFile,%target_sys%\c_1254.nls,CopyOrExpand,%source_sys%\c_1254.nls,%target_sys%
+If,Not,ExistFile,%target_sys%\c_10081.nls,CopyOrExpand,%source_sys%\c_10081.nls,%target_sys%
+If,Not,ExistFile,%target_sys%\c_437.nls,CopyOrExpand,%source_sys%\c_437.nls,%target_sys%
+If,Not,ExistFile,%target_sys%\c_857.nls,CopyOrExpand,%source_sys%\c_857.nls,%target_sys%
+If,Not,ExistFile,%target_sys%\c_10000.nls,CopyOrExpand,%source_sys%\c_10000.nls,%target_sys%
+FileRename,%target_sys%\c_1254.nls,%target_sys%\c_1254.nlsTEMP
+FileRename,%target_sys%\c_1254.nlsTEMP,%target_sys%\C_1254.NLS
+FileRename,%target_sys%\c_10081.nls,%target_sys%\c_10081.nlsTEMP
+FileRename,%target_sys%\c_10081.nlsTEMP,%target_sys%\C_10081.NLS
+FileRename,%target_sys%\c_437.nls,%target_sys%\c_437.nlsTEMP
+FileRename,%target_sys%\c_437.nlsTEMP,%target_sys%\C_437.NLS
+FileRename,%target_sys%\c_857.nls,%target_sys%\c_857.nlsTEMP
+FileRename,%target_sys%\c_857.nlsTEMP,%target_sys%\C_857.NLS
+FileRename,%target_sys%\c_10000.nls,%target_sys%\c_10000.nlsTEMP
+FileRename,%target_sys%\c_10000.nlsTEMP,%target_sys%\C_10000.NLS
+//--
+//tested with enu source - when you change keyboard you will notice some texts scramble (ex: start ob1....)
+If,Not,ExistFile,%target_win%\Fonts\arialbd.ttf,CopyOrExpand,%source_win%\arialbd.ttf,%target_win%\Fonts
+//--
+//FileCopy,%source_sys%\c_1254.nl_,%target_sys%
+//FileCopy,%source_sys%\c_10081.nl_,%target_sys%
+//FileCopy,%source_sys%\c_437.nl_,%target_sys%
+//FileCopy,%source_sys%\c_857.nl_,%target_sys%
+//FileCopy,%source_sys%\c_10000.nl_,%target_sys%
+//--
+If,%NoWarnROW%,Equal,True,System,ERROROFF,4
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\CodePage,437,c_437.nls
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\CodePage,857,c_857.nls
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\CodePage,1254,c_1254.nls
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\CodePage,10081,c_10081.nls
+//--
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Nls\Language Groups",6,1
+//--
+If,%NoWarnROW%,Equal,True,System,ERROROFF,2
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Nls\Locale\Alternate Sorts",00010407,1
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Nls\Locale\Alternate Sorts",0001040e,2
+
+[Turkish_List]
+//List With Names
+Turkish Q
+Turkish F
+Azeri Latin
+//List With KBDXXX.DLL
+KBDTUQ.DLL
+KBDTUF.DLL
+KBDAZEL.DLL
+//Additional
+KBDTUQC3.dll
+
+[MoreKeyBoard]
+If,%DOSKEYBName_Selection%,Equal,None0000,Run,%ScriptFile%,MoreKeyBoard_None,#1,#2,#3,#4,#5,#6,#7,#8,#9
+Else,Run,%ScriptFile%,MoreKeyBoard_PreLoad,#1,#2,#3,#4,#5,#6,#7,#8,#9
+
+[MoreKeyBoard_PreLoad]
+Run,%scriptfile%,Lang_%DOSKEYBName_Selection%
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+RegWrite,HKLM,0x1,"Tmp_Default\Keyboard Layout\Preload",#1,%DOSKEYBName_Selection%
+
+[MoreKeyBoard_None]
+If,%NoWarnROW%,Equal,True,System,ERROROFF
+If,ExistRegKey,HKLM,"Tmp_Default\Keyboard Layout\Preload",#1,RegDelete,HKLM,"Tmp_Default\Keyboard Layout\Preload",#1
+
+[Lang_source00]
+Set,%DOSKEYBName_Selection%,%DefaultLayout%
+
+[Lang_0000041F]
+StrFormat,Right,%DOSKEYBName_Selection%,4,%DOSKEYBNameLID%
+If,Not,ExistFile,%target_sys%\KBDTUQ.DLL,CopyOrExpand,%source_win%\KBDTUQ.DLL,%target_sys%\KBDTUQ.DLL
+If,%NoWarnROW%,Equal,True,System,ERROROFF,5
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\0000041F","Layout Text","Turkish Q"
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\0000041F","Layout Display Name","@#$pSystemRoot#$p\system32\input.dll,-5060"
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\0000041F","Layout File",KBDTUQ.DLL
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\Locale,0000041f,6
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Windows\CurrentVersion\Nls\LocaleMapIDs,0000041F,"*38,39"
+
+[Lang_0001041f]
+StrFormat,Right,%DOSKEYBName_Selection%,4,%DOSKEYBNameLID%
+If,Not,ExistFile,%target_sys%\KBDTUF.DLL,CopyOrExpand,%source_win%\KBDTUF.DLL,%target_sys%\KBDTUF.DLL
+If,%NoWarnROW%,Equal,True,System,ERROROFF,6
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\0001041f","Layout Text","Turkish F"
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\0001041f","Layout Display Name","@#$pSystemRoot#$p\system32\input.dll,-5059"
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\0001041f","Layout File",KBDTUF.DLL
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\0001041f","Layout Id",0014
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\Locale,0000041f,6
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Windows\CurrentVersion\Nls\LocaleMapIDs,0000041F,"*38,39"
+
+[Lang_0000042c]
+StrFormat,Right,%DOSKEYBName_Selection%,4,%DOSKEYBNameLID%
+If,Not,ExistFile,%target_sys%\KBDAZEL.DLL,CopyOrExpand,%source_win%\KBDAZEL.DLL,%target_sys%\KBDAZEL.DLL
+If,%NoWarnROW%,Equal,True,System,ERROROFF,4
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\0000042c","Layout Text","Azeri Latin"
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\0000042c","Layout Display Name","@#$pSystemRoot#$p\system32\input.dll,-5117"
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\0000042c","Layout File",KBDAZEL.DLL
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\Locale,0000042c,6
+
+[Lang_00000409]
+//US
+StrFormat,Right,%DOSKEYBName_Selection%,4,%DOSKEYBNameLID%
+If,Not,ExistFile,%target_sys%\KBDUS.DLL,CopyOrExpand,%source_win%\KBDUS.DLL,%target_sys%\KBDUS.DLL
+If,%NoWarnROW%,Equal,True,System,ERROROFF,5
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\00000409","Layout File",KBDUS.DLL
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\00000409","Layout Text",US
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\00000409","Layout Display Name","@#$pSystemRoot#$p\system32\input.dll,-5000"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\Locale,00000409,1
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Windows\CurrentVersion\Nls\LocaleMapIDs,00000409,"12,13"
+//----
+If,ExistFile,%target_sys%\c_1252.nl_,Call,FileDelete,%target_sys%\c_1252.nl_
+If,Not,ExistFile,%target_sys%\c_1252.nls,CopyOrExpand,%source_sys%\c_1252.nls,%target_sys%
+//If,ExistFile,%target_sys%\c_437.nl_,Call,FileDelete,%target_sys%\c_437.nl_
+//If,ExistFile,%target_sys%\c_20127.nl_,Call,FileDelete,%target_sys%\c_20127.nl_
+//If,Not,ExistFile,%target_sys%\c_437.nls,CopyOrExpand,%source_sys%\c_437.nls,%target_sys%
+//If,Not,ExistFile,%target_sys%\c_20127.nls,CopyOrExpand,%source_sys%\c_20127.nls,%target_sys%
+
+[Lang_A000041f]
+//Turkish Q - Custom --- Info(Enu)=only numpad comma changed to dot. --- Info(Trk)=numpad deki virgul basan tusu noktaya cevirdik.
+StrFormat,Right,%DOSKEYBName_Selection%,4,%DOSKEYBNameLID%
+//--
+If,ExistDir,%ProjectTemp%\TurkishQ,DirDelete,%ProjectTemp%\TurkishQ
+DirMake,%ProjectTemp%\TurkishQ
+ExtractFile,%ScriptFile%,Folder,TurkishQ_Ctt_2015_Setup_v3.7z,%ProjectTemp%\TurkishQ
+ShellExecute,Hide,%Tools%\7z.exe,"x #$q%ProjectTemp%\TurkishQ\TurkishQ_Ctt_2015_Setup_v3.7z#$q -y -o#$q%ProjectTemp%\TurkishQ#$q"
+If,%SourceArch%,Equal,x86,FileCopy,%ProjectTemp%\TurkishQ\i386\KBDTUQC3.dll,%target_sys%
+If,%SourceArch%,Equal,x64,FileCopy,%ProjectTemp%\TurkishQ\amd64\KBDTUQC3.dll,%target_sys%
+If,%SourceArch%,Equal,ia64,FileCopy,%ProjectTemp%\TurkishQ\ia64\KBDTUQC3.dll,%target_sys%
+//If,Not,%SourceArch%,Equal,x86,If,%TargetWow64%,Equal,x86,FileCopy,%ProjectTemp%\TurkishQ\wow64\KBDTUQC3.dll,%target_win%\SysWOW64
+//--
+If,%NoWarnROW%,Equal,True,System,ERROROFF,7
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\a000041f","Layout Text","Turkish Q CTT"
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\a000041f","Layout File",KBDTUQC3.dll
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\a000041f","Layout Id",00c0
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\a000041f","Layout Product Code",{F5E6B0F3-41FA-453D-ADEF-9A5CEC1F397B}
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Keyboard Layouts\a000041f","Layout Display Name","@#$pSystemRoot#$p\system32\KBDTUQC3.dll,-1000"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Nls\Locale,0000041f,6
+RegWrite,HKLM,0x1,Tmp_Software\Microsoft\Windows\CurrentVersion\Nls\LocaleMapIDs,0000041F,"*38,39"
+
+[AuthorEncoded]
+turk_flag.jpg=18448,24598
+Logo=turk_flag.jpg
+
+[EncodedFile-AuthorEncoded-turk_flag.jpg]
+lines=6
+0=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
+1=87YinXfap9e4oW+YTKJInHz7bBaQMOQIMdSRw19L+5wUKEGiaAg98j6pSOzYKaTS9DNiJspPNp7WjG5pN7UaAb10DnlL9AKxwwc/EkYrammMXrZjvQBfSujDIh3Lb0x61sO8vQ70K37BPhgKbxDQOYysnOU7+Jk0LxLg9a6yIyra2jzsnaCYnytVHE7bzEZDmbk3VVYlcfFzb3AJjAQbfYNnmWI7E1/bWi39tDx9hB6aZdkf2bk3bS8mPxLfsK/8ax6ozCfYki4658q77s2BP/9JgjZctHcMBmyQP3og77isoJqu4INdKB2QM4IH0gMDH+C26uWfB8TkcojYr3xZ7eGPjsrHoWfV6io28JDsDYyzrmbBt4X9ZRsEtpKFDrn7/lbJitT1fcULCok2i9TzFJMU1uiJKF65eihUPNNW6f4tr1nrloctuF2nCo/rutVMxeut0UZn1bmGivZDusMp9jQ9/zzruy8Yn5MbEAJr+bD/PNXDdAvhwhYSsk36dmJWa/ziDuVCFwgJj6e42Y9xMAtyzxylURvCO5ti0/M/VZhiajLch9tvZAricvGEaEqWYfUsdIrHA1r8F0yVPAbyupDckFK+qxHVmNL9SK+s5InCwOPkBoee5H2trbcrwtpk9Gfwo4mx31jsJF3CT4QUcKHGUBnagiceclRkajxQ3STftrFbkKbyYmdLHORoRLFKejLmqT7520DQovqYjJ4YzVVERVLC8QWEX7iuSX9/s+82cd9k30D9JPo8KkO5hTc0nd8+MppEoYIjLeSyp+5mhMxRspxEyd97Rf4rg+HA6ImOKyYpJ3JZ9iwfsRsj3qn575QiofpCeJh++jQb5zXHxMo8XCXA0KLm3oASt80kKZnlJL0eTCD5j2eywBH1qx85k2v3XOOOtvVaBDczevpmIcGi/w4VEF7QibbInFKypRnyTz/Pj97fkwDCcDSqKx/DTG9zH4qTFcDh8vZHYwHrc62lk1zhihboqjyYOLh3NogyyBMfizmNtseJ+zPjg6jHpGESKL05tHtlbcwhMn7cGrTHvyTPfEULXkba/J6ZheVOLoyYJkZBdt9xaOXwagLtrjnPkuT1WQZt13CaWdfpUIHzE9/RHyJYoWo5iCkrgR77cNc40YTVG0TZYzqS+sJu1HRP02mv177Pj1q27lfIe9/+FzoxDqQPQR/3tTbTAcEK9t9iyjcqkvEV+wESMMx5adv67bGnfCFJIZhJ7Q+mLkyZ7fu/UOx5crLvYlRrsNbjhF9hW6ZnrtOI4AQiol3+0MpjY2oleiJhVzS1/HcY4zSF8b3c3kz5Q12eBw8SDtjsatn+650KSuOtv3zar4YNDnz0uR/yNO7oMEJ1GLiN+IHc8CWxZK9zN6wzJXzKzWiALXOWMNI+PJbY2xPGFmTOTqAG+O0RMLhcBlY0ad2Lbgiqb+bjqKQvcSypjnwTtNw5GMjcn4Ej02/ES1X0Vjx5BFbFvgAPjwShE32QPG3ctvYE3+r0qRCpZKIb1bD2Km8je1DnrCl9RUu0IUeLaPyqPvDIbuPIpifO+uLqIWPx+vsneUvwMH6Ow8UnlL8Z1gNqEOxB/zfH5AbvDcHPfOOd7bukdP5D7SgxPXuQi+euq/UZQf3X9ew/4QcWmv+E/VadoaT+nOMa42xdFuB5xzb+ZXprNiJIlXJtvPVHwdxziU4HdevZ3tP2KjFLJ/0LBSJ237OoarYJO1Gt0fFZLU+7FYhak78UTfKJiF8hwPduEy8qL0jbTNYrzGicTbI96LqnOjs5USO/cnbNSdC/FKg+eIW+gUIlrEtbthKnSbC8xURztyRnLyPWPm7BA+Dt8kbfmjGsPLxQMQklJQQUW9etvHoLqskCB+rnjMVzx8CPaPcJZq7Yl36Ugv3+XFelzKUDZ/yi6rS1d1lV+fV3YsVzJcwO+HRADgp0ecq+4lFs1V/9Zf+yi7V32s3+yQflrd+NW56rHiX/VuAH6rUFxhouz/qt5wW1ggJHYIiv7L6ifnZerz3zmgK6p3WT36xeG/opx/cK58Hl2dOwIA8H88UL5div/7sqsxY/6a36txI9/92X7JaH6ftZ99iqsqjvTv0f88Vi4rZpdrCjABuF41N4AzwPZXfevvx594V1Yr/0Hh9wP/D76Dm53d5WJcBmEKc3Mwd1EztTH7Q37PzBX4W9BaiMSzgzlY/uZGGWrh+ue+lCvM/lf/Kox7lla/5FehobvYWZtBXbTtlF0u/f8FB+1KhjghvBz5VUdB5k++MSydYW6Of2Ghw5ytLa0doA5u9ogetqzmpZHaFQ/RxzFxc4XJQR2gziauUPOr6L0cob+Ub/xUvuRcShTsLen+D4wfxc3ZTktWV+uvk/9XjoqLJfQvHHQTO1ctE8u/8HDNoAg7qKergou8loqyKQxmdynA/I39F2UsK5izt6SdteVvM4X3c/Dyv7EvZ9ccamHiZud6qe4OdXb9B3Xt39h/Vb9paikNs4M5/2lyCX4aSMn9LrgMQxXmcPmJ5QpzVHNzdYH+eeJu2CEm8l+42KYwV8SE/gv/JmKJrf6ufnU9sf20uxy6xDbgDz7B1SnSr7sS8VXvqn581b/UB+Bv/5qwLES7XLBZAKCJ7qq+TH5dTwZc15Ov68nX9eTrevJ1Pfm6nnxdT76uJ1/Xk6/rydf15Ot68nU9+bqefF1P/r+ynnxV+6C/ere//7M6AgDgASQB5gAYwBQABdAB1AFWiHNXRHO5OnNEaBD9Dxp0AGmA5q9C7RXCz8omxlWBEYEBnxO2s3J1dRTm5nZw4TK5rJhwmcHsuT1NHLmBXDzcAFEJT0cTM1uoK50p1NLaQYxh60MDA521uRiDDr8Kj4qjNNTKWt7bGarprapl5m1rBjZnkBC/Ieop7GnvaA91NaHztLdzcBH2FGO4ci6MOL9kczPQXam42oox8HIBuYCcQCCQQfwGHR2dqLO5hfA9GcgvS0RPjOFXiB4eHogvXy6YsyU3EAwGc/OAuEEgToQGp4uXg6uJJ6eDC+NPJ7/5kYG6mDlbO7pawxzoLvsmpjA3VzEGhl86P49fIZo4qqj8DvWPs2Fvz/1Pli6u96AW/9nS5bLuxn0P6gJzczaDItT/iPMy1CtsYRmYmZs91MFVQUbczc3aXFhSECwty88rCJYV5JGRAgIlpXllwDwCUlIQMJiHX5JHlPtf7P7Fp4KDi6uJw2X19qdPEERSVgAiwPs/+fyT3b/GCXW2doeaQ5xh9leT6mji7HJVvBVj+G2Efx7dpeHVFAlb/y0YSYH/aYD/YvdPbs3/Pm//S7fm/zhv3P8yyN8zivtvKfX/IdX+c7r8PTmEpZ2hJq5QGUQTv/xjX8TVwgnk0fr5x748vOw8CPpz6f6s+TcfKjBzawuvf/bBL/hnH3/S/LsPxLVrbuJq8r/y8mfdfxoPzFkLBrMT/w9/2fynIf1S/m8vhbnZ7yvh6OZsd3VvMTfjhtpBLzPDBbEawL+uhrmZsAXM2d7EVdza3sQSym3jCLUU5f6D+98O0PG3efnnjPld/K9587tI+Kryj1hUqDivKPc/sf/RSt7aBTHrXtz/9SG5Wlv8m9vlpeRfB3LJFVZztkYsiMkVLlCU+194f9fXvbwV2bldyRCJenlwAy/pL9s/y/9u++B/sH3wH2z/EN13sHYVB/0y+Rv771aqiEG4Q2WsLaEuCBt+AQ4QvyCiCSEamAMkAOIACfIhGoInxMfBz8uDaEDEOYIvxMsBAgtw8PIAOXiBQogG5uAHIRovCMFD+BHkQTSEruBlnx8hRzRePl6QCISPT0iaD8wrJQuR5BcQAvFKS0kBeWRkJCFAQbAQr9CvwP8S2X87E6Ce1v8mEy4l/5oJl1xhdWtPqJ2ujDXiAnW5xOYVQKzLP0r+0fLBH3IQL/DPlg/+veXVpaKJeBKCinP+ZvMn3t/V/zJpvAJCAnwcfDxgAZ4rilgoQSDoJwVdcX5SXgSHH/hTh4/j0krwigpdLRjfFUVw+IT4ea4o6IryX1FEAgjyItLjkgpdUfAlFeK5osArCrqivFeU74ryX9ErW0QK8QH5ENJLyndFf3IEr6jQJQWDruiVDpgfQQVBQlcU
+2=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
+3=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
+4=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
+5=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
+6=wAQAexUJjhBVfREBAAAAAgAAACkAAADDRwAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFolders]
+Folder
+
+[Folder]
+TurkishQ.7z=4342,5790
+TurkishQ_Ctt_2015_Setup_v3.7z=4392,5856
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+Call,UploadXQ
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-Folder-TurkishQ.7z]
+lines=1
+0=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
+1=1A8I4vgo1dXiud6tEyDW+y/WzG78pCymVsjgImhwbl8nNAlee1y6+g/rQ2yZ3SZ2Tab7kVhXc9kpV6ovQbgZCpsY65e7sQNzKA5MjxjrnqSZN09GoSYVFFEt5MRIHG1G5pglr9GLTRFLd1CZNmLVS9ZdW85nWf3XvcrGtUBTKR4xaA1QrLumT7a5B1vvBm8Q0OQwQAUa2oAssSOY/IK43THClN9HMzviBsDeCWuBIR9VRy6YFLMYuMkv7uIXuSGpzscJYz3vIatvfV0zgDiitQgp79FZFYMN6GHPRgz6tHkO6DOfy9X1wA0CHBV2aMDYUbqVJCor+Y3FDn5M505I0ttomydOCJ/WjNCTRg3khZrA1Au2vo4LeS39YO2iTVn65S/WOClgnhWQigxB+TXC/j+JTameRwxF+JAFWvTMyQGV//UVXnIQj2sEYrkj2ho3CuW0kVraAPQ6owrJ4GFZFDOBdpdJ7MSvNAKM0D1MxzgkhYfaIs9x7hKq0bPmEcfcySnL7m2EfCbeDmBAWXbzZJo421KhBrMwbGHUyLgNoW3L5vFc08qNIPrGfrpVkVqXNfA1GbmdVLzTt0QKeQCwfZWoa2FxphYw3eSvdbd0P/WYj/YOHWgDimdjgk5mWH0X0KeGUTNKTaSjkdvKxRgHCnVhbMMUbyyGLo2g0Yip4tORBx8ml255Q+Da8mQEboL2zDcnAVm8X2Lag1CkFfi3H2TLrGThJtLdOoM252XCVOWo30kMhJFG/v1xDlEar0NYPjbObVXqdvzyyI6F0b9W1ms+Wgv/uneJ0qeIGh44pdbeHijGO5QEGDzuT5nt+NJMtceBUyXF4/A0gja3SGOMkay+o0rrf3rCCxauJWW3ByCAtXnTMuMF4fsUgx/aUyh/e8wHOANSZ5++S32uhQufkCNMcdOBcS6KYaSuUhOOa8wcBdxtTS2xaHq/n5Jp6MioP7aPnhpo8tMvDC+X5fRlENx8/mYHGjnzTX3pXsIW7Bmi8hOqp63HkUiiBFvcTUAQbN5caCXC0XESIplsedLS1MY7Q/w35L7hPk+Gr/7vaF0BcXBLGovutSYPuCW+tn3n5SR2je5P693+I/jazyJ5KNMqbAgYHhfbMRElKPWjLpvblHmMU4s2FvQPAHa0aGrV7/I/e7DUmgVZnpfzQTCCKAZNB0qcp7r7wbXsAU+Z0dlZc1McoI/S6sqWIPxJA3x9/N0l7QZrbDGTPBq5Rf+L0BJtb/P9chYWkJu2Ff7UPfjZ5vFo4AAAAAAAAAAAAAAAAAAAAAAAAAAIEzB65txhM0HbEk08giwuP9Hn1A+guo3Tyoq+pGVx+J4cZgDT8h9DvPKivWyZx00+e6bZW2oddS27QlSIHxJlSPzX8gg586PS2ucdx/jfW8scjcNGQxB8CguVPbIHG4LOpjosOhi7gh92s1O4oTwkQO5DXpeQ233MwOFThnJKl8SuNDtRd179af1JXwL1nZQ7azOyxxrbz7gWAN/tw61tpFmlWS9by57cwoY5LxjZPURr3ES2LTrQwwnrRTWqZ9BehB6g3CsjQlFwaPogEJgMoABwsBAAEjAwEBBV0AEAAADIGbCgH2ET+mAAB4nOMOKS3KzizOCNQzr2IYBSMOrBfAL6+lEyPGyAAA8pEFrgnzQCoBAAAAAgAAACMAAACvEAAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-Folder-TurkishQ_Ctt_2015_Setup_v3.7z]
+lines=1
+0=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
+1=WdRSL01rIiowqVR8gfI1erjaWstOCktTbBhP9v/oxSqNeGH+z9UI3auANNvgag+PAPFNsFChhmqcnsUrRu6JNDYKaxs3R3EyLlhEAEsNNu8/YJbosemLC0oiIHL+C+u4sKTXf+B5DrirLYmsO8Q1o+5N4HvFmo3xlamwLrr5ez1y59i4PM8XS2HERKMfUT6+HkwNuZWMkz3v4vWVS0UOUkgKvL7apHNjSNSquNNAlk9E0XsRLfLEB73cgOVTfM7f74NZdibxpjcB4LntvmhkAlE1rwst/msMU9LhrrAdG3CvdSS/AXNbzAhsYJD+yw2JdIfbPKbzF3WwpqkUpWhCEpIx4IDUjLl9N0tSEo/Bjj6684usgPfKrkStw3MACA+M3d2UQjzYA2X7S4Y+G4sRI76tqUKKa7IN96nFxlD53y/EA2PTJpfqiVDnD8VPoWE1TocPyGrcPxTOA/movTeCUk5eLvSnE7/N+lCo5go55AJ6ndhi27GzhUinr5qfoNuKoEZsdRF0A2QSOauvx/CNRLdS15Bg6Dp8WioL/GF85Ln+djUQFNKSXIDMdUFlgaQshd9GOOQHOaL0YLaVg14+u37wB4neYkFwuJ8Kq6ooEzt6G57wuv43GFT8DuJztkVk1fDXfowNi7pP065QAcPQ8xNIltYJ/Yw3QN8NZmyYoA6b2wNpWP+m5LccRKwiEdgRkF/tI1lfHf3EDmIW/6h87wWeybbntORHsVVKydmOUaCh4wfErkD28cf6q7hAGMNPbNJPaKcfZ8WfhJkiTsoMnEcABCWfUdA3JXW+k1qIJhcQ3VyEBRadOGsrasxbabgGAB6yNgT+EGv/r2Y5tPznQo6PTosaR8rcqvy+wC9OB4gZZiVoFvZd9NUHm2oNfP51hm5JNv7/B56UTdFr1vYNR+3OWisHswgotJmxjyFixPgCEzabASqKAjGPV89a50cT261CZZr8j3MBZkmac5aTL2G+5JWu8+oZ3IVR7MsyNIvW3DuZ3zt0TQIn7vGTGuUIU2GofrpVtfNgRozUBaq2lQenkyD20/zPOzJMBnAdKgz3KZeiw6rob1FB/uMJEV4RJbs+7wiJ1MioCzFZyKVbFxr6Dbkdff2I4/l5mknFHlp+u7XgH67VhwMaPQVcZBhVWSgz6qN/0UVbe+cKqA2bk6PNaVt7Sq5B9vhIcj2jxhQ3TUBSmYAlyFo7VrQ5OGK/jJFPBOMUrcliOVNCGkDtu0kkJdf0f90mlxUjOS21T+AP6Y/S15UOQypUHrK+h9eJLqXNr+xedMiJdvGjykAAAAAAAAAAAAAAAAAAAAAAAAAACBMweubcYTvZ5stq0bgBpeCf73p30RIvA+oljh7HlkCE7hE3eUALNNUwTIDFBJVULcmUXD0kAJT7k1cZWgHdkiNyVDVVlXWEA1+NnwlewOdYiTIIP9lGDvtmoE+fivAcF0D2AcFQAtMw6CyCFerdAvOlNSmMOpd6zF76OI9JvyGdN29xCiTUAq3rbynO+K5n8GqezQNDhf0xUEb1D+BLM/fdFPBrFqmHyOsDO4RDnUMYwIxcKs/39HCljtiwfElqy1we71JdQPiaQEE7y5l8AXBo+7AQmA0QAHCwEAASMDAQEFXQAQAAAMgZsKARciAJ4AAHickw0pLcrOLM4IjHcuKYk3MjA0jQ9OLSktiC8z1jOvYhgFwxycF8Avb3T52jxGBgDkzQ2652O8ZQEAAAACAAAANQAAAM8QAAAAAAAAAQAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+

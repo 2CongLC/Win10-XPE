@@ -1,0 +1,5 @@
+12:44:30 : Get drive passport... OK
+21/09/2020
+12:45:01 : Get drive passport... OK
+12:45:01 : Model: HP SSD S700 120GB; Capacity 234441648 LBAs; SN: HBSA18051006719; FW: Q0922B1
+12:45:06 : Program terminated.

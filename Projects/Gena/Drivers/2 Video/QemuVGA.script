@@ -1,0 +1,179 @@
+[Main]
+Title=Qemu VGA Driver
+Type=Plugin
+Author=HighwayStar
+Description=cirrus.sys - PEx86 only
+Credits=http://TheOven.org
+Version=007
+Download_Level=1
+Level=6
+Selected=False
+Mandatory=False
+NoWarning=False
+Contact=http://TheOven.org
+Date=2017.02.16
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Drivers/2%20Video/QemuVGA.script
+CertifiedBy=
+Certification=
+HistoryNotes01=NOT TESTED ON SE - FOR NOW ON GENA ONLY
+HistoryNotes02=Lancelot Crayz things can happen when testing with Qemu :) - "+QemuVGA Plugin + hwpnp all + setresolution" yippiyeee // "+QemuVGA Plugin + hwpnp all - setresolution + VGASave_Settings-vga_sys Plugin set to 5" black screen // "+QemuVGA Plugin + hwpnp all + setresolution + VGASave_Settings-vga_sys Plugin set to 5" yammamatoo (note instead of hwpnp same results can be tested with runonce startpnp.exe of universal video driver, with other words replace "+QemuVGA Plugin + hwpnp all" with ""universal video driver" + "by Driver scrollbox"" )"
+HistoryNotes03=Lancelot Conclusion: "Real world PC" is faster than Qemu emulator, this Thingies happens with Simple drivers (YES:cirrus, vbemp, NO:VBoxVideo, vmx_svga) and +hwpnp+setresolution fixes Thingies on real world :>.
+History003=Lancelot sourcearch check added // experimental registry addings
+History004=Lancelot thanks to karee (ahhh my head), registry adding bug fixed, now works great, no need to process hwpnp for emulator tests anymore (now we need cirrus driver for PE1x64 tests) :>:>:>:>
+History004=Lancelot acc level 5 gives better result with blt test http://www.stereopsis.com/blttest/
+History006=Lancelot BugFix - Date:2012.01.26
+History007=Lancelot - Add DUC Buttons - Date:2017.02.16
+
+[Interface]
+pBevel1=pBevel1,1,12,5,52,423,33
+pTextLabel2="Hardware Acceleration Level",1,1,10,61,181,18,9,Bold
+pScrollBox1=5,1,4,189,57,37,21,0,1,2,3,4,5
+pTextLabel3="5=None , 0=Full",1,1,233,61,86,18,8,Normal
+pCheckBox1="Add Registry Entries (Experimental -- but seems to work nice now :>)",1,3,11,183,357,19,False
+WebLabel_Plugin="Plugin Page",1,10,338,4,55,18,http://TheOven.org/index.php?board=9
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[numbercheck]
+set,%numbercheckloop%,no
+If,%number%,smaller,10000,set,%numbertest%,%number%
+If,%number%,smaller,1000,set,%numbertest%,0%number%
+If,%number%,smaller,100,set,%numbertest%,00%number%
+If,%number%,smaller,10,set,%numbertest%,000%number%
+RegHiveLoad,Tmp_System,%RegSystem%
+//If,ExistRegSection,HKLM,Tmp_System\ControlSet001\Control\Class\{4D36E968-E325-11CE-BFC1-08002BE10318}\%numbertest%,set,%found%,yes
+If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Control\Class\{4D36E968-E325-11CE-BFC1-08002BE10318}\%numbertest%,InfPath,Begin
+RegRead,HKLM,Tmp_System\ControlSet001\Control\Class\{4D36E968-E325-11CE-BFC1-08002BE10318}\%numbertest%,InfPath,%verification%
+If,%verification%,Equal,display.inf,set,%numbercheckloop%,no
+If,Not,%verification%,Equal,display.inf,set,%numbercheckloop%,yes
+End
+RegHiveUnLoad,Tmp_System
+set,%number%,%numbertest%
+If,%numbercheckloop%,Equal,yes,StrFormat,INC,%number%,1
+If,%numbercheckloop%,Equal,yes,run,%scriptfile%,numbercheck
+
+[Process]
+If,Not,%SourceArch%,Equal,x86,Exit,"QemuVGA Plugin only for x86 builds"
+CopyOrExpand,%source_win%\display.inf,%target_win%\inf
+Require,HighVersion,cirrus.dll,TargetWin\System32
+Require,HighVersion,cirrus.sys,TargetWin\System32\Drivers
+If,%pCheckBox1%,Equal,True,Run,%ScriptFile%,registryadds
+RegHiveLoad,Tmp_System,%RegSystem%
+If,%pScrollBox1%,Equal,0,If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\cirrus\Device0,Acceleration.Level,RegDelete,HKLM,Tmp_System\ControlSet001\Services\cirrus\Device0,Acceleration.Level
+If,Not,%pScrollBox1%,Equal,0,RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\cirrus\Device0,Acceleration.Level,%pScrollBox1%
+RegHiveUnLoad,Tmp_System
+
+[registryadds]
+Set,%number%,0
+Run,%scriptfile%,numbercheck
+//Message,%number%,information
+RegHiveLoad,Tmp_System,%RegSystem%
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Class\{4D36E968-E325-11CE-BFC1-08002BE10318},Class,"Display"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Class\{4D36E968-E325-11CE-BFC1-08002BE10318},,"Display#$sadapters"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Class\{4D36E968-E325-11CE-BFC1-08002BE10318},Installer32,"Desk.Cpl#$cDisplayClassInstaller"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Class\{4D36E968-E325-11CE-BFC1-08002BE10318},TroubleShooter-0,"hcp://help/tshoot/tsdisp.htm"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Class\{4D36E968-E325-11CE-BFC1-08002BE10318},Icon,"-1"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Class\{4D36E968-E325-11CE-BFC1-08002BE10318}\%number%,InfPath,"display.inf"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Class\{4D36E968-E325-11CE-BFC1-08002BE10318}\%number%,InfSection,"cirrus"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Class\{4D36E968-E325-11CE-BFC1-08002BE10318}\%number%,ProviderName,"Microsoft"
+RegWrite,HKLM,0x3,Tmp_System\ControlSet001\Control\Class\{4D36E968-E325-11CE-BFC1-08002BE10318}\%number%,DriverDateData,00,80,62,c5,c0,01,c1,01
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Class\{4D36E968-E325-11CE-BFC1-08002BE10318}\%number%,DriverDate,"7-1-2001"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Class\{4D36E968-E325-11CE-BFC1-08002BE10318}\%number%,DriverVersion,"5.1.2535.0"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Class\{4D36E968-E325-11CE-BFC1-08002BE10318}\%number%,MatchingDeviceId,"pci\ven_1013&dev_00b8"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Class\{4D36E968-E325-11CE-BFC1-08002BE10318}\%number%,DriverDesc,"Cirrus#$sLogic#$s5446#$sCompatible#$sGraphics#$sAdapter"
+RegWrite,HKLM,0x7,Tmp_System\ControlSet001\Control\Class\{4D36E968-E325-11CE-BFC1-08002BE10318}\%number%\Settings,InstalledDisplayDrivers,vga,cirrus,vga256,vga64k
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Control\Class\{4D36E968-E325-11CE-BFC1-08002BE10318}\%number%\Settings,VgaCompatible,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\Class\{4D36E968-E325-11CE-BFC1-08002BE10318}\%number%\Settings,"Device Description","Cirrus#$sLogic#$s5446#$sCompatible#$sGraphics#$sAdapter"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\PCI\VEN_1013&DEV_00B8&SUBSYS_00000000&REV_00\3&13c0b0c5&0&10,DeviceDesc,"Cirrus#$sLogic#$s5446#$sCompatible#$sGraphics#$sAdapter"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\PCI\VEN_1013&DEV_00B8&SUBSYS_00000000&REV_00\3&13c0b0c5&0&10,LocationInformation,"PCI#$sbus#$s0#$c#$sdevice#$s2#$c#$sfunction#$s0"
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\PCI\VEN_1013&DEV_00B8&SUBSYS_00000000&REV_00\3&13c0b0c5&0&10,Capabilities,0
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\PCI\VEN_1013&DEV_00B8&SUBSYS_00000000&REV_00\3&13c0b0c5&0&10,UINumber,1
+RegWrite,HKLM,0x7,Tmp_System\ControlSet001\Enum\PCI\VEN_1013&DEV_00B8&SUBSYS_00000000&REV_00\3&13c0b0c5&0&10,HardwareID,PCI\VEN_1013&DEV_00B8&SUBSYS_00000000&REV_00,PCI\VEN_1013&DEV_00B8&SUBSYS_00000000,PCI\VEN_1013&DEV_00B8&REV_00,PCI\VEN_1013&DEV_00B8,PCI\VEN_1013&DEV_00B8&CC_030000,PCI\VEN_1013&DEV_00B8&CC_0300
+RegWrite,HKLM,0x7,Tmp_System\ControlSet001\Enum\PCI\VEN_1013&DEV_00B8&SUBSYS_00000000&REV_00\3&13c0b0c5&0&10,CompatibleIDs,PCI\VEN_1013&CC_030000,PCI\VEN_1013&CC_0300,PCI\VEN_1013,PCI\CC_030000,PCI\CC_0300
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\PCI\VEN_1013&DEV_00B8&SUBSYS_00000000&REV_00\3&13c0b0c5&0&10,ClassGUID,"{4D36E968-E325-11CE-BFC1-08002BE10318}"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\PCI\VEN_1013&DEV_00B8&SUBSYS_00000000&REV_00\3&13c0b0c5&0&10,Class,"Display"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\PCI\VEN_1013&DEV_00B8&SUBSYS_00000000&REV_00\3&13c0b0c5&0&10,Driver,"{4D36E968-E325-11CE-BFC1-08002BE10318}\%number%"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\PCI\VEN_1013&DEV_00B8&SUBSYS_00000000&REV_00\3&13c0b0c5&0&10,Mfg,"Cirrus#$sLogic"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\PCI\VEN_1013&DEV_00B8&SUBSYS_00000000&REV_00\3&13c0b0c5&0&10,Service,"cirrus"
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Enum\PCI\VEN_1013&DEV_00B8&SUBSYS_00000000&REV_00\3&13c0b0c5&0&10,ConfigFlags,0
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\PCI\VEN_1013&DEV_00B8&SUBSYS_00000000&REV_00\3&13c0b0c5&0&10,ParentIdPrefix,"4&2946a9ff&0"
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Enum\PCI\VEN_1013&DEV_00B8&SUBSYS_00000000&REV_00\3&13c0b0c5&0&10\Device Parameters",VideoID,"{B9F36F1F-9CBF-479C-B682-2E673E412055}"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\PCI\VEN_1013&DEV_00B8&SUBSYS_00000000&REV_00\3&13c0b0c5&0&10\LogConf,BasicConfigVector,"hex(a):e8#$c00#$c00#$c00#$c05#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c02#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c01#$c00#$c00#$c00#$c01#$c00#$c01#$c00#$c06#$c00#$c00#$c00#$c01#$c03#$c01#$c00#$c04#$c00#$c00#$c00#$c00#$c00#$c00#$c02#$c01#$c00#$c00#$c00#$c00#$c00#$c00#$cc0#$c00#$c00#$c00#$c00#$cff#$cff#$cff#$cc1#$c00#$c00#$c00#$c00#$c08#$c03#$c01#$c00#$c04#$c00#$c00#$c00#$c00#$c00#$c00#$c02#$c00#$c00#$c00#$c02#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$cff#$cff#$cff#$cff#$c00#$c00#$c00#$c00#$c00#$c81#$c01#$c00#$c00#$c00#$c00#$c00#$c01#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c01#$c03#$c01#$c00#$c00#$c00#$c00#$c00#$c00#$c10#$c00#$c00#$c01#$c00#$c00#$c00#$c00#$c00#$c00#$cc2#$c00#$c00#$c00#$c00#$cff#$c0f#$c00#$cc2#$c00#$c00#$c00#$c00#$c08#$c03#$c01#$c00#$c00#$c00#$c00#$c00#$c00#$c10#$c00#$c00#$c00#$c10#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$cff#$cff#$cff#$cff#$c00#$c00#$c00#$c00#$c00#$c81#$c01#$c00#$c00#$c00#$c00#$c00#$c01#$c00#$c00#$c00#$c01#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\PCI\VEN_1013&DEV_00B8&SUBSYS_00000000&REV_00\3&13c0b0c5&0&10\LogConf,BootConfig,"hex(8):01#$c00#$c00#$c00#$c05#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c01#$c00#$c01#$c00#$c02#$c00#$c00#$c00#$c03#$c00#$c04#$c00#$c00#$c00#$c00#$cc0#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c02#$c03#$c00#$c00#$c00#$c00#$c00#$c00#$cc2#$c00#$c00#$c00#$c00#$c00#$c10#$c00#$c00"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\PCI\VEN_1013&DEV_00B8&SUBSYS_00000000&REV_00\3&13c0b0c5&0&10\Control,ActiveService,"cirrus"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\PCI\VEN_1013&DEV_00B8&SUBSYS_00000000&REV_00\3&13c0b0c5&0&10\Control,FilteredConfigVector,"hex(a):48#$c01#$c00#$c00#$c05#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c02#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c01#$c00#$c00#$c00#$c01#$c00#$c01#$c00#$c09#$c00#$c00#$c00#$c01#$c03#$c01#$c00#$c04#$c00#$c00#$c00#$c00#$c00#$c00#$c02#$c01#$c00#$c00#$c00#$c00#$c00#$c00#$cc0#$c00#$c00#$c00#$c00#$cff#$cff#$cff#$cc1#$c00#$c00#$c00#$c00#$c08#$c03#$c01#$c00#$c04#$c00#$c00#$c00#$c00#$c00#$c00#$c02#$c00#$c00#$c00#$c02#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$cff#$cff#$cff#$cff#$c00#$c00#$c00#$c00#$c00#$c81#$c01#$c00#$c00#$c00#$c00#$c00#$c01#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c01#$c03#$c01#$c00#$c00#$c00#$c00#$c00#$c00#$c10#$c00#$c00#$c01#$c00#$c00#$c00#$c00#$c00#$c00#$cc2#$c00#$c00#$c00#$c00#$cff#$c0f#$c00#$cc2#$c00#$c00#$c00#$c00#$c08#$c03#$c01#$c00#$c00#$c00#$c00#$c00#$c00#$c10#$c00#$c00#$c00#$c10#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$cff#$cff#$cff#$cff#$c00#$c00#$c00#$c00#$c00#$c81#$c01#$c00#$c00#$c00#$c00#$c00#$c01#$c00#$c00#$c00#$c01#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c01#$c01#$c03#$c00#$c01#$c00#$c18#$c00#$c0c#$c00#$c00#$c00#$c01#$c00#$c00#$c00#$cb0#$c03#$c00#$c00#$c00#$c00#$c00#$c00#$cbb#$c03#$c00#$c00#$c00#$c00#$c00#$c00#$c01#$c01#$c03#$c00#$c01#$c00#$c00#$c00#$c20#$c00#$c00#$c00#$c01#$c00#$c00#$c00#$cc0#$c03#$c00#$c00#$c00#$c00#$c00#$c00#$cdf#$c03#$c00#$c00#$c00#$c00#$c00#$c00#$c01#$c03#$c03#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c02#$c00#$c01#$c00#$c00#$c00#$c00#$c00#$c0a#$c00#$c00#$c00#$c00#$c00#$cff#$cff#$c0b#$c00#$c00#$c00#$c00#$c00"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Enum\PCI\VEN_1013&DEV_00B8&SUBSYS_00000000&REV_00\3&13c0b0c5&0&10\Control,AllocConfig,"hex(8):01#$c00#$c00#$c00#$c05#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c07#$c00#$c00#$c00#$c03#$c01#$c04#$c00#$c00#$c00#$c00#$cfc#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c02#$c81#$c01#$c00#$c00#$c01#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c03#$c01#$c00#$c00#$c00#$cf0#$cbf#$cfe#$c00#$c00#$c00#$c00#$c00#$c10#$c00#$c00#$c81#$c01#$c00#$c00#$c01#$c00#$c00#$c00#$c01#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c01#$c03#$c21#$c00#$cb0#$c03#$c00#$c00#$c00#$c00#$c00#$c00#$c0c#$c00#$c00#$c00#$c01#$c03#$c21#$c00#$cc0#$c03#$c00#$c00#$c00#$c00#$c00#$c00#$c20#$c00#$c00#$c00#$c03#$c03#$c00#$c00#$c00#$c00#$c0a#$c00#$c00#$c00#$c00#$c00#$c00#$c00#$c02#$c00"
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\cirrus,Type,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\cirrus,Start,3
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\cirrus,ErrorControl,0
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\cirrus,Tag,1
+RegWrite,HKLM,0x2,Tmp_System\ControlSet001\Services\cirrus,ImagePath,system32\DRIVERS\cirrus.sys
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Services\cirrus,Group,"Video"
+RegWrite,HKLM,0x7,Tmp_System\ControlSet001\Services\cirrus\Device0,InstalledDisplayDrivers,vga,cirrus,vga256,vga64k
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\cirrus\Device0,VgaCompatible,1
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Services\cirrus\Device0,"Device Description","Cirrus#$sLogic#$s5446#$sCompatible#$sGraphics#$sAdapter"
+RegWrite,HKLM,0x3,Tmp_System\ControlSet001\Services\cirrus\Device0,HardwareInformation.MemorySize,00,00,40,00
+RegWrite,HKLM,0x3,Tmp_System\ControlSet001\Services\cirrus\Device0,HardwareInformation.ChipType,43,00,69,00,72,00,72,00,75,00,73,00,20,00,4c,00,6f,00,67,00,69,00,63,00,20,00,35,00,34,00,34,00,36,00,00,00
+RegWrite,HKLM,0x3,Tmp_System\ControlSet001\Services\cirrus\Device0,HardwareInformation.DacType,49,00,6e,00,74,00,65,00,67,00,72,00,61,00,74,00,65,00,64,00,20,00,52,00,41,00,4d,00,44,00,41,00,43,00,00,00
+RegWrite,HKLM,0x3,Tmp_System\ControlSet001\Services\cirrus\Device0,HardwareInformation.AdapterString,43,00,69,00,72,00,72,00,75,00,73,00,20,00,4c,00,6f,00,67,00,69,00,63,00,20,00,43,00,6f,00,6d,00,70,00,61,00,74,00,69,00,62,00,6c,00,65,00,00,00
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\cirrus\Device0,Attach.ToDesktop,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\cirrus\Device0,DefaultSettings.BitsPerPel,24
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\cirrus\Device0,DefaultSettings.XResolution,800
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\cirrus\Device0,DefaultSettings.YResolution,600
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\cirrus\Device0,DefaultSettings.VRefresh,60
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\cirrus\Device0,DefaultSettings.Flags,0
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\cirrus\Device0,DefaultSettings.XPanning,0
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\cirrus\Device0,DefaultSettings.YPanning,0
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\cirrus\Device0,DefaultSettings.Orientation,0
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\cirrus\Device0,DefaultSettings.FixedOutput,0
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\cirrus\Device0,Attach.RelativeX,0
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\cirrus\Device0,Attach.RelativeY,0
+//Acceleration.Level
+//RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\cirrus\Device0,Acceleration.Level,5
+//If,ExistRegKey,HKLM,Tmp_System\ControlSet001\Services\cirrus\Device0,Acceleration.Level,RegDelete,HKLM,Tmp_System\ControlSet001\Services\cirrus\Device0,Acceleration.Level
+RegWrite,HKLM,0x3,Tmp_System\ControlSet001\Services\cirrus\Device0\VolatileSettings,{5b45201d-f2f2-4f3b-85bb-30ff1f953599},5c,00,3f,00,3f,00,5c,00,50,00,43,00,49,00,23,00,56,00,45,00,4e,00,5f,00,31,00,30,00,31,00,33,00,26,00,44,00,45,00,56,00,5f,00,30,00,30,00,42,00,38,00,26,00,53,00,55,00,42,00,53,00,59,00,53,00,5f,00,30,00,30,00,30,00,30,00,30,00,30,00,30,00,30,00,26,00,52,00,45,00,56,00,5f,00,30,00,30,00,23,00,33,00,26,00,31,00,33,00,63,00,30,00,62,00,30,00,63,00,35,00,26,00,30,00,26,00,31,00,30,00,23,00,7b,00,35,00,62,00,34,00,35,00,32,00,30,00,31,00,64,00,2d,00,66,00,32,00,66,00,32,00,2d,00,34,00,66,00,33,00,62,00,2d,00,38,00,35,00,62,00,62,00,2d,00,33,00,30,00,66,00,66,00,31,00,66,00,39,00,35,00,33,00,35,00,39,00,39,00,7d,00
+RegWrite,HKLM,0x3,Tmp_System\ControlSet001\Services\cirrus\Security,Security,01,00,14,80,90,00,00,00,9c,00,00,00,14,00,00,00,30,00,00,00,02,00,1c,00,01,00,00,00,02,80,14,00,ff,01,0f,00,01,01,00,00,00,00,00,01,00,00,00,00,02,00,60,00,04,00,00,00,00,00,14,00,fd,01,02,00,01,01,00,00,00,00,00,05,12,00,00,00,00,00,18,00,ff,01,0f,00,01,02,00,00,00,00,00,05,20,00,00,00,20,02,00,00,00,00,14,00,8d,01,02,00,01,01,00,00,00,00,00,05,0b,00,00,00,00,00,18,00,fd,01,02,00,01,02,00,00,00,00,00,05,20,00,00,00,23,02,00,00,01,01,00,00,00,00,00,05,12,00,00,00,01,01,00,00,00,00,00,05,12,00,00,00
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Services\cirrus\Video,Service,"cirrus"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Services\cirrus\Enum,0,"PCI\VEN_1013&DEV_00B8&SUBSYS_00000000&REV_00\3&13c0b0c5&0&10"
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\cirrus\Enum,Count,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Services\cirrus\Enum,NextInstance,1
+RegHiveUnLoad,Tmp_System
+
+[EncodedFile-AuthorEncoded-qemu_video.ico]
+lines=1
+0=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
+1=c3l8cH2Sin6JxGPL+geCIfCf4CbeEvjw7pdU+6BxSgebxz5w5/nkUcaX8eGBjIz8qPHz/OdVGdIF/SuQfNwx/FX2hoSUtLGprTIfYWAmKvRxypbtGzipSUlIb8FldZ+dNZKWloSUdLPvk9GqR1CDRdL9rCvzUN79MhzV9eXzSnoa38pXW8L7Za8oW8GprTQZCHf0sa3ucXeTS0xRey8Gc1W4Oe1wgNrel4ny+a5sPv8QVdZeHP1hg14i8NaS3v0yRLXLWW5y3pIujo6LT6/J31Mu1YT6DI+uOhfxZcXV1bBX2P9V0dm/LFb6+H9KHz/69/9vVfbSRA7Hic4ytMzS2NL8tMSc3Xy0zOZxgFIwvsU4XQX3iwy6sXbZjHwAQAQcMJcqd/R1QBAAAAAgAAACoAAAD0DAAAAAAAAAEAAAAAAAAAAAAAAA
+
+[AuthorEncoded]
+qemu_video.ico=3394,4526
+Logo=qemu_video.ico
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+Call,UploadXQ
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+

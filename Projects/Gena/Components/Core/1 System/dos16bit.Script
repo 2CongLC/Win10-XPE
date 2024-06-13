@@ -1,0 +1,388 @@
+[Main]
+Title=16 Bit support (WOW)
+Type=Plugin
+Author=John Adamopoulos
+Description=(x86 Only) Add support (WOW) for DOS and Win16 applications in 16bit adding around ~4Mb to your build.
+Credits=http://TheOven.org
+Version=018
+Download_Level=1
+Level=3
+Selected=False
+Mandatory=False
+NoWarning=False
+Contact=http://TheOven.org
+Date=2016.11.08
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Components/Core/1%20System/dos16bit.Script
+Web2=http://yomi.cwcodes.net/Yomi/ComponentsY/Core/1%20System/dos16bit.Script
+CertifiedBy=
+Certification=
+HistoryNotes01=Lancelot - NO 16 Bit support on PEx64
+History005=Galapo added kb16.com to filelist, which provides support for non-US keyboards
+History007=Lancelot 0x3,.."RomFontPointers" fixed
+History008=Lancelot Download_Level=1 - quotes mostly removed - other enhancements on Plugin
+History009a=Lancelot if not exist, expand.exe operational , Edit.com selectable
+History012=Lancelot use reg.exe for empty 0x7 ;)
+History014=Lancelot Small improvments on PE1 / 16 bit support for PE3 added following Ferrari Guy codes (known issue - mouse not work very nicely)
+History015=Lancelot Small improvments on PE3
+History016=Lancelot Added DU buttons - Date:2016.02.02
+History017=Lancelot updated syntax - Date:2016.10.21
+History018=Lancelot Added Components_PluginCache_Extract - Date:2016.11.08
+
+[Interface]
+WebLabel_Plugin="Support Forum: TheOven.org",1,10,7,36,84,18,http://TheOven.org
+pWebLabel1="Wikipedia - 16-bit application",1,10,159,36,137,18,http://en.wikipedia.org/wiki/16-bit_application
+pWebLabel2="Also Check: DOSBox",1,10,160,74,98,18,http://www.dosbox.com/
+pWebLabel3="Wikipedia - WOW (Windows On Windows)",1,10,160,55,200,18,http://en.wikipedia.org/wiki/Windows_on_Windows
+pTextLabel2="Only WindowsNT x86 (32 bit) have 16 bit support (WOW).",1,1,6,11,285,18,8,Normal
+pTextLabel3="Additional 16bit tools:",1,1,7,87,108,18,8,Normal
+pCheckBox_EditCOM=Edit.com,1,3,50,108,66,14,True
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[Variables]
+
+[Process]
+If,ExistFile,%ProjectTemp%\Components_PluginCache_Extract.ini,Echo,"Components PluginCache"
+If,Not,ExistFile,%ProjectTemp%\Components_PluginCache_Extract.ini,Run,%ScriptFile%,Process_Normal
+
+[Process_Normal]
+If,Not,%SourceArch%,Equal,x86,Exit,"16 Bit Support only Exists on 32bit Windows (PEx86)"
+If,%OSFamily%,Equal,NT5,Run,%ScriptFile%,PE1
+Else,Run,%ScriptFile%,PE3
+
+[PE1]
+If,Not,ExistFile,%Target_Win%\KB16.COM,CopyOrExpand,%Source_Sys%\KB16.COM,%Target_Win%
+If,Not,ExistFile,%Target_Win%\_DEFAULT.PIF,CopyOrExpand,%Source_Sys%\_DEFAULT.PIF,%Target_Win%
+If,Not,ExistFile,%Target_Win%\SYSTEM.INI,CopyOrExpand,%Source_Sys%\SYSTEM.INI,%Target_Win%
+If,Not,ExistFile,%Target_Win%\WIN.INI,CopyOrExpand,%Source_Sys%\WIN.INI,%Target_Win%
+If,Not,ExistFile,%Target_Sys%\ANSI.SYS,CopyOrExpand,%Source_Sys%\ANSI.SYS,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\AUTOEXEC.NT,Begin
+If,Existfile,%Source_Sys%\AUTOEXEC.NT,FileCopy,%Source_Sys%\AUTOEXEC.NT,%Target_Sys%
+Else,Begin
+If,Existfile,%Source_Sys%\AUTOEXEC.NT_,Expand,%Source_Sys%\AUTOEXEC.NT_,%Target_Sys%
+End
+End
+If,Not,ExistFile,%Target_Sys%\AUTOEXEC.NT,Expand,%Source_Sys%\AUTOEXEC.NT_,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\AVICAP32.DLL,CopyOrExpand,%Source_Sys%\AVICAP32.DLL,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\AVIFILE.DLL,CopyOrExpand,%Source_Sys%\AVIFILE.DLL,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\CONFIG.NT,Begin
+If,Existfile,%Source_Sys%\CONFIG.NT,FileCopy,%Source_Sys%\CONFIG.NT,%Target_Sys%
+Else,Begin
+If,Existfile,%Source_Sys%\CONFIG.NT_,Expand,%Source_Sys%\CONFIG.NT_,%Target_Sys%
+End
+End
+If,Not,ExistFile,%Target_Sys%\COMMAND.COM,CopyOrExpand,%Source_Sys%\COMMAND.COM,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\COMM.DRV,CopyOrExpand,%Source_Sys%\COMM.DRV,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\COMMDLG.DLL,CopyOrExpand,%Source_Sys%\COMMDLG.DLL,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\COMPOBJ.DLL,CopyOrExpand,%Source_Sys%\COMPOBJ.DLL,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\COUNTRY.SYS,CopyOrExpand,%Source_Sys%\COUNTRY.SYS,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\CRTDLL.DLL,CopyOrExpand,%Source_Sys%\CRTDLL.DLL,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\CTL3DV2.DLL,CopyOrExpand,%Source_Sys%\CTL3DV2.DLL,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\DDEML.DLL,CopyOrExpand,%Source_Sys%\DDEML.DLL,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\DOSX.EXE,CopyOrExpand,%Source_Sys%\DOSX.EXE,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\ega.cpi,CopyOrExpand,%Source_Sys%\ega.cpi,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\gdi.exe,CopyOrExpand,%Source_Sys%\gdi.exe,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\himem.sys,CopyOrExpand,%Source_Sys%\himem.sys,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\keyboard.drv,CopyOrExpand,%Source_Sys%\keyboard.drv,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\keyboard.sys,CopyOrExpand,%Source_Sys%\keyboard.sys,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\krnl386.exe,CopyOrExpand,%Source_Sys%\krnl386.exe,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\lanman.drv,CopyOrExpand,%Source_Sys%\lanman.drv,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\lzexpand.dll,CopyOrExpand,%Source_Sys%\lzexpand.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\mapi.dll,Begin
+If,ExistFile,%Source_Sys%\mapi.dl?,CopyOrExpand,%Source_Sys%\mapi.dll,%Target_Sys%
+End
+If,Not,ExistFile,%Target_Sys%\mciavi.drv,CopyOrExpand,%Source_Sys%\mciavi.drv,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\mciseq.drv,CopyOrExpand,%Source_Sys%\mciseq.drv,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\mciwave.drv,CopyOrExpand,%Source_Sys%\mciwave.drv,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\mmsystem.dll,CopyOrExpand,%Source_Sys%\mmsystem.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\mouse.drv,CopyOrExpand,%Source_Sys%\mouse.drv,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\msacm.dll,CopyOrExpand,%Source_Sys%\msacm.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\mscdexnt.exe,CopyOrExpand,%Source_Sys%\mscdexnt.exe,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\msvideo.dll,CopyOrExpand,%Source_Sys%\msvideo.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\netapi.dll,CopyOrExpand,%Source_Sys%\netapi.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\ntdos.sys,CopyOrExpand,%Source_Sys%\ntdos.sys,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\ntdos404.sys,CopyOrExpand,%Source_Sys%\ntdos404.sys,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\ntdos411.sys,CopyOrExpand,%Source_Sys%\ntdos411.sys,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\ntdos412.sys,CopyOrExpand,%Source_Sys%\ntdos412.sys,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\ntdos804.sys,CopyOrExpand,%Source_Sys%\ntdos804.sys,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\ntio.sys,CopyOrExpand,%Source_Sys%\ntio.sys,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\ntio404.sys,CopyOrExpand,%Source_Sys%\ntio404.sys,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\ntio411.sys,CopyOrExpand,%Source_Sys%\ntio411.sys,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\ntio412.sys,CopyOrExpand,%Source_Sys%\ntio412.sys,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\ntio804.sys,CopyOrExpand,%Source_Sys%\ntio804.sys,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\ntvdm.exe,CopyOrExpand,%Source_Sys%\ntvdm.exe,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\ntvdmd.dll,CopyOrExpand,%Source_Sys%\ntvdmd.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\ole2.dll,CopyOrExpand,%Source_Sys%\ole2.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\ole2disp.dll,CopyOrExpand,%Source_Sys%\ole2disp.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\ole2nls.dll,CopyOrExpand,%Source_Sys%\ole2nls.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\olecli.dll,CopyOrExpand,%Source_Sys%\olecli.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\olesvr.dll,CopyOrExpand,%Source_Sys%\olesvr.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\pmspl.dll,CopyOrExpand,%Source_Sys%\pmspl.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\progman.exe,CopyOrExpand,%Source_Sys%\progman.exe,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\rasapi16.dll,Begin
+If,ExistFile,%Source_Sys%\rasapi16.dl?,CopyOrExpand,%Source_Sys%\rasapi16.dll,%Target_Sys%
+End
+If,Not,ExistFile,%Target_Sys%\redir.exe,CopyOrExpand,%Source_Sys%\redir.exe,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\shell.dll,CopyOrExpand,%Source_Sys%\shell.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\sound.drv,CopyOrExpand,%Source_Sys%\sound.drv,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\storage.dll,CopyOrExpand,%Source_Sys%\storage.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\system.drv,CopyOrExpand,%Source_Sys%\system.drv,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\timer.drv,CopyOrExpand,%Source_Sys%\timer.drv,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\toolhelp.dll,CopyOrExpand,%Source_Sys%\toolhelp.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\typelib.dll,CopyOrExpand,%Source_Sys%\typelib.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\user.exe,CopyOrExpand,%Source_Sys%\user.exe,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\vcdex.dll,Begin
+If,ExistFile,%Source_Sys%\vcdex.dl?,CopyOrExpand,%Source_Sys%\vcdex.dll,%Target_Sys%
+End
+If,Not,ExistFile,%Target_Sys%\ver.dll,CopyOrExpand,%Source_Sys%\ver.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\vga.drv,CopyOrExpand,%Source_Sys%\vga.drv,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\wfwnet.drv,CopyOrExpand,%Source_Sys%\wfwnet.drv,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\winoldap.mod,CopyOrExpand,%Source_Sys%\winoldap.mod,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\winspool.exe,CopyOrExpand,%Source_Sys%\winspool.exe,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\wow32.dll,CopyOrExpand,%Source_Sys%\wow32.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\wowdeb.exe,CopyOrExpand,%Source_Sys%\wowdeb.exe,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\wowexec.exe,CopyOrExpand,%Source_Sys%\wowexec.exe,%Target_Sys%
+Require,HighVersion,WOWFAX.DLL,TargetWin\System32
+Require,HighVersion,WOWFAXUI.DLL,TargetWin\System32
+//If,Not,ExistFile,%Target_Sys%\WOWFAX.DLL,If,ExistFile,%Source_Sys%\WOWFAX.DL?,CopyOrExpand,%Source_Sys%\WOWFAX.DLL,%Target_Sys%
+//If,Not,ExistFile,%Target_Sys%\WOWFAX.DLL,ShellExecute,hide,expand.exe,"#$q%Source_Sys%\driver.cab#$q -F:WOWFAX.DLL #$q%Target_Sys%#$q"
+//If,Not,ExistFile,%Target_Sys%\WOWFAX.DLL,Echo,"WOWFAX.DLL NOT found",Warn
+//If,Not,ExistFile,%Target_Sys%\WOWFAXUI.DLL,If,ExistFile,%Source_Sys%\WOWFAXUI.DL?,CopyOrExpand,%Source_Sys%\WOWFAXUI.DLL,%Target_Sys%
+//If,Not,ExistFile,%Target_Sys%\WOWFAXUI.DLL,ShellExecute,hide,expand.exe,"#$q%Source_Sys%\driver.cab#$q -F:WOWFAXUI.DLL #$q%Target_Sys%#$q"
+//If,Not,ExistFile,%Target_Sys%\WOWFAXUI.DLL,Echo,"WOWFAX.DLL NOT found",Warn
+//-
+If,Not,ExistFile,%Target_Sys%\win87em.dll,CopyOrExpand,%Source_Sys%\win87em.dll,%Target_Sys%
+If,Not,ExistDir,%Target_Win%\system,DirMake,%Target_Win%\system
+If,Not,ExistFile,%Target_Win%\system\avicap.dll,CopyOrExpand,%Source_Sys%\avicap.dll,%Target_Win%\system
+If,Not,ExistFile,%Target_Win%\system\avifile.dll,CopyOrExpand,%Source_Sys%\avifile.dll,%Target_Win%\system
+If,Not,ExistFile,%Target_Win%\system\commdlg.dll,CopyOrExpand,%Source_Sys%\commdlg.dll,%Target_Win%\system
+If,Not,ExistFile,%Target_Win%\system\keyboard.drv,CopyOrExpand,%Source_Sys%\keyboard.drv,%Target_Win%\system
+If,Not,ExistFile,%Target_Win%\system\lzexpand.dll,CopyOrExpand,%Source_Sys%\lzexpand.dll,%Target_Win%\system
+If,Not,ExistFile,%Target_Win%\system\mciavi.drv,CopyOrExpand,%Source_Sys%\mciavi.drv,%Target_Win%\system
+If,Not,ExistFile,%Target_Win%\system\mciseq.drv,CopyOrExpand,%Source_Sys%\mciseq.drv,%Target_Win%\system
+If,Not,ExistFile,%Target_Win%\system\mciwave.drv,CopyOrExpand,%Source_Sys%\mciwave.drv,%Target_Win%\system
+If,Not,ExistFile,%Target_Win%\system\mmsystem.dll,CopyOrExpand,%Source_Sys%\mmsystem.dll,%Target_Win%\system
+If,Not,ExistFile,%Target_Win%\system\vcdex.dll,Begin
+If,ExistFile,%Source_Sys%\vcdex.dl?,CopyOrExpand,%Source_Sys%\vcdex.dll,%Target_Win%\system
+End
+If,Not,ExistFile,%Target_Win%\system\mouse.drv,CopyOrExpand,%Source_Sys%\mouse.drv,%Target_Win%\system
+If,Not,ExistFile,%Target_Win%\system\msvideo.dll,CopyOrExpand,%Source_Sys%\msvideo.dll,%Target_Win%\system
+If,Not,ExistFile,%Target_Win%\system\olecli.dll,CopyOrExpand,%Source_Sys%\olecli.dll,%Target_Win%\system
+If,Not,ExistFile,%Target_Win%\system\olesvr.dll,CopyOrExpand,%Source_Sys%\olesvr.dll,%Target_Win%\system
+If,Not,ExistFile,%Target_Win%\system\shell.dll,CopyOrExpand,%Source_Sys%\shell.dll,%Target_Win%\system
+If,Not,ExistFile,%Target_Win%\system\stdole.tlb,CopyOrExpand,%Source_Sys%\stdole.tlb,%Target_Win%\system
+If,Not,ExistFile,%Target_Win%\system\system.drv,CopyOrExpand,%Source_Sys%\system.drv,%Target_Win%\system
+If,Not,ExistFile,%Target_Win%\system\tapi.dll,Begin
+If,ExistFile,%Source_Sys%\tapi.dl?,CopyOrExpand,%Source_Sys%\tapi.dll,%Target_Win%\system
+End
+If,Not,ExistFile,%Target_Win%\system\timer.drv,CopyOrExpand,%Source_Sys%\timer.drv,%Target_Win%\system
+If,Not,ExistFile,%Target_Win%\system\ver.dll,CopyOrExpand,%Source_Sys%\ver.dll,%Target_Win%\system
+If,Not,ExistFile,%Target_Win%\system\vga.drv,CopyOrExpand,%Source_Sys%\vga.drv,%Target_Win%\system
+If,Not,ExistFile,%Target_Win%\system\wfwnet.drv,CopyOrExpand,%Source_Sys%\wfwnet.drv,%Target_Win%\system
+RegHiveLoad,Tmp_System,%Target_Sys%\setupreg.hiv
+Echo,"Writing new values on registry hive.."
+RegWrite,HKLM,0x2,Tmp_System\ControlSet001\Control\WOW,cmdline,#$pSystemRoot#$p\system32\ntvdm.exe
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\WOW,DefaultSeparateVDM,no
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\WOW,LPT_timeout,15
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\WOW,size,0
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\WOW,wowsize,16
+RegWrite,HKLM,0x2,Tmp_System\ControlSet001\Control\WOW,wowcmdline,"%SystemRoot%\system32\ntvdm.exe -a #$pSystemRoot#$p\system32\krnl386"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\WOW,KnownDLLs,"comm.drv commdlg.dll ctl3dv2.dll ddeml.dll keyboard.drv lanman.drv mmsystem.dll mouse.drv netapi.dll olecli.dll olesvr.dll pmspl.dll shell.dll sound.drv system.drv toolhelp.dll vga.drv wfwnet.drv win87em.dll winoldap.mod winsock.dll winspool.exe wowdeb.exe timer.drv rasapi16.dll compobj.dll storage.dll ole2.dll ole2disp.dll ole2nls.dll typelib.dll msvideo.dll avifile.dll msacm.dll mciavi.drv mciseq.drv mciwave.drv progman.exe avicap.dll mapi.dll"
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Control\WOW,SharedWowTimeout,0x00000e10
+RegWrite,HKLM,0x3,Tmp_System\ControlSet001\Control\WOW,RomFontPointers,b0,52,00,c0,b0,4a,00,c0,b0,4e,00,c0,b0,60,00,c0,c0,60,00,c0,c0,70,00,c0
+RegWrite,HKLM,0x1,"Tmp_System\ControlSet001\Control\Session Manager\Environment",PATHEXT,".COM;.EXE;.BAT;.CMD"
+If,%version%,Smaller,80,ShellExecute,Hide,Reg.exe,"add #$qHKLM\Tmp_System\ControlSet001\Control\VirtualDeviceDrivers#$q /v #$qVDD#$q /t REG_MULTI_SZ /f"
+Else,RegWrite,HKLM,0x7,Tmp_System\ControlSet001\Control\VirtualDeviceDrivers,VDD,""
+RegHiveUnLoad,Tmp_System
+If,%pCheckBox_EditCOM%,Equal,True,If,Not,ExistFile,%Target_Sys%\Edit.com,CopyOrExpand,%Source_Sys%\Edit.com,%Target_Sys%
+
+[PE3]
+If,Not,ExistFile,%Source_Sys%\COMMAND.COM,Exit,"16 Bit Support not exists on your source"
+If,Not,ExistDir,%Target_Sys%,DirMake,%Target_Sys%
+If,Not,ExistDir,%Target_Sys%\en-US,DirMake,%Target_Sys%\en-US
+If,Not,%DistLang%,Equal,en-US,If,Not,ExistDir,%Target_Sys%\%DistLang%,DirMake,%Target_Sys%\%DistLang%
+If,Not,ExistFile,%Target_Sys%\ANSI.SYS,FileCopy,%Source_Sys%\ANSI.SYS,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\autoexec.nt,FileCopy,%Source_Sys%\autoexec.nt,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\avicap.dll,FileCopy,%Source_Sys%\avicap.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\apisetschema.dll,FileCopy,%Source_Sys%\apisetschema.dll,%Target_Sys%
+Require_FileQ,advapi32.dll
+If,Not,ExistFile,%Target_Sys%\config.nt,FileCopy,%Source_Sys%\config.nt,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\COMMAND.COM,FileCopy,%Source_Sys%\COMMAND.COM,%Target_Sys%
+Require_FileQ,comdlg32.dll
+If,Not,ExistFile,%Target_Sys%\COMMDLG.dll,FileCopy,%Source_Sys%\COMMDLG.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\compobj.dll,FileCopy,%Source_Sys%\compobj.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\country.sys,FileCopy,%Source_Sys%\country.sys,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\COMM.drv,FileCopy,%Source_Sys%\COMM.drv,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\crtdll.dll,FileCopy,%Source_Sys%\crtdll.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\ctl3dv2.dll,FileCopy,%Source_Sys%\ctl3dv2.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\dosx.exe,FileCopy,%Source_Sys%\dosx.exe,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\DDEML.DLL,FileCopy,%Source_Sys%\DDEML.DLL,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\ega.cpi,FileCopy,%Source_Sys%\ega.cpi,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\GDI.EXE,FileCopy,%Source_Sys%\GDI.EXE,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\gdi32.dll,FileCopy,%Source_Sys%\gdi32.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\HIMEM.SYS,FileCopy,%Source_Sys%\HIMEM.SYS,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\imm32.dll,FileCopy,%Source_Sys%\imm32.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\KB16.COM,FileCopy,%Source_Sys%\KB16.COM,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\KEY01.SYS,FileCopy,%Source_Sys%\KEY01.SYS,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\keyboard.drv,FileCopy,%Source_Sys%\keyboard.drv,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\KEYBOARD.SYS,FileCopy,%Source_Sys%\KEYBOARD.SYS,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\krnl386.exe,FileCopy,%Source_Sys%\krnl386.exe,%Target_Sys%
+Require_FileQ,KernelBase.dll
+Require_FileQ,kernel32.dll
+If,Not,ExistFile,%Target_Sys%\lanman.drv,FileCopy,%Source_Sys%\lanman.drv,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\locale.nls,FileCopy,%Source_Sys%\locale.nls,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\lpk.dll,FileCopy,%Source_Sys%\lpk.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\lzexpand.dll,FileCopy,%Source_Sys%\lzexpand.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\mciavi.drv,FileCopy,%Source_Sys%\mciavi.drv,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\mciseq.drv,FileCopy,%Source_Sys%\mciseq.drv,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\mciwave.drv,FileCopy,%Source_Sys%\mciwave.drv,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\MMSYSTEM.DLL,FileCopy,%Source_Sys%\MMSYSTEM.DLL,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\mouse.drv,FileCopy,%Source_Sys%\mouse.drv,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\msacm.dll,FileCopy,%Source_Sys%\msacm.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\mscdexnt.exe,FileCopy,%Source_Sys%\mscdexnt.exe,%Target_Sys%
+Require_FileQ,msctf.dll
+If,Not,ExistFile,%Target_Sys%\netapi.dll,FileCopy,%Source_Sys%\netapi.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\netapi32.dll,FileCopy,%Source_Sys%\netapi32.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\netutils.dll,FileCopy,%Source_Sys%\netutils.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\NTDOS.SYS,FileCopy,%Source_Sys%\NTDOS.SYS,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\NTDOS404.SYS,FileCopy,%Source_Sys%\NTDOS404.SYS,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\NTDOS411.SYS,FileCopy,%Source_Sys%\NTDOS411.SYS,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\NTDOS412.SYS,FileCopy,%Source_Sys%\NTDOS412.SYS,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\NTDOS804.SYS,FileCopy,%Source_Sys%\NTDOS804.SYS,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\NTIO.SYS,FileCopy,%Source_Sys%\NTIO.SYS,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\NTIO404.SYS,FileCopy,%Source_Sys%\NTIO404.SYS,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\NTIO411.SYS,FileCopy,%Source_Sys%\NTIO411.SYS,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\NTIO412.SYS,FileCopy,%Source_Sys%\NTIO412.SYS,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\NTIO804.SYS,FileCopy,%Source_Sys%\NTIO804.SYS,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\ntvdm.exe,FileCopy,%Source_Sys%\ntvdm.exe,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\ntvdmd.dll,FileCopy,%Source_Sys%\ntvdmd.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\ole2.dll,FileCopy,%Source_Sys%\ole2.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\ole2disp.dll,FileCopy,%Source_Sys%\ole2disp.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\ole2nls.dll,FileCopy,%Source_Sys%\ole2nls.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\olecli.dll,FileCopy,%Source_Sys%\olecli.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\OLESVR.DLL,FileCopy,%Source_Sys%\OLESVR.DLL,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\pmspl.dll,FileCopy,%Source_Sys%\pmspl.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\redir.exe,FileCopy,%Source_Sys%\redir.exe,%Target_Sys%
+Require_FileQ,rpcrt4.dll
+If,Not,ExistFile,%Target_Sys%\sfc.dll,FileCopy,%Source_Sys%\sfc.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\sfc_os.dll,FileCopy,%Source_Sys%\sfc_os.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\SHELL.DLL,FileCopy,%Source_Sys%\SHELL.DLL,%Target_Sys%
+Require_FileQ,shell32.dll
+Require_FileQ,shlwapi.dll
+Require_FileQ,sechost.dll
+If,Not,ExistFile,%Target_Sys%\srvcli.dll,FileCopy,%Source_Sys%\srvcli.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\storage.dll,FileCopy,%Source_Sys%\storage.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\system.drv,FileCopy,%Source_Sys%\system.drv,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\TIMER.DRV,FileCopy,%Source_Sys%\TIMER.DRV,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\TOOLHELP.DLL,FileCopy,%Source_Sys%\TOOLHELP.DLL,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\typelib.dll,FileCopy,%Source_Sys%\typelib.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\USER.EXE,FileCopy,%Source_Sys%\USER.EXE,%Target_Sys%
+Require_FileQ,user32.dll
+If,Not,ExistFile,%Target_Sys%\usp10.dll,FileCopy,%Source_Sys%\usp10.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\ver.dll,FileCopy,%Source_Sys%\ver.dll,%Target_Sys%
+//If,Not,ExistFile,%Target_Sys%\vga.drv,FileCopy,%Source_Sys%\vga.drv,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\VDMREDIR.DLL,FileCopy,%Source_Sys%\VDMREDIR.DLL,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\WFWNET.DRV,FileCopy,%Source_Sys%\WFWNET.DRV,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\WINOLDAP.MOD,FileCopy,%Source_Sys%\WINOLDAP.MOD,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\wkscli.dll,FileCopy,%Source_Sys%\wkscli.dll,%Target_Sys%
+Require_FileQ,winspool.drv
+Require_FileQ,winmm.dll
+If,Not,ExistFile,%Target_Sys%\wow32.dll,FileCopy,%Source_Sys%\wow32.dll,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\WOWDEB.EXE,FileCopy,%Source_Sys%\WOWDEB.EXE,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\WOWEXEC.EXE,FileCopy,%Source_Sys%\WOWEXEC.EXE,%Target_Sys%
+If,Not,ExistFile,%Target_Sys%\win87em.dll,FileCopy,%Source_Sys%\win87em.dll,%Target_Sys%
+If,%pCheckBox_EditCOM%,Equal,True,If,Not,ExistFile,%Target_Sys%\Edit.com,CopyOrExpand,%Source_Sys%\Edit.com,%Target_Sys%
+RegHiveLoad,Tmp_System,%RegSystem%
+If,%version%,Smaller,80,ShellExecute,Hide,Reg.exe,"add #$qHKLM\Tmp_System\ControlSet001\Control\VirtualDeviceDrivers#$q /v #$qVDD#$q /t REG_MULTI_SZ /f"
+Else,RegWrite,HKLM,0x7,Tmp_System\ControlSet001\Control\VirtualDeviceDrivers,VDD,""
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\WOW,DefaultSeparateVDM,no
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Control\WOW,DisallowedPolicyDefault,0
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\WOW,KnownDLLs,"comm.drv commdlg.dll ctl3dv2.dll ddeml.dll keyboard.drv lanman.drv mmsystem.dll mouse.drv netapi.dll olecli.dll olesvr.dll pmspl.dll shell.dll sound.drv system.drv toolhelp.dll vga.drv wfwnet.drv win87em.dll winoldap.mod winsock.dll winspool.exe wowdeb.exe timer.drv compobj.dll storage.dll ole2.dll ole2disp.dll ole2nls.dll typelib.dll msvideo.dll avifile.dll msacm.dll mciavi.drv mciseq.drv mciwave.drv progman.exe avicap.dll mapi.dll"
+RegWrite,HKLM,0x1,Tmp_System\ControlSet001\Control\WOW,"LPT_timeout",15
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\Control\WOW,SharedWowTimeout,3600
+RegWrite,HKLM,0x2,Tmp_System\ControlSet001\services\LanmanWorkstation\Parameters,ServiceDll,#$pSystemRoot#$p\System32\wkssvc.dll
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\services\LanmanWorkstation\Parameters,ServiceDllUnloadOnStop,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\services\LanmanWorkstation\Parameters,EnablePlainTextPassword,0
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\services\LanmanWorkstation\Parameters,EnableSecuritySignature,1
+RegWrite,HKLM,0x4,Tmp_System\ControlSet001\services\LanmanWorkstation\Parameters,RequireSecuritySignature,0
+If,%version%,Smaller,80,ShellExecute,Hide,Reg.exe,"add #$qHKLM\Tmp_System\ControlSet001\services\LanmanWorkstation\Parameters#$q /v #$qOtherDomains#$q /t REG_MULTI_SZ /f"
+Else,RegWrite,HKLM,0x7,Tmp_System\ControlSet001\services\LanmanWorkstation\Parameters,OtherDomains,""
+RegHiveUnLoad,Tmp_System
+RegHiveLoad,Tmp_Software,%RegSoftware%
+//If,ExistRegSection,HKLM,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\WOW\boot",RegDelete,HKLM,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\WOW\boot"
+//If,ExistRegKey,HKLM,Tmp_Software\Classes\Applications\NTVDM.exe,UseExecutableForTaskbarGroupIcon,RegDelete,HKLM,Tmp_Software\Classes\Applications\NTVDM.exe,UseExecutableForTaskbarGroupIcon
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\WOW\boot",comm.drv,comm.drv
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\WOW\boot",display.drv,vga.drv
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\WOW\boot",drivers,mmsystem.dll
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\WOW\boot",fixedfon.fon,vgafix.fon
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\WOW\boot",fonts.fon,vgasys.fon
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\WOW\boot",keyboard.drv,keyboard.drv
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\WOW\boot",language.dll,""
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\WOW\boot",mouse.drv,mouse.drv
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\WOW\boot",network.drv,wfwnet.drv
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\WOW\boot",oemfonts.fon,vgaoem.fon
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\WOW\boot",shell,progman.exe
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\WOW\boot",sound.drv,sound.drv
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\WOW\boot",system.drv,system.drv
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\WOW\boot.description",display.drv,VGA
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\WOW\boot.description",keyboard.typ,"Enhanced 101 or 102 key US and Non US keyboards"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\WOW\boot.description",language.dll,"English (American)"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\WOW\boot.description",mouse.drv,"Microsoft, or IBM PS/2"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\WOW\boot.description",network.drv,"LAN Support"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\WOW\boot.description",system.drv,"MS-DOS or PC-DOS System"
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\WOW\keyboard",keyboard.dll,""
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\WOW\keyboard",subtype,""
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\WOW\keyboard",type,4
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\WOW\NonWindowsApp"
+RegWrite,HKLM,0x7,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\WOW\SetupPrograms",SetupProgramNames,setup,install,inst,imposta,ayarla,felrak,eviewset
+RegWrite,HKLM,0x1,"Tmp_Software\Microsoft\Windows NT\CurrentVersion\WOW\standard"
+RegWrite,HKLM,0x1,Tmp_Software\Classes\Applications\NTVDM.exe,UseExecutableForTaskbarGroupIcon,""
+RegHiveUnLoad,Tmp_Software
+
+[AuthorEncoded]
+Little_Tv4848.ico=5053,6738
+Logo=Little_Tv4848.ico
+
+[EncodedFile-AuthorEncoded-Little_Tv4848.ico]
+lines=1
+0=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
+1=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
+
+[DownloadXXX]
+Call,DownloadXQ
+
+[UploadXXX]
+Call,UploadXMultiQ
+
+[Settings_Default]
+IniWrite,%ScriptFile%,Main,Selected,False
+
+[Settings_Default_Gena]
+IniWrite,%ScriptFile%,Main,Selected,False
+
+[Settings_Default_Yomi]
+IniWrite,%ScriptFile%,Main,Selected,False
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+

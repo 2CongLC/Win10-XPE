@@ -1,0 +1,645 @@
+[Main]
+Title=Register Factory VM Installer
+Type=Plugin
+Author=fxscrpt
+Description=Installs OS components using virtual machines
+Credits=http://TheOven.org
+Version=009
+Download_Level=0
+Level=0
+Selected=True
+Mandatory=True
+NoWarning=False
+Contact=http://TheOven.org/index.php?board=3
+Date=2020.02.27_15:39.06 (GMT0: -3 Hours)
+Depend=
+Disable=
+Web1=http://gena.cwcodes.net/Projects/Gena/Finals/0%20RegFactory/RegFactory.script
+CertifiedBy=
+Certification=
+HistoryNotes01=Lancelot Since "RF cache mechanism" broken - "Plugin Cache" mechanism works BUT result fails (--> Virtual step made)
+HistoryNotes02=Lancelot ==> No time to fix broken "RF cache mechanism" - So Cache buttons hidden from interface for today.
+HistoryNotes03=Lancelot Basic Plugins + Default RF -> 17 Minutes
+HistoryNotes04=Lancelot "Basic PluginCache" + Default RF -> 7 Minutes (will be shorter when "RF cache mechanism" with current plugin "Plugin Cache" )
+History005=fxscrpt Mandatory=True - some users run all regfactory Plugins with disabled  last one for the vm stage :> (if regfactory not used do nothing to the build)
+History006=Lancelot check History20 at 1 - RegFactory Plugin
+History007=Lancelot attrib line added
+History008=Lancelot IniVariables RegFactory - Date:2011.07.15
+History009=Lancelot Added DU Buttons // Added "Plugin Cache" (See [Info]) - Date:2016.11.03 // Cosmetics - Date:2020.02.27
+
+[Info]
+Since "RF cache mechanism" broken - "Plugin Cache" mechanism works BUT result fails (--> Virtual step made)
+==> No time to fix broken "RF cache mechanism" - So Cache buttons hidden from interface for today.
+//------------- Info -------------------
+"Register Factory VM Installer" -> Always use Process_Main
+-- RF have "RF cache mechanism" and decide to use or not
+--- Plugin only provides conditions and gives decision to "RF cache mechanism"
+//-
+Here Cache works a bit different than other Cache Mechanism plugins (since cache mechanism (RF) inside cache mechanism (Plugin))
+Using Cache Extract Decision made with Temp\apireg before "Register Factory VM Installer"
+
+[Process_OLD_Version_008]
+//[Process_OLD] here Version=008
+//ExtractFile,%ScriptFile%,Folder,hiderun.exe,%Target_Sys%
+ShellExecute,Hide,attrib.exe,"-R -S -A -H #$q%target_win%\*#$q /S /D"
+IniRead,%ProjectDir%\script.project,IniVariables,ApiRegScript,%ApiRegScript%
+Exec,%ApiRegScript%,RunProcess
+
+[Interface]
+Cache_CheckBox=Cache,0,3,396,57,53,18,False
+Cache_Delete_Button="Delete Cache",0,8,395,77,80,25,Cache_Delete,_Cache_Delete_,False
+Cache_OpendirButton=,0,8,449,56,20,20,Cache_Opendir,folder_go_fatcow-hosting-icons-3000_Mod_016016.bmp,False,False,"__Open Cache Folder"
+WebLabel_Plugin="Plugin Page",1,10,338,4,55,18,http://TheOven.org/index.php?board=3
+Button_Download=,1,8,403,21,24,24,DownloadXXX,DoubleJDesignRavenna3dArrowDown0016016.bmp,False,False,_DownloadXXX_,False,"__DOWNLOAD Plugin"
+Button_Upload=,1,8,403,-1,24,24,UploadXXX,BokehliciaCaptivaSoftwareupload0016016.bmp,False,False,_UploadXXX_,False,"__UPLOAD Plugin (Admins Only)"
+Button_CompareEdit=,1,8,426,-1,24,24,CompareEditXXX,AmperossQetto2Move0016016.bmp,False,False,_CompareEditXXX_,False,"__DOWNLOAD and Compare with an Editor"
+
+[Process]
+If,Not,ExistDir,%ProjectTemp%\apireg_Before_Cache,Begin
+DirCopy,%ProjectTemp%\apireg,%ProjectTemp%\apireg_Before_Cache
+DirMake,%ProjectTemp%\tmpctl_Before_Cache
+FileCopy,%ProjectTemp%\tmp.ctl,%ProjectTemp%\tmpctl_Before_Cache
+FileCopy,%ProjectTemp%\tmpctl.txt,%ProjectTemp%\tmpctl_Before_Cache
+End
+//-
+Set,%Process_Main%,1
+IniRead,%ProjectDir%\script.project,IniVariables,NoPluginCache,%NoPluginCache%
+Set,%Cache_CheckBoxV%,%Cache_CheckBox%
+If,%NoPluginCache%,Equal,True,Set,%Cache_CheckBoxV%,False
+//-
+If,%Cache_CheckBoxV%,Equal,True,Run,%ScriptFile%,Cache_Main
+//-
+//We always run "Register Factory VM Installer" plugin (Special "Plugin Cache" -> "Register Factory VM Installer" decides to use Virtual or not)
+//If,%Process_Main%,Equal,1,Run,%ScriptFile%,Process_Main
+Run,%ScriptFile%,Process_Main
+//-
+If,%Cache_CheckBoxV%%Process_Main%,Equal,True1,Run,%ScriptFile%,Cache_Create
+//-
+//Halt,------------------
+
+[Process_Main]
+//ExtractFile,%ScriptFile%,Folder,hiderun.exe,%Target_Sys%
+ShellExecute,Hide,attrib.exe,"-R -S -A -H #$q%Target_Win%\*#$q /S /D"
+IniRead,%ProjectDir%\script.project,IniVariables,ApiRegScript,%ApiRegScript%
+Exec,%ApiRegScript%,RunProcess
+
+[Cache_Main]
+Run,%ScriptFile%,Cache_SCD_Info_%OSFamily%
+//--
+//Delete if left before
+If,Not,ExistDir,%BaseDir%\Workbench\PluginCache\%ProjectName%,DirMake,%BaseDir%\Workbench\PluginCache\%ProjectName%
+ShellExecute,Hide,cmd.exe,"/C del /q /f #$q%BaseDir%\Workbench\PluginCache\%ProjectName%\%SFName%D*.*#$q&del /q /f /A:R /A:H /A:S /A:A #$q%BaseDir%\Workbench\PluginCache\%ProjectName%\%SFName%D*.*#$q"
+//Delete All others than %UVersion%
+ShellExecute,Hide,cmd.exe,"/C ren #$q%SFName%_v%UVersion%_*.*#$q #$q%SFName%Dv%UVersion%_*.*#$q",%BaseDir%\Workbench\PluginCache\%ProjectName%
+ShellExecute,Hide,cmd.exe,"/C del /q /f #$q%BaseDir%\Workbench\PluginCache\%ProjectName%\%SFName%_*.*#$q&del /q /f /A:R /A:H /A:S /A:A #$q%BaseDir%\Workbench\PluginCache\%ProjectName%\%SFName%_*.*#$q"
+ShellExecute,Hide,cmd.exe,"/C ren #$q%SFName%Dv%UVersion%_*.*#$q #$q%SFName%_v%UVersion%_*.*#$q",%BaseDir%\Workbench\PluginCache\%ProjectName%
+//--
+Set,%t%,1
+//If,Not,ExistFile,%SCD%.7z,Set,%t%,0
+//If,Not,ExistFile,%SCD%_Temp.7z,Set,%t%,0
+If,Not,ExistFile,%SCD%_Temp_apireg.7z,Set,%t%,0
+//"PluginCache Standalone" + "PluginCache Standalone" : NO Backup Restore Script.Project
+//"Basic PluginCache" : YES Backup Restore Script.Project
+//If,Not,ExistFile,%SCD%_MainPlugin.ini,Set,%t%,0
+If,%t%,Equal,1,Run,%ScriptFile%,Cache_Extract
+
+[Cache_Extract]
+//Call,DirMakeE,%TargetDir%
+//StrFormat,Path,%TargetDir%,%TargetDirpath%
+//StrFormat,CTrim,%TargetDirpath%,\,%TargetDirpath%
+Set,%7z%,%Tools%\7z.exe
+StrFormat,Date,%MyDateST%,hhnnss
+StrFormat,Date,%MyDateSTn%,nn
+StrFormat,Date,%MyDateSTs%,ss
+//-
+Call,DirDeleteMake,%BaseDir%\Workbench\PluginCache\%ProjectName%\Temp
+//-
+//"PluginCache Standalone" + "PluginCache Simple" Basic PluginCache not on UniqueID - Start
+If,ExistFile,%ProjectTemp%\Basic_PluginCache_Create.ini,FileCopy,%ProjectTemp%\Basic_PluginCache_Create.ini,%BaseDir%\Workbench\PluginCache\%ProjectName%\Temp
+If,ExistFile,%ProjectTemp%\Basic_PluginCache_Extract.ini,FileCopy,%ProjectTemp%\Basic_PluginCache_Extract.ini,%BaseDir%\Workbench\PluginCache\%ProjectName%\Temp
+//"PluginCache Standalone" + "PluginCache Simple" Basic PluginCache not on UniqueID - Finish
+//-
+//"PluginCache Standalone" + "PluginCache Simple" : NO Backup Restore Script.Project
+//"Basic PluginCache" : YES Backup Restore Script.Project
+//IniRead,%ProjectDir%\script.project,IniVariables,NoWarnFileOverWrite,%NoWarnFOW%
+//If,%NoWarnFOW%,Equal,True,System,ERROROFF
+//FileCopy,%SCD%_MainPlugin.ini,%ProjectDir%\Script.Project
+//-
+//Echo,"Extract TargetDir PluginCache - Start"
+//ShellExecute,Hide,%7z%,"x #$q%SCD%.7z#$q -y -o#$q%TargetDirpath%#$q"
+//If,Not,%ExitCode%,Equal,0,Call,Echo,"ErrorLevel=%ExitCode%",Warn
+//Echo,"Extract TargetDir PluginCache - Finish"
+//-
+//Call,DirDelete,%ProjectTemp%\saydin77_Backup - Special Case Special Adjustment for Gena -Sayin77 Core
+//Call,DirDelete,%ProjectTemp% - Normal Case
+//If,ExistDir,%ProjectTemp%,Shellexecute,Hide,cmd.exe,"/C rd /s /q #$q%ProjectTemp%#$q"
+//If,ExistDir,%ProjectTemp%,Shellexecute,Hide,cmd.exe,"/C rd /s /q #$q%ProjectTemp%#$q"
+//If,ExistDir,%ProjectTemp%,Shellexecute,Hide,cmd.exe,"/C rd /s /q #$q%ProjectTemp%#$q"
+//If,ExistDir,%ProjectTemp%,Shellexecute,Hide,cmd.exe,"/C rd /s /q #$q%ProjectTemp%#$q"
+//If,ExistDir,%ProjectTemp%,Shellexecute,Hide,cmd.exe,"/C rd /s /q #$q%ProjectTemp%#$q"
+//If,ExistDir,%ProjectTemp%,Shellexecute,Hide,cmd.exe,"/C rd /s /q #$q%ProjectTemp%#$q"
+//If,ExistDir,%ProjectTemp%,Shellexecute,Hide,cmd.exe,"/C rd /s /q #$q%ProjectTemp%#$q"
+//If,ExistDir,%ProjectTemp%,Shellexecute,Hide,cmd.exe,"/C rd /s /q #$q%ProjectTemp%#$q"
+//If,ExistDir,%ProjectTemp%,Shellexecute,Hide,cmd.exe,"/C rd /s /q #$q%ProjectTemp%#$q"
+//If,ExistDir,%ProjectTemp%,Shellexecute,Hide,cmd.exe,"/C rd /s /q #$q%ProjectTemp%#$q"
+//If,ExistDir,%ProjectTemp%,DirDelete,%ProjectTemp%
+//-
+//StrFormat,Path,%ProjectTemp%,%ProjectTemppath%
+//StrFormat,CTrim,%ProjectTemppath%,\,%ProjectTemppath%
+//Echo,"Extract Temp PluginCache - Start"
+//ShellExecute,Hide,%7z%,"x #$q%SCD%_Temp.7z#$q -y -o#$q%ProjectTemppath%#$q"
+//If,Not,%ExitCode%,Equal,0,Call,Echo,"ErrorLevel=%ExitCode%",Warn
+//Echo,"Extract Temp PluginCache - Finish"
+//-
+//"PluginCache Standalone" + "PluginCache Simple" Basic PluginCache not on UniqueID - Start
+Call,FileDelete,%ProjectTemp%\Basic_PluginCache_Create.ini
+Call,FileDelete,%ProjectTemp%\Basic_PluginCache_Extract.ini
+If,ExistFile,%BaseDir%\Workbench\PluginCache\%ProjectName%\Temp\Basic_PluginCache_Create.ini,FileCopy,%BaseDir%\Workbench\PluginCache\%ProjectName%\Temp\Basic_PluginCache_Create.ini,%ProjectTemp%
+If,ExistFile,%BaseDir%\Workbench\PluginCache\%ProjectName%\Temp\Basic_PluginCache_Extract.ini,FileCopy,%BaseDir%\Workbench\PluginCache\%ProjectName%\Temp\Basic_PluginCache_Extract.ini,%ProjectTemp%
+//"PluginCache Standalone" + "PluginCache Simple" Basic PluginCache not on UniqueID - Finish
+//-
+If,ExistDir,%ProjectTemp%\RegFactoryHDD\HDD,Shellexecute,Hide,cmd.exe,"/C rd /s /q #$q%ProjectTemp%\RegFactoryHDD\HDD#$q"
+If,ExistDir,%ProjectTemp%\RegFactoryHDD\HDD,Shellexecute,Hide,cmd.exe,"/C rd /s /q #$q%ProjectTemp%\RegFactoryHDD\HDD#$q"
+If,ExistDir,%ProjectTemp%\RegFactoryHDD\HDD,Shellexecute,Hide,cmd.exe,"/C rd /s /q #$q%ProjectTemp%\RegFactoryHDD\HDD#$q"
+If,ExistDir,%ProjectTemp%\RegFactoryHDD\HDD,DirDelete,%ProjectTemp%\RegFactoryHDD\HDD
+Echo,"Extract Temp_RegFactoryHDD_HDD PluginCache - Start"
+ShellExecute,Hide,%7z%,"x #$q%SCD%_Temp_RegFactoryHDD_HDD.7z#$q -y -o#$q%ProjectTemp%\RegFactoryHDD#$q"
+If,Not,%ExitCode%,Equal,0,Call,Echo,"ErrorLevel=%ExitCode%",Warn
+Echo,"Extract Temp_RegFactoryHDD_HDD PluginCache - Finish"
+//-
+Shellexecute,Hide,cmd.exe,"/C rd /s /q #$q%ProjectTemp%\apireg#$q"
+If,ExistDir,%ProjectTemp%\apireg,DirDelete,%ProjectTemp%\apireg
+Echo,"Extract Temp_apireg PluginCache - Start"
+ShellExecute,Hide,%7z%,"x #$q%SCD%_Temp_apireg.7z#$q -y -o#$q%ProjectTemp%#$q"
+If,Not,%ExitCode%,Equal,0,Call,Echo,"ErrorLevel=%ExitCode%",Warn
+Echo,"Extract Temp_apireg PluginCache - Finish"
+//-
+//Other backups for development in future so not extracted here.
+//-
+Call,DirDelete,%BaseDir%\Workbench\PluginCache\%ProjectName%\Temp
+//-
+StrFormat,Date,%MyDateFN%,hhnnss
+StrFormat,DEC,%MyDateFN%,%MyDateST%
+StrFormat,Date,%MyDateFNn%,nn
+StrFormat,Date,%MyDateFNs%,ss
+StrFormat,DEC,%MyDateFN%,%MyDateST%
+StrFormat,DEC,%MyDateFNn%,%MyDateSTn%
+StrFormat,DEC,%MyDateFNs%,%MyDateSTs%
+If,%MyDateFNs%,Smaller,0,Begin
+StrFormat,DEC,%MyDateFNn%,1
+StrFormat,Inc,%MyDateFNs%,60
+End
+Echo,"Extract Temp PluginCache - Finish - %MyDateFNn%.%MyDateFNs% min.sec"
+//-
+Set,%Process_Main%,0
+
+[Cache_Delete]
+If,ExistDir,%BaseDir%\Workbench\PluginCache\%ProjectName%,Begin
+StrFormat,FileName,%ScriptFile%,%SFName%
+StrFormat,RTrim,%SFName%,7,%SFName%
+ShellExecute,Hide,cmd.exe,"/C del /q /f #$q%BaseDir%\Workbench\PluginCache\%ProjectName%\%SFName%*.*#$q&del /q /f /A:R /A:H /A:S /A:A #$q%BaseDir%\Workbench\PluginCache\%ProjectName%\%SFName%*.*#$q"
+End
+
+[Cache_Opendir]
+Call,OpenDir,%BaseDir%\Workbench\PluginCache\%ProjectName%
+
+[Cache_Create_PreCheck]
+//Plugin Conditions to create Cache or not:
+//Set,%Cache_Create_PreCheck%,0
+Call,RetrieveFolderUniqueID,%ProjectTemp%\apireg,RetrieveFolderUniqueID_apireg
+Call,RetrieveFolderUniqueID,%ProjectTemp%\apireg_Before_Cache,RetrieveFolderUniqueID_apireg_Before_Cache
+//Do not Create Cache if plugin already processed once
+If,%RetrieveFolderUniqueID_apireg%,Equal,%RetrieveFolderUniqueID_apireg_Before_Cache%,Set,%Cache_Create_PreCheck%,0
+Echo,%RetrieveFolderUniqueID_apireg%
+Echo,%RetrieveFolderUniqueID_apireg_Before_Cache%
+//Do not cache if there is no or empty %ProjectTemp%\apireg folder (probably plugin executed without RF without RF-BigBlue)
+If,%RetrieveFolderUniqueID_apireg%,Equal,1,Set,%Cache_Create_PreCheck%,0
+If,%RetrieveFolderUniqueID_apireg%,Equal,2,Set,%Cache_Create_PreCheck%,0
+//-
+If,Not,ExistFile,%ProjectTemp%\RegFactoryHDD\HDD\hdd.bin,Set,%Cache_Create_PreCheck%,0
+
+[Cache_Create]
+Set,%Cache_Create_PreCheck%,1
+Run,%ScriptFile%,Cache_Create_PreCheck
+If,%Cache_Create_PreCheck%,Equal,1,Begin
+//-
+//SECTION INDEPENDENT FROM UNTERFACE - since Exact used here
+Run,%ScriptFile%,Cache_SCD_Info_%OSFamily%
+If,Not,ExistDir,%BaseDir%\Workbench\PluginCache\%ProjectName%,DirMake,%BaseDir%\Workbench\PluginCache\%ProjectName%
+System,GETFREESPACE,%BaseDir%\Workbench\PluginCache\%ProjectName%,%t%
+//Win10PESE x64 "Basic PluginCache": 1.09 GB + 1-files - Standart 840 MB
+//Gena   2k3x86 "Basic PluginCache": 413 MB  + Saydin77_Core: 188 MB
+//Gena   2k3x64 "Basic PluginCache": 649 MB  + Saydin77_Core: 304 MB
+//(fallback: 7z ErrorLevel ;) )
+Echo,"FreeSpace ~%t% MB"
+StrFormat,div,%t%,1024
+Echo,"FreeSpace ~%t% GB"
+Set,%7z%,%Tools%\7z.exe
+If,ExistFile,%ProjectTemp%\%SFName%_Unique.ini,FileCopy,%ProjectTemp%\%SFName%_Unique.ini,%SCD%_Unique.ini
+StrFormat,Date,%MyDateST%,hhnnss
+StrFormat,Date,%MyDateSTn%,nn
+StrFormat,Date,%MyDateSTs%,ss
+//-
+//"PluginCache Standalone" + "PluginCache Simple" : NO Backup Restore Script.Project
+//"Basic PluginCache" : YES Backup Restore Script.Project
+//If,ExistFile,%SCD%_MainPlugin.ini,FileDelete,%SCD%_MainPlugin.ini
+//FileCopy,%ProjectDir%\Script.Project,%SCD%_MainPlugin.ini
+//-
+If,ExistFile,%SCD%_Temp_RegFactoryHDD_HDD.7z,FileDelete,%SCD%_Temp_RegFactoryHDD_HDD.7z
+Echo,"Create Temp\Temp_RegFactoryHDD_HDD PluginCache - Start"
+ShellExecute,Hide,%7z%,"a -mx0 #$q%SCD%_Temp_RegFactoryHDD_HDD.7z#$q #$q%ProjectTemp%\RegFactoryHDD\HDD#$q"
+If,Not,%ExitCode%,Equal,0,Call,Echo,"ErrorLevel=%ExitCode%",Warn
+If,Not,%ExitCode%,Equal,0,Call,FileDelete,%SCD%_Temp_RegFactoryHDD_HDD.7z
+Echo,"Create Temp\Temp_RegFactoryHDD_HDD PluginCache - Finish"
+//-
+If,ExistFile,%SCD%_Temp_apireg.7z,FileDelete,%SCD%_Temp_apireg.7z
+If,ExistFile,%SCD%_Temp_RegFactoryHDD_HDD.7z,Begin
+Echo,"Create Temp\apireg PluginCache - Start"
+ShellExecute,Hide,%7z%,"a -mx0 #$q%SCD%_Temp_apireg.7z#$q #$q%ProjectTemp%\apireg#$q"
+If,Not,%ExitCode%,Equal,0,Call,Echo,"ErrorLevel=%ExitCode%",Warn
+If,Not,%ExitCode%,Equal,0,Call,FileDelete,%SCD%_Temp_apireg.7z
+If,Not,%ExitCode%,Equal,0,Call,FileDelete,%SCD%_Temp_RegFactoryHDD_HDD.7z
+Echo,"Create Temp\apireg PluginCache - Finish"
+End
+Else,Begin
+Call,FileDelete,%SCD%_Temp_apireg.7z
+End
+//-
+If,ExistFile,%SCD%_Temp_apireg_Before_Cache.7z,FileDelete,%SCD%_Temp_apireg_Before_Cache.7z
+If,ExistFile,%SCD%_Temp_apireg.7z,Begin
+Echo,"Create Temp\apireg PluginCache - Start"
+ShellExecute,Hide,%7z%,"a -mx0 #$q%SCD%_Temp_apireg_Before_Cache.7z#$q #$q%ProjectTemp%\apireg_Before_Cache#$q"
+If,Not,%ExitCode%,Equal,0,Call,Echo,"ErrorLevel=%ExitCode%",Warn
+If,Not,%ExitCode%,Equal,0,Call,FileDelete,%SCD%_Temp_apireg_Before_Cache.7z
+If,Not,%ExitCode%,Equal,0,Call,FileDelete,%SCD%_Temp_apireg.7z
+If,Not,%ExitCode%,Equal,0,Call,FileDelete,%SCD%_Temp_RegFactoryHDD_HDD.7z
+Echo,"Create Temp\apireg PluginCache - Finish"
+End
+Else,Begin
+Call,FileDelete,%SCD%_Temp_apireg_Before_Cache.7z
+End
+//-
+If,ExistFile,%SCD%_Temp_tmpctl_Before_Cache.7z,FileDelete,%SCD%_Temp_tmpctl_Before_Cache.7z
+If,ExistFile,%SCD%_Temp_apireg_Before_Cache.7z,Begin
+Echo,"Create Temp\tmpctl_Before_Cache PluginCache - Start"
+ShellExecute,Hide,%7z%,"a -mx0 #$q%SCD%_Temp_tmpctl_Before_Cache.7z#$q #$q%ProjectTemp%\tmpctl_Before_Cache#$q"
+If,Not,%ExitCode%,Equal,0,Call,Echo,"ErrorLevel=%ExitCode%",Warn
+If,Not,%ExitCode%,Equal,0,Call,FileDelete,%SCD%_Temp_tmpctl_Before_Cache.7z
+If,Not,%ExitCode%,Equal,0,Call,FileDelete,%SCD%_Temp_apireg_Before_Cache.7z
+If,Not,%ExitCode%,Equal,0,Call,FileDelete,%SCD%_Temp_apireg.7z
+If,Not,%ExitCode%,Equal,0,Call,FileDelete,%SCD%_Temp_RegFactoryHDD_HDD.7z
+Echo,"Create Temp\tmpctl_Before_Cache PluginCache - Finish"
+End
+Else,Begin
+Call,FileDelete,%SCD%_Temp_tmpctl_Before_Cache.7z
+End
+//-
+If,ExistFile,%SCD%_Temp_RF_BDEL.7z,FileDelete,%SCD%_Temp_RF_BDEL.7z
+If,ExistFile,%SCD%_Temp_apireg_Before_Cache.7z,Begin
+Echo,"Create Temp\RF_BDEL PluginCache - Start"
+ShellExecute,Hide,%7z%,"a -mx0 #$q%SCD%_Temp_RF_BDEL.7z#$q #$q%ProjectTemp%\RF_BDEL#$q"
+If,Not,%ExitCode%,Equal,0,Call,Echo,"ErrorLevel=%ExitCode%",Warn
+If,Not,%ExitCode%,Equal,0,Call,FileDelete,%SCD%_Temp_RF_BDEL.7z
+If,Not,%ExitCode%,Equal,0,Call,FileDelete,%SCD%_Temp_tmpctl_Before_Cache.7z
+If,Not,%ExitCode%,Equal,0,Call,FileDelete,%SCD%_Temp_apireg_Before_Cache.7z
+If,Not,%ExitCode%,Equal,0,Call,FileDelete,%SCD%_Temp_apireg.7z
+If,Not,%ExitCode%,Equal,0,Call,FileDelete,%SCD%_Temp_RegFactoryHDD_HDD.7z
+Echo,"Create Temp\RF_BDEL PluginCache - Finish"
+End
+Else,Begin
+Call,FileDelete,%SCD%_Temp_RF_BDEL.7z
+End
+//-
+If,ExistFile,%SCD%_Temp_tmpctl.7z,FileDelete,%SCD%_Temp_tmpctl.7z
+If,ExistFile,%SCD%_Temp_RF_BDEL.7z,Begin
+Echo,"Create Temp\tmpctl PluginCache - Start"
+ShellExecute,Hide,%7z%,"a -mx0 #$q%SCD%_Temp_tmpctl.7z#$q #$q%ProjectTemp%\tmp.ctl#$q"
+If,Not,%ExitCode%,Equal,0,Call,Echo,"ErrorLevel=%ExitCode%",Warn
+If,Not,%ExitCode%,Equal,0,Call,FileDelete,%SCD%_Temp_tmpctl.7z
+If,Not,%ExitCode%,Equal,0,Call,FileDelete,%SCD%_Temp_RF_BDEL.7z
+If,Not,%ExitCode%,Equal,0,Call,FileDelete,%SCD%_Temp_tmpctl_Before_Cache.7z
+If,Not,%ExitCode%,Equal,0,Call,FileDelete,%SCD%_Temp_apireg_Before_Cache.7z
+If,Not,%ExitCode%,Equal,0,Call,FileDelete,%SCD%_Temp_apireg.7z
+If,Not,%ExitCode%,Equal,0,Call,FileDelete,%SCD%_Temp_RegFactoryHDD_HDD.7z
+If,ExistFile,%SCD%_Temp_tmpctl.7z,Begin
+ShellExecute,Hide,%7z%,"a -mx0 #$q%SCD%_Temp_tmpctl.7z#$q #$q%ProjectTemp%\tmpctl.txt#$q"
+If,Not,%ExitCode%,Equal,0,Call,Echo,"ErrorLevel=%ExitCode%",Warn
+If,Not,%ExitCode%,Equal,0,Call,FileDelete,%SCD%_Temp_tmpctl.7z
+If,Not,%ExitCode%,Equal,0,Call,FileDelete,%SCD%_Temp_RF_BDEL.7z
+If,Not,%ExitCode%,Equal,0,Call,FileDelete,%SCD%_Temp_tmpctl_Before_Cache.7z
+If,Not,%ExitCode%,Equal,0,Call,FileDelete,%SCD%_Temp_apireg_Before_Cache.7z
+If,Not,%ExitCode%,Equal,0,Call,FileDelete,%SCD%_Temp_apireg.7z
+If,Not,%ExitCode%,Equal,0,Call,FileDelete,%SCD%_Temp_RegFactoryHDD_HDD.7z
+End
+Echo,"Create Temp\tmpctl PluginCache - Finish"
+End
+Else,Begin
+Call,FileDelete,%SCD%_Temp_tmpctl.7z
+End
+//-
+StrFormat,Date,%MyDateFN%,hhnnss
+StrFormat,Date,%MyDateFNn%,nn
+StrFormat,Date,%MyDateFNs%,ss
+StrFormat,DEC,%MyDateFN%,%MyDateST%
+StrFormat,DEC,%MyDateFNn%,%MyDateSTn%
+StrFormat,DEC,%MyDateFNs%,%MyDateSTs%
+If,%MyDateFNs%,Smaller,0,Begin
+StrFormat,DEC,%MyDateFNn%,1
+StrFormat,Inc,%MyDateFNs%,60
+End
+Echo,"Create TargetDir PluginCache - Finish - %MyDateFNn%.%MyDateFNs% min.sec"
+System,SAVELOG,%ProjectTemp%\SaveL.html
+If,ExistFile,%ProjectDir%\Utils\Support_Log.script,Begin
+If,ExistSection,%ProjectDir%\Utils\Support_Log.script,EncodedFile-Folder-ssr.7z,Begin
+If,ExistSection,%ProjectDir%\Utils\Support_Log.script,EncodedFile-Folder-log_30000000_ssr_ChangerB.cmd,Begin
+If,Not,ExistDir,%ProjectTemp%\LogSsrChanger,DirMake,%ProjectTemp%\LogSsrChanger
+ExtractFile,%ProjectDir%\Utils\Support_Log.script,Folder,ssr.7z,%ProjectTemp%\LogSsrChanger
+ShellExecute,Hide,%Tools%\7z.exe,"x #$q%ProjectTemp%\LogSsrChanger\ssr.7z#$q -y -o#$q%ProjectTemp%\LogSsrChanger#$q"
+ExtractFile,%ProjectDir%\Utils\Support_Log.script,Folder,log_30000000_ssr_ChangerB.cmd,%ProjectTemp%\LogSsrChanger
+ShellExecute,Hide,cmd.exe,"/c log_30000000_ssr_ChangerB.cmd #$q%ProjectTemp%\SaveL.html#$q",%ProjectTemp%\LogSsrChanger
+End
+End
+End
+FileCopy,%ProjectTemp%\SaveL.html,%SCD%.html
+End
+
+[Cache_SCD_Info_Start]
+IniRead,%ScriptFile%,Main,Version,%SVersion%
+Set,%UVersion%,%SVersion%
+Retrieve,Md5,%ScriptFile%,%Smd5%
+StrFormat,FileName,%ScriptFile%,%SFName%
+StrFormat,RTrim,%SFName%,7,%SFName%
+//-----
+StrFormat,Path,%ScriptFile%,%PluginPath%
+StrFormat,Replace,%PluginPath%,%BaseDir%,"",%PluginPathShort%
+// When link: [Projects\Yomi\Build\] -- When Direct  [\Projects\Gena\Basic\]
+StrFormat,CTrim,%PluginPathShort%,"\",%PluginPathShort%
+Set,%PluginPathShort%,\%PluginPathShort%
+StrFormat,Split,%PluginPathShort%,\,2,%PluginPathShort1%
+StrFormat,Split,%PluginPathShort%,\,3,%PluginPathShort2%
+StrFormat,Replace,%PluginPath%,%BaseDir%\%PluginPathShort1%\%PluginPathShort2%\,"",%SCDSub%
+//--
+Call,FileCreateBlank,%ProjectTemp%\%SFName%_Unique.ini,OverWrite
+IniAddSection,%ProjectTemp%\%SFName%_Unique.ini,UniqueMD5
+IniAddSection,%ProjectTemp%\%SFName%_Unique.ini,Source_Info
+IniAddSection,%ProjectTemp%\%SFName%_Unique.ini,Version
+IniAddSection,%ProjectTemp%\%SFName%_Unique.ini,Unique
+//-
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,UniqueMD5,UniqueMD5,-
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,UniqueMD5,UniqueMD5_Tip,"MD5 written in the end - to get MD5 value used on Cache from this file  - change value UniqueMD5=- than check MD5"
+//-
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,%SCDSub%%SFName%,%Smd5%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Version,%SCDSub%%SFName%,%SVersion%
+//----
+If,ExistSection,%ScriptFile%,Cache_SCD_Info_Additional_Plugin,Run,%ScriptFile%,Cache_SCD_Info_Additional_Plugin
+//----
+IniRead,%ProjectDir%\script.project,IniVariables,OS,%OS%
+IniRead,%ProjectDir%\script.project,IniVariables,OSSubType,%OSSubType%
+IniRead,%ProjectDir%\script.project,IniVariables,OSServicePack,%OSServicePack%
+IniRead,%ProjectDir%\script.project,IniVariables,SourceLocale,%SourceLocale%
+//-
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Source_Info,OS,%OS%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Source_Info,OSSubType,%OSSubType%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Source_Info,OSServicePack,%OSServicePack%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Source_Info,SourceLocale,%SourceLocale%
+//----
+//----------MainPlugin Start
+IniRead,%ProjectDir%\script.project,Main,Version,%t%
+StrFormat,Inc,%UVersion%,%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Version,MainPlugin,%t%
+//-
+//All variables designed to work with SourceDir BaseDir Path (During Build hardcoded inside various sections of script.project) so we must save SourceDir for UniqueID
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,MainPlugin_BaseDir,%BaseDir%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,MainPlugin_SourceDir,%SourceDir%
+//-
+//YES SourceDir_ALL - "BasicPluginCache"=Since we backup script.project and restore to backup-restore variables better on safe side -  Reminding winbuilder bug: can not change SourceDir Info (v82)
+//NO  SourceDir_ALL - "PluginCache Standalone" + "PluginCache Simple"=Do not save-restore script.project ("PluginCache Standalone" : 'Saydin77 Core' --- "PluginCache" : '1 - Copy Files' - '5 - WoW64 Basic' 'Register Factory VM Installer' ) - No need SourceDir_ALL
+//IniRead,%ProjectDir%\script.project,Main,SourceDir,%t%
+//IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,MainPlugin_SourceDir_ALL,%t%
+//-
+//"BasicPluginCache" + "PluginCache Standalone" + "PluginCache Simple"
+//MD5 MainPlugin no good - naturally cause forever create new MD5
+//Set,%t%,0
+//Retrieve,Md5,%ProjectDir%\script.project,%t%
+//IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,MainPlugin,%t%
+//-
+//----------MainPlugin Finish
+
+[Cache_SCD_Info_NT5]
+Run,%ScriptFile%,Cache_SCD_Info_Start
+//-
+Retrieve,Md5,%Source_Sys%\txtsetup.sif,%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,Source_Sys\|______txtsetup.sif,%t%
+//-
+Set,%t%,0
+If,ExistFile,%Source_Sys%\svcpack\branches.inf,Retrieve,Md5,%Source_Sys%\svcpack\branches.inf,%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,Source_Sys\svcpack\|______branches.inf,%t%
+//-
+//-----
+Run,%ScriptFile%,Cache_SCD_Info_Additional_NT5
+//-----
+Retrieve,Md5,%ProjectTemp%\%SFName%_Unique.ini,%Umd5%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,UniqueMD5,UniqueMD5,%Umd5%
+//--
+Set,%t%,0
+If,ExistFile,%Source_Sys%\svcpack\branches.inf,Retrieve,Md5,%Source_Sys%\svcpack\branches.inf,%t%
+Set,%SCD%,%SFName%_v%UVersion%_v%SVersion%_%OS%%SourceArch%%OSSubType%_%SourceLocale%_%Umd5%_svcpack_%t%
+Set,%SCD%,%BaseDir%\Workbench\PluginCache\%ProjectName%\%SCD%
+
+[Cache_SCD_Info_Additional_NT5]
+//-
+//ApiRegConfig=%ProjectTemp%\ApiRegCfg.ini
+//PreApiRegScript=%ProjectTemp%\PreApiRegScript.txt
+//PostApiRegScript=%ProjectTemp%\PostApiRegScript.txt
+//-
+Call,RetrieveFolderUniqueID,%ProjectTemp%\apireg_Before_Cache
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,%SCDSub%_|_ProjectTemp_ApiReg_RetrieveFolderUniqueID,%RetrieveFolderUniqueID%
+If,%RetrieveFolderUniqueID%,Equal,1,IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,%SCDSub%_|_ProjectTemp_ApiReg__Before_Cache_RetrieveFolderUniqueID,"%RetrieveFolderUniqueID% : Directory Not Exists"
+If,%RetrieveFolderUniqueID%,Equal,2,IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,%SCDSub%_|_ProjectTemp_ApiReg__Before_Cache_RetrieveFolderUniqueID,"%RetrieveFolderUniqueID% : Directory exists but empty"
+//-
+//Special "Plugin Cache" Selections for "Register Factory VM Installer" - For more complete list check "Basic PluginCache"
+If,ExistFile,"%ProjectDir%\Basic\Build\1 - RegFactory.script",Begin
+Retrieve,Md5,"%ProjectDir%\Basic\Build\1 - RegFactory.script",%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,"Basic\Build\1 - RegFactory",%t%
+IniRead,"%ProjectDir%\Basic\Build\1 - RegFactory.script",Main,Version,%t%
+StrFormat,Inc,%UVersion%,%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Version,"Basic\Build\1 - RegFactory",%t%
+End
+If,ExistFile,"%ProjectDir%\Basic\Build\1 - RegFactory_Files.script",Begin
+Retrieve,Md5,"%ProjectDir%\Basic\Build\1 - RegFactory_Files.script",%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,"Basic\Build\1 - RegFactory_Files",%t%
+IniRead,"%ProjectDir%\Basic\Build\1 - RegFactory_Files.script",Main,Version,%t%
+StrFormat,Inc,%UVersion%,%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Version,"Basic\Build\1 - RegFactory_Files",%t%
+End
+If,ExistFile,"%ProjectDir%\Basic\Shells\Core\Core_Main.script",Begin
+Retrieve,Md5,"%ProjectDir%\Basic\Shells\Core\Core_Main.script",%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,"Basic\Shells\Core\Core_Main",%t%
+IniRead,"%ProjectDir%\Basic\Shells\Core\Core_Main.script",Main,Version,%t%
+StrFormat,Inc,%UVersion%,%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Version,"Basic\Core\Core_Main",%t%
+End
+//***************************************
+//DO NOT Split RF here - it effects %UVersion% which should be autodeleted ....
+//IniRead,%ProjectDir%\script.project,IniVariables,RegFactoryState,%RegFactoryState%
+//If,%RegFactoryState%,Equal,Enabled,Begi-n
+If,ExistFile,"%ProjectDir%\Basic\Shells\Core\1 System\01CoreControlClasses.script",Begin
+Retrieve,Md5,"%ProjectDir%\Basic\Shells\Core\1 System\01CoreControlClasses.script",%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,"Basic\Shells\Core\1 System\01CoreControlClasses",%t%
+IniRead,"%ProjectDir%\Basic\Shells\Core\1 System\01CoreControlClasses.script",Main,Version,%t%
+StrFormat,Inc,%UVersion%,%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Version,"Basic\Core\1 System\01CoreControlClasses",%t%
+End
+If,ExistFile,"%ProjectDir%\Basic\Shells\Core\1 System\02CoreMSI.script",Begin
+Retrieve,Md5,"%ProjectDir%\Basic\Shells\Core\1 System\02CoreMSI.script",%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,"Basic\Shells\Core\1 System\02CoreMSI",%t%
+IniRead,"%ProjectDir%\Basic\Shells\Core\1 System\02CoreMSI.script",Main,Version,%t%
+StrFormat,Inc,%UVersion%,%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Version,"Basic\Core\1 System\02CoreMSI",%t%
+End
+If,ExistFile,"%ProjectDir%\Basic\Shells\Core\1 System\03CoreCrypto.script",Begin
+Retrieve,Md5,"%ProjectDir%\Basic\Shells\Core\1 System\03CoreCrypto.script",%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,"Basic\Shells\Core\1 System\03CoreCrypto",%t%
+IniRead,"%ProjectDir%\Basic\Shells\Core\1 System\03CoreCrypto.script",Main,Version,%t%
+StrFormat,Inc,%UVersion%,%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Version,"Basic\Core\1 System\03CoreCrypto",%t%
+End
+If,ExistFile,"%ProjectDir%\Basic\Shells\Core\1 System\05CoreScripting.script",Begin
+Retrieve,Md5,"%ProjectDir%\Basic\Shells\Core\1 System\05CoreScripting.script",%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,"Basic\Shells\Core\1 System\05CoreScripting",%t%
+IniRead,"%ProjectDir%\Basic\Shells\Core\1 System\05CoreScripting.script",Main,Version,%t%
+StrFormat,Inc,%UVersion%,%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Version,"Basic\Core\1 System\05CoreScripting",%t%
+End
+If,ExistFile,"%ProjectDir%\Basic\Shells\Core\1 System\10CoreMMC.script",Begin
+Retrieve,Md5,"%ProjectDir%\Basic\Shells\Core\1 System\10CoreMMC.script",%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,"Basic\Shells\Core\1 System\10CoreMMC",%t%
+IniRead,"%ProjectDir%\Basic\Shells\Core\1 System\10CoreMMC.script",Main,Version,%t%
+StrFormat,Inc,%UVersion%,%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Version,"Basic\Core\1 System\10CoreMMC",%t%
+End
+If,ExistFile,"%ProjectDir%\Basic\Shells\Core\1 System\10CoreMMC_Files.script",Begin
+Retrieve,Md5,"%ProjectDir%\Basic\Shells\Core\1 System\10CoreMMC_Files.script",%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,"Basic\Shells\Core\1 System\10CoreMMC_Files",%t%
+IniRead,"%ProjectDir%\Basic\Shells\Core\1 System\10CoreMMC_Files.script",Main,Version,%t%
+StrFormat,Inc,%UVersion%,%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Version,"Basic\Core\1 System\10CoreMMC_Files",%t%
+End
+If,ExistFile,"%ProjectDir%\Basic\Shells\Core\1 System\15CoreHelp.script",Begin
+Retrieve,Md5,"%ProjectDir%\Basic\Shells\Core\1 System\15CoreHelp.script",%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,"Basic\Shells\Core\1 System\15CoreHelp",%t%
+IniRead,"%ProjectDir%\Basic\Shells\Core\1 System\15CoreHelp.script",Main,Version,%t%
+StrFormat,Inc,%UVersion%,%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Version,"Basic\Core\1 System\15CoreHelp",%t%
+End
+If,ExistFile,"%ProjectDir%\Basic\Shells\Core\1 System\20CoreNet.script",Begin
+Retrieve,Md5,"%ProjectDir%\Basic\Shells\Core\1 System\20CoreNet.script",%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,"Basic\Shells\Core\1 System\20CoreNet",%t%
+IniRead,"%ProjectDir%\Basic\Shells\Core\1 System\20CoreNet.script",Main,Version,%t%
+StrFormat,Inc,%UVersion%,%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Version,"Basic\Core\1 System\20CoreNet",%t%
+End
+If,ExistFile,"%ProjectDir%\Basic\Shells\Core\1 System\20CoreNet_Files.script",Begin
+Retrieve,Md5,"%ProjectDir%\Basic\Shells\Core\1 System\20CoreNet_Files.script",%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,"Basic\Shells\Core\1 System\20CoreNet_Files",%t%
+IniRead,"%ProjectDir%\Basic\Shells\Core\1 System\20CoreNet_Files.script",Main,Version,%t%
+StrFormat,Inc,%UVersion%,%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Version,"Basic\Core\1 System\20CoreNet_Files",%t%
+End
+If,ExistFile,"%ProjectDir%\Basic\Shells\Core\1 System\25CoreWMI.script",Begin
+Retrieve,Md5,"%ProjectDir%\Basic\Shells\Core\1 System\25CoreWMI.script",%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,"Basic\Shells\Core\1 System\25CoreWMI",%t%
+IniRead,"%ProjectDir%\Basic\Shells\Core\1 System\25CoreWMI.script",Main,Version,%t%
+StrFormat,Inc,%UVersion%,%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Version,"Basic\Core\1 System\25CoreWMI",%t%
+End
+If,ExistFile,"%ProjectDir%\Basic\Shells\Core\1 System\30CorePerfLogs.script",Begin
+Retrieve,Md5,"%ProjectDir%\Basic\Shells\Core\1 System\30CorePerfLogs.script",%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,"Basic\Shells\Core\1 System\30CorePerfLogs",%t%
+IniRead,"%ProjectDir%\Basic\Shells\Core\1 System\30CorePerfLogs.script",Main,Version,%t%
+StrFormat,Inc,%UVersion%,%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Version,"Basic\Core\1 System\30CorePerfLogs",%t%
+End
+If,ExistFile,"%ProjectDir%\Basic\Shells\Core\1 System\35CoreStorage.script",Begin
+Retrieve,Md5,"%ProjectDir%\Basic\Shells\Core\1 System\35CoreStorage.script",%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,"Basic\Shells\Core\1 System\35CoreStorage",%t%
+IniRead,"%ProjectDir%\Basic\Shells\Core\1 System\35CoreStorage.script",Main,Version,%t%
+StrFormat,Inc,%UVersion%,%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Version,"Basic\Core\1 System\35CoreStorage",%t%
+End
+If,ExistFile,"%ProjectDir%\Basic\Shells\Core\1 System\80CoreIE.script",Begin
+Retrieve,Md5,"%ProjectDir%\Basic\Shells\Core\1 System\80CoreIE.script",%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,"Basic\Shells\Core\1 System\80CoreIE",%t%
+IniRead,"%ProjectDir%\Basic\Shells\Core\1 System\80CoreIE.script",Main,Version,%t%
+StrFormat,Inc,%UVersion%,%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Version,"Basic\Core\1 System\80CoreIE",%t%
+End
+If,ExistFile,"%ProjectDir%\Basic\Shells\Core\3 Addons\Flash.script",Begin
+Retrieve,Md5,"%ProjectDir%\Basic\Shells\Core\3 Addons\Flash.script",%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Unique,"Basic\Shells\Core\3 Addons\Flash",%t%
+IniRead,"%ProjectDir%\Basic\Shells\Core\3 Addons\Flash.script",Main,Version,%t%
+StrFormat,Inc,%UVersion%,%t%
+IniWrite,%ProjectTemp%\%SFName%_Unique.ini,Version,"Basic\Core\3 Addons\Flash",%t%
+End
+//En-d
+//***************************************
+
+[AuthorEncoded]
+logo.jpg=11697,15596
+Logo=logo.jpg
+
+[EncodedFile-AuthorEncoded-logo.jpg]
+lines=3
+0=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
+1=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
+2=G3/xWL6VWH/ZRMLgIaQ3aVXHprmIB+Aibql6ZmRCUt7fdkhXPXDJbAHPLREZRaDcZGvxgFVSBLAfwsP9Do3LBGSp9M+iqzln3x6I/Ytc1W89uji+6TJRUbclqDIPUhcrN2bb1RoVA6Q5wTQzLc0guy4Zwduw2jEodR+002ccoTKRAAH/YbnK2aaSAInQyfW/2s9puglc77HLkBDGUp9d//rhIG2I6RPXgfg5NbaHA5tEDdX3fcrSrdA66R6a7ur7un+1E3Tudo0KkOMygwnaqWAo2CBnu1PDYn6dlbi3Vjw4gQaqSURw7VY9YjGg9zpa4CIiM7jakd7NTS8+2Za/E6cKSurVNToenV8i+3WIKBKKnGKrOpeVQDEMQqa7MlfLb6f5sExlX003IsJde+p3k3NaiFLo8IE/ePymjQwvf74Z7zUf8rve6OtXAvmY0LwQ/a40YJ8WRumYkorzLPxzI1Gqukn12GBJ4VsX604E0D+Ex4sjjtkea7I7FbwYgM7WlaHIkGNUm82bfooiV7tjqHr+ADBhjC3l9aTSUgLna7jTejVqMQRyOEgemXu3W2Ix30GM/bmbXvW/KY2oL0tYHs279cTL0aZZq9q/vxpnDJOJGYHNur0HeCrIPCsNyKFotHvkMUY8lhtHPGrK8ABoX5p1Egs/LF8KUL88FDDuqytoAXUAVOugSHM2bDKIUCUMOtxywdPTkjQbkm8I3/12mnkdxQHmgNl30q5jljE56NTzj2AodqJIAj30BNpE4wETNPO42DZUsTP7ZxdK66ksLN5kL16X52mpsxNRmyusnM6TZ2JnrCHrcu2YWnJ+P0UdKPhM80mwO6hfwxlYuN2RQQwF/qJQpzozNgLhYqfcAvZPsvdtaJsEmq16JCt/u7Zcs0kP1NoVzV/BnbALGtoi6hLW6fVNUURd9paGgsJhkA3m8wTt8yl6ZXi5BYb4DvxaEfSLqZoLvzZIgpQJ5U2xqhYjlk6pHYl6nqpWV5zegczIZi/4oaxM1Y6FHm9fJz/5+Id3Wmn5kiWydUbnfqEgVYrrKKFZjM5RnY2banSlEU8HIYgmSyKlaY0V+ocySHwACN9LIWWKlH+B7m89n8iP1N1xbJlbI8C6nbpczRHiJOFeStPUKFX8MSDzaBR2gIeNWJ9U05Pmdwdz34sp9OXW25vN5yY8s4c81pG8nOFsO6MX2NNUImXrVidB/Z1XBgsGPg1if/LMegt8CMsdG+s/HmVWuJnWddhKtn91O1Qa4FA5QwLqxAMFRYo6kZ1P+C6AxsKe4czRgesfrnN9nKodKCdIrt3TtUM742b1Hg1zDPY7ObGnj2R9tbxxNyEwULnUD9tpreBf7M3cX1b3jfNfdWwZX+qEYRQv6zYsfzTzZ0+bxYdreOl9G34UkNl2W5R+Q7s+syTn21drIzBpKEYiF07E/pIHP5mtfdYSO+gr6Obow7I7I5h+ab0JqwT1KQzaQ/49VpQ/3Hs7RMd/bCw4/26+3c2xf44zoIacTECEhEE+l5hN63X8WMSYjXWWLn3Hd9C6jqZss0rQo+HAnL+PYoPRyWu+ryviWuKHjMZzRkXGPURh9iWy7FjK1PPRYBThnJioCRXmAZDN6kZGZp00Y8VQKOUpk8VTVah7HZr0AAjLGd4y6bNPeDeBRCdJGlgGsCKDIBd1QE9Eg4LuaHzHlDRPibw6r30k4lco25qznbxG7uXP8O6XjVnME41uLvIpQOdGVKHKiB/erzpew4Ns8/YejtlE6UqRagELBFMEPyTNwIF5Z4r1VZ5cQKXNdZyp+MrP4phyLbmDgTTHrO2adSF5x5c0ae1v6xYXq0zxzT7HLjMRklDC1ljwzdlz9DusRzffiFroC93CajOfCfXcxBPZab+WanuP35rDOckOzboakjIciLwU9GYOWnOJeEphxHQGSEaeM0E1byfnfnAo6B+fpDvnJQjbGJxAhpawLkc9TCIhzexzq7ELFbhAHLj3cz0d9Ud0/BznrbqPBzvBNVACJ1wcAe0j9hixi4sfOJMNAUn5jJPHP6mgC1K1E3pm8PX1cgsHQNar8KQjhjD79DTv8n9K6vJLwnSowRiW9vpd+YDMAg9exmEdBgpMx5wT9VxESu1o/clGmtGVgQvDndw0bbVcrzLbjV63iVj11qxLRq7xPtbHo2rHEWjU5qRDE8Zn0cKZx7iV/+tDPsTpZqDsNILhnKxTtPZs9qgx/+xQoViKIV6grd4yjy2GgVikxXGmq+PUgdr+0jIlfyO36rkqV95KGJfjptdYw+uo3LvTHC79dZFgS7fZJvfoKDUJShxcknq2B0AblyaYIF1CjGjusFo/+q66TDqy5YNNZwWFF8USZ4jvHCFMipjzh7hm9G8zVFvdCk0QT6574yduVXLBy/dcDgm0+r9fUkLw2CNRbMepBtVaXyu+zkuxr/SIWFu3r130KZOhLD7ZmybKx1Fv4m+BkgPiGaxf1mZO15avOdZkcWEatXAjZ0aZMlpenwi0lmRy5h5zf7aVGTe1xP0eBu63ZJApBgOja+N9LXNuKvi2jHQP1ImsvPrhmc9EhSNHdghkhvQSCCVreexky49yz1wLhvKX5LzgRlQdwHw3h9x3uzBFJSMkJxv2VIwDp69ryIxO2u0g6KnegbyVbg1XXSkF8EgelRLYyexl0sH8qTxRMnHqUsvQenRXQqY2kA6vqtk7kLZFaN3RH/71Ub09/cfBRAv2GFpLUwSB+JuReZI8gd2bsFFXwdxIUWvxTdU/9k45j5oHaY/l+psK2j9bMy7cutUuu0X7dvLfG7s7vPTdu8EbIdisD+DHQ7dFuPgfWotj9MuJx3DXrobH6hfEJQdcVkzFezATbK7F0f6dBCEo/Tuo8VvpqptIlpQxWEuKV19gc463b5ue5Hax+zFqrgGxSoaMbZ0T9zDNTRrPAbJvf31Do5L0btVXQmJZy9PZuKPuuMcNeElm419DWxH2R02m5MhKT8Ypne12hQEHh+0nkxb8Eq8rqMomgZpARc0mRbz1v0C4ka/StoIhWEkslI4/nP87hTI3wLrJKZGzbD7AmzuWga4g3tyxspnXS9VP5yNWw1/AXM0GP/2FsISDFk1xfEmAZm0iU8Fn+6ZMMkr6W4ZH6ojDz5BF1g23Ea+JJBx264Hw4Avets1PLkFkjzNe0i/+6SbdP4kb7Wr7GV874dOJsHcXpXLH8JeAtkzTaXVt1XlGGIhkrcG04IGI0OaRQjjvot9FokttYUmATkTXzIvQ+fAPTZGyec6ADnzAJgOeDFsfloet/dEPqWUOor17zz3PT8F/HgBl71ohhIzlN4l2K+qz8dS/1Dy0U/hLaQoxasvwoRQJLi5OCWXOrcALRSqKJmTi9jX6dDvDUz7k9InEA2DHez82bdRJV8/1ZajgXX2bRxdfJdM6ojN1cs36k2jF1YoRTAx04wY5Vqh4Y1lpmViiAE4oXEZOnan+qtNYk1ooK+ZoEZc605Si/R0+xqVK1IqpO+Y1mr8JrRenIdN37PQXia8T5CmzDOBvqjrY+rFhWhVCRPs8zcOgxW848mdUxZFUjxyEV+1OypFvadWwIUUg3/l0czdmRSUCdrAbpR93HaqOw2pFI/QycVywxYvyZJ9V8ziByNQhQ+zv8ANgYEKg9l/098paDgun912X9s0LPLu/tXsT5Zo/oHtXNzTgwQKrarFl7A4FJtNN5mWbjXI1jyEfQDCeCSKeCALwPGUb5cAKXLJvA99IAFcGlGLCpGH/tmXEYQq+VzTikQ1pc+e+KhCQgX/znWgDvma3/5jWjQjD1vC8FuW6hT3Wtd5lxOOhlAvfY5kzHdXwCKce0/k2kY0VivadGjRI8G5jWjxU5PPW6nJ5ZcPk+Kp/wFdgXqognW48IpWYsSciJdUQseYvYh7Kluhaa1aMIX4+qvfNMrcHsvD2Oxtb8LEpfhgQGbE1rHSUE1Z7N93/OcaHjjgTj8l2U/am/L68zUD16MKm2Nr5Q/C67KEAtZ/Fq/Ccio9trxN2PHaiXUcUvKwczbkoe+3G1BlEVJXQCyPWdvDwv/spYmSpPGDg9eXF7H2pWV59qHTz5uVCzxwdhssILJWZn1
+3=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
+
+[InterfaceEncoded]
+DoubleJDesignRavenna3dArrowDown0016016.bmp=622,830
+BokehliciaCaptivaSoftwareupload0016016.bmp=676,902
+AmperossQetto2Move0016016.bmp=893,1191
+folder_go_fatcow-hosting-icons-3000_Mod_016016.bmp=806,1075
+
+[DownloadXXX]
+IniRead,%ScriptFile%,Main,Level,%LevelBefore%
+Call,DownloadXQ
+IniWrite,%ScriptFile%,Main,Level,%LevelBefore%
+
+[UploadXXX]
+IniRead,%ScriptFile%,Main,Level,%LevelBefore%
+Call,UploadXQ
+IniWrite,%ScriptFile%,Main,Level,%LevelBefore%
+
+[CompareEditXXX]
+Call,CompareEdit
+
+[Settings_Default]
+IniWrite,%ScriptFile%,Main,Level,0
+
+[EncodedFile-InterfaceEncoded-folder_go_fatcow-hosting-icons-3000_Mod_016016.bmp]
+lines=0
+0=eJy9k8lPU1EUh6+Jf4C6cmVcujAxUSmOiMWIMSLRRF1p1LhBNA4gJg4gQgRRCQKKE1JxSByiYjRxIASEqMEWWqTQlr6CqEWRxqi0UCp8nvcKOCxd+PK+nJt77++c3zl5z5yUMVEZj0mYIUwSJgsT1HRjP370/PcH+C9YrVZ0NE3jX/SqYCXqRS7m8r34fL4/cvT39xMMBscJhULGnbGaOio/EfX+BqrmCMsr9o3nsNvt3Kuzcd/ASpXER/XNrKjcjTq+PKrLk5hjRrmvoFwWVHU0h95LcnkLCedaiC+1E1fcTHyxg8RSL+rYPJZ+rEW1W6I4K6TYpShvZP0kG3NFGsvOt7BEtLcjcPE7lH6FyyExlj2HnT021Kvzv3hZJvEcqvECW/1Ww19CmYP1dzQKPUEqA5Drh8I+0WfOorRPY1VPC8lCkt9Bycd2VH0ZmzobUFUH2FCVhfmsgz0Nveyo9vPsG2R0jpD5DqZdP4rKmiXMFi8xEk1kv3OywVWHupXGlIJ0AoEA8WfsFGmDLLO40H6AZwg06eXDCGR2Q46Q/wEjR3qXA3VtD7G3cslr+M6N5y7iSpp5IP2uueMjpqBxlNfEnnjNxpo+9nZAulfvZybKsouplixOib+73RG2XW1mscz8scxtv/g+2DXCobc6cFjqrr2tsf7pJzTx5BNPnRK9YXAJ3mGIk7kvEn2t6He7I6R5IqSP0REhwzdM8k0vJvFiOmkjRpgrzCtqYrFoMx93sVD0jeI/xRlmh7C9NUyKjr5uGyLVFSHV/YNUzzApgrwsKrHj9n8xvj9d7xyAzY4wW+yDPPw8jFvyeQZHEa8d4WjUZyttGrVdn4KGXl97Ze6ugSgdciem0Mb8000skNx/o99fY3GO/z+rL7cae7+fr6t00hkYwNMbwv0XbaN1x/gJPMEuJXicM0rLz0lJLYpPz49PSyxJzi/XzcgvLsnMS9fNTM7PK9Y1NjAwiPfNT4k3MDQDIr2k3AKGUTB8QBkLhN7GhF2+Jn6vLQMTAHvOFKuzWrabAQAAAAIAAABMAAAAtgIAAAAAAAABAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-DoubleJDesignRavenna3dArrowDown0016016.bmp]
+lines=0
+0=eJzNk09Ik2Ecxw06BF2KqG5ih1EgYZZu7+v7vnu3d++2MpelRFHgQZEaJLVIXSxrW4Wauf7Nwha2rQ7dOgT9IQT1EkQHi+hSHfRSUZrMcp389PjSoUib3vrB9/I8fD78fr+Hxwi0LS+yyi6ySWSVyGqRZUUl1rnr1/3vBfy3+TTxkabuAzx4dp+lsu/G31LRXIrjaCmeVjtfpj4v2jH+YQwpWIYc3orctgUptJkT/UcWxc/1rLXYqYpKqGcklEglcns5DuF48uLhPx2TUxOYIRWlU8PZraOdU1GjMsop4RO9+DucfM1NzuvIfctR3Wai9hq4rvrREybOCy608xpqrAqlQzhObiOSbv2Ln8nPsDvsZ33dSoob1mE7XIIsetAvCUePG63TiRpXUE47rJ0MvRz8wzH9fZqR0SHSj1LUhn2s8a6gMi7hTm7HddmLftHA2aVT2mJjY3Mx7naJ/I/8vHN0Zc5avKNLw+gP4O7bgeuKD73XQyDqI5QM8ur96IJ7jKUiFi8nDDwDezBuCsf1amsnA4Opgm8Y7jtu8UrSj3lnL+btOjypXRg3dpIdThfkjyWCFu9M1eC7tx/vXeFIC8etWjKL4IPdTRZfFqtAvua1PJ5sPWamnuxIpiD/9Plj4ukIh3oaqGk3KG+0sWHfWhp7DvJm7PWS/9FcZmdnF+R+AlbU23p4nNNyyS9Nykn1ckktzkzPC0osS83LSzROcSwqyi93yS/PMzAwNAMivaTcAoZRMPxAGQuEZmPCLu9y8YwcAxMAHjMRfb+2diEBAAAAAgAAAEQAAAAGAgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-BokehliciaCaptivaSoftwareupload0016016.bmp]
+lines=0
+0=eJytU21LWmEYbrAfsP0De4H2pRcqRq+0RllUZkav1O+YIH2JPvUhKKJfUE3aaCNQQR3pYWDTPCpBMKUxSczjZDB0Q8UPV/d9L0tdg33YAxfn5nq5n+c85z4vDa8e18l6TnhGeEJ4SnhUpxP+xa1euQD8V5RKJeTzeeRyOWSzWQHXzLH2t1yxWEQikYDb7cXu7iHW1/exuron4Jo51tjD3tqsw3GC+fn36O39hJ6eh8Eae9hb2SMYjGB42Iu+Pv8/gb2cKb+v2fwGAwOBGvhpTzfhg9S1utn8FuW7MplOMDQUwMhIgHrfY3Mzio2Nz1Uce9jLGc5mMhni/WhuPoROt4/6+td3ODpKwGqNV3HsYS9nOBuLfUFLyzG6ulzEnVXB4/kOpzPzB89eznD24iKKxkar9NPrg7fwYG7OBp/vGxRFw+ysDaOjnjudvZzhbDR6iY4OO/V0YHJSxdiYiq2trygUSri+zuLq6ofU29tx0djT2WmTDGdTqbRw3d1O+jYfMTGhYno6TL1zKC+uTaawaDrdHtrajiWjaWn5BgsLfhgMIZoPL6amQlKvrJzT/gUkkwUsL58Lx2hoOJAnZ8rzbLF4YTSG6d18dAY3nfMUg4MK7RmULGu/oUqea4tFqZi/JGZmwnJGgyEg8zU+fip3otcrdJcRusMQ2tt5vl3iVdVU1T9gt6exuMi+exiNZ2htfYempgNBf78LS0sRsPehf1DTfoq2sxPH2tolnTEm4Jo51tLpX1XZG70Y6I54nNNyys9OzcjJTM5MdE4sKMksSwzOTyspTyxKLS3IyU9MMTAwNAMivaTcAoZRMPxAGQuEtmHCLs9kcFmVgQkAJ9URXc7wHxQBAAAAAgAAAEQAAAA8AgAAAAAAAAEAAAAAAAAAAAAAAA
+
+[EncodedFile-InterfaceEncoded-AmperossQetto2Move0016016.bmp]
+lines=0
+0=eJxtk1lIVFEYxw16agEVzTRncRtt0cx0NCu0QlsgyyCih7Cgh6KFNgQzSsqnFohUEm3FlqmsVGxxxoxSyYkpTcctsiKXtCZ1mPXee878++5o4YMf/DjfnXN+//sdmLt2s3amj7e0RAzhO8kMH7XPv/KfPcF0NXd7RXRg3ufCoDMD+nkFQ8Z5BYOTDBmDCgYNgXlfCudsq4yZzg3I7ToSfMHmVJQBilLi6pT1X097IZdsroBc87GpblB+zwHVNUBJ50JLBAQUSVhQIkJB/X+KBYQWCd4s1XUgKL/3kOz6HTYpQ4scbq9fLsL/ooAV50ahueKE8oYI1TWBoLVcgLKMKJWf6T1XHILv8WaVothyMlwHqG+KmHVJxKHbFnjs49j5zAnf2xyqexLC74hewm6JdE6AmjLDH1BGseVU2E17VeRjIIBmPFhhASQnnneK0Fy2IYaIKHEi9C6DXxmDWscQeY+yKkREPpLfaa+JuO/Wh5C/9bEd4C7INWyxw/bbCmnUiuZeK9bpHDhfY0FkuQvKSo6ohxKiqoCIu+76qEp3XUQtkFDL0DYm2x4863bjdAdwthfY0QKsMYjgYNDTAQVlqJ9yLHwBaB66DdFPhbol9TRLDUPsS4bWMQ+sYw6kVjuwhmbaXzuOvTVWVJtpPkqpbx/DYp0b0a+AmGrBsKhWMMS+AWL1dDcipZGhctiDHSYRbRY3OSIhYdwlYaI4cppdCGsAFr8Q6uNeiU/iacalrxkSyI1ropxGCXEtDGs/cmxq50hrlvCkx+G9W/F3DzQNDLITpxerEhrFE0ntwLK3DInvGLTvGZI/0BytHInka0wce9tpDo+E0gEPwuncUkJ2ljeJuUlGzNcamS3pA8iVkEJO6ieOVR2EmXpaN3Zz7PviQbyJPMrXfgSSjcy+2mQPlv+DaR3CrrSvQGon0caxmry0Lo508tJ7KIf6BLqHvLeyC0j/RpiFnKnfQEa3sDujj1syR4CMn0AmsZ76DSMTvfe3X8C6Pv4n0yzsme4bzO6yB2f1s6NZ/VyX9YPVZU+yhcjqlx5kD9FetyNkqvMXP3mcf3ick3XMLUgtyi8uDkwtKck38s0vSzUwMDQDIr2k3AKGUTDMgRkLhFZixi4vra37hIEJABkJC8Gkai7oAQAAAAIAAAA3AAAAIgMAAAAAAAABAAAAAAAAAAAAAAA
+
+[EncodedFolders]
+Folder
+
+[EncodedFile-Folder-hiderun.exe]
+lines=0
+0=eJztUs1rE0EUf5sUTWJS09IghYLTstQKkoLFSwzSpIltcfuVdi1URTabSbMl2Sm7sySIh0LrwX5IL/4HHpSepCrVg8QP1IMFTz0J9uChUIWi1Zuus9kkjYIfvfvgze/Ne29+82beG5hYBicA1DE1TYA1sKUb/i6vmNYffVQP99zrrWucsN46llF0NK2RSU3KIVlSVUJREiPNUJGiotjQKMqRFA76fB6+zOFrf/Guv/f2YkVXU3cXhZJ9Z3HQ2sv3F/tKeLOECUXOWHm/1jIcBxA4Dhr4J9GKbxMOc4e4g/bjKtLA1M8UlV9p2Y69lGoqsv1QBb+dW8Uq2HYjQPgf/mzfwi7h/xAOUlygDL87ygVZD3D8nIOgbvN356dZ3TNMbzC9xfQB0+eNdux9415eJEkMGvJ4MkoKy8hadSQTVSdZjPKKmiJ5RNJIp5JGcao6Au0oLylURx1kmgaPozTRkLWlWMspqkQVono8oi5NYsbstqkvdOYvoXBayWJVyuEzHs94BmtWvDPvtshKJBX+WqLKETcuYNmgUpJVZvmQ5YS4phEthPpVmWgalikyrGsBZj+MjYrnuz52fV1FZqDJ3w0Lb2ZCbcbB1bZt51I/zEe5aOgZPTBXNHa3m2dCQJss11yResOI7obddIeFmsXMFjua6WCLaAZabPAzCHcaR9gBLwrnjfqZKw5kuB5z7D9nnzrnHYzFz1jqwm7DZbMaO+NdxYfWjC5d5dHnlSWB948sxXh+WBSn/KIoJsSXMb4vxhIYUospfT3LF8yAl112rXiZHjv9hfoWBN47ZY6YAZf1oDHeu3CqjlkJc2MhxvuHzY1tlxkAK7ZVrvP1si1CTc83Gu2ZytT4PjG7pXbw9zlLE1wvpoKk01JDAE5AT5bouE9SU1kM2DnOWnyWaKOKOpnFQ8kp1iq4CD0alige1oiMdT0CsALxgkLLe/gGjLOH5HKMRFBUHIFz8cRgXOg6GUxlswBvuQGWxtodJYUIiKPxRCXyX34AM/kc23ic487ITEktKs3TS61IZRgFIw+wQajfTNilG+a2HmNgAgCNbAfYSg4R0wEAAAACAAAAJgAAAPsCAAAAAAAAAQAAAAAAAAAAAAAA
+
+[Folder]
+hiderun.exe=837,1116
+
